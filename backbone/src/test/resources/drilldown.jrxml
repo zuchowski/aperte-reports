@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="DrilldownReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="0">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="imageBox" mode="Opaque" backcolor="yellow">
+        <box>
+            <pen lineWidth="0.5"/>
+        </box>
+    </style>
+    <variable name="v_date" class="java.lang.String">
+        <initialValueExpression><![CDATA["2010-01-15"]]></initialValueExpression>
+    </variable>
+    <title>
+        <band height="782">
+            <image scaleImage="Clip" onErrorType="Icon" isLazy="true">
+                <reportElement x="0" y="0" width="150" height="40"/>
+                <imageExpression class="java.lang.String">
+                    <![CDATA["http://jasperreports.sourceforge.net/jasperreports.png"]]></imageExpression>
+            </image>
+            <textField hyperlinkType="Reference">
+                <reportElement mode="Opaque" x="200" y="0" width="130" height="40" forecolor="#FF0000" backcolor="#FFDDDD"/>
+                <textFieldExpression>
+                    <![CDATA["Drilldown test with date."]]>
+                </textFieldExpression>
+                <hyperlinkReferenceExpression>
+                    <![CDATA["drilldown?reportName=Chart Report&allowRefresh=true&allowedFormats=PDF,HTML&my_date=" +
+                        $V{v_date} + "&r_max_order_id=10260"]]>
+                </hyperlinkReferenceExpression>
+            </textField>
+        </band>
+    </title>
+</jasperReport>

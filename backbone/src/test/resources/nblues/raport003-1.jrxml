@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="RaportZuzyciaLimitow" language="groovy" pageWidth="595" pageHeight="1842" whenNoDataType="AllSectionsNoDetail" columnWidth="535"
+              leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0">
+    <property name="ireport.zoom" value="1.0245201830476074"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.size.fix.enabled" value="true"/>
+    <property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+    <property name="net.sf.jasperreports.chart.theme" value="aegean"/>
+    <style name="Detail" hAlign="Left" vAlign="Middle" fontSize="10" pdfEncoding="Cp1250">
+        <box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3">
+            <topPen lineWidth="0.25" lineColor="#999999"/>
+            <leftPen lineWidth="0.25" lineColor="#999999"/>
+            <bottomPen lineWidth="0.25" lineColor="#999999"/>
+            <rightPen lineWidth="0.25" lineColor="#999999"/>
+        </box>
+    </style>
+    <style name="Title" fontSize="16" isBold="true" pdfEncoding="Cp1250"/>
+    <style name="SubTitle" forecolor="#666666" fontSize="10" pdfEncoding="Cp1250">
+        <box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3"/>
+    </style>
+    <style name="Column header" forecolor="#FFFFFF" backcolor="#000000" fill="Solid" hAlign="Center" vAlign="Middle" fontSize="10" isBold="true"
+           pdfEncoding="Cp1250">
+        <box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3">
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Group" style="Detail" hAlign="Left" vAlign="Middle" markup="none" fontSize="10" isBold="true" pdfEncoding="Cp1250"/>
+    <subDataset name="projects_dataset">
+        <parameter name="projects" class="java.lang.String"/>
+        <parameter name="login" class="java.lang.String"/>
+        <queryString language="SQL">
+            <![CDATA[SELECT name,
+                    CASE SUM(level)
+                        WHEN 2 THEN 'PM1'
+                        WHEN 4 THEN 'PM2'
+                        WHEN 6 THEN 'PM1, PM2'
+                    END AS level
+                FROM blues_tree_nodes btn LEFT JOIN blues_projects_users bpu ON btn.id = bpu.project_id
+                WHERE btn.id IN ($P!{projects})
+                    AND bpu.user_id = (SELECT id FROM blues_users WHERE ldapdn LIKE '%$P!{login}%')
+                    AND bpu.level IN (2,4)
+                GROUP BY btn.id, btn.name
+                ORDER BY name]]>
+        </queryString>
+        <field name="name" class="java.lang.String"/>
+        <field name="level" class="java.lang.String"/>
+    </subDataset>
+    <subDataset name="chart_dataset">
+        <parameter name="projects" class="java.lang.String"/>
+        <parameter name="login" class="java.lang.String"/>
+        <parameter name="limit_used" class="java.lang.String"/>
+        <queryString language="SQL">
+            <![CDATA[SELECT treenode_id,
+        name,
+        reportedhrs,
+        projectlimit,
+        projectreserve,
+        orderlimit,
+        (projectlimit - reportedhrs) AS limitleft,
+        CASE
+            WHEN (projectreserve <= 0 OR projectreserve IS NULL) THEN 0
+            WHEN reportedhrs > projectlimit THEN (projectreserve + projectlimit - reportedhrs)
+            ELSE projectreserve
+        END as reserveleft
+
+    FROM
+        (SELECT bp.treenode_id,
+            btn.name,
+            SUM(tasks.reportedhrssum) AS reportedhrs,
+            CASE
+                WHEN projectlimit IS NULL AND SUM(tasks.tasklimit) IS NULL THEN 0
+                WHEN projectlimit > 0 THEN projectlimit
+                ELSE SUM(tasks.tasklimit)
+            END AS projectlimit,
+            CASE
+                WHEN (projectreserve IS NULL OR projectreserve = 0) AND SUM(tasks.taskreserve) IS NULL THEN 0
+                WHEN projectlimit > 0 THEN projectreserve
+                ELSE SUM(tasks.taskreserve)
+            END AS projectreserve,
+            CASE
+                WHEN bp.orderlimit > 0 THEN bp.orderlimit
+                WHEN SUM(tasks.orderlimit) > 0 THEN SUM(tasks.orderlimit)
+                ELSE 0
+            END AS orderlimit
+
+        FROM blues_projects bp
+            LEFT JOIN blues_tree_nodes btn ON bp.treenode_id=btn.id
+            LEFT JOIN
+            (SELECT
+                bt.treenode_id,
+                bt.project_id,
+                SUM(
+                    CASE reportedhrs != 'NaN'
+                        WHEN true THEN reportedhrs
+                        ELSE 0
+                    END)
+                  +
+                SUM(
+                    CASE reportedoverhrs != 'NaN'
+                        WHEN true THEN reportedoverhrs
+                        ELSE 0
+                    END) as reportedhrssum,
+                tasklimit,
+                taskreserve,
+                bt.orderlimit
+                FROM blues_tasks bt
+                    LEFT OUTER JOIN blues_timesheet_entry bte ON bt.treenode_id = bte.task_id
+                WHERE bte.status IS NULL OR bte.status IN ('MA', 'S', 'WA')
+                GROUP BY bt.treenode_id, bt.project_id, bt.tasklimit, bt.taskreserve, bt.orderlimit
+            ) as tasks ON tasks.project_id = bp.treenode_id
+
+        WHERE EXISTS(SELECT 1 FROM blues_projects_users bpu JOIN blues_users bu ON bpu.user_id=bu.id WHERE bpu.project_id = bp.treenode_id AND bu.ldapdn LIKE '%$P!{login}%' AND bpu.level IN (2,4))
+            AND bp.treenode_id IN ($P!{projects}) AND (tasks.tasklimit > 0 OR bp.projectlimit > 0)
+        GROUP BY bp.treenode_id, bp.projectlimit, bp.projectreserve, btn.name, bp.orderlimit) data
+    WHERE reportedhrs/projectlimit * 100 > $P!{limit_used}
+    ORDER BY reportedhrs/projectlimit DESC]]>
+        </queryString>
+        <field name="name" class="java.lang.String"/>
+        <field name="reportedhrs" class="java.lang.Float"/>
+        <field name="projectlimit" class="java.lang.Long"/>
+        <field name="projectreserve" class="java.lang.Long"/>
+        <field name="orderlimit" class="java.lang.Integer"/>
+        <field name="limitleft" class="java.lang.Double"/>
+        <field name="reserveleft" class="java.lang.Double"/>
+    </subDataset>
+    <parameter name="login" class="java.lang.String">
+        <defaultValueExpression><![CDATA["nonexistant user"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="options" class="java.lang.String">
+        <property name="input_type" value="CHECKBOXES"/>
+        <property name="label" value="Opcje"/>
+        <property name="dict_item_list" value="chart:pokaż wykres;table:pokaż tabelę;projects:pokaż listę analizowanych projektów"/>
+        <defaultValueExpression><![CDATA["'chart','table','projects'"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="limit_used" class="java.lang.String">
+        <property name="input_type" value="text"/>
+        <property name="label" value="próg zużycia limit (w %)"/>
+        <property name="regexp" value="[0-9]{1,2}"/>
+        <property name="required" value="true"/>
+        <property name="required_error" value="minimalny próg jest wymagany"/>
+    </parameter>
+    <parameter name="project_folder" class="java.lang.String">
+        <property name="level" value="2"/>
+        <property name="input_type" value="filter"/>
+        <property name="label" value="filtruj folder"/>
+        <property name="filter_group" value="projects_group"/>
+    </parameter>
+    <parameter name="project_status" class="java.lang.String">
+        <property name="level" value="1"/>
+        <property name="input_type" value="filter"/>
+        <property name="label" value="filtruj status"/>
+        <property name="filter_group" value="projects_group"/>
+    </parameter>
+    <parameter name="projects" class="java.lang.String">
+        <property name="level" value="0"/>
+        <property name="input_type" value="filtered_select"/>
+        <property name="label" value="nazwa projektu"/>
+        <property name="filter_group" value="projects_group"/>
+        <property name="select_all" value="true"/>
+        <property name="dict_query"
+                  value="java:comp/env/jdbc/nblues;                 SELECT DISTINCT treenode_id, project.name, status, catalog.name                 FROM blues_projects                      LEFT JOIN blues_tree_nodes project ON treenode_id=project.id                      LEFT JOIN blues_projects_users ON project_id=treenode_id                      LEFT JOIN blues_users bu ON bu.id=user_id                     LEFT JOIN blues_tree_nodes catalog ON project.parent_id=catalog.id                 WHERE ldapdn LIKE &apos;%$LOGIN%&apos; AND level IN(2,4)"/>
+        <property name="multiple_choice" value="true"/>
+        <defaultValueExpression><![CDATA["SELECT treenode_id FROM blues_projects"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="datasource" class="java.lang.String">
+        <parameterDescription><![CDATA[java:comp/env/jdbc/nblues]]></parameterDescription>
+        <defaultValueExpression><![CDATA["java:comp/env/jdbc/nblues"]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT treenode_id,
+        name,
+        phase_name AS phasename,
+        phasereportedhrs,
+        phaselimit,
+        phasereserve,
+        reportedhrs,
+        projectlimit,
+        projectreserve,
+        phaseorderlimit,
+        projectorderlimit,
+        (projectlimit - reportedhrs) AS limitleft,
+        CASE phaselimit IS NOT NULL AND phaselimit > 0
+            WHEN true THEN (phaselimit - phasereportedhrs)
+            ELSE NULL
+        END AS phaselimitleft,
+        CASE
+            WHEN (projectreserve <= 0 OR projectreserve IS NULL) THEN 0
+            WHEN reportedhrs > projectlimit THEN (projectreserve + projectlimit - reportedhrs)
+            ELSE projectreserve
+        END as reserveleft,
+        CASE
+            WHEN (phasereserve <= 0 OR phasereserve IS NULL) THEN NULL
+            WHEN phasereportedhrs > phaselimit THEN (phasereserve + phaselimit - phasereportedhrs)
+            ELSE phasereserve
+        END as phasereserveleft
+
+    FROM
+        (SELECT bp.treenode_id,
+            btn.name,
+            SUM(tasks.reportedhrssum) AS reportedhrs,
+            CASE
+                WHEN projectlimit IS NULL AND SUM(tasks.tasklimit) IS NULL THEN 0
+                WHEN projectlimit > 0 THEN projectlimit
+                ELSE SUM(tasks.tasklimit)
+            END AS projectlimit,
+            CASE
+                WHEN (projectreserve IS NULL OR projectreserve = 0) AND SUM(tasks.taskreserve) IS NULL THEN 0
+                WHEN projectlimit > 0 THEN projectreserve
+                ELSE SUM(tasks.taskreserve)
+            END AS projectreserve,
+            CASE
+                WHEN bp.orderlimit > 0 THEN bp.orderlimit
+                WHEN SUM(tasks.orderlimit) > 0 THEN SUM(tasks.orderlimit)
+                ELSE 0
+            END AS projectorderlimit
+
+        FROM blues_projects bp
+            LEFT JOIN blues_tree_nodes btn ON bp.treenode_id=btn.id
+            LEFT JOIN
+            (SELECT
+                bt.treenode_id,
+                bt.project_id,
+                SUM(
+                    CASE reportedhrs != 'NaN'
+                        WHEN true THEN reportedhrs
+                        ELSE 0
+                    END)
+                  +
+                SUM(
+                    CASE reportedoverhrs != 'NaN'
+                        WHEN true THEN reportedoverhrs
+                        ELSE 0
+                    END) as reportedhrssum,
+                tasklimit,
+                taskreserve,
+                bt.orderlimit
+                FROM blues_tasks bt
+                    LEFT OUTER JOIN blues_timesheet_entry bte ON bt.treenode_id = bte.task_id
+                WHERE bte.status IN ('MA', 'S', 'WA')
+                GROUP BY bt.treenode_id, bt.project_id, bt.tasklimit, bt.taskreserve, bt.orderlimit
+            ) as tasks ON tasks.project_id = bp.treenode_id
+
+        WHERE EXISTS(SELECT 1 FROM blues_projects_users bpu JOIN blues_users bu ON bpu.user_id=bu.id WHERE bpu.project_id = bp.treenode_id AND bu.ldapdn LIKE '%$P!{login}%' AND bpu.level IN (2,4))
+            AND bp.treenode_id IN ($P!{projects}) AND (tasks.tasklimit > 0 OR bp.projectlimit > 0)
+        GROUP BY bp.treenode_id, bp.projectlimit, bp.projectreserve, btn.name, bp.orderlimit) data
+
+    LEFT OUTER JOIN (
+		SELECT btn.id AS project_id,
+			phases.name AS phase_name,
+			SUM(phases.reportedhrssum) AS phasereportedhrs,
+			CASE
+				WHEN projectlimit > 0  OR SUM(phases.tasklimit) IS NULL OR SUM(phases.tasklimit) <= 0 THEN NULL
+				ELSE SUM(phases.tasklimit)
+			END AS phaselimit,
+			CASE
+				WHEN (projectreserve IS NULL OR projectreserve = 0) AND (SUM(phases.taskreserve) IS NULL OR SUM(phases.taskreserve) = 0) THEN NULL
+				WHEN projectlimit > 0 THEN NULL
+				ELSE SUM(phases.taskreserve)
+			END AS phasereserve,
+			CASE
+				WHEN (projectorderlimit IS NULL OR projectorderlimit = 0) AND (SUM(phases.taskorderlimit) IS NULL OR SUM(phases.taskorderlimit) = 0) THEN NULL
+				WHEN projectorderlimit > 0 THEN NULL
+				ELSE SUM(phases.taskorderlimit)
+			END AS phaseorderlimit
+
+		FROM
+
+			(SELECT btnp.id,
+				btnp.name,
+				tasks.project_id,
+				SUM(reportedhrssum) as reportedhrssum,
+				SUM(tasklimit) as tasklimit,
+				SUM(taskreserve) as taskreserve,
+                SUM(tasks.orderlimit) as taskorderlimit,
+                bp.orderlimit AS projectorderlimit,
+				projectlimit,
+				projectreserve
+
+				FROM
+					(SELECT
+						bt.treenode_id,
+						bt.project_id,
+						btnt.parent_id,
+						SUM(
+							CASE reportedhrs != 'NaN'
+								WHEN true THEN reportedhrs
+								ELSE 0
+							END)
+						  +
+						SUM(
+							CASE reportedoverhrs != 'NaN'
+								WHEN true THEN reportedoverhrs
+								ELSE 0
+							END) as reportedhrssum,
+						tasklimit,
+						taskreserve,
+                        bt.orderlimit
+						FROM blues_tasks bt
+							LEFT OUTER JOIN blues_timesheet_entry bte ON bt.treenode_id = bte.task_id
+							LEFT JOIN blues_tree_nodes btnt ON btnt.id = bt.treenode_id
+                        WHERE bte.status IN ('MA', 'S', 'WA')
+						GROUP BY bt.treenode_id, btnt.parent_id, bt.project_id, bt.tasklimit, bt.taskreserve, bt.orderlimit
+					) AS tasks
+					LEFT OUTER JOIN	blues_tree_nodes btnp ON btnp.id = tasks.parent_id
+					LEFT JOIN blues_projects bp ON bp.treenode_id = tasks.project_id
+
+				WHERE tasks.tasklimit > 0 OR bp.projectlimit > 0
+				GROUP BY btnp.id, btnp.name, tasks.project_id, projectlimit, projectreserve, bp.orderlimit
+			) AS phases
+			LEFT JOIN blues_tree_nodes btn ON phases.project_id=btn.id
+		GROUP BY phases.id, phases.name, projectlimit, projectreserve, btn.name, btn.id, phases.project_id, projectorderlimit
+		ORDER BY btn.name, phases.name
+
+	    ) phases ON data.treenode_id = phases.project_id
+    WHERE reportedhrs/projectlimit * 100 > $P!{limit_used}
+    ORDER BY reportedhrs/projectlimit DESC]]>
+    </queryString>
+    <field name="name" class="java.lang.String"/>
+    <field name="reportedhrs" class="java.lang.Float"/>
+    <field name="phaseorderlimit" class="java.lang.Integer"/>
+    <field name="projectorderlimit" class="java.lang.Integer"/>
+    <field name="limitleft" class="java.lang.Float"/>
+    <field name="reserveleft" class="java.lang.Float"/>
+    <field name="projectlimit" class="java.lang.Float"/>
+    <field name="projectreserve" class="java.lang.Float"/>
+    <field name="phasename" class="java.lang.String"/>
+    <field name="phasereportedhrs" class="java.lang.Float"/>
+    <field name="phaselimitleft" class="java.lang.Float"/>
+    <field name="phasereserveleft" class="java.lang.Float"/>
+    <field name="phaselimit" class="java.lang.Float"/>
+    <field name="phasereserve" class="java.lang.Float"/>
+    <group name="ProjectGroup" isReprintHeaderOnEachPage="true">
+        <groupExpression><![CDATA[$F{name}]]></groupExpression>
+        <groupHeader>
+            <band height="20">
+                <printWhenExpression><![CDATA[$P{options}.contains("table")]]></printWhenExpression>
+                <frame>
+                    <reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#CCFFFF"/>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" x="0" y="0" width="82" height="20" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+                        <textElement textAlignment="Left">
+                            <font isBold="true"/>
+                        </textElement>
+                        <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="154" y="0" width="41" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[$F{projectlimit}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="195" y="0" width="53" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[$F{projectreserve}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="248" y="0" width="58" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[Integer.valueOf($F{projectorderlimit})]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="306" y="0" width="56" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[$F{reportedhrs}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="362" y="0" width="64" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[$F{limitleft}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="426" y="0" width="65" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[$F{reserveleft}]]></textFieldExpression>
+                    </textField>
+                    <textField isBlankWhenNull="true">
+                        <reportElement style="Group" mode="Transparent" x="491" y="0" width="64" height="20"/>
+                        <textElement textAlignment="Left"/>
+                        <textFieldExpression class="java.lang.Float"><![CDATA[($F{limitleft} > 0 ? $F{limitleft} : 0) + $F{reserveleft}]]></textFieldExpression>
+                    </textField>
+                </frame>
+            </band>
+        </groupHeader>
+    </group>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="150" splitType="Stretch">
+            <textField>
+                <reportElement style="Title" x="0" y="0" width="555" height="59"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["R003 – Pracochłonność w MD w projektach"]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="SubTitle" x="0" y="59" width="154" height="26"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Data wygenerowania:]]></text>
+            </staticText>
+            <textField evaluationTime="Report">
+                <reportElement style="SubTitle" x="154" y="59" width="152" height="26"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="SubTitle" x="0" y="85" width="154" height="26"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Minimum zużycia limitu:]]></text>
+            </staticText>
+            <textField evaluationTime="Report">
+                <reportElement style="SubTitle" x="154" y="85" width="152" height="26"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                <textFieldExpression class="java.lang.String"><![CDATA[$P{limit_used} + "%"]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="SubTitle" x="0" y="111" width="154" height="26"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Twórca:]]></text>
+            </staticText>
+            <textField evaluationTime="Report">
+                <reportElement style="SubTitle" x="154" y="111" width="152" height="26"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                <textFieldExpression class="java.lang.String"><![CDATA[$P{login}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <pageHeader>
+        <band splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="40" splitType="Stretch">
+            <printWhenExpression><![CDATA[$P{options}.contains("table")]]></printWhenExpression>
+            <frame>
+                <reportElement mode="Opaque" x="0" y="0" width="555" height="40" backcolor="#666666"/>
+                <staticText>
+                    <reportElement style="Column header" mode="Transparent" x="0" y="0" width="82" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[projekt]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="82" y="0" width="72" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[faza]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="154" y="0" width="41" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[limit]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="195" y="0" width="53" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[rezerwa]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="248" y="0" width="58" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[h zamów]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="306" y="0" width="56" height="40" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[zużyte godziny]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="362" y="0" width="193" height="20" backcolor="#525252"/>
+                    <textElement textAlignment="Center"/>
+                    <text><![CDATA[pozostalo]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="362" y="20" width="64" height="20" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[limit]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="426" y="20" width="65" height="20" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[rezerwa]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Column header" x="491" y="20" width="64" height="20" backcolor="#525252"/>
+                    <textElement textAlignment="Left"/>
+                    <text><![CDATA[razem]]></text>
+                </staticText>
+            </frame>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="19" splitType="Stretch">
+            <printWhenExpression><![CDATA[$P{options}.contains("table") && $V{ProjectGroup_COUNT} > 0]]></printWhenExpression>
+            <frame>
+                <reportElement x="0" y="0" width="555" height="19"/>
+                <textField>
+                    <reportElement style="Detail" x="82" y="0" width="72" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{phasename}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="154" y="0" width="41" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phaselimit}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="306" y="0" width="56" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phasereportedhrs}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="195" y="0" width="53" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phasereserve}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="248" y="0" width="58" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phaseorderlimit}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="362" y="0" width="64" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phaselimitleft}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="426" y="0" width="65" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float"><![CDATA[$F{phasereserveleft}]]></textFieldExpression>
+                </textField>
+                <textField isBlankWhenNull="true">
+                    <reportElement style="Detail" x="491" y="0" width="64" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.Float">
+                        <![CDATA[($F{phaselimit} == null) ? null :(($F{phaselimitleft} > 0 ? $F{phaselimitleft} : 0) + ($F{phasereserveleft} == null ? 0 : $F{phasereserveleft}))]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement style="Detail" x="0" y="0" width="82" height="19"/>
+                    <textElement/>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </detail>
+    <columnFooter>
+        <band splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="550">
+            <stackedBar3DChart>
+                <chart renderType="draw" theme="aegean">
+                    <reportElement positionType="Float" x="0" y="17" width="555" height="338">
+                        <printWhenExpression><![CDATA[$P{options}.contains("chart") && $V{ProjectGroup_COUNT} > 0]]></printWhenExpression>
+                    </reportElement>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="chart_dataset">
+                            <datasetParameter name="login">
+                                <datasetParameterExpression><![CDATA[$P{login}]]></datasetParameterExpression>
+                            </datasetParameter>
+                            <datasetParameter name="projects">
+                                <datasetParameterExpression><![CDATA[$P{projects}]]></datasetParameterExpression>
+                            </datasetParameter>
+                            <datasetParameter name="limit_used">
+                                <datasetParameterExpression><![CDATA[$P{limit_used}]]></datasetParameterExpression>
+                            </datasetParameter>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Wykorzystane godziny"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+                        <valueExpression>
+                            <![CDATA[new Double($F{reportedhrs}.doubleValue() / ($F{orderlimit} > 0 ? $F{orderlimit} : ($F{projectlimit}.doubleValue() + $F{projectreserve}.doubleValue())))]]></valueExpression>
+                        <labelExpression><![CDATA[$F{reportedhrs}.toString()]]></labelExpression>
+                        <itemHyperlink hyperlinkType="Reference" hyperlinkTarget="Blank">
+                            <hyperlinkReferenceExpression><![CDATA["http://www.google.com"]]></hyperlinkReferenceExpression>
+                            <hyperlinkTooltipExpression><![CDATA[$F{name} + " - " + $F{reportedhrs}.toString()]]></hyperlinkTooltipExpression>
+                        </itemHyperlink>
+                    </categorySeries>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Pozostały limit"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+                        <valueExpression>
+                            <![CDATA[new Double($F{limitleft}.doubleValue() / ($F{orderlimit} > 0 ? $F{orderlimit} : ($F{projectlimit}.doubleValue() + $F{projectreserve}.doubleValue())))]]></valueExpression>
+                        <labelExpression><![CDATA[$F{limitleft}.toString()]]></labelExpression>
+                        <itemHyperlink hyperlinkType="Reference" hyperlinkTarget="Blank">
+                            <hyperlinkTooltipExpression><![CDATA[$F{name} + " - " + $F{limitleft}.toString()]]></hyperlinkTooltipExpression>
+                        </itemHyperlink>
+                    </categorySeries>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Pozostała rezerwa"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{name}]]></categoryExpression>
+                        <valueExpression>
+                            <![CDATA[new Double($F{reserveleft}.doubleValue() / ($F{orderlimit} > 0 ? $F{orderlimit} : ($F{projectlimit}.doubleValue() + $F{projectreserve}.doubleValue())))]]></valueExpression>
+                        <labelExpression><![CDATA[$F{reserveleft}.toString()]]></labelExpression>
+                        <itemHyperlink hyperlinkType="Reference" hyperlinkTarget="Blank">
+                            <hyperlinkTooltipExpression><![CDATA[$F{name} + " - " + $F{reserveleft}.toString()]]></hyperlinkTooltipExpression>
+                        </itemHyperlink>
+                    </categorySeries>
+                </categoryDataset>
+                <bar3DPlot isShowLabels="true">
+                    <plot labelRotation="90.0"/>
+                    <itemLabel color="#000000" backgroundColor="#FFFFFF">
+                        <font size="8"/>
+                    </itemLabel>
+                    <categoryAxisFormat labelRotation="90.0">
+                        <axisFormat verticalTickLabels="true">
+                            <labelFont>
+                                <font fontName="Verdana" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"
+                                      pdfFontName="Helvetica" pdfEncoding="Cp1250" isPdfEmbedded="false"/>
+                            </labelFont>
+                            <tickLabelFont>
+                                <font fontName="Verdana" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"
+                                      pdfFontName="Helvetica" pdfEncoding="Cp1250" isPdfEmbedded="false"/>
+                            </tickLabelFont>
+                        </axisFormat>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat tickLabelMask="###%">
+                            <labelFont>
+                                <font size="10"/>
+                            </labelFont>
+                            <tickLabelFont>
+                                <font size="10"/>
+                            </tickLabelFont>
+                        </axisFormat>
+                    </valueAxisFormat>
+                </bar3DPlot>
+            </stackedBar3DChart>
+            <componentElement>
+                <reportElement x="154" y="355" width="208" height="26">
+                    <printWhenExpression><![CDATA[$P{options}.contains("projects")]]></printWhenExpression>
+                </reportElement>
+                <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                         xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
+                         printOrder="Vertical">
+                    <datasetRun subDataset="projects_dataset">
+                        <datasetParameter name="projects">
+                            <datasetParameterExpression><![CDATA[$P{projects}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="login">
+                            <datasetParameterExpression><![CDATA[$P{login}]]></datasetParameterExpression>
+                        </datasetParameter>
+                    </datasetRun>
+                    <jr:listContents height="26" width="208">
+                        <textField>
+                            <reportElement style="SubTitle" x="0" y="0" width="152" height="26"/>
+                            <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                            <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+                        </textField>
+                        <textField>
+                            <reportElement style="SubTitle" x="152" y="0" width="56" height="26"/>
+                            <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                            <textFieldExpression class="java.lang.String"><![CDATA[$F{level}]]></textFieldExpression>
+                        </textField>
+                    </jr:listContents>
+                </jr:list>
+            </componentElement>
+            <staticText>
+                <reportElement style="SubTitle" x="0" y="355" width="154" height="26">
+                    <printWhenExpression><![CDATA[$P{options}.contains("projects")]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <text><![CDATA[Projekty:]]></text>
+            </staticText>
+        </band>
+    </summary>
+</jasperReport>

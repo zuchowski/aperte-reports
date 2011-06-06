@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<application>
+    <classpath>
+        <dir name="/home/art/development/projects/vries/branches/vries_liferay/ui/target/classes"/>
+        <dir name="/home/art/development/projects/vries/branches/vries_liferay/ui/target/test-classes"/>
+        <dir name="/home/art/development/projects/vries/branches/vries_liferay/ui/target/ui-1.0-SNAPSHOT"/>
+        <dir name="/home/art/development/projects/vries/branches/vries_liferay/ui/src/main/webapp"/>
+    </classpath>
+</application>

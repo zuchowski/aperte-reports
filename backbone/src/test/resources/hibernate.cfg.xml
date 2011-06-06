@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.datasource">java:comp/env/jndids</property>
+        <!--<property name="hibernate.connection.datasource">jdbc/unirep</property>-->
+        <!--		<property name="hibernate.connection.datasource">java:comp/env/jdbc/unirep</property>-->
+
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+        <property name="current_session_context_class">thread</property>
+        <!-- this will show us all sql statements -->
+        <property name="hibernate.show_sql">false</property>
+        <!-- cache -->
+        <property name="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
+        <!-- <property name="hibernate.cache.provider_configuration">ehcache.xml</property>-->
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.use_query_cache">true</property>
+
+    </session-factory>
+</hibernate-configuration>

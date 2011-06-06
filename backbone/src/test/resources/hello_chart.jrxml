@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="charts_ds1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20"
+              bottomMargin="20">
+    <property name="ireport.callouts" value="##Tue Mar 29 00:15:17 CEST 2011"/>
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="15"/>
+    <subDataset name="dataset1">
+        <queryString>
+            <![CDATA[select count(freight) as tot, EXTRACT(YEAR FROM orderdate) as year from orders group by EXTRACT(YEAR FROM orderdate)]]>
+        </queryString>
+        <field name="tot" class="java.lang.Long"/>
+        <field name="year" class="java.lang.Double"/>
+    </subDataset>
+    <subDataset name="dataset2">
+        <queryString>
+            <![CDATA[select count(*) as tot, orderdate from orders group by orderdate]]>
+        </queryString>
+        <field name="tot" class="java.lang.Long"/>
+        <field name="orderdate" class="java.sql.Timestamp"/>
+    </subDataset>
+    <parameter name="datasource" class="java.lang.String">
+        <parameterDescription><![CDATA[java:comp/env/jdbc/unirep]]></parameterDescription>
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[select count(*) as c, shipcountry from  orders group by shipcountry order by c desc]]>
+    </queryString>
+    <field name="c" class="java.lang.Long"/>
+    <field name="shipcountry" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="76" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="32" width="555" height="41"/>
+                <textElement textAlignment="Justified" verticalAlignment="Top">
+                    <font size="14"/>
+                </textElement>
+                <text>
+                    <![CDATA[JasperReports provides a large set of charts. A chart can be populated using the data coming from the main dataset or by using a sub-dataset.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="1" width="555" height="31"/>
+                <textElement textAlignment="Center" verticalAlignment="Top">
+                    <font size="20" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Charts]]></text>
+            </staticText>
+        </band>
+    </title>
+    <pageHeader>
+        <band splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band splitType="Stretch"/>
+    </columnHeader>
+    <detail>
+        <band splitType="Stretch"/>
+    </detail>
+    <columnFooter>
+        <band splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="599" splitType="Stretch">
+            <pie3DChart>
+                <chart isShowLegend="false">
+                    <reportElement x="13" y="36" width="472" height="155"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <pieDataset maxCount="5">
+                    <dataset>
+                        <incrementWhenExpression><![CDATA[$F{shipcountry}]]></incrementWhenExpression>
+                    </dataset>
+                    <keyExpression><![CDATA[$F{shipcountry}]]></keyExpression>
+                    <valueExpression><![CDATA[$F{c}]]></valueExpression>
+                    <labelExpression><![CDATA[$F{shipcountry}]]></labelExpression>
+                    <otherLabelExpression><![CDATA["All the others"]]></otherLabelExpression>
+                </pieDataset>
+                <pie3DPlot>
+                    <plot backgroundAlpha="0.5" foregroundAlpha="0.5"/>
+                    <itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+                </pie3DPlot>
+            </pie3DChart>
+            <staticText>
+                <reportElement x="13" y="11" width="278" height="25"/>
+                <textElement>
+                    <font size="14"/>
+                </textElement>
+                <text><![CDATA[Orders by country (first 5 countries)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="13" y="211" width="278" height="23"/>
+                <textElement>
+                    <font size="14"/>
+                </textElement>
+                <text><![CDATA[Total freight by year]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="13" y="420" width="278" height="23"/>
+                <textElement>
+                    <font size="14"/>
+                </textElement>
+                <text><![CDATA[Orders per day]]></text>
+            </staticText>
+            <timeSeriesChart>
+                <chart isShowLegend="false">
+                    <reportElement x="13" y="443" width="521" height="152"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <timeSeriesDataset timePeriod="Month">
+                    <dataset>
+                        <datasetRun subDataset="dataset2">
+                            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                        </datasetRun>
+                    </dataset>
+                    <timeSeries>
+                        <seriesExpression><![CDATA[""]]></seriesExpression>
+                        <timePeriodExpression><![CDATA[$F{orderdate}]]></timePeriodExpression>
+                        <valueExpression><![CDATA[$F{tot}]]></valueExpression>
+                    </timeSeries>
+                </timeSeriesDataset>
+                <timeSeriesPlot>
+                    <plot/>
+                    <timeAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </timeAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </valueAxisFormat>
+                </timeSeriesPlot>
+            </timeSeriesChart>
+            <bar3DChart>
+                <chart isShowLegend="false">
+                    <reportElement x="13" y="234" width="472" height="176"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <categoryDataset>
+                    <dataset>
+                        <datasetRun subDataset="dataset1">
+                            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                        </datasetRun>
+                    </dataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA[""]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{year}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{tot}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <bar3DPlot>
+                    <plot/>
+                    <itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+                    <categoryAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </valueAxisFormat>
+                </bar3DPlot>
+            </bar3DChart>
+        </band>
+    </summary>
+</jasperReport>

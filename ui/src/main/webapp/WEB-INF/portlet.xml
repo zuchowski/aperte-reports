@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+
+    <portlet>
+        <portlet-name>Invoker portlet</portlet-name>
+        <display-name>Vries Invoker</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesInvokerApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <!-- Supported portlet modes and content types. -->
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+
+        <!-- Not always required but Liferay uses these. -->
+        <portlet-info>
+            <title>Vries Invoker</title>
+            <short-title>Invoker</short-title>
+            <keywords>vries,invoker,report</keywords>
+        </portlet-info>
+    </portlet>
+    <portlet>
+        <portlet-name>Report Manager portlet</portlet-name>
+        <display-name>Vries Report Manager</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesManagerApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <!-- Supported portlet modes and content types. -->
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+
+        <!-- Not always required but Liferay uses these. -->
+        <portlet-info>
+            <title>Vries Manager</title>
+            <short-title>Manager</short-title>
+            <keywords>vries,invoker,report</keywords>
+        </portlet-info>
+    </portlet>
+    <portlet>
+        <portlet-name>Report Order Browser portlet</portlet-name>
+        <display-name>Report Order Browser</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesReportOrderApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <!-- Supported portlet modes and content types. -->
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+
+        <!-- Not always required but Liferay uses these. -->
+        <portlet-info>
+            <title>Vries Report Order Browser</title>
+            <short-title>Report Order Browser</short-title>
+            <keywords>vries,invoker,report</keywords>
+        </portlet-info>
+    </portlet>
+
+    <portlet>
+        <portlet-name>Combo portlet</portlet-name>
+        <display-name>Vries Combo</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesComboApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <!-- Supported portlet modes and content types. -->
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+
+        <!-- Not always required but Liferay uses these. -->
+        <portlet-info>
+            <title>Vries Combo</title>
+            <short-title>Combo</short-title>
+            <keywords>vries,invoker,report</keywords>
+        </portlet-info>
+    </portlet>
+
+    <portlet>
+        <portlet-name>Dashboard portlet</portlet-name>
+        <display-name>Vries Dashboard</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesDashboardApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+            <portlet-mode>edit</portlet-mode>
+        </supports>
+
+        <portlet-info>
+            <title>Vries Dashboard</title>
+            <short-title>Dashboard</short-title>
+            <keywords>vries,dashboard,chart</keywords>
+        </portlet-info>
+    </portlet>
+
+    <portlet>
+        <portlet-name>Cyclic Reports portlet</portlet-name>
+        <display-name>Cyclic Reports</display-name>
+
+        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+        <init-param>
+            <name>application</name>
+            <value>pl.net.bluesoft.rnd.vries.VriesCyclicReportsApplication</value>
+        </init-param>
+        <init-param>
+            <name>widgetset</name>
+            <value>pl.net.bluesoft.rnd.vries.widgetset.VriesWidgetSet</value>
+        </init-param>
+
+        <supports>
+            <mime-type>text/html</mime-type>
+            <portlet-mode>view</portlet-mode>
+        </supports>
+
+        <portlet-info>
+            <title>Vries Cyclic Reports</title>
+            <short-title>Cyclic Reports</short-title>
+            <keywords>vries,report,cyclic</keywords>
+        </portlet-info>
+    </portlet>
+</portlet-app>

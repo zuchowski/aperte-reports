@@ -1,0 +1,17 @@
+@import "../chameleon-blue/styles.css";
+
+.v-datefield-error .v-textfield, .v-textfield-error, .v-textarea-error {
+    background: #EEDDDD;
+}
+
+.v-datefield-error .v-textfield, .v-textfield-error, .v-textarea-error, .v-select-optiongroup-error {
+    color: #781111 !important;
+}
+
+.dashboard-report-parameters-panel {
+    height: 500px;
+}
+
+.v-panel-content.v-panel-content-light {
+    overflow-x: auto !important;
+}

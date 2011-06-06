@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="bam_pm_report1" language="groovy" pageWidth="700" pageHeight="842" columnWidth="660" leftMargin="20" rightMargin="20" topMargin="20"
+              bottomMargin="20">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="datasource" class="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[java:comp/env/jdbc/bam_pm]]></parameterDescription>
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="data_" class="java.lang.String">
+        <property name="input_type" value="text"/>
+        <property name="label" value="Data"/>
+    </parameter>
+    <queryString>
+        <![CDATA[select
+case
+when status=0 then 'Zrealizowane w terminie'
+when status=1 then 'Zrealizowane po terminie'
+when status=2 then 'Błąd podcza realizacji'
+when status=3 then 'W trakcie'
+else 'Nie wiadomo co'
+end as status,round(cnt/(select count(*) from process_history)*100,2)
+from(
+select i.status,count(*) as cnt
+from (
+select PROC_END,PROC_REQ_DATE ,
+case when status=0 and PROC_END<=PROC_REQ_DATE then 0 --zrealizowane w terminie
+ when status=0 and proc_end>PROC_REQ_DATE then 1 --zrealizowane nie w terminie
+ when status=1  then 2 --błedny
+ when status=3 or status=2then 3 --niekompletny
+else 9 -- teoretycznie nieosiagalny status
+end as status
+from PROCESS_HISTORY) i
+group by status
+)]]>
+    </queryString>
+    <field name="STATUS" class="java.lang.String"/>
+    <field name="ROUND(CNT/(SELECTCOUNT(*)FROMPROCESS_HISTORY)*100,2)" class="java.math.BigDecimal"/>
+    <variable name="v_date" class="java.lang.String">
+        <variableExpression><![CDATA[new String[15]]]></variableExpression>
+        <initialValueExpression><![CDATA["2010-01-15"]]></initialValueExpression>
+    </variable>
+    <variable name="int1" class="java.lang.Integer">
+        <variableExpression><![CDATA[new Integer(120)]]></variableExpression>
+        <initialValueExpression><![CDATA[]]></initialValueExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="43" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="660" height="39"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true" pdfEncoding="Cp1250"/>
+                </textElement>
+                <text><![CDATA[Terminowa i kompletna komunikacja zwrotna po realizacji w KSP ( dla wszystkich usług WLR) ]]></text>
+            </staticText>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="22" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="2" width="139" height="20"/>
+                <textElement/>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="139" y="2" width="134" height="20"/>
+                <textElement>
+                    <font pdfEncoding="Cp1250"/>
+                </textElement>
+                <text><![CDATA[Udział]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="443" y="2" width="100" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.String"><![CDATA[$V{v_date}]]></textFieldExpression>
+            </textField>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="29" splitType="Stretch">
+            <textField>
+                <reportElement x="139" y="0" width="134" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ROUND(CNT/(SELECTCOUNT(*)FROMPROCESS_HISTORY)*100,2)}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="0" width="139" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.String"><![CDATA[$F{STATUS}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="45" splitType="Stretch"/>
+    </columnFooter>
+    <summary>
+        <band height="296" splitType="Stretch">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="0" width="660" height="164"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA[$F{STATUS}]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{STATUS}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{ROUND(CNT/(SELECTCOUNT(*)FROMPROCESS_HISTORY)*100,2)}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                    <itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+                    <categoryAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat>
+                            <labelFont/>
+                            <tickLabelFont/>
+                        </axisFormat>
+                    </valueAxisFormat>
+                </barPlot>
+            </barChart>
+            <textField hyperlinkType="Reference">
+                <reportElement x="210" y="196" width="100" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.String"><![CDATA["LINK"]]></textFieldExpression>
+                <hyperlinkReferenceExpression><![CDATA["http://www.onet.pl"]]></hyperlinkReferenceExpression>
+            </textField>
+            <textField hyperlinkType="Reference">
+                <reportElement x="396" y="232" width="100" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.String"><![CDATA["drill"]]></textFieldExpression>
+                <hyperlinkReferenceExpression>
+                    <![CDATA["drilldown?reportName=bam_drill_child&allowRefresh=true&date_in=$V{v_date}"]]></hyperlinkReferenceExpression>
+                <hyperlinkParameter name="date_in">
+                    <hyperlinkParameterExpression><![CDATA[$V{v_date}]]></hyperlinkParameterExpression>
+                </hyperlinkParameter>
+            </textField>
+            <textField>
+                <reportElement x="76" y="221" width="100" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.Integer"><![CDATA[$V{int1}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

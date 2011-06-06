@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="test vries 1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20"
+              bottomMargin="0">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+    <style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+    <style name="Column header" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="true"/>
+    <style name="Detail" fontName="Arial" fontSize="12"/>
+    parameter name="s_active" class="java.lang.String">
+    <property name="input_type" value="CHECKBOXES"/>
+    <property name="dict_query"
+              value="java:comp/env/jdbc/unirep;SELECT DISTINCT active, CASE active WHEN false THEN 'nieaktywne' WHEN true THEN 'aktywne' END FROM unirep_configuration WHERE active IS NOT NULL"/>
+    <property name="label" value="Pokaz tylko raporty"/>
+    <defaultValueExpression><![CDATA["'true', 'false'"]]></defaultValueExpression>
+</parameter>
+<parameter name="s_report_name" class="java.lang.String">
+<property name="input_type" value="MULTISELECT"/>
+<property name="select_all" value="true"/>
+<property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT DISTINCT reportname, reportname FROM unirep_configuration"/>
+<property name="label" value="Pokaz dla raportow o nazwach"/>
+<defaultValueExpression><![CDATA["SELECT reportname FROM unirep_configuration"]]></defaultValueExpression>
+</parameter>
+<parameter name="s_created_before" class="java.lang.String">
+<property name="input_type" value="date"/>
+<property name="label" value="stworzone przed"/>
+<property name="required" value="true"/>
+<!--<property name="required_error" value="no weź coś wpisz"/>-->
+<defaultValueExpression><![CDATA["2010-11-11"]]></defaultValueExpression>
+</parameter>
+<parameter name="s_created_after" class="java.lang.String">
+<property name="input_type" value="date"/>
+<property name="label" value="stworzone po"/>
+<property name="required" value="true"/>
+<property name="required_error" value="no weź coś wpisz"/>
+<defaultValueExpression><![CDATA["2010-01-01"]]></defaultValueExpression>
+</parameter>
+<parameter name="r_title" class="java.lang.String">
+<property name="input_type" value="select"/>
+<property name="label" value="Tytuł raportu"/>
+<property name="dict_query"
+          value="java:comp/env/jdbc/unirep;SELECT nazwa, nazwa FROM (SELECT regexp_split_to_table('Lista aktywnych raportów;Zestawienie raportów',';') as nazwa) as dane"/>
+<defaultValueExpression><![CDATA["raport z raportow"]]></defaultValueExpression>
+</parameter>
+<parameter name="r_comment" class="java.lang.String">
+<property name="input_type" value="textarea"/>
+<property name="label" value="Komentarz do raportu"/>
+<property name="maxchars" value="30"/>
+<property name="regexp" value="[A-Z].*"/>
+<property name="regexp_error" value="form.errors.must_be_upper_case"/>
+<defaultValueExpression><![CDATA["Brak komentarza"]]></defaultValueExpression>
+</parameter>
+<parameter name="filter_2" class="java.lang.String">
+<property name="level" value="2"/>
+<property name="input_type" value="filter"/>
+<property name="label" value="filtr nazwy"/>
+<property name="filter_group" value="filtering_group"/>
+<property name="maxchars" value="30"/>
+<property name="width" value="300px"/>
+</parameter>
+<parameter name="filter_1" class="java.lang.String">
+<property name="level" value="1"/>
+<property name="input_type" value="filter"/>
+<property name="label" value="filtr pliku"/>
+<property name="filter_group" value="filtering_group"/>
+<property name="maxchars" value="30"/>
+</parameter>
+<parameter name="filtered_value" class="java.lang.String">
+<property name="level" value="0"/>
+<property name="input_type" value="filtered_select"/>
+<property name="label" value="opis raportu"/>
+<property name="filter_group" value="filtering_group"/>
+<property name="maxchars" value="30"/>
+<property name="select_all" value="true"/>
+<property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT id, description, filename, reportname FROM unirep_configuration"/>
+<property name="multiple_choice" value="true"/>
+<defaultValueExpression><![CDATA["SELECT 0 FROM unirep_configuration"]]></defaultValueExpression>
+</parameter>
+<parameter name="s_report_group" class="java.lang.String"/>
+<parameter name="datasource" class="java.lang.String">
+<parameterDescription><![CDATA[java:comp/env/jdbc/unirep]]></parameterDescription>
+<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+</parameter>
+<parameter name="r_order_by" class="java.lang.String">
+<property name="input_type" value="radiobuttons"/>
+<property name="required" value="true"/>
+<property name="required_error" value="no weź coś wpisz"/>
+<property name="label" value="porządkuj według"/>
+<property name="dict_query"
+          value="java:comp/env/jdbc/unirep;SELECT regexp_split_to_table('description;reportname;filename',';'), regexp_split_to_table('opis;nazwa raportu;nazwa pliku',';')"/>
+<defaultValueExpression><![CDATA["reportname"]]></defaultValueExpression>
+</parameter>
+<queryString language="SQL">
+<![CDATA[SELECT
+             unirep_configuration."active" AS unirep_configuration_active,
+             unirep_configuration."description" AS unirep_configuration_description,
+             unirep_configuration."reportname" AS unirep_configuration_reportname,
+             unirep_configuration."filename" AS unirep_configuration_filename
+        FROM
+             "public"."unirep_configuration" unirep_configuration
+        WHERE
+             unirep_configuration."active" IN ($P!{s_active})
+             AND (unirep_configuration."reportname" IN ($P!{s_report_name})
+             OR unirep_configuration.id IN ($P!{filtered_value}))
+        ORDER BY active, $P!{r_order_by}
+    ]]>
+</queryString>
+<field name="unirep_configuration_active" class="java.lang.Boolean"/>
+<field name="unirep_configuration_description" class="java.lang.String"/>
+<field name="unirep_configuration_reportname" class="java.lang.String"/>
+<field name="unirep_configuration_filename" class="java.lang.String"/>
+<group name="unirep_configuration_active">
+<groupExpression><![CDATA[$F{unirep_configuration_active}]]></groupExpression>
+<groupHeader>
+    <band height="40">
+        <textField>
+            <reportElement style="SubTitle" x="143" y="13" width="410" height="24" forecolor="#000000"/>
+            <textElement>
+                <font isBold="true"/>
+            </textElement>
+            <textFieldExpression class="java.lang.String">
+                <![CDATA[$F{unirep_configuration_active}.equals(true) ? "aktywne" : "nieaktywne"]]></textFieldExpression>
+        </textField>
+        <rectangle>
+            <reportElement mode="Opaque" x="97" y="13" width="36" height="24" forecolor="#CCCCCC" backcolor="#CCCCCC"/>
+        </rectangle>
+    </band>
+</groupHeader>
+<groupFooter>
+    <band height="30">
+        <frame>
+            <reportElement mode="Opaque" x="405" y="0" width="150" height="30" forecolor="#CCCCCC" backcolor="#CCCCCC"/>
+        </frame>
+    </band>
+</groupFooter>
+</group>
+<background>
+<band height="822" splitType="Stretch">
+    <!--<image vAlign="Bottom">
+                 <reportElement positionType="Float" mode="Opaque" x="0" y="313" width="85" height="409" backcolor="#000000"/>
+                 <imageExpression class="java.lang.String"><![CDATA["silhouette.jpg"]]></imageExpression>
+             </image>-->
+    <rectangle>
+        <reportElement positionType="Float" x="-20" y="313" width="20" height="409" backcolor="#000000"/>
+        <graphicElement>
+            <pen lineWidth="0.0"/>
+        </graphicElement>
+    </rectangle>
+    <frame>
+        <reportElement mode="Opaque" x="-20" y="722" width="105" height="100" forecolor="#666666" backcolor="#666666"/>
+        <box>
+            <pen lineWidth="0.0"/>
+            <topPen lineWidth="0.0"/>
+            <leftPen lineWidth="0.0"/>
+            <bottomPen lineWidth="0.0"/>
+            <rightPen lineWidth="0.0"/>
+        </box>
+        <textField isBlankWhenNull="true">
+            <reportElement style="Column header" x="0" y="0" width="104" height="73" forecolor="#000000"/>
+            <textElement textAlignment="Center" verticalAlignment="Middle">
+                <font size="58" isBold="true" pdfFontName="Helvetica-Bold"/>
+            </textElement>
+            <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+        </textField>
+        <textField evaluationTime="Report">
+            <reportElement style="Column header" x="0" y="77" width="104" height="20" forecolor="#000000"/>
+            <box leftPadding="4" rightPadding="4"/>
+            <textElement textAlignment="Center">
+                <font size="16" isBold="false"/>
+            </textElement>
+            <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+        </textField>
+        <line>
+            <reportElement mode="Transparent" x="42" y="73" width="20" height="1"/>
+        </line>
+    </frame>
+</band>
+</background>
+<title>
+<band height="152" splitType="Stretch">
+    <textField evaluationTime="Report">
+        <reportElement style="Title" x="0" y="0" width="555" height="115"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle">
+            <font size="54" isBold="false" pdfFontName="Helvetica"/>
+        </textElement>
+        <textFieldExpression class="java.lang.String"><![CDATA[$P{r_title}]]></textFieldExpression>
+    </textField>
+    <staticText>
+        <reportElement style="SubTitle" x="234" y="115" width="321" height="37"/>
+        <textElement textAlignment="Right">
+            <font size="26"/>
+        </textElement>
+        <text><![CDATA[Lista raportów]]></text>
+    </staticText>
+</band>
+</title>
+<pageHeader>
+<band splitType="Stretch"/>
+</pageHeader>
+<columnHeader>
+<band height="25" splitType="Stretch">
+    <frame>
+        <reportElement mode="Opaque" x="97" y="5" width="458" height="20" backcolor="#666666"/>
+        <staticText>
+            <reportElement style="Column header" x="0" y="0" width="152" height="15"/>
+            <textElement/>
+            <text><![CDATA[opis]]></text>
+        </staticText>
+        <staticText>
+            <reportElement style="Column header" x="152" y="0" width="152" height="15"/>
+            <textElement/>
+            <text><![CDATA[nazwa raportu]]></text>
+        </staticText>
+        <staticText>
+            <reportElement style="Column header" x="304" y="0" width="152" height="15"/>
+            <textElement/>
+            <text><![CDATA[plik raportu]]></text>
+        </staticText>
+    </frame>
+</band>
+</columnHeader>
+<detail>
+<band height="21" splitType="Stretch">
+    <frame>
+        <reportElement x="97" y="1" width="458" height="15"/>
+        <textField>
+            <reportElement style="Detail" x="0" y="0" width="152" height="15"/>
+            <textElement/>
+            <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_description}]]></textFieldExpression>
+        </textField>
+        <textField>
+            <reportElement style="Detail" x="152" y="0" width="152" height="15"/>
+            <textElement/>
+            <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_reportname}]]></textFieldExpression>
+        </textField>
+        <textField>
+            <reportElement style="Detail" x="304" y="0" width="152" height="15"/>
+            <textElement/>
+            <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_filename}]]></textFieldExpression>
+        </textField>
+    </frame>
+    <line>
+        <reportElement positionType="FixRelativeToBottom" x="97" y="16" width="458" height="1"/>
+        <graphicElement>
+            <pen lineWidth="0.5" lineColor="#999999"/>
+        </graphicElement>
+    </line>
+</band>
+</detail>
+<columnFooter>
+<band splitType="Stretch"/>
+</columnFooter>
+<pageFooter>
+<band height="100" splitType="Stretch">
+    <textField pattern="EEEEE dd MMMMM yyyy">
+        <reportElement style="Column header" x="424" y="0" width="131" height="20" forecolor="#000000"/>
+        <textElement textAlignment="Right">
+            <font size="12" isBold="false"/>
+        </textElement>
+        <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+    </textField>
+    <textField evaluationTime="Report">
+        <reportElement style="Column header" x="96" y="0" width="267" height="20" forecolor="#000000"/>
+        <textElement>
+            <font size="12" isBold="false"/>
+        </textElement>
+        <textFieldExpression class="java.lang.String"><![CDATA[$P{r_comment}]]></textFieldExpression>
+    </textField>
+
+</band>
+</pageFooter>
+<summary>
+<band splitType="Stretch"/>
+</summary>
+        </jasperReport>
