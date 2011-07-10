@@ -1,9 +1,9 @@
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfigParameter;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfigRoot;
-import pl.net.bluesoft.rnd.apertereports.xml.XmlHelper;
+import pl.net.bluesoft.rnd.vries.xml.ReportConfig;
+import pl.net.bluesoft.rnd.vries.xml.ReportConfigParameter;
+import pl.net.bluesoft.rnd.vries.xml.ReportConfigRoot;
+import pl.net.bluesoft.rnd.vries.xml.XmlHelper;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
