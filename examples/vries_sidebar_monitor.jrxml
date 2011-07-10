@@ -146,7 +146,7 @@ group by
 	</subDataset>
 	<subDataset name="dataset1"/>
 	<parameter name="datasource" class="java.lang.String" isForPrompting="false">
-		<parameterDescription><![CDATA[java:comp/env/jdbc/unirep]]></parameterDescription>
+		<parameterDescription><![CDATA[java:comp/env/jdbc/aperte-reports]]></parameterDescription>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>

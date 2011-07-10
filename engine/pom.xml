@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>vries</artifactId>
-        <groupId>pl.net.bluesoft.rnd.vries</groupId>
+        <artifactId>apertereports</artifactId>
+        <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
         <version>1.0</version>
     </parent>
-    <groupId>pl.net.bluesoft.rnd.vries</groupId>
+    <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>engine</artifactId>
     <version>1.0</version>
     <name>Jasper Integration</name>
     <dependencies>
         <dependency>
-            <groupId>pl.net.bluesoft.rnd.vries</groupId>
+            <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
@@ -94,19 +94,19 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>javarebel-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-rebel-xml</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.zeroturnaround</groupId>-->
+                <!--<artifactId>javarebel-maven-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>generate-rebel-xml</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>

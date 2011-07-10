@@ -113,7 +113,7 @@ group by output_format]]>
 		<field name="count" class="java.lang.Long"/>
 	</subDataset>
 	<parameter name="datasource" class="java.lang.String" isForPrompting="false">
-		<parameterDescription><![CDATA[java:comp/env/jdbc/unirep]]></parameterDescription>
+		<parameterDescription><![CDATA[java:comp/env/jdbc/aperte-reports]]></parameterDescription>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="username" class="java.lang.String">

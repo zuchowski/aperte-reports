@@ -1,18 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>vries</artifactId>
-        <groupId>pl.net.bluesoft.rnd.vries</groupId>
+        <artifactId>apertereports</artifactId>
+        <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
         <version>1.0</version>
     </parent>
-    <groupId>pl.net.bluesoft.rnd.vries</groupId>
+    <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>backbone</artifactId>
     <version>1.0</version>
     <name>Backbone</name>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>pl.net.bluesoft.rnd.vries</groupId>
+            <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>engine</artifactId>
             <version>1.0</version>
         </dependency>
@@ -91,18 +91,7 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgres.version}</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -128,12 +117,7 @@
             <artifactId>commons-collections</artifactId>
             <version>3.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-            <version>5.4.1</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
@@ -152,6 +136,27 @@
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- test deps -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.4.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <resources>
@@ -170,19 +175,19 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.zeroturnaround</groupId>
-                <artifactId>javarebel-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-rebel-xml</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.zeroturnaround</groupId>-->
+                <!--<artifactId>javarebel-maven-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>generate-rebel-xml</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>
