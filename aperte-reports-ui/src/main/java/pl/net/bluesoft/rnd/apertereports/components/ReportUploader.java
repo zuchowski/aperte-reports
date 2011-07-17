@@ -28,10 +28,10 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 
     private ReportTemplate report;
     private Layout root;
-    private EditorForm reportEditForm;
+    private ReportEditorForm reportEditForm;
     private ByteArrayOutputStream byteArray;
 
-    public ReportUploader(EditorForm reportEditForm) {
+    public ReportUploader(ReportEditorForm reportEditForm) {
         buildMainLayout();
         setCompositionRoot(root);
 

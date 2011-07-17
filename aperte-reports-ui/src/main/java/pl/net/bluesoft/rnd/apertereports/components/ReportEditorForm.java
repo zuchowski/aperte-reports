@@ -5,7 +5,6 @@ import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import eu.livotov.tpt.i18n.TM;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * Displays a report template generation form.
  */
-public abstract class EditorForm extends Panel {
+public abstract class ReportEditorForm extends Panel {
     private boolean valueChanged = false;
 
     private final Button reportFetchButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.fetch"));
@@ -39,7 +38,7 @@ public abstract class EditorForm extends Panel {
             "filename", "reportname", "description", "active", "allowOnlineDisplay", "allowBackgroundOrder"
     };
 
-    public EditorForm() {
+    public ReportEditorForm() {
         super();
         initForm();
     }

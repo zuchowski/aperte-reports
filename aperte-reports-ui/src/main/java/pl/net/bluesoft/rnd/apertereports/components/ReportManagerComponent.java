@@ -7,7 +7,6 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import eu.livotov.tpt.i18n.TM;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
@@ -40,7 +39,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
     private Button reportDeleteButton;
     private Button reportAddButton;
 
-    private EditorForm reportEditForm;
+    private ReportEditorForm reportEditForm;
 
     private IndexedContainer reportTableData;
 
@@ -71,7 +70,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
 
         addComponent(splitPanel);
 
-        reportEditForm = new EditorForm() {
+        reportEditForm = new ReportEditorForm() {
             @Override
             public void onSaveReport(boolean wasNew, ReportTemplate rt) {
                 if (!wasNew) {
