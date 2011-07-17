@@ -46,11 +46,11 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
     protected void prepareData() {
         if (preferences != null) {
             template = preferences.getValue(PREFERENCE_TEMPLATE_KEY, null);
-            template = template != null ? String.valueOf(Base64.decodeBase64(template.getBytes())) : null;
+            template = template != null ? new String(Base64.decodeBase64(template.getBytes())) : null;
             String rc = preferences.getValue(PREFERENCE_REPORT_CONFIGS_KEY, null);
             try {
                 if (rc != null) {
-                    rc = String.valueOf(Base64.decodeBase64(rc.getBytes()));
+                    rc = new String(Base64.decodeBase64(rc.getBytes()));
                     reportConfigs = XmlHelper.stringAsReportConfigs(rc);
                     Collections.sort(reportConfigs, new Comparator<ReportConfig>() {
                         @Override
@@ -78,7 +78,7 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
     protected void saveData() {
         if (preferences != null) {
             try {
-                template = template != null ? String.valueOf(Base64.encodeBase64(template.getBytes())) : null;
+                template = template != null ? new String(Base64.encodeBase64(template.getBytes())) : null;
                 preferences.setValue(PREFERENCE_TEMPLATE_KEY, template);
                 if (reportConfigs != null) {
                     for (ReportConfig rc : reportConfigs) {
@@ -88,7 +88,7 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
                     }
                 }
                 String rc = XmlHelper.reportConfigsAsString(reportConfigs);
-                rc = String.valueOf(Base64.encodeBase64(rc.getBytes()));
+                rc = new String(Base64.encodeBase64(rc.getBytes()));
                 preferences.setValue(PREFERENCE_REPORT_CONFIGS_KEY, rc);
                 preferences.store();
             }

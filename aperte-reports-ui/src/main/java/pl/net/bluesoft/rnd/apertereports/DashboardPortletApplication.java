@@ -42,7 +42,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        final Window mainWindow = new Window(TM.get("dashboard.window.title"), viewMode);
+        final Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.window.title"), viewMode);
         setMainWindow(mainWindow);
 
         if (getContext() instanceof PortletApplicationContext2) {

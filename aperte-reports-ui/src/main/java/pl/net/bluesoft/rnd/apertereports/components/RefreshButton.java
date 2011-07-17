@@ -1,5 +1,9 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
+import com.vaadin.Application;
+import com.vaadin.terminal.ClassResource;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.BaseTheme;
@@ -10,9 +14,15 @@ import com.vaadin.ui.themes.BaseTheme;
 public class RefreshButton extends Button {
     public RefreshButton(String caption, Button.ClickListener listener) {
         setDescription(caption);
-        setIcon(new ThemeResource("icons/refresh_16.png"));
         addStyleName(BaseTheme.BUTTON_LINK);
         setWidth(16, UNITS_PIXELS);
         addListener(listener);
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        setIcon(new ClassResource(RefreshButton.class, "/icons/refresh_16.png", getApplication()));
+
     }
 }

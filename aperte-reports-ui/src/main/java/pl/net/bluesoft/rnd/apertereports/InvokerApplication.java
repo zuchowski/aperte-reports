@@ -19,7 +19,7 @@ public class InvokerApplication extends AbstractReportingApplication {
     public void portletInit() {
         VriesInvokerComponent invoker = new VriesInvokerComponent(true);
 
-        Window mainWindow = new Window(TM.get("invoker.window.title"), invoker);
+        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.window.title"), invoker);
 
         setMainWindow(mainWindow);
     }

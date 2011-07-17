@@ -98,7 +98,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
             catch (IOException e) {
                 ExceptionUtil.logSevereException(e);
-                NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"));
+                NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
             }
         }
     }
@@ -116,7 +116,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
 
         List<String> reportNames = params.get("reportName");
         if (reportNames == null || reportNames.size() == 0) {
-            throw new VriesRuntimeException(TM.get("exception.drilldown.not.found"));
+            throw new VriesRuntimeException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.drilldown.not.found"));
         }
         String reportName = reportNames.get(0); // bierzemy pierwszy z brzegu
         for (ReportTemplate template : reportMap.values()) {
@@ -128,7 +128,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         if (drillConfig.getReportId() == null) {
             List<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchReportsByName(reportName);
             if (reportTemplates.size() == 0) {
-                throw new VriesRuntimeException(TM.get("exception.drilldown.report.not.found"));
+                throw new VriesRuntimeException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.drilldown.report.not.found"));
             }
             ReportTemplate template = reportTemplates.get(0); // bierzemy pierwszy z brzegu
             drillConfig.setReportId(template.getId());
@@ -209,11 +209,11 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             ReportTemplate report = provideReportTemplate(config);
             if (report != null) {
                 try {
-                    ReportMaster reportMaster = new ReportMaster(String.valueOf(report.getContent()), report.getId());
+                    ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId());
                     Map<String, String> parameters;
                     if (config.getCyclicReportId() != null) {
                         CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
-                        parameters = XmlHelper.xmlAsMap(cro.getParametersXml() != null ? String.valueOf(cro.getParametersXml()) : "");
+                        parameters = XmlHelper.xmlAsMap(cro.getParametersXml() != null ? new String(cro.getParametersXml()) : "");
                     }
                     else {
                         parameters = XmlHelper.parameterListToMap(config.getParameters());
@@ -222,15 +222,15 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     cache.cacheData(config.getId().toString(), TimeUtil.secondsToMilliseconds(config.getCacheTimeout()), jasperPrint);
                 }
                 catch (Exception e) {
-                    NotificationUtil.showExceptionNotification(application.getMainWindow(), TM.get("exception.report.generation.error.title"),
-                            TM.get("exception.report.generation.error.description").replaceFirst("%s", config.getId().toString())
+                    NotificationUtil.showExceptionNotification(application.getMainWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.report.generation.error.title"),
+                            pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.report.generation.error.description").replaceFirst("%s", config.getId().toString())
                                     .replaceFirst("%s", e.getMessage()));
                     return null;
                 }
             }
             else {
-                NotificationUtil.showExceptionNotification(application.getMainWindow(), TM.get("exception.report.not.found.title"),
-                        TM.get("exception.report.not.found.description").replaceFirst("%s", config.getId().toString()));
+                NotificationUtil.showExceptionNotification(application.getMainWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.report.not.found.title"),
+                        pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.report.not.found.description").replaceFirst("%s", config.getId().toString()));
                 return null;
             }
         }
@@ -246,7 +246,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         }
         catch (ReportException e) {
             ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"), e);
+            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"), e);
         }
         return new Pair<JasperPrint, byte[]>(jasperPrint, data);
     }

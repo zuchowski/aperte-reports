@@ -17,7 +17,7 @@ public class ReportOrderApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        Window mainWindow = new Window(TM.get("report_order.window.title"), new VriesReportOrderBrowserComponent());
+        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.window.title"), new VriesReportOrderBrowserComponent());
         setMainWindow(mainWindow);
     }
 }

@@ -38,9 +38,9 @@ public class CyclicReportsPanel extends CustomComponent {
     /**
      * Self-explanatory buttons.
      */
-    private Button saveButton = new Button(TM.get("dashboard.edit.save"));
-    private Button cancelButton = new Button(TM.get("dashboard.edit.cancel"));
-    private Button addButton = new Button(TM.get("cyclic.report.add"));
+    private Button saveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.save"));
+    private Button cancelButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cancel"));
+    private Button addButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.add"));
 
     private VerticalLayout detailsPanel = new VerticalLayout();
     private VerticalLayout browserPanel = new VerticalLayout();
@@ -107,7 +107,7 @@ public class CyclicReportsPanel extends CustomComponent {
                 for (int i = 1; i < errorOrders.size(); ++i) {
                     sb.append(", ").append(errorOrders.get(i));
                 }
-                NotificationUtil.validationErrors(getWindow(), TM.get("cyclic.report.cron.validation.error")
+                NotificationUtil.validationErrors(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.cron.validation.error")
                         + " " + sb.toString());
                 return;
             }
@@ -123,7 +123,7 @@ public class CyclicReportsPanel extends CustomComponent {
         }
         catch (SchedulerException e) {
             ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"));
+            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
         }
     }
 

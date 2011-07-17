@@ -95,7 +95,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
      */
     private void initFilteringControls() {
         Form form = new Form();
-        reportOrderSelect = new Select(TM.get("report_order.filter.report"));
+        reportOrderSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.report"));
         reportOrderSelect.setNullSelectionAllowed(true);
         reportTemplates = ReportTemplateDAO.fetchAllReports(true);
         for (ReportTemplate reportTemplate : reportTemplates) {
@@ -116,7 +116,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         Calendar threeDaysAgo = Calendar.getInstance();
         threeDaysAgo.add(Calendar.DATE, -3);
 
-        createdAfter = new DateField(TM.get("report_order.filter.created_after"));
+        createdAfter = new DateField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.created_after"));
         createdAfter.setResolution(DateField.RESOLUTION_MIN);
         createdAfter.setValue(threeDaysAgo.getTime());
         createdAfter.addListener(new Property.ValueChangeListener() {
@@ -127,7 +127,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         });
         form.addField("created_after", createdAfter);
 
-        createdBefore = new DateField(TM.get("report_order.filter.created_before"));
+        createdBefore = new DateField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.created_before"));
         createdBefore.setResolution(DateField.RESOLUTION_MIN);
         createdBefore.addListener(new Property.ValueChangeListener() {
             @Override
@@ -140,7 +140,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         form.setImmediate(true);
         filterBox.addComponent(form);
 
-        Button refreshButton = new Button(TM.get("report_order.table.refresh"));
+        Button refreshButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.refresh"));
         refreshButton.setImmediate(true);
         refreshButton.addListener(new Button.ClickListener() {
             @Override
@@ -165,7 +165,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         reportOrderTable.setVisibleColumns(visibleCols);
         for (Columns col : visibleCols) {
             reportOrderTable.setColumnHeader(col,
-                    TM.get("report_order.table.column." + StringUtils.lowerCase(col.toString())));
+                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.column." + StringUtils.lowerCase(col.toString())));
         }
         filterItems();
     }

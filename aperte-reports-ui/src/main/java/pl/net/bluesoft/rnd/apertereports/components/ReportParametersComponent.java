@@ -141,7 +141,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             login = user.getLogin();
         }
         catch (Exception e) {
-            ExceptionUtil.logWarningException(TM.get("liferay.get.login.exception"), e);
+            ExceptionUtil.logWarningException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("liferay.get.login.exception"), e);
         }
         if (login.contains("@")) {
             login = login.split("@", 2)[0];
@@ -275,12 +275,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         /** REQUIRED **/
         if (fieldProperties.isRequired()) {
             field.setRequired(fieldProperties.isRequired());
-            field.setRequiredError(TM.get(fieldProperties.getRequiredError(), fieldProperties.getCaption()));
+            field.setRequiredError(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue(fieldProperties.getRequiredError(), fieldProperties.getCaption()));
         }
 
         /** REGEXP **/
         if (StringUtils.isNotEmpty(fieldProperties.getRegexp())) {
-            field.addValidator(new RegexpValidator(fieldProperties.getRegexp(), TM.get(
+            field.addValidator(new RegexpValidator(fieldProperties.getRegexp(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue(
                     fieldProperties.getRegexpError(), fieldProperties.getCaption(), fieldProperties.getRegexp())));
         }
 
@@ -352,7 +352,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                             return super.handleUnparsableDateString(dateString);
                         }
                         catch (ConversionException e) {
-                            throw new ConversionException(TM.get("form.errors.unparsable_date", getCaption(), dateString));
+                            throw new ConversionException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("form.errors.unparsable_date", getCaption(), dateString));
                         }
                     }
                 };
@@ -555,7 +555,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         }
                         catch (ParseException e) {
                             ExceptionUtil.logSevereException(e);
-                            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"), e);
+                            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"), e);
                         }
                         break;
                     }
@@ -599,7 +599,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         /** ADD FORMAT SELECTION **/
         if (includeReportFormat) {
-            format = new OptionGroup(TM.get("invoker.form.select_format"), new ArrayList<String>(
+            format = new OptionGroup(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.select_format"), new ArrayList<String>(
                     Constants.ReportType.values().length) {
                 {
                     for (Constants.ReportType reportType : Constants.ReportType.values()) {
@@ -612,13 +612,13 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         if (fields.isEmpty()) {
-            Label l = new Label(TM.get("invoker.form.header.nofields"));
+            Label l = new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.header.nofields"));
             l.setWidth("400px");
             form.getLayout().addComponent(l);
 
         }
         else {
-            form.setDescription(readonly ? TM.get("invoker.form.header.readonly") : TM.get("invoker.form.header"));
+            form.setDescription(readonly ? pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.header.readonly") : pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.header"));
         }
         form.setImmediate(true);
         form.setValidationVisible(true);

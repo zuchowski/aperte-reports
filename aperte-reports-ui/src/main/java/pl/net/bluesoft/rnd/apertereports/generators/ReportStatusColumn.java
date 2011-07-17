@@ -28,7 +28,7 @@ public class ReportStatusColumn extends CustomComponent {
      */
     private Component createCompositionRoot() {
         if (reportOrder == null) {
-            return new Label(TM.get("report_order.table.status.new"));
+            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.SUCCEEDED) {
             HorizontalLayout hl = new HorizontalLayout();
@@ -54,18 +54,18 @@ public class ReportStatusColumn extends CustomComponent {
             return hl;
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.PROCESSING) {
-            return new Label(TM.get("report_order.table.status.processing"));
+            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.processing"));
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.FAILED) {
-            Button label = new Button(TM.get("report_order.table.status.failed"));
+            Button label = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.failed"));
             label.setStyleName(BaseTheme.BUTTON_LINK);
             label.setDescription(reportOrder.getErrorDetails());
             label.addListener(new OnClickOpenMessageInNewWindow(source, TM
-                    .get("report_order.table.status.failed.popup.title"), String.valueOf(reportOrder.getErrorDetails()), Label.CONTENT_PREFORMATTED));
+                    .get("report_order.table.status.failed.popup.title"), reportOrder.getErrorDetails(), Label.CONTENT_PREFORMATTED));
             return label;
         }
         else {
-            return new Label(TM.get("report_order.table.status.new"));
+            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
         }
     }
 }

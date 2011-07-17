@@ -9,6 +9,6 @@ import eu.livotov.tpt.i18n.TM;
  */
 public class HelpComponent extends CustomComponent {
     public HelpComponent(String helpContentKey) {
-        setCompositionRoot(new Label(TM.get(helpContentKey), Label.CONTENT_XHTML));
+        setCompositionRoot(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue(helpContentKey), Label.CONTENT_XHTML));
     }
 }

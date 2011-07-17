@@ -2,9 +2,8 @@ package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Window;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.components.VriesInvokerComponent;
-import pl.net.bluesoft.rnd.apertereports.components.VriesManagerComponent;
+import pl.net.bluesoft.rnd.apertereports.components.ReportManagerComponent;
 import pl.net.bluesoft.rnd.apertereports.components.VriesReportOrderBrowserComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.EditDashboardComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.ViewDashboardComponent;
@@ -25,7 +24,7 @@ public class ComboApplication extends AbstractReportingApplication {
         tabs.setSizeFull();
         tabs.setHeight("400px");
         VriesInvokerComponent invoker = new VriesInvokerComponent(true);
-        VriesManagerComponent manager = new VriesManagerComponent();
+        ReportManagerComponent manager = new ReportManagerComponent();
         VriesReportOrderBrowserComponent reportOrderBrowser = new VriesReportOrderBrowserComponent();
         tabs.addTab(manager);
         tabs.getTab(manager).setCaption("manager");
@@ -48,7 +47,7 @@ public class ComboApplication extends AbstractReportingApplication {
         tabs.addTab(cyclicReportsPanel);
         tabs.getTab(cyclicReportsPanel).setCaption("cyclic reports");
 
-        Window mainWindow = new Window(TM.get("invoker.window.title"), tabs);
+        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.window.title"), tabs);
 
         setMainWindow(mainWindow);
     }

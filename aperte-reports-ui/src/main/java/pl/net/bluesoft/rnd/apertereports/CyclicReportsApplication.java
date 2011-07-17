@@ -20,7 +20,7 @@ public class CyclicReportsApplication extends AbstractReportingApplication {
     public void portletInit() {
         CyclicReportsPanel panel = new CyclicReportsPanel();
 
-        Window mainWindow = new Window(TM.get("dashboard.edit.cyclicReports"), panel);
+        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cyclicReports"), panel);
 
         setMainWindow(mainWindow);
     }

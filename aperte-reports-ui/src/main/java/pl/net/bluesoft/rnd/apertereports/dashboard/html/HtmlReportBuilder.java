@@ -150,7 +150,7 @@ public class HtmlReportBuilder {
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {
-            Button b = new Button(TM.get("dashboard.view.drill.up"));
+            Button b = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.view.drill.up"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
                 @Override
@@ -176,7 +176,7 @@ public class HtmlReportBuilder {
             });
         }
         if (config.getAllowRefresh()) {
-            Button b = new Button(TM.get("dashboard.view.refresh"));
+            Button b = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.view.refresh"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
                 @Override
@@ -257,7 +257,7 @@ public class HtmlReportBuilder {
             return null;
         }
         JasperPrint jasperPrint = reportData.getKey();
-        String reportHtml = String.valueOf(reportData.getEntry());
+        String reportHtml = new String(reportData.getEntry());
 
         reportHtml = createChartComponents(reportHtml, jasperPrint, config);
         reportHtml = createDrilldownComponents(reportHtml, config);

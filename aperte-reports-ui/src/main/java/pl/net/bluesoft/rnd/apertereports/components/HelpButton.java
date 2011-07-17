@@ -1,6 +1,9 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import com.vaadin.terminal.ThemeResource;
+import com.vaadin.Application;
+import com.vaadin.terminal.ClassResource;
+import com.vaadin.terminal.PaintException;
+import com.vaadin.terminal.PaintTarget;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.BaseTheme;
 import eu.livotov.tpt.i18n.TM;
@@ -12,8 +15,7 @@ import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
  */
 public class HelpButton extends Button {
     public HelpButton(final Module module, final Tab tab) {
-        setDescription(TM.get("global.help.button"));
-        setIcon(new ThemeResource("icons/help.png"));
+        setDescription(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("global.help.button"));
         addStyleName(BaseTheme.BUTTON_LINK);
         setWidth(20, UNITS_PIXELS);
         addListener(new Button.ClickListener() {
@@ -23,5 +25,12 @@ public class HelpButton extends Button {
                 getApplication().getMainWindow().addWindow(subwindow);
             }
         });
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        setIcon(new ClassResource("/icons/help.png", getApplication()));
+
     }
 }

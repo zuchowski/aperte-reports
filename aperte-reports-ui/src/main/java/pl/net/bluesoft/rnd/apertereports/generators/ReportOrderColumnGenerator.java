@@ -66,39 +66,39 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                     return hl;
                 }
                 else if (reportOrder.getReportStatus() == Status.PROCESSING) {
-                    return new Label(TM.get("report_order.table.status.processing"));
+                    return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.processing"));
                 }
                 else if (reportOrder.getReportStatus() == Status.FAILED) {
-                    Button label = new Button(TM.get("report_order.table.status.failed"));
+                    Button label = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.failed"));
                     label.setStyleName(BaseTheme.BUTTON_LINK);
                     label.setDescription(reportOrder.getErrorDetails());
                     label.addListener(new OnClickOpenMessageInNewWindow(source, TM
                             .get("report_order.table.status.failed.popup.title"),
-                            String.valueOf(reportOrder.getErrorDetails()), Label.CONTENT_PREFORMATTED));
+                            reportOrder.getErrorDetails(), Label.CONTENT_PREFORMATTED));
                     return label;
                 }
                 else {
-                    return new Label(TM.get("report_order.table.status.new"));
+                    return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
                 }
             case DETAILS:
-                Button paramsLink = new Button(TM.get("report_order.table.parameters"));
+                Button paramsLink = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.parameters"));
                 paramsLink.setStyleName(BaseTheme.BUTTON_LINK);
                 paramsLink.addListener(new OnClickOpenMessageInNewWindow(source, TM
-                        .get("report_order.table.parameters.popup.title"), String.valueOf(reportOrder.getParametersXml()),
+                        .get("report_order.table.parameters.popup.title"), new String(reportOrder.getParametersXml()),
                         Label.CONTENT_PREFORMATTED));
                 return paramsLink;
             case ACTION:
                 if (reportOrder.getReportStatus() == Status.FAILED || reportOrder.getReportStatus() == Status.SUCCEEDED) {
                     HorizontalLayout hl = new HorizontalLayout();
                     hl.setSpacing(true);
-                    Button rerunLink = new Button(TM.get("report_order.table.rerun"));
+                    Button rerunLink = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun"));
                     rerunLink.setStyleName(BaseTheme.BUTTON_LINK);
                     rerunLink.addListener(new Button.ClickListener() {
                         @Override
                         public void buttonClick(ClickEvent event) {
                             NotificationUtil.showConfirmWindow(source.getApplication().getMainWindow(),
-                                    TM.get("report_order.table.rerun.popup.title"),
-                                    TM.get("report_order.table.rerun.popup.question"), new ConfirmListener() {
+                                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun.popup.title"),
+                                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun.popup.question"), new ConfirmListener() {
                                 @Override
                                 public void onConfirm() {
                                     ReportOrder shallowCopy = reportOrder.shallowCopy();

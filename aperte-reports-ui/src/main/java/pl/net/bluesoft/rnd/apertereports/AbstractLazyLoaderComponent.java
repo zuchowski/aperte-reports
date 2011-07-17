@@ -27,7 +27,7 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
         }
         catch (Exception e) {
             ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"));
+            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
         }
         return this;
     }
@@ -39,7 +39,7 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
      */
     @Override
     public String getLazyLoadingMessage() {
-        return TM.get("loading.data");
+        return pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("loading.data");
     }
 }
 

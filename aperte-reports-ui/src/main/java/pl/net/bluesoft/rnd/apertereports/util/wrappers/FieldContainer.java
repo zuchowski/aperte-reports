@@ -111,7 +111,7 @@ public class FieldContainer {
         }
 
         if (selectAll) {
-            final CheckBox saCheckbox = new CheckBox(TM.get("invoker.form.select_all"));
+            final CheckBox saCheckbox = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.select_all"));
             saCheckbox.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {

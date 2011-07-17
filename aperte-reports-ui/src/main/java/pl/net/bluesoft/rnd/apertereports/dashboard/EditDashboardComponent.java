@@ -41,10 +41,10 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
     /**
      * Buttons.
      */
-    private Button saveButton = new Button(TM.get("dashboard.edit.save"));
-    private Button cancelButton = new Button(TM.get("dashboard.edit.cancel"));
-    private Button showSourceButton = new Button(TM.get("dashboard.edit.source"));
-    private Button addReportButton = new Button(TM.get("dashboard.edit.add.report"));
+    private Button saveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.save"));
+    private Button cancelButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cancel"));
+    private Button showSourceButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.source"));
+    private Button addReportButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.add.report"));
 
     private Panel mainPanel = new Panel();
     private Table reportsTable = new Table();
@@ -80,15 +80,15 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
 
         mainPanel.addComponent(helpLayout);
 
-        String idxId = TM.get("dashboard.edit.table.idx");
-        String detailsId = TM.get("dashboard.edit.table.details");
-        String deleteId = TM.get("dashboard.edit.table.delete");
-        String descriptionId = TM.get("dashboard.edit.table.description");
+        String idxId = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.idx");
+        String detailsId = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.details");
+        String deleteId = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.delete");
+        String descriptionId = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.description");
 
         reportsTable.addContainerProperty(idxId, Integer.class, null);
-        reportsTable.addContainerProperty(TM.get("dashboard.edit.table.report"), String.class, null);
+        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.report"), String.class, null);
         reportsTable.addContainerProperty(descriptionId, String.class, null);
-        reportsTable.addContainerProperty(TM.get("dashboard.edit.table.type"), String.class, null);
+        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.type"), String.class, null);
         reportsTable.addContainerProperty(detailsId, Button.class, null);
         reportsTable.addContainerProperty(deleteId, Button.class, null);
 
@@ -173,7 +173,7 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
                     NotificationUtil.showSavedNotification(getWindow());
                 }
                 else {
-                    NotificationUtil.validationErrors(getWindow(), TM.get("exception.validation.errors.report.template"));
+                    NotificationUtil.validationErrors(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.validation.errors.report.template"));
                 }
             }
         });
@@ -192,7 +192,7 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
      * @param enable <code>TRUE</code> to enable the rich text area
      */
     private void enableRichTextArea(boolean enable) {
-        showSourceButton.setCaption(TM.get(enable ? "dashboard.edit.source" : "dashboard.edit.source.disable"));
+        showSourceButton.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue(enable ? "dashboard.edit.source" : "dashboard.edit.source.disable"));
         textPanel.removeAllComponents();
         textPanel.addComponent(enable ? richTextArea : simpleTextArea);
         isRichTextEnabled = enable;
@@ -257,26 +257,26 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
                 String reportType = null;
                 if (r.getReportId() != null) {
                     rep = reportOrders.get(r.getReportId());
-                    reportType = TM.get("dashboard.edit.table.type.online");
+                    reportType = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.type.online");
                 }
                 else if (r.getCyclicReportId() != null) {
                     CyclicReportOrder cyclicRep = cyclicReportOrders.get(r.getCyclicReportId());
                     if (cyclicRep != null) {
                         rep = reportOrders.get(cyclicRep.getReport().getId());
-                        reportType = TM.get("dashboard.edit.table.type.cyclic");
+                        reportType = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.type.cyclic");
                         try {
-                            r.setParameters(XmlHelper.xmlAsParameters(String.valueOf(cyclicRep.getParametersXml())));
+                            r.setParameters(XmlHelper.xmlAsParameters(new String(cyclicRep.getParametersXml())));
                         }
                         catch (JAXBException e) {
                             ExceptionUtil.logSevereException(e);
-                            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.gui.error"));
+                            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
                         }
                     }
                 }
                 if (rep != null) {
                     configList.add(r);
-                    Button details = new Button(TM.get("dashboard.edit.table.details"));
-                    Button delete = new Button(TM.get("dashboard.edit.table.delete"));
+                    Button details = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.details"));
+                    Button delete = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.delete"));
                     reportsTable.addItem(new Object[] {
                             r.getId(),
                             rep.getReportname(),
@@ -319,7 +319,7 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
      * @param report Corresponding report template
      */
     private void showDetails(final ReportConfig config, final ReportTemplate report) {
-        reportDetailsWindow = new VriesModalWindow(TM.get("dashboard.edit.report.details"),
+        reportDetailsWindow = new VriesModalWindow(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.details"),
                 new ReportDetailsComponent(report, config, true) {
                     @Override
                     public void onCancel() {

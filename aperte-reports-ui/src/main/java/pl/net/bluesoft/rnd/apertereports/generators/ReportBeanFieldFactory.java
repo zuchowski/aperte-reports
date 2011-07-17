@@ -82,24 +82,24 @@ public class ReportBeanFieldFactory extends DefaultFieldFactory {
         Field field = null;
         if (showField(propertyId)) {
             if ("active".equals(propertyId)) {
-                field = new CheckBox(TM.get("manager.form.active.label"));
+                field = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.active.label"));
             }
             else if ("allowOnlineDisplay".equals(propertyId)) {
-                field = new CheckBox(TM.get("manager.form.allowOnlineDisplay.label"));
+                field = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.allowOnlineDisplay.label"));
             }
             else if ("allowBackgroundOrder".equals(propertyId)) {
-                field = new CheckBox(TM.get("manager.form.allowBackgroundOrder.label"));
+                field = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.allowBackgroundOrder.label"));
             }
             else if ("filename".equals(propertyId)) {
                 TextField filenameField = new TextField("filename");
-                filenameField.setCaption(TM.get("manager.form.filename.label"));
+                filenameField.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.filename.label"));
                 filenameField.setWidth("100%");
                 filenameField.setReadOnly(true);
                 field = filenameField;
             }
             else if ("reportname".equals(propertyId)) {
                 TextField nameField = new TextField("reportname");
-                nameField.setCaption(TM.get("manager.form.reportname.label"));
+                nameField.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.reportname.label"));
                 nameField.setWidth("100%");
                 nameField.setReadOnly(true);
                 nameField.addValidator(new Validator() {
@@ -107,10 +107,10 @@ public class ReportBeanFieldFactory extends DefaultFieldFactory {
                     public void validate(Object value) throws InvalidValueException {
                         if (!isValid(value)) {
                             if (value == null || !(value instanceof String) || ((String) value).length() == 0) {
-                                throw new InvalidValueException(TM.get("notification.validation.no.report.name"));
+                                throw new InvalidValueException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("notification.validation.no.report.name"));
                             }
                             else {
-                                throw new InvalidValueException(TM.get("notification.validation.duplicate.report.name"));
+                                throw new InvalidValueException(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("notification.validation.duplicate.report.name"));
                             }
                         }
                     }
@@ -135,9 +135,9 @@ public class ReportBeanFieldFactory extends DefaultFieldFactory {
             }
             else if ("description".equals(propertyId)) {
                 TextField descriptionField = new TextField("description");
-                descriptionField.setRequiredError(TM.get("manager.form.active.required_error"));
+                descriptionField.setRequiredError(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.active.required_error"));
                 descriptionField.setRequired(true);
-                descriptionField.setCaption(TM.get("manager.form.description.label"));
+                descriptionField.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.description.label"));
                 descriptionField.setWidth("100%");
                 field = descriptionField;
             }

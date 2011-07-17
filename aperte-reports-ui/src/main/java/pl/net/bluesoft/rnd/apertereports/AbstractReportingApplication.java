@@ -27,7 +27,7 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
     /**
      * Application theme name.
      */
-    private static final String VRIES_THEME = "apertereports-chameleon";
+//    private static final String VRIES_THEME = "apertereports-chameleon";
 
     /**
      * Liferay user.
@@ -49,7 +49,7 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
         }
 
         TM.getDictionary().setDefaultLanguage(getLocale().getLanguage());
-        setTheme(VRIES_THEME);
+//        setTheme(VRIES_THEME);
         reloadDictionary();
         portletInit();
     }
@@ -71,15 +71,15 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
      * Reloads the dictionary manually.
      */
     private void reloadDictionary() {
-        File themeFolder = new File(getContext().getBaseDirectory(), String.format("VAADIN/themes/%s", VRIES_THEME));
-        if (themeFolder.exists() && themeFolder.isDirectory()) {
-            try {
-                TM.getDictionary().loadTranslationFilesFromThemeFolder(themeFolder);
-            }
-            catch (IOException e) {
-                ExceptionUtil.logSevereException(e);
-            }
-        }
+//        File themeFolder = new File(getContext().getBaseDirectory(), String.format("VAADIN/themes/%s", VRIES_THEME));
+//        if (themeFolder.exists() && themeFolder.isDirectory()) {
+//            try {
+//                TM.getDictionary().loadTranslationFilesFromThemeFolder(themeFolder);
+//            }
+//            catch (IOException e) {
+//                ExceptionUtil.logSevereException(e);
+//            }
+//        }
     }
 
     /**

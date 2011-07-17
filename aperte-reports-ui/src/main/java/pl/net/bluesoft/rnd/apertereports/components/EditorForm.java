@@ -25,8 +25,8 @@ import java.util.Map;
 public abstract class EditorForm extends Panel {
     private boolean valueChanged = false;
 
-    private final Button reportFetchButton = new Button(TM.get("manager.form.fetch"));
-    private final Button reportSaveButton = new Button(TM.get("manager.form.save"));
+    private final Button reportFetchButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.fetch"));
+    private final Button reportSaveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.save"));
     private final Form reportEditorForm = new Form();
 
     private VriesInvokerComponent reportInvokerButton;
@@ -83,7 +83,7 @@ public abstract class EditorForm extends Panel {
         formFooter.addComponent(reportInvokerButton);
 
         reportEditorForm.getFooter().setVisible(false);
-        reportEditorForm.setCaption(TM.get("manager.form.title"));
+        reportEditorForm.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.title"));
 
         fieldFactory = new ReportBeanFieldFactory(new FieldChangeNotifier() {
             @Override
@@ -176,7 +176,7 @@ public abstract class EditorForm extends Panel {
      * Opens a download generated report popup.
      */
     protected void downloadReport() {
-        byte[] reportContent = Base64.decodeBase64(String.valueOf(report.getContent()).getBytes());
+        byte[] reportContent = Base64.decodeBase64(new String(report.getContent()).getBytes());
         FileStreamer.openFileInNewWindow(getApplication(), report.getFilename(), reportContent, "application/octet-stream");
     }
 

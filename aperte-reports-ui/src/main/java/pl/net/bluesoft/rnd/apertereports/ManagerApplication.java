@@ -1,8 +1,7 @@
 package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.Window;
-import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.components.VriesManagerComponent;
+import pl.net.bluesoft.rnd.apertereports.components.ReportManagerComponent;
 
 /**
  * This is the main report administration portlet.
@@ -22,9 +21,9 @@ public class ManagerApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        VriesManagerComponent manager = new VriesManagerComponent();
+        ReportManagerComponent manager = new ReportManagerComponent();
 
-        Window mainWindow = new Window(TM.get("manager.window.title"), manager);
+        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.window.title"), manager);
 
         setMainWindow(mainWindow);
     }

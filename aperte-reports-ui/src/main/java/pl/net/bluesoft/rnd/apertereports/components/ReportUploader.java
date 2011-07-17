@@ -6,7 +6,6 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
-import eu.livotov.tpt.i18n.TM;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -69,8 +68,8 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
     @Override
     public void uploadFailed(FailedEvent event) {
         ExceptionUtil.logSevereException(event.getReason());
-        NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.upload_failed.title"),
-                TM.get("exception.upload_failed.description"));
+        NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.upload_failed.title"),
+                pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.upload_failed.description"));
     }
 
     /**
@@ -82,32 +81,31 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
      */
     @Override
     public void uploadSucceeded(SucceededEvent event) {
-        String content = String.valueOf(Base64.encodeBase64(byteArray.toByteArray()));
-        try {
-            ReportMaster rm = new ReportMaster(content);
-            report.setReportname(rm.getReportName());
-            report.setContent(content.toCharArray());
-            report.setFilename(event.getFilename());
-            if (StringUtils.isEmpty(report.getDescription())) {
-                report.setDescription("");
-            }
-            if (report.getActive() != false) {
-                report.setActive(true);
-            }
-            else {
-                report.setActive(false);
-            }
+        String content = new String(Base64.encodeBase64(byteArray.toByteArray()));
+		try {
+			ReportMaster rm = new ReportMaster(content);
+			report.setReportname(rm.getReportName());
+		}catch (JRException e) {
+			ExceptionUtil.logSevereException(e);
+			NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.compilation_failed.title"),
+					pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.compilation_failed.description"));
+		}
+		report.setContent(content.toCharArray());
+		report.setFilename(event.getFilename());
+		if (StringUtils.isEmpty(report.getDescription())) {
+			report.setDescription("");
+		}
+//            if (report.getActive()) {
+//                report.setActive(true);
+//            }
+//            else {
+//                report.setActive(false);
+//            }
 
-            if (report.getId() != null) {
-                ReportCache.removeReport(report.getId());
-            }
-            reportEditForm.reload();
-        }
-        catch (JRException e) {
-            ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), TM.get("exception.compilation_failed.title"),
-                    TM.get("exception.compilation_failed.description"));
-        }
+		if (report.getId() != null) {
+			ReportCache.removeReport(report.getId());
+		}
+		reportEditForm.reload();
 
     }
 
@@ -119,8 +117,8 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
     private Layout buildMainLayout() {
         root = new HorizontalLayout();
 
-        final Upload upload = new Upload(TM.get("manager.form.upload.prompt"), this);
-        upload.setButtonCaption(TM.get("manager.form.upload.button"));
+        final Upload upload = new Upload(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.upload.prompt"), this);
+        upload.setButtonCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.upload.button"));
         upload.setSizeFull();
         upload.addListener((Upload.SucceededListener) this);
         upload.addListener((Upload.FailedListener) this);

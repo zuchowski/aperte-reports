@@ -26,13 +26,12 @@ import java.util.*;
  * Displays the report template manager view.
  * A user can add, remove or modify imported JRXML reports.
  */
-public class VriesManagerComponent extends CustomComponent implements Serializable {
+public class ReportManagerComponent extends Panel implements Serializable {
     private static final long serialVersionUID = 384175771652213854L;
 
     private final Fields[] visibleCols = new Fields[] {Fields.ACTIVE, Fields.REPORTNAME,
             Fields.DESCRIPTION, Fields.ALLOW_BACKGROUND_ORDER, Fields.ALLOW_ONLINE_DISPLAY};
 
-    private Panel mainLayout = new Panel();
     private HorizontalLayout bottomLeftCorner = new HorizontalLayout();
 
     private Table reportTable = new Table();
@@ -47,9 +46,8 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
 
     private PriorityQueue<ReportTemplate> allReportTemplates;
 
-    public VriesManagerComponent() {
+    public ReportManagerComponent() {
         buildMainLayout();
-        setCompositionRoot(mainLayout);
         initReportAddRemoveButtons();
         initReportTable();
         initFilteringControls();
@@ -59,19 +57,19 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
      * Builds main layout.
      */
     private void buildMainLayout() {
-        mainLayout.setScrollable(true);
-        mainLayout.setStyleName("borderless light");
-        mainLayout.setSizeUndefined();
+        setScrollable(true);
+        setStyleName("borderless light");
+        setSizeUndefined();
 
         HelpLayout helpLayout = new HelpLayout(Module.MANAGER, Tab.PARAMS);
 
-        mainLayout.addComponent(helpLayout);
+        addComponent(helpLayout);
 
         HorizontalLayout splitPanel = new HorizontalLayout();
         splitPanel.setMargin(false);
         splitPanel.setSpacing(true);
 
-        mainLayout.addComponent(splitPanel);
+        addComponent(splitPanel);
 
         reportEditForm = new EditorForm() {
             @Override
@@ -115,7 +113,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
             final TextField sf = new TextField();
             sf.setImmediate(true);
             sf.setWidth("100%");
-            sf.setInputPrompt(TM.get("manager.filter." + StringUtils.lowerCase(pn.toString())));
+            sf.setInputPrompt(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.filter." + StringUtils.lowerCase(pn.toString())));
             sf.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(final ValueChangeEvent event) {
@@ -128,7 +126,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
             bottomLeftCorner.addComponent(sf);
             fields.add(sf);
         }
-        Button clearFiltersButton = new RefreshButton(TM.get("global.clearfilters.button"), new ClickListener() {
+        Button clearFiltersButton = new RefreshButton(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("global.clearfilters.button"), new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 for (TextField sf : fields) {
@@ -179,7 +177,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
             }
         });
         reportAddButton.setImmediate(true);
-        reportAddButton.setDescription(TM.get("report.table.add"));
+        reportAddButton.setDescription(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.add"));
 
         reportDeleteButton = new Button("-", new Button.ClickListener() {
             @Override
@@ -187,8 +185,8 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
                 Item item = reportTableData.getItem(reportTable.getValue());
                 String reportName = (String) item.getItemProperty(Fields.REPORTNAME).getValue();
                 String description = (String) item.getItemProperty(Fields.DESCRIPTION).getValue();
-                NotificationUtil.showConfirmWindow(getWindow(), TM.get("report.table.deleteReport.title"),
-                        TM.get("report.table.deleteReport.content").replaceFirst("%s", reportName + " (" + description + ")"),
+                NotificationUtil.showConfirmWindow(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.deleteReport.title"),
+                        pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.deleteReport.content").replaceFirst("%s", reportName + " (" + description + ")"),
                         new ConfirmListener() {
                             @Override
                             public void onConfirm() {
@@ -202,7 +200,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
             }
         });
         reportDeleteButton.setImmediate(true);
-        reportDeleteButton.setDescription(TM.get("report.table.delete"));
+        reportDeleteButton.setDescription(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.delete"));
         reportDeleteButton.setVisible(false);
 
         bottomLeftCorner.addComponent(reportAddButton);
@@ -240,7 +238,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
         reportTable.addGeneratedColumn(Fields.ALLOW_ONLINE_DISPLAY, new CheckBoxColumnGenerator());
         reportTable.addGeneratedColumn(Fields.ALLOW_BACKGROUND_ORDER, new CheckBoxColumnGenerator());
         for (Fields col : visibleCols) {
-            reportTable.setColumnHeader(col, TM.get("manager.table.column." + StringUtils.lowerCase(col.toString())));
+            reportTable.setColumnHeader(col, pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.table.column." + StringUtils.lowerCase(col.toString())));
             if (col.equals(Fields.DESCRIPTION) || col.equals(Fields.REPORTNAME)) {
                 reportTable.setColumnExpandRatio(col, 1.0f);
                 reportTable.setColumnWidth(col, -1);
@@ -309,7 +307,7 @@ public class VriesManagerComponent extends CustomComponent implements Serializab
         reportTableData.addContainerProperty(Fields.ID, Integer.class, null);
 
         Collection<ReportTemplate> list = ReportTemplateDAO.fetchAllReports(false);
-        allReportTemplates = new PriorityQueue<ReportTemplate>(list.size(), new Comparator<ReportTemplate>() {
+        allReportTemplates = new PriorityQueue<ReportTemplate>(list.size()+1, new Comparator<ReportTemplate>() {
             @Override
             public int compare(ReportTemplate o1, ReportTemplate o2) {
                 return o1.getDescription().compareTo(o2.getDescription());
