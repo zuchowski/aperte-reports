@@ -16,10 +16,14 @@ public class VaadinUtil {
     private static Map<Thread, Locale> LOCALE_THREAD_MAP = new HashMap<Thread, Locale>();
 
     public static synchronized void setThreadLocale(Locale l) {
+	    if (LOCALE_THREAD_MAP == null)
+			LOCALE_THREAD_MAP = new HashMap<Thread, Locale>();
         LOCALE_THREAD_MAP.put(Thread.currentThread(), l);
     }
 
     public static synchronized void unsetThreadLocale() {
+	    if (LOCALE_THREAD_MAP == null)
+			LOCALE_THREAD_MAP = new HashMap<Thread, Locale>();
         LOCALE_THREAD_MAP.remove(Thread.currentThread());
     }
 

@@ -173,15 +173,28 @@
         <lifecycle>ACTION_PHASE</lifecycle>
         <lifecycle>RESOURCE_PHASE</lifecycle>
         <lifecycle>EVENT_PHASE</lifecycle>
-        <init-param>
-            <name>message</name>
-            <value>Filter 1 - portlet-container 2.0 Filter demo :)</value>
-        </init-param>
     </filter>
 
 
     <filter-mapping>
-        <filter-name>RenderFilterOne</filter-name>
-        <portlet-name>HelloWorld</portlet-name>
+        <filter-name>I18nFilter</filter-name>
+        <portlet-name>Cyclic Reports portlet</portlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>I18nFilter</filter-name>
+        <portlet-name>Dashboard portlet</portlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>I18nFilter</filter-name>
+        <portlet-name>Combo portlet</portlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>I18nFilter</filter-name>
+        <portlet-name>Report Order Browser portlet</portlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>I18nFilter</filter-name>
+        <portlet-name>Invoker portlet</portlet-name>
     </filter-mapping>
 </portlet-app>

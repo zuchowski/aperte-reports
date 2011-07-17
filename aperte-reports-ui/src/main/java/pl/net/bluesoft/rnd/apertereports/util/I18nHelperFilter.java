@@ -3,7 +3,6 @@ package pl.net.bluesoft.rnd.apertereports.util;
 import javax.portlet.*;
 import javax.portlet.filter.*;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
  * @author tlipski@bluesoft.net.pl
  */
 public class I18nHelperFilter implements ActionFilter, RenderFilter, ResourceFilter, EventFilter {
-
 
     @Override
     public void doFilter(ActionRequest actionRequest, ActionResponse actionResponse, FilterChain filterChain) throws IOException, PortletException {

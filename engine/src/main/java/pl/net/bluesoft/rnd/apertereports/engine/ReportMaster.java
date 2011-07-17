@@ -6,7 +6,6 @@ import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import pl.net.bluesoft.rnd.apertereports.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.util.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.util.Constants;
@@ -24,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A workhorse of the Jasper reports engine. This class is responsible for generating, exporting and converting JRXMLs to
@@ -33,7 +34,7 @@ import java.util.*;
  * <p>In order to maintain the report generation from a template one should create a new instance of this class.
  */
 public class ReportMaster {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     /**
      * Currently processed Jasper report.
@@ -212,7 +213,7 @@ public class ReportMaster {
             return exportReport(jasperPrint, format, configuration);
         }
         catch (ReportException e) {
-            logger.error(e.getMessage(), e);
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
         return null;
     }
@@ -230,7 +231,7 @@ public class ReportMaster {
             return jasperPrint;
         }
         catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.log(Level.SEVERE,e.getMessage(), e);
         }
         return null;
     }
@@ -243,7 +244,7 @@ public class ReportMaster {
      */
     public List<ReportParameter> getParameters() {
         if (report == null) {
-            logger.error("No active report configuration");
+            logger.log(Level.SEVERE,"No active report configuration");
             return null;
         }
         JRParameter[] parameters = report.getParameters();
@@ -267,7 +268,7 @@ public class ReportMaster {
                     outputProperties.put(key, property);
                 }
                 catch (IllegalArgumentException e) {
-                    logger.debug("unknown property: " + propertyName);
+                    logger.log(Level.SEVERE,"unknown property: " + propertyName);
                 }
             }
             outputParameter.setProperties(outputProperties);
