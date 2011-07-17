@@ -1,5 +1,5 @@
 import org.junit.Test;
-import pl.net.bluesoft.rnd.vries.util.cache.MapCache;
+import pl.net.bluesoft.rnd.apertereports.util.cache.MapCache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
