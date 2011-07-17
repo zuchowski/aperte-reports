@@ -14,6 +14,8 @@
         <portlet-name>Report Manager portlet</portlet-name>
         <instanceable>true</instanceable>
         <ajaxable>false</ajaxable>
+        <control-panel-entry-category>content</control-panel-entry-category>
+        <control-panel-entry-weight>1</control-panel-entry-weight>
     </portlet>
     <portlet>
         <portlet-name>Report Order Browser portlet</portlet-name>

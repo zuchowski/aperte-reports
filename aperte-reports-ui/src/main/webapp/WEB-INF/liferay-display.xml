@@ -5,7 +5,9 @@
         <portlet id="Dashboard portlet"/>
         <portlet id="Report Order Browser portlet"/>
         <portlet id="Combo portlet"/>
-        <portlet id="Report Manager portlet"/>
         <portlet id="Cyclic Reports portlet"/>
+    </category>
+    <category name="category.hidden">
+        <portlet id="Report Manager portlet"/>
     </category>
 </display>
