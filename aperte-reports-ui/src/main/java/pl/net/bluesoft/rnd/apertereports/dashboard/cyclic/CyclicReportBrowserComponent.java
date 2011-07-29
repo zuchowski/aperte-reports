@@ -5,12 +5,12 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
-import pl.net.bluesoft.rnd.apertereports.data.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportStatusColumn;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * Displays a cyclic report order table.
- * Invokes {@link #onItemSelected(pl.net.bluesoft.rnd.apertereports.data.CyclicReportOrder)} on selected item row.
+ * Invokes {@link #onItemSelected(pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder)} on selected item row.
  * Supports lazy loading.
  */
 public abstract class CyclicReportBrowserComponent extends AbstractLazyLoaderComponent {
@@ -41,12 +41,12 @@ public abstract class CyclicReportBrowserComponent extends AbstractLazyLoaderCom
      * Initializes the table view.
      */
     private void initView() {
-        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.idx"), Integer.class, null);
-        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.report"), String.class, null);
-        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.when"), String.class, null);
-        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.desc"), String.class, null);
-        reportsTable.addContainerProperty(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.delete"), Button.class, null);
-        reportsTable.addGeneratedColumn(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.status"), new Table.ColumnGenerator() {
+        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.idx"), Integer.class, null);
+        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.report"), String.class, null);
+        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.when"), String.class, null);
+        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.desc"), String.class, null);
+        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.delete"), Button.class, null);
+        reportsTable.addGeneratedColumn(VaadinUtil.getValue("cyclic.report.table.status"), new Table.ColumnGenerator() {
             @Override
             public Component generateCell(Table source, Object itemId, Object columnId) {
                 return new ReportStatusColumn(source, reportOrderMap.get(itemId).getReportOrder());
@@ -77,7 +77,7 @@ public abstract class CyclicReportBrowserComponent extends AbstractLazyLoaderCom
     private void initData() {
         reportsTable.removeAllItems();
         for (final CyclicReportOrder reportOrder : reportOrderMap.values()) {
-            Button button = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.delete"));
+            Button button = new Button(VaadinUtil.getValue("cyclic.report.table.delete"));
             reportsTable.addItem(new Object[] {
                     reportOrder.getComponentId(),
                     reportOrder.getReport().getReportname(),
@@ -88,8 +88,8 @@ public abstract class CyclicReportBrowserComponent extends AbstractLazyLoaderCom
             button.addListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
-                    NotificationUtil.showConfirmWindow(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.delete"),
-                            pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.delete.areyousure"),
+                    NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue("cyclic.report.table.delete"),
+                            VaadinUtil.getValue("cyclic.report.table.delete.areyousure"),
                             new ConfirmListener() {
                                 @Override
                                 public void onConfirm() {

@@ -7,13 +7,14 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory.FieldChangeNotifier;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,8 +25,8 @@ import java.util.Map;
 public abstract class ReportEditorForm extends Panel {
     private boolean valueChanged = false;
 
-    private final Button reportFetchButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.fetch"));
-    private final Button reportSaveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.save"));
+    private final Button reportFetchButton = new Button(VaadinUtil.getValue("manager.form.fetch"));
+    private final Button reportSaveButton = new Button(VaadinUtil.getValue("manager.form.save"));
     private final Form reportEditorForm = new Form();
 
     private VriesInvokerComponent reportInvokerButton;
@@ -82,7 +83,7 @@ public abstract class ReportEditorForm extends Panel {
         formFooter.addComponent(reportInvokerButton);
 
         reportEditorForm.getFooter().setVisible(false);
-        reportEditorForm.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.title"));
+        reportEditorForm.setCaption(VaadinUtil.getValue("manager.form.title"));
 
         fieldFactory = new ReportBeanFieldFactory(new FieldChangeNotifier() {
             @Override
@@ -147,7 +148,7 @@ public abstract class ReportEditorForm extends Panel {
             reportEditorForm.commit();
             boolean isNew = report.getId() == null;
             ReportTemplateDAO.saveOrUpdate(report);
-            ReportCache.removeReport(report.getId());
+            ReportCache.removeReport(report.getId().toString());
             valueChanged = false;
             onSaveReport(isNew, report);
         }

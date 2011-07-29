@@ -3,9 +3,14 @@ package pl.net.bluesoft.rnd.apertereports.generators;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.BaseTheme;
 import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesRuntimeException;
-import pl.net.bluesoft.rnd.apertereports.util.*;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
+import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
+import pl.net.bluesoft.rnd.apertereports.util.OnClickOpenMessageInNewWindow;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * Displays a cyclic report status based on a given report order instance.
@@ -28,12 +33,12 @@ public class ReportStatusColumn extends CustomComponent {
      */
     private Component createCompositionRoot() {
         if (reportOrder == null) {
-            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
+            return new Label(VaadinUtil.getValue("report_order.table.status.new"));
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.SUCCEEDED) {
             HorizontalLayout hl = new HorizontalLayout();
             hl.setSpacing(true);
-            for (final Constants.ReportType format : Constants.ReportType.values()) {
+            for (final ReportConstants.ReportType format : ReportConstants.ReportType.values()) {
                 Button formatLink = new Button(format.toString());
                 formatLink.setStyleName(BaseTheme.BUTTON_LINK);
                 formatLink.addListener(new Button.ClickListener() {
@@ -44,7 +49,7 @@ public class ReportStatusColumn extends CustomComponent {
                                     DashboardUtil.exportReportOrderData(reportOrder, format), format.toString());
                         }
                         catch (Exception e) {
-                            ExceptionUtil.logSevereException(e);
+                            ExceptionUtils.logSevereException(e);
                             throw new VriesRuntimeException("exception.gui.error", e);
                         }
                     }
@@ -54,10 +59,10 @@ public class ReportStatusColumn extends CustomComponent {
             return hl;
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.PROCESSING) {
-            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.processing"));
+            return new Label(VaadinUtil.getValue("report_order.table.status.processing"));
         }
         else if (reportOrder.getReportStatus() == ReportOrder.Status.FAILED) {
-            Button label = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.failed"));
+            Button label = new Button(VaadinUtil.getValue("report_order.table.status.failed"));
             label.setStyleName(BaseTheme.BUTTON_LINK);
             label.setDescription(reportOrder.getErrorDetails());
             label.addListener(new OnClickOpenMessageInNewWindow(source, TM
@@ -65,7 +70,7 @@ public class ReportStatusColumn extends CustomComponent {
             return label;
         }
         else {
-            return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
+            return new Label(VaadinUtil.getValue("report_order.table.status.new"));
         }
     }
 }

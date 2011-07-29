@@ -1,9 +1,9 @@
 package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.Window;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.dashboard.cyclic.CyclicReportsPanel;
-import pl.net.bluesoft.rnd.apertereports.scheduler.CyclicReportOrderScheduler;
+import pl.net.bluesoft.rnd.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * This portlet provides the tabular view of the cyclic reports.
@@ -20,7 +20,7 @@ public class CyclicReportsApplication extends AbstractReportingApplication {
     public void portletInit() {
         CyclicReportsPanel panel = new CyclicReportsPanel();
 
-        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cyclicReports"), panel);
+        Window mainWindow = new Window(VaadinUtil.getValue("dashboard.edit.cyclicReports"), panel);
 
         setMainWindow(mainWindow);
     }

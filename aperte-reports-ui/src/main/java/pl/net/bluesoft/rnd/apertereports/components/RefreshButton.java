@@ -1,10 +1,6 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import com.vaadin.Application;
 import com.vaadin.terminal.ClassResource;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.BaseTheme;
 

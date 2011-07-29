@@ -37,6 +37,12 @@
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
+            <artifactId>domain</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>backbone</artifactId>
             <version>1.0</version>
         </dependency>
@@ -125,6 +131,12 @@
             <artifactId>portal-impl</artifactId>
             <version>6.0.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

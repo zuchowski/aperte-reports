@@ -2,8 +2,8 @@ package pl.net.bluesoft.rnd.apertereports.components;
 
 import com.vaadin.ui.*;
 import eu.livotov.tpt.gui.windows.TPTWindow;
-import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.util.Constants;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -22,7 +22,7 @@ public class HelpWindow extends TPTWindow {
      * @param tab Tab that should be selected
      */
     public HelpWindow(Module module, Tab tab) {
-        super(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window." + module.toString().toLowerCase() + ".title"));
+        super(VaadinUtil.getValue("help_window." + module.toString().toLowerCase() + ".title"));
         setWidth("40%");
         setHeight("80%");
         setModal(true);
@@ -42,7 +42,7 @@ public class HelpWindow extends TPTWindow {
         for (Entry<Tab, Component> comp : tabContent.entrySet()) {
             tabs.addTab(comp.getValue());
             tabs.getTab(comp.getValue()).setCaption(
-                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + comp.getKey().toString().toLowerCase() + ".title"));
+                    VaadinUtil.getValue("help_window.tabs." + comp.getKey().toString().toLowerCase() + ".title"));
         }
         tabs.setSelectedTab(tabContent.get(tab));
         addComponent(tabs);
@@ -63,14 +63,14 @@ public class HelpWindow extends TPTWindow {
      */
     private Component getReportParametersTab() {
         VerticalLayout vl = new VerticalLayout();
-        vl.addComponent(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".intro"), Label.CONTENT_XHTML));
+        vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".intro"), Label.CONTENT_XHTML));
         Accordion accordion = new Accordion();
-        for (Constants.Keys param : Constants.Keys.values()) {
-            String title = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
+        for (ReportConstants.Keys param : ReportConstants.Keys.values()) {
+            String title = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
                     + param.toString().toLowerCase() + ".title", param.toString().toLowerCase()) + " - " + param.toString().toLowerCase();
 
-            String property_name = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".param_name", param.toString().toLowerCase());
-            String property_desc = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
+            String property_name = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".param_name", param.toString().toLowerCase());
+            String property_desc = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
                     + param.toString().toLowerCase() + ".content", param.toString().toLowerCase());
             Label content = new Label(property_name + "<br/>" + property_desc, Label.CONTENT_XHTML);
             accordion.addTab(content, title, null);
@@ -127,8 +127,8 @@ public class HelpWindow extends TPTWindow {
     private Component getSimpleHelpTab(String infix) {
         VerticalLayout vl = new VerticalLayout();
         vl.setSpacing(true);
-        vl.addComponent(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + infix + ".intro"), Label.CONTENT_XHTML));
-        vl.addComponent(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("help_window.tabs." + infix + ".content"), Label.CONTENT_XHTML));
+        vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + infix + ".intro"), Label.CONTENT_XHTML));
+        vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + infix + ".content"), Label.CONTENT_XHTML));
         return vl;
     }
 

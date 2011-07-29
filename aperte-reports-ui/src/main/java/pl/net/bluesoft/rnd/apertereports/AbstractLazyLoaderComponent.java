@@ -3,9 +3,9 @@ package pl.net.bluesoft.rnd.apertereports;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
-import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * A Vaadin component wrapper with lazy loading. Extending class should provide its heavy logic (i.e. fetching data from db)
@@ -26,8 +26,8 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
             lazyLoad();
         }
         catch (Exception e) {
-            ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
+            ExceptionUtils.logSevereException(e);
+            NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
         }
         return this;
     }
@@ -39,7 +39,7 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
      */
     @Override
     public String getLazyLoadingMessage() {
-        return pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("loading.data");
+        return VaadinUtil.getValue("loading.data");
     }
 }
 

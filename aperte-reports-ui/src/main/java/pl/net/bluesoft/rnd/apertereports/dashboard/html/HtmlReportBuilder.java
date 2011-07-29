@@ -7,18 +7,18 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import eu.livotov.tpt.i18n.TM;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.util.JRTypeSniffer;
 import org.vaadin.activelink.ActiveLink;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.wrappers.Pair;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
-import static pl.net.bluesoft.rnd.apertereports.util.Constants.ReportType;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 
 /**
  * A helper class that manages the creation of the layouts containing generated report HTML data.
@@ -150,7 +150,7 @@ public class HtmlReportBuilder {
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {
-            Button b = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.view.drill.up"));
+            Button b = new Button(VaadinUtil.getValue("dashboard.view.drill.up"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
                 @Override
@@ -176,7 +176,7 @@ public class HtmlReportBuilder {
             });
         }
         if (config.getAllowRefresh()) {
-            Button b = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.view.refresh"));
+            Button b = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
                 @Override
@@ -269,7 +269,7 @@ public class HtmlReportBuilder {
             reportLayout.setWidth(100, UNITS_PERCENTAGE);
         }
         catch (IOException e) {
-            ExceptionUtil.logSevereException(e);
+            ExceptionUtils.logSevereException(e);
         }
 
         return reportLayout;
@@ -314,7 +314,7 @@ public class HtmlReportBuilder {
                         }
                     }
                     catch (Exception e) {
-                        ExceptionUtil.logSevereException(e);
+                        ExceptionUtils.logSevereException(e);
                     }
                 }
             }
@@ -381,7 +381,7 @@ public class HtmlReportBuilder {
                         }
                     }
                     catch (Exception e) {
-                        ExceptionUtil.logSevereException(e);
+                        ExceptionUtils.logSevereException(e);
                     }
                 }
             }

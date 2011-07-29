@@ -2,14 +2,13 @@ package pl.net.bluesoft.rnd.apertereports.dashboard;
 
 import com.vaadin.ui.CustomComponent;
 import org.apache.commons.codec.binary.Base64;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesRuntimeException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.util.cache.MapCache;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.xml.XmlHelper;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
-import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,6 +32,7 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
 
     /**
      * An instance of a {@link MapCache} for general caching purposes.
+     *
      * @see MapCache
      */
     protected MapCache cache = new MapCache();
@@ -48,23 +48,18 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
             template = preferences.getValue(PREFERENCE_TEMPLATE_KEY, null);
             template = template != null ? new String(Base64.decodeBase64(template.getBytes())) : null;
             String rc = preferences.getValue(PREFERENCE_REPORT_CONFIGS_KEY, null);
-            try {
-                if (rc != null) {
-                    rc = new String(Base64.decodeBase64(rc.getBytes()));
-                    reportConfigs = XmlHelper.stringAsReportConfigs(rc);
-                    Collections.sort(reportConfigs, new Comparator<ReportConfig>() {
-                        @Override
-                        public int compare(ReportConfig o1, ReportConfig o2) {
-                            return o1.getId().compareTo(o2.getId());
-                        }
-                    });
-                }
-                else {
-                    reportConfigs = new ArrayList<ReportConfig>();
-                }
+            if (rc != null) {
+                rc = new String(Base64.decodeBase64(rc.getBytes()));
+                reportConfigs = XmlReportConfigLoader.getInstance().stringAsReportConfigs(rc);
+                Collections.sort(reportConfigs, new Comparator<ReportConfig>() {
+                    @Override
+                    public int compare(ReportConfig o1, ReportConfig o2) {
+                        return o1.getId().compareTo(o2.getId());
+                    }
+                });
             }
-            catch (JAXBException e) {
-                throw new VriesRuntimeException(null, e);
+            else {
+                reportConfigs = new ArrayList<ReportConfig>();
             }
         }
     }
@@ -87,7 +82,7 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
                         }
                     }
                 }
-                String rc = XmlHelper.reportConfigsAsString(reportConfigs);
+                String rc = XmlReportConfigLoader.getInstance().reportConfigsAsString(reportConfigs);
                 rc = new String(Base64.encodeBase64(rc.getBytes()));
                 preferences.setValue(PREFERENCE_REPORT_CONFIGS_KEY, rc);
                 preferences.store();

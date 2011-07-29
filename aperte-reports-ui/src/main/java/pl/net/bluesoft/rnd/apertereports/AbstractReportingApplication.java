@@ -8,14 +8,12 @@ import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
 import com.vaadin.ui.Window;
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesException;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesRuntimeException;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 
 import javax.portlet.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -77,7 +75,7 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
 //                TM.getDictionary().loadTranslationFilesFromThemeFolder(themeFolder);
 //            }
 //            catch (IOException e) {
-//                ExceptionUtil.logSevereException(e);
+//                ExceptionUtils.logSevereException(e);
 //            }
 //        }
     }
@@ -91,7 +89,7 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
         Throwable throwable = event.getThrowable();
         if (throwable instanceof Exception) {
-            ExceptionUtil.logSevereException((Exception) throwable);
+            ExceptionUtils.logSevereException((Exception) throwable);
         }
         if (throwable instanceof VriesRuntimeException) {
             VriesRuntimeException vre = (VriesRuntimeException) throwable;
@@ -121,10 +119,10 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
                 locale = PortalUtil.getLocale(request);
             }
             catch (PortalException e) {
-                ExceptionUtil.logSevereException(e);
+                ExceptionUtils.logSevereException(e);
             }
             catch (SystemException e) {
-                ExceptionUtil.logSevereException(e);
+                ExceptionUtils.logSevereException(e);
             }
         }
     }

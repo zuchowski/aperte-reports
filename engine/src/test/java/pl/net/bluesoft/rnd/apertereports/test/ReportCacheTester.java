@@ -3,19 +3,18 @@
  */
 package pl.net.bluesoft.rnd.apertereports.test;
 
-import static org.junit.Assert.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperReport;
+import org.junit.Test;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-
-import org.junit.Test;
-
-import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author MW
@@ -26,11 +25,11 @@ public class ReportCacheTester {
 
     /**
      * Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#getReport(java.lang.Integer)}
+     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#getReport(java.lang.String)}
      * . Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#putReport(java.lang.Integer, net.sf.jasperreports.engine.JasperReport)}
+     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#putReport(java.lang.String, net.sf.jasperreports.engine.JasperReport)}
      * . Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#removeReport(java.lang.Integer)}
+     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportCache#removeReport(java.lang.String)}
      * .
      *
      * @throws IOException
@@ -41,8 +40,8 @@ public class ReportCacheTester {
         String ds = readTestFileToString(defaultTestReport);
         ByteArrayInputStream contentInputStream = new ByteArrayInputStream(ds.getBytes());
         JasperReport testReport = JasperCompileManager.compileReport(contentInputStream);
-        Integer report1 = 1;
-        Integer report2 = 2;
+        String report1 = "1";
+        String report2 = "2";
 
         /* check if empty */
         assertNull(ReportCache.getReport(report1));

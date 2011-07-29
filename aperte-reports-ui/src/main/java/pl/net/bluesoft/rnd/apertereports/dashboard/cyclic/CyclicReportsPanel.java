@@ -2,18 +2,18 @@ package pl.net.bluesoft.rnd.apertereports.dashboard.cyclic;
 
 import com.vaadin.ui.*;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
-import eu.livotov.tpt.i18n.TM;
 import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.components.HelpLayout;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
-import pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.data.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.scheduler.CyclicReportOrderScheduler;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.*;
 
@@ -38,9 +38,9 @@ public class CyclicReportsPanel extends CustomComponent {
     /**
      * Self-explanatory buttons.
      */
-    private Button saveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.save"));
-    private Button cancelButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cancel"));
-    private Button addButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.add"));
+    private Button saveButton = new Button(VaadinUtil.getValue("dashboard.edit.save"));
+    private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
+    private Button addButton = new Button(VaadinUtil.getValue("cyclic.report.add"));
 
     private VerticalLayout detailsPanel = new VerticalLayout();
     private VerticalLayout browserPanel = new VerticalLayout();
@@ -107,7 +107,7 @@ public class CyclicReportsPanel extends CustomComponent {
                 for (int i = 1; i < errorOrders.size(); ++i) {
                     sb.append(", ").append(errorOrders.get(i));
                 }
-                NotificationUtil.validationErrors(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.cron.validation.error")
+                NotificationUtil.validationErrors(getWindow(), VaadinUtil.getValue("cyclic.report.cron.validation.error")
                         + " " + sb.toString());
                 return;
             }
@@ -122,8 +122,8 @@ public class CyclicReportsPanel extends CustomComponent {
             onConfirm();
         }
         catch (SchedulerException e) {
-            ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
+            ExceptionUtils.logSevereException(e);
+            NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
         }
     }
 

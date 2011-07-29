@@ -5,11 +5,11 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import eu.livotov.tpt.i18n.TM;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportStreamReceiver;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,7 +92,7 @@ public class VriesInvokerComponent extends CustomComponent {
     private void buildMainLayout() {
         mainLayout = new VerticalLayout();
 
-        generateReportButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.intro.generate"));
+        generateReportButton = new Button(VaadinUtil.getValue("invoker.intro.generate"));
         generateReportButton.setImmediate(true);
 
         buttons = new HorizontalLayout();
@@ -106,7 +106,7 @@ public class VriesInvokerComponent extends CustomComponent {
      * Initializes the report select.
      */
     private void fillReportList() {
-        reportSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.intro.select_report"));
+        reportSelect = new Select(VaadinUtil.getValue("invoker.intro.select_report"));
         reportSelect.setNullSelectionAllowed(false);
         reportSelect.setWidth(250, UNITS_PIXELS);
 
@@ -114,7 +114,7 @@ public class VriesInvokerComponent extends CustomComponent {
 
         mainLayout.addComponent(reportSelect, 0);
 
-        refreshButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.view.refresh"));
+        refreshButton = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
         refreshButton.setImmediate(true);
         refreshButton.addListener(new ClickListener() {
             @Override
@@ -142,7 +142,7 @@ public class VriesInvokerComponent extends CustomComponent {
             @Override
             public void buttonClick(ClickEvent event) {
                 if (report != null) {
-                    reportParamWindow = new ReportParamWindow(report, pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.window.title"), receiver);
+                    reportParamWindow = new ReportParamWindow(report, VaadinUtil.getValue("invoker.window.title"), receiver);
                     getWindow().addWindow(reportParamWindow);
                 }
             }

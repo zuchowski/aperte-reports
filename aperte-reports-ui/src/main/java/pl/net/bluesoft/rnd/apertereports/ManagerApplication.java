@@ -2,6 +2,7 @@ package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.Window;
 import pl.net.bluesoft.rnd.apertereports.components.ReportManagerComponent;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * This is the main report administration portlet.
@@ -23,7 +24,7 @@ public class ManagerApplication extends AbstractReportingApplication {
     public void portletInit() {
         ReportManagerComponent manager = new ReportManagerComponent();
 
-        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.window.title"), manager);
+        Window mainWindow = new Window(VaadinUtil.getValue("manager.window.title"), manager);
 
         setMainWindow(mainWindow);
     }

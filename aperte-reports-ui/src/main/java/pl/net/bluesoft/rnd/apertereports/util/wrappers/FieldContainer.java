@@ -5,14 +5,14 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.*;
-import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.util.Constants;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.List;
 
 /**
  * This is a wrapper container for report fields. It includes a Vaadin component and a bunch of configuration params.
- * <p/>Each of the containers has a certain type of {@link Constants.InputTypes}, a name, order in the form and a flag
+ * <p/>Each of the containers has a certain type of {@link ReportConstants.InputTypes}, a name, order in the form and a flag
  * that decides whether to show a "select all" checkbox or not.
  */
 public class FieldContainer {
@@ -20,7 +20,7 @@ public class FieldContainer {
     private String name;
     private Component fieldComponent;
     private boolean selectAll;
-    private Constants.InputTypes componentType;
+    private ReportConstants.InputTypes componentType;
 
     public FieldContainer() {
     }
@@ -48,7 +48,7 @@ public class FieldContainer {
         }
     }
 
-    public Constants.InputTypes getComponentType() {
+    public ReportConstants.InputTypes getComponentType() {
         return componentType;
     }
 
@@ -111,7 +111,7 @@ public class FieldContainer {
         }
 
         if (selectAll) {
-            final CheckBox saCheckbox = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.select_all"));
+            final CheckBox saCheckbox = new CheckBox(VaadinUtil.getValue("invoker.form.select_all"));
             saCheckbox.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
@@ -144,7 +144,7 @@ public class FieldContainer {
         }
     }
 
-    public void setComponentType(Constants.InputTypes componentType) {
+    public void setComponentType(ReportConstants.InputTypes componentType) {
         this.componentType = componentType;
     }
 

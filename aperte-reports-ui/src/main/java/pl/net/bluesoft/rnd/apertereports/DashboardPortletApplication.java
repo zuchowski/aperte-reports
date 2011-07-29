@@ -2,7 +2,6 @@ package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
 import com.vaadin.ui.Window;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.components.HelpComponent;
 import pl.net.bluesoft.rnd.apertereports.context.AbstractContextReloadHandler;
 import pl.net.bluesoft.rnd.apertereports.context.ContextReloadListener;
@@ -10,6 +9,7 @@ import pl.net.bluesoft.rnd.apertereports.context.PortletContextHolder;
 import pl.net.bluesoft.rnd.apertereports.dashboard.AbstractDashboardComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.EditDashboardComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.ViewDashboardComponent;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * This portlet displays a dashboard based on an existing report from the database.
@@ -42,7 +42,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        final Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.window.title"), viewMode);
+        final Window mainWindow = new Window(VaadinUtil.getValue("dashboard.window.title"), viewMode);
         setMainWindow(mainWindow);
 
         if (getContext() instanceof PortletApplicationContext2) {

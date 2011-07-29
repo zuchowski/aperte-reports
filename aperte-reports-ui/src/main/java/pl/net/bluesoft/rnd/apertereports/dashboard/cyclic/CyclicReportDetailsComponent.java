@@ -4,28 +4,27 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.*;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
-import eu.livotov.tpt.i18n.TM;
-import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.data.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.util.*;
+import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
+import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.validators.CronValidator;
-import pl.net.bluesoft.rnd.apertereports.xml.XmlHelper;
 
-import javax.xml.bind.JAXBException;
 import java.util.*;
 
-import static pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status.FAILED;
-import static pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status.PROCESSING;
-import static pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status.SUCCEEDED;
-import static pl.net.bluesoft.rnd.apertereports.util.Constants.ReportType;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import static pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status.*;
 
 /**
  * Displays cyclic report order details (i.e. description, format, cron expression).
@@ -42,7 +41,7 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
 
     private VerticalLayout reportDetailsPanel = new VerticalLayout();
     private ReportParametersComponent parametersComponent;
-    private Panel reportParametersPanel = new Panel(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.parameters"));
+    private Panel reportParametersPanel = new Panel(VaadinUtil.getValue("dashboard.edit.report.parameters"));
 
     /**
      * Report template select.
@@ -56,19 +55,19 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
     /**
      * The cyclic report detail fields.
      */
-    private TextField descriptionField = new TextField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.desc"));
-    private TextField statusField = new TextField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.status"));
-    private TextField cronExpressionField = new TextField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.table.when"));
-    private CheckBox enabledCheckBox = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.enabled"));
-    private TextField emailField = new TextField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.email"));
-    private Select outputFormatSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.email.format"));
+    private TextField descriptionField = new TextField(VaadinUtil.getValue("cyclic.report.table.desc"));
+    private TextField statusField = new TextField(VaadinUtil.getValue("cyclic.report.table.status"));
+    private TextField cronExpressionField = new TextField(VaadinUtil.getValue("cyclic.report.table.when"));
+    private CheckBox enabledCheckBox = new CheckBox(VaadinUtil.getValue("cyclic.report.enabled"));
+    private TextField emailField = new TextField(VaadinUtil.getValue("cyclic.report.email"));
+    private Select outputFormatSelect = new Select(VaadinUtil.getValue("cyclic.report.email.format"));
 
     /**
      * Buttons.
      */
-    private Button saveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.update"));
-    private Button cancelButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cancel"));
-    private Button downloadButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.download"));
+    private Button saveButton = new Button(VaadinUtil.getValue("cyclic.report.update"));
+    private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
+    private Button downloadButton = new Button(VaadinUtil.getValue("cyclic.report.download"));
     private Select downloadFormatSelect = new Select();
 
     public CyclicReportDetailsComponent(CyclicReportOrder cyclicReport) {
@@ -134,7 +133,7 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
         if (cyclicReport != null) {
             descriptionField.setValue(cyclicReport.getDescription() != null ? cyclicReport.getDescription() : "");
             ReportOrder rep = cyclicReport.getProcessedOrder() != null ? cyclicReport.getProcessedOrder() : cyclicReport.getReportOrder();
-            statusField.setValue(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue(getStatusKey(rep != null ? rep.getReportStatus() : null)));
+            statusField.setValue(VaadinUtil.getValue(getStatusKey(rep != null ? rep.getReportStatus() : null)));
             try {
                 cronExpressionField.setValue(cyclicReport.getCronSpec() != null ? cyclicReport.getCronSpec() : "");
             }
@@ -152,14 +151,14 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
      * responsible for displaying the cron expression.
      */
     private void initView() {
-        mainPanel.addComponent(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.name") + ": " + (cyclicReport.getComponentId() != null ?
-                cyclicReport.getComponentId() : pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.new"))));
+        mainPanel.addComponent(new Label(VaadinUtil.getValue("cyclic.report.name") + ": " + (cyclicReport.getComponentId() != null ?
+                cyclicReport.getComponentId() : VaadinUtil.getValue("cyclic.report.new"))));
         mainPanel.addComponent(reportDetailsPanel);
         mainPanel.addComponent(getButtonsPanel());
         mainPanel.setSpacing(true);
         mainPanel.setSizeFull();
 
-        reportSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.report"));
+        reportSelect = new Select(VaadinUtil.getValue("dashboard.edit.table.report"));
         reportSelect.setWidth("-1px");
         reportSelect.setImmediate(true);
         reportSelect.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
@@ -192,7 +191,7 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
         outputFormatSelect.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
 
         cronExpressionField.setRequired(true);
-        cronExpressionField.addValidator(new CronValidator(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("cyclic.report.when.validationError")));
+        cronExpressionField.addValidator(new CronValidator(VaadinUtil.getValue("cyclic.report.when.validationError")));
         cronExpressionField.setInvalidAllowed(false);
         cronExpressionField.setImmediate(true);
         cronExpressionField.addListener(new Property.ValueChangeListener() {
@@ -225,12 +224,12 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
             try {
                 reportParametersPanel.addComponent(new TPTLazyLoadingLayout(parametersComponent =
                         new ReportParametersComponent(report.getContent() != null ? new String(report.getContent()) : "",
-                                report.getId(), XmlHelper.xmlAsParameters(cyclicReport.getParametersXml() != null ?
+                                report.getId(), XmlReportConfigLoader.getInstance().xmlAsParameters(cyclicReport.getParametersXml() != null ?
                                 new String(cyclicReport.getParametersXml()) : ""), false, true, false), true));
             }
             catch (Exception e) {
-                ExceptionUtil.logSevereException(e);
-                NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
+                ExceptionUtils.logSevereException(e);
+                NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
             }
         }
         reportParametersPanel.setVisible(report != null);
@@ -268,15 +267,15 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
                 if (report != null && validateParameters()) {
                     ReportType reportType = (ReportType) downloadFormatSelect.getValue();
                     try {
-                        ReportMaster reportMaster = new ReportMaster(new String(report.getContent()),
-                                report.getId());
+                        ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString());
                         Map<String, String> parameters = parametersComponent.collectParametersValues();
-                        byte[] data = reportMaster.generateAndExportReport(parameters, reportType.name(), ConfigurationCache.getConfiguration());
+                        byte[] data = reportMaster.generateAndExportReport(new HashMap<String, Object>(parameters),
+                                reportType.name(), ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), report.getReportname(), data, reportType.name());
                     }
-                    catch (JRException e) {
-                        ExceptionUtil.logSevereException(e);
-                        NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
+                    catch (Exception e) {
+                        ExceptionUtils.logSevereException(e);
+                        NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
                     }
                 }
             }
@@ -313,19 +312,13 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
      * Updates the report data. This should be called after a positive validation.
      */
     private void updateReportData() {
-        try {
-            cyclicReport.setCronSpec(cronExpressionField.getValue().toString());
-            cyclicReport.setDescription(descriptionField.getValue().toString());
-            cyclicReport.setEnabled((Boolean) enabledCheckBox.getValue());
-            cyclicReport.setOutputFormat(outputFormatSelect.getValue().toString());
-            cyclicReport.setParametersXml(XmlHelper.mapAsXml(parametersComponent.collectParametersValues()).toCharArray());
-            cyclicReport.setRecipientEmail(emailField.getValue().toString());
-            cyclicReport.setReport(report);
-        }
-        catch (JAXBException e) {
-            ExceptionUtil.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
-        }
+        cyclicReport.setCronSpec(cronExpressionField.getValue().toString());
+        cyclicReport.setDescription(descriptionField.getValue().toString());
+        cyclicReport.setEnabled((Boolean) enabledCheckBox.getValue());
+        cyclicReport.setOutputFormat(outputFormatSelect.getValue().toString());
+        cyclicReport.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parametersComponent.collectParametersValues()).toCharArray());
+        cyclicReport.setRecipientEmail(emailField.getValue().toString());
+        cyclicReport.setReport(report);
     }
 
     /**

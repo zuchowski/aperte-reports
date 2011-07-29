@@ -1,10 +1,10 @@
 package pl.net.bluesoft.rnd.apertereports.dashboard.html;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.util.Constants;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.wrappers.Pair;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public interface ReportDataProvider {
      * @param cached Should the data be taken from a cache or generated directly
      * @return A pair of {@link JasperPrint} and bytes of report data
      */
-    Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, Constants.ReportType format, boolean cached);
+    Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, ReportConstants.ReportType format, boolean cached);
 
     /**
      * Provides a Jasper Reports template based on a given {@link ReportConfig}.

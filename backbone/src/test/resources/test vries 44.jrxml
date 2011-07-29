@@ -13,16 +13,16 @@
     <parameter name="s_active" class="java.lang.String">
         <property name="input_type" value="CHECKBOXES"/>
         <property name="dict_query"
-                  value="java:comp/env/jdbc/unirep;SELECT DISTINCT active, CASE active WHEN false THEN 'nieaktywne' WHEN true THEN 'aktywne' END FROM unirep_configuration WHERE active IS NOT NULL"/>
+                  value="java:comp/env/jdbc/unirep;SELECT DISTINCT active, CASE active WHEN false THEN 'nieaktywne' WHEN true THEN 'aktywne' END FROM ar_report_template WHERE active IS NOT NULL"/>
         <property name="label" value="Pokaz tylko raporty"/>
         <defaultValueExpression><![CDATA["'true', 'false'"]]></defaultValueExpression>
     </parameter>
     <parameter name="s_report_name" class="java.lang.String">
         <property name="input_type" value="MULTISELECT"/>
         <property name="select_all" value="true"/>
-        <property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT DISTINCT reportname, reportname FROM unirep_configuration"/>
+        <property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT DISTINCT reportname, reportname FROM ar_report_template"/>
         <property name="label" value="Pokaz dla raportow o nazwach"/>
-        <defaultValueExpression><![CDATA["SELECT reportname FROM unirep_configuration"]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA["SELECT reportname FROM ar_report_template"]]></defaultValueExpression>
     </parameter>
     <parameter name="s_created_before" class="java.lang.String">
         <property name="input_type" value="date"/>
@@ -75,9 +75,9 @@
         <property name="filter_group" value="filtering_group"/>
         <property name="maxchars" value="30"/>
         <property name="select_all" value="true"/>
-        <property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT id, description, filename, reportname FROM unirep_configuration"/>
+        <property name="dict_query" value="java:comp/env/jdbc/unirep;SELECT id, description, filename, reportname FROM ar_report_template"/>
         <property name="multiple_choice" value="true"/>
-        <defaultValueExpression><![CDATA["SELECT 0 FROM unirep_configuration"]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA["SELECT 0 FROM ar_report_template"]]></defaultValueExpression>
     </parameter>
     <parameter name="s_report_group" class="java.lang.String"/>
     <parameter name="datasource" class="java.lang.String">
@@ -95,25 +95,25 @@
     </parameter>
     <queryString language="SQL">
         <![CDATA[SELECT
-             unirep_configuration."active" AS unirep_configuration_active,
-             unirep_configuration."description" AS unirep_configuration_description,
-             unirep_configuration."reportname" AS unirep_configuration_reportname,
-             unirep_configuration."filename" AS unirep_configuration_filename
+             ar_report_template."active" AS ar_report_template_active,
+             ar_report_template."description" AS ar_report_template_description,
+             ar_report_template."reportname" AS ar_report_template_reportname,
+             ar_report_template."filename" AS ar_report_template_filename
         FROM
-             "public"."unirep_configuration" unirep_configuration
+             "public"."ar_report_template" ar_report_template
         WHERE
-             unirep_configuration."active" IN ($P!{s_active})
-             AND (unirep_configuration."reportname" IN ($P!{s_report_name})
-             OR unirep_configuration.id IN ($P!{filtered_value}))
+             ar_report_template."active" IN ($P!{s_active})
+             AND (ar_report_template."reportname" IN ($P!{s_report_name})
+             OR ar_report_template.id IN ($P!{filtered_value}))
         ORDER BY active, $P!{r_order_by}
     ]]>
     </queryString>
-    <field name="unirep_configuration_active" class="java.lang.Boolean"/>
-    <field name="unirep_configuration_description" class="java.lang.String"/>
-    <field name="unirep_configuration_reportname" class="java.lang.String"/>
-    <field name="unirep_configuration_filename" class="java.lang.String"/>
-    <group name="unirep_configuration_active">
-        <groupExpression><![CDATA[$F{unirep_configuration_active}]]></groupExpression>
+    <field name="ar_report_template_active" class="java.lang.Boolean"/>
+    <field name="ar_report_template_description" class="java.lang.String"/>
+    <field name="ar_report_template_reportname" class="java.lang.String"/>
+    <field name="ar_report_template_filename" class="java.lang.String"/>
+    <group name="ar_report_template_active">
+        <groupExpression><![CDATA[$F{ar_report_template_active}]]></groupExpression>
         <groupHeader>
             <band height="40">
                 <textField>
@@ -122,7 +122,7 @@
                         <font isBold="true"/>
                     </textElement>
                     <textFieldExpression class="java.lang.String">
-                        <![CDATA[$F{unirep_configuration_active}.equals(true) ? "aktywne" : "nieaktywne"]]></textFieldExpression>
+                        <![CDATA[$F{ar_report_template_active}.equals(true) ? "aktywne" : "nieaktywne"]]></textFieldExpression>
                 </textField>
                 <rectangle>
                     <reportElement mode="Opaque" x="97" y="13" width="36" height="24" forecolor="#CCCCCC" backcolor="#CCCCCC"/>
@@ -229,17 +229,17 @@
                 <textField>
                     <reportElement style="Detail" x="0" y="0" width="152" height="15"/>
                     <textElement/>
-                    <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_description}]]></textFieldExpression>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{ar_report_template_description}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="Detail" x="152" y="0" width="152" height="15"/>
                     <textElement/>
-                    <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_reportname}]]></textFieldExpression>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{ar_report_template_reportname}]]></textFieldExpression>
                 </textField>
                 <textField>
                     <reportElement style="Detail" x="304" y="0" width="152" height="15"/>
                     <textElement/>
-                    <textFieldExpression class="java.lang.String"><![CDATA[$F{unirep_configuration_filename}]]></textFieldExpression>
+                    <textFieldExpression class="java.lang.String"><![CDATA[$F{ar_report_template_filename}]]></textFieldExpression>
                 </textField>
             </frame>
             <line>

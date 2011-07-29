@@ -10,13 +10,14 @@ import com.vaadin.ui.Button.ClickListener;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate.Fields;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate.Fields;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.generators.CheckBoxColumnGenerator;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.io.Serializable;
 import java.util.*;
@@ -112,7 +113,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
             final TextField sf = new TextField();
             sf.setImmediate(true);
             sf.setWidth("100%");
-            sf.setInputPrompt(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.filter." + StringUtils.lowerCase(pn.toString())));
+            sf.setInputPrompt(VaadinUtil.getValue("manager.filter." + StringUtils.lowerCase(pn.toString())));
             sf.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(final ValueChangeEvent event) {
@@ -125,7 +126,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
             bottomLeftCorner.addComponent(sf);
             fields.add(sf);
         }
-        Button clearFiltersButton = new RefreshButton(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("global.clearfilters.button"), new ClickListener() {
+        Button clearFiltersButton = new RefreshButton(VaadinUtil.getValue("global.clearfilters.button"), new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 for (TextField sf : fields) {
@@ -176,7 +177,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
             }
         });
         reportAddButton.setImmediate(true);
-        reportAddButton.setDescription(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.add"));
+        reportAddButton.setDescription(VaadinUtil.getValue("report.table.add"));
 
         reportDeleteButton = new Button("-", new Button.ClickListener() {
             @Override
@@ -184,8 +185,8 @@ public class ReportManagerComponent extends Panel implements Serializable {
                 Item item = reportTableData.getItem(reportTable.getValue());
                 String reportName = (String) item.getItemProperty(Fields.REPORTNAME).getValue();
                 String description = (String) item.getItemProperty(Fields.DESCRIPTION).getValue();
-                NotificationUtil.showConfirmWindow(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.deleteReport.title"),
-                        pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.deleteReport.content").replaceFirst("%s", reportName + " (" + description + ")"),
+                NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue("report.table.deleteReport.title"),
+                        VaadinUtil.getValue("report.table.deleteReport.content").replaceFirst("%s", reportName + " (" + description + ")"),
                         new ConfirmListener() {
                             @Override
                             public void onConfirm() {
@@ -199,7 +200,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
             }
         });
         reportDeleteButton.setImmediate(true);
-        reportDeleteButton.setDescription(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report.table.delete"));
+        reportDeleteButton.setDescription(VaadinUtil.getValue("report.table.delete"));
         reportDeleteButton.setVisible(false);
 
         bottomLeftCorner.addComponent(reportAddButton);
@@ -214,7 +215,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
     public final void deleteReport(ReportTemplate rt) {
         allReportTemplates.remove(rt);
         ReportTemplateDAO.remove(rt);
-        ReportCache.removeReport(rt.getId());
+        ReportCache.removeReport(rt.getId().toString());
         refreshContainer(allReportTemplates);
 
         if (reportTableData.size() > 0) {
@@ -237,7 +238,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
         reportTable.addGeneratedColumn(Fields.ALLOW_ONLINE_DISPLAY, new CheckBoxColumnGenerator());
         reportTable.addGeneratedColumn(Fields.ALLOW_BACKGROUND_ORDER, new CheckBoxColumnGenerator());
         for (Fields col : visibleCols) {
-            reportTable.setColumnHeader(col, pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.table.column." + StringUtils.lowerCase(col.toString())));
+            reportTable.setColumnHeader(col, VaadinUtil.getValue("manager.table.column." + StringUtils.lowerCase(col.toString())));
             if (col.equals(Fields.DESCRIPTION) || col.equals(Fields.REPORTNAME)) {
                 reportTable.setColumnExpandRatio(col, 1.0f);
                 reportTable.setColumnWidth(col, -1);

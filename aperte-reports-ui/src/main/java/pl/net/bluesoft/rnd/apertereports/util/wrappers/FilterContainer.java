@@ -5,8 +5,8 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
-import pl.net.bluesoft.rnd.apertereports.wrappers.DictionaryItem;
-import pl.net.bluesoft.rnd.apertereports.wrappers.DictionaryItemFilter;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.DictionaryItem;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.DictionaryItemFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

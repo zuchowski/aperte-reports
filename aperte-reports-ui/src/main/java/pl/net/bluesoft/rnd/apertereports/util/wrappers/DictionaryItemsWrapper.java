@@ -1,6 +1,6 @@
 package pl.net.bluesoft.rnd.apertereports.util.wrappers;
 
-import pl.net.bluesoft.rnd.apertereports.wrappers.DictionaryItem;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.DictionaryItem;
 
 import java.util.LinkedList;
 import java.util.List;

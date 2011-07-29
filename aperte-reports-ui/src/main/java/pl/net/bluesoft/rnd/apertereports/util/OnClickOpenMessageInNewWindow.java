@@ -3,7 +3,6 @@ package pl.net.bluesoft.rnd.apertereports.util;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-
 import eu.livotov.tpt.gui.windows.TPTWindow;
 
 /**

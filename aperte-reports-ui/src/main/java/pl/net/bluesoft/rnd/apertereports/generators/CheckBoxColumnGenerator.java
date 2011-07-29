@@ -1,11 +1,10 @@
 package pl.net.bluesoft.rnd.apertereports.generators;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Property;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Generates a styled checkbox column for Vaadin tables.

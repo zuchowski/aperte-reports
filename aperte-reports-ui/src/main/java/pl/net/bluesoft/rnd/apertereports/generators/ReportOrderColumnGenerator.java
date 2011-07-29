@@ -5,14 +5,16 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.themes.BaseTheme;
 import eu.livotov.tpt.i18n.TM;
-import pl.net.bluesoft.rnd.apertereports.ReportOrderPusher;
+import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.components.VriesReportOrderBrowserComponent.Columns;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesException;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
 import pl.net.bluesoft.rnd.apertereports.util.*;
-import pl.net.bluesoft.rnd.apertereports.util.Constants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +47,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                 if (reportOrder.getReportStatus() == Status.SUCCEEDED) {
                     HorizontalLayout hl = new HorizontalLayout();
                     hl.setSpacing(true);
-                    for (final ReportType format : Constants.ReportType.values()) {
+                    for (final ReportType format : ReportConstants.ReportType.values()) {
                         Button formatLink = new Button(format.toString());
                         formatLink.setStyleName(BaseTheme.BUTTON_LINK);
                         formatLink.addListener(new Button.ClickListener() {
@@ -56,7 +58,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                                             DashboardUtil.exportReportOrderData(reportOrder, format), format.toString());
                                 }
                                 catch (Exception e) {
-                                    ExceptionUtil.logSevereException(e);
+                                    ExceptionUtils.logSevereException(e);
                                     NotificationUtil.showExceptionNotification(source.getWindow(), new VriesException(e));
                                 }
                             }
@@ -66,10 +68,10 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                     return hl;
                 }
                 else if (reportOrder.getReportStatus() == Status.PROCESSING) {
-                    return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.processing"));
+                    return new Label(VaadinUtil.getValue("report_order.table.status.processing"));
                 }
                 else if (reportOrder.getReportStatus() == Status.FAILED) {
-                    Button label = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.failed"));
+                    Button label = new Button(VaadinUtil.getValue("report_order.table.status.failed"));
                     label.setStyleName(BaseTheme.BUTTON_LINK);
                     label.setDescription(reportOrder.getErrorDetails());
                     label.addListener(new OnClickOpenMessageInNewWindow(source, TM
@@ -78,10 +80,10 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                     return label;
                 }
                 else {
-                    return new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.status.new"));
+                    return new Label(VaadinUtil.getValue("report_order.table.status.new"));
                 }
             case DETAILS:
-                Button paramsLink = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.parameters"));
+                Button paramsLink = new Button(VaadinUtil.getValue("report_order.table.parameters"));
                 paramsLink.setStyleName(BaseTheme.BUTTON_LINK);
                 paramsLink.addListener(new OnClickOpenMessageInNewWindow(source, TM
                         .get("report_order.table.parameters.popup.title"), new String(reportOrder.getParametersXml()),
@@ -91,14 +93,14 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                 if (reportOrder.getReportStatus() == Status.FAILED || reportOrder.getReportStatus() == Status.SUCCEEDED) {
                     HorizontalLayout hl = new HorizontalLayout();
                     hl.setSpacing(true);
-                    Button rerunLink = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun"));
+                    Button rerunLink = new Button(VaadinUtil.getValue("report_order.table.rerun"));
                     rerunLink.setStyleName(BaseTheme.BUTTON_LINK);
                     rerunLink.addListener(new Button.ClickListener() {
                         @Override
                         public void buttonClick(ClickEvent event) {
                             NotificationUtil.showConfirmWindow(source.getApplication().getMainWindow(),
-                                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun.popup.title"),
-                                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.rerun.popup.question"), new ConfirmListener() {
+                                    VaadinUtil.getValue("report_order.table.rerun.popup.title"),
+                                    VaadinUtil.getValue("report_order.table.rerun.popup.question"), new ConfirmListener() {
                                 @Override
                                 public void onConfirm() {
                                     ReportOrder shallowCopy = reportOrder.shallowCopy();
@@ -119,7 +121,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
             case CREATE_DATE:
                 Calendar createDateCal = reportOrder.getCreateDate();
                 if (createDateCal != null) {
-                    SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATETIME_PATTERN);
+                    SimpleDateFormat sdf = new SimpleDateFormat(ReportConstants.DATETIME_PATTERN);
                     return new Label(sdf.format(createDateCal.getTime()));
                 }
                 break;

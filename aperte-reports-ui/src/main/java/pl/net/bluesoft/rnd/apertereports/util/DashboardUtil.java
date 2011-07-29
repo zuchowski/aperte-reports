@@ -3,12 +3,14 @@ package pl.net.bluesoft.rnd.apertereports.util;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.*;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
+import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.exception.ReportException;
-import pl.net.bluesoft.rnd.apertereports.util.Constants.ReportType;
-import pl.net.bluesoft.rnd.apertereports.wrappers.Pair;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -211,18 +213,19 @@ public final class DashboardUtil {
     }
 
     /**
-     * Extracts the report data from given {@link pl.net.bluesoft.rnd.apertereports.data.ReportOrder} instance.
+     * Extracts the report data from given {@link pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder} instance.
      *
      * @param reportOrder Input report order
      * @param format      Output format
      * @return Bytes of a generated report
-     * @throws pl.net.bluesoft.rnd.apertereports.exception.ReportException
+     * @throws pl.net.bluesoft.rnd.apertereports.common.exception.ReportException
      *          On JRExporter error
      * @throws net.sf.jasperreports.engine.JRException
      *          On JasperPrint load error
      */
     public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws ReportException, JRException {
-        JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(DeCoder.decodeStringToBais(reportOrder.getReportResult()));
+        JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(
+                new ByteArrayInputStream(Base64.decodeBase64(new String(reportOrder.getReportResult()).getBytes())));
         return ReportMaster.exportReport(jasperPrint, format.toString(), ConfigurationCache.getConfiguration());
     }
 

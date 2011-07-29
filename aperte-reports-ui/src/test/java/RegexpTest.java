@@ -1,8 +1,8 @@
 import org.junit.Test;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
-import pl.net.bluesoft.rnd.apertereports.wrappers.Pair;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

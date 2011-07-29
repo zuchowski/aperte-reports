@@ -1,6 +1,6 @@
 package pl.net.bluesoft.rnd.apertereports.util.cache;
 
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -26,7 +26,7 @@ public class MapCache {
             id = digest("SHA-1", "" + new Random().nextInt(), "" + System.currentTimeMillis(), "" + (new Random().nextInt() << 13), toString());
         }
         catch (NoSuchAlgorithmException e) {
-            ExceptionUtil.logSevereException(e);
+            ExceptionUtils.logSevereException(e);
             id = new Random().nextInt() + "" + System.currentTimeMillis() + (new Random().nextInt() << 13) + toString(); // unsafe
         }
     }

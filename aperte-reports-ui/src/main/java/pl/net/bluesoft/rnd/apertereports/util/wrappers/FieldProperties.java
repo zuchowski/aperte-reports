@@ -1,6 +1,6 @@
 package pl.net.bluesoft.rnd.apertereports.util.wrappers;
 
-import pl.net.bluesoft.rnd.apertereports.util.Constants.InputTypes;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;

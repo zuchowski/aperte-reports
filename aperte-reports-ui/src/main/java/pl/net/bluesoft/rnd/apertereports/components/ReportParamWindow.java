@@ -4,20 +4,23 @@ import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import eu.livotov.tpt.i18n.TM;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.AbstractReportingApplication;
-import pl.net.bluesoft.rnd.apertereports.ReportOrderPusher;
+import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportStreamReceiver;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.exception.VriesException;
-import pl.net.bluesoft.rnd.apertereports.util.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,8 +34,8 @@ public class ReportParamWindow extends Window {
     private ReportParametersComponent reportParametersComponent;
 
     private ReportStreamReceiver receiver = null;
-    private Button submitBackgroundGenerate = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.generate_in_background"));
-    private CheckBox sendEmailCheckbox = new CheckBox(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.send_email"));
+    private Button submitBackgroundGenerate = new Button(VaadinUtil.getValue("invoker.form.generate_in_background"));
+    private CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue("invoker.form.send_email"));
     private AbstractReportingApplication app;
 
     public ReportParamWindow(ReportTemplate report, String caption, ReportStreamReceiver receiver) {
@@ -51,7 +54,14 @@ public class ReportParamWindow extends Window {
      */
     private byte[] getReportAsBytes() {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
-        return rm.generateAndExportReport(parameters, reportParametersComponent.getSelectedFormat(), ConfigurationCache.getConfiguration());
+        try {
+            return rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
+                    ConfigurationCache.getConfiguration());
+        }
+        catch (ReportException e) {
+            ExceptionUtils.logSevereException(e);
+            throw new VriesRuntimeException("Error while generating report", e);
+        }
     }
 
     /**
@@ -59,9 +69,16 @@ public class ReportParamWindow extends Window {
      */
     private void sendForm() {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
-        byte[] report = rm.generateAndExportReport(parameters, reportParametersComponent.getSelectedFormat(), ConfigurationCache.getConfiguration());
-        FileStreamer.showFile(getApplication(), this.report.getReportname(), report,
-                reportParametersComponent.getSelectedFormat());
+        try {
+            byte[] reportData = rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
+                    ConfigurationCache.getConfiguration());
+            FileStreamer.showFile(getApplication(), this.report.getReportname(), reportData,
+                    reportParametersComponent.getSelectedFormat());
+        }
+        catch (ReportException e) {
+            ExceptionUtils.logSevereException(e);
+            throw new VriesRuntimeException("Error while generating report", e);
+        }
     }
 
     /**
@@ -93,12 +110,12 @@ public class ReportParamWindow extends Window {
     protected void initDialog() {
         VerticalLayout vl = new VerticalLayout();
         try {
-            rm = new ReportMaster(new String(report.getContent()), report.getId());
+            rm = new ReportMaster(new String(report.getContent()), report.getId().toString());
             reportParametersComponent = new ReportParametersComponent(rm);
 
             HorizontalLayout buttons = new HorizontalLayout();
             if (Boolean.TRUE.equals(report.getAllowOnlineDisplay())) {
-                final Button submitGenerate = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.generate"));
+                final Button submitGenerate = new Button(VaadinUtil.getValue("invoker.form.generate"));
                 submitGenerate.addListener(new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {
@@ -117,7 +134,7 @@ public class ReportParamWindow extends Window {
                         if (reportParametersComponent.validateForm()) {
                             sendFormToJMS((Boolean) sendEmailCheckbox.getValue());
                             close();
-                            showNotification(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.generate_in_background.succeeded"));
+                            showNotification(VaadinUtil.getValue("invoker.form.generate_in_background.succeeded"));
                         }
                     }
                 });
@@ -126,7 +143,7 @@ public class ReportParamWindow extends Window {
             }
 
             if (receiver != null) {
-                final Button submitGenerate = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.generate_stream"));
+                final Button submitGenerate = new Button(VaadinUtil.getValue("invoker.form.generate_stream"));
                 submitGenerate.addListener(new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {
@@ -145,7 +162,7 @@ public class ReportParamWindow extends Window {
         }
         catch (Exception e) {
             NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
-            ExceptionUtil.logSevereException(e);
+            ExceptionUtils.logSevereException(e);
         }
     }
 
@@ -162,22 +179,22 @@ public class ReportParamWindow extends Window {
                 if (app.getLiferayUser() == null) {
                     submitBackgroundGenerate.setEnabled(false);
                     sendEmailCheckbox.setEnabled(false);
-                    sendEmailCheckbox.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.send_email.with_error.no_user"));
+                    sendEmailCheckbox.setCaption(VaadinUtil.getValue("invoker.form.send_email.with_error.no_user"));
                 }
                 else if (StringUtils.isEmpty(app.getLiferayUser().getEmailAddress())) {
                     sendEmailCheckbox.setEnabled(false);
-                    sendEmailCheckbox.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.send_email.with_error.no_email"));
+                    sendEmailCheckbox.setCaption(VaadinUtil.getValue("invoker.form.send_email.with_error.no_email"));
                 }
                 else {
                     sendEmailCheckbox.setEnabled(true);
-                    sendEmailCheckbox.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.send_email.with_email", app.getLiferayUser()
+                    sendEmailCheckbox.setCaption(VaadinUtil.getValue("invoker.form.send_email.with_email", app.getLiferayUser()
                             .getEmailAddress()));
                 }
             }
             else {
                 sendEmailCheckbox.setEnabled(false);
                 submitBackgroundGenerate.setEnabled(false);
-                sendEmailCheckbox.setCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.form.send_email.with_error.no_context"));
+                sendEmailCheckbox.setCaption(VaadinUtil.getValue("invoker.form.send_email.with_error.no_context"));
             }
         }
     }

@@ -23,8 +23,10 @@
     <modules>
         <module>backbone</module>
         <module>common</module>
-        <module>aperte-reports-ui</module>
         <module>engine</module>
+        <module>domain</module>
+        <module>aperte-reports-ui</module>
+        <module>aperte-reports-ws</module>
     </modules>
 
     <scm>

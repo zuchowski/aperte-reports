@@ -4,26 +4,24 @@ import com.vaadin.data.Property;
 import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.ui.*;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
-import eu.livotov.tpt.i18n.TM;
-import net.sf.jasperreports.engine.JRException;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigParameter;
+import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.components.HelpLayout;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
-import pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
 import pl.net.bluesoft.rnd.apertereports.dashboard.cyclic.CyclicReportsPanel;
-import pl.net.bluesoft.rnd.apertereports.data.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.util.Constants;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.xml.ReportConfigParameter;
-import pl.net.bluesoft.rnd.apertereports.xml.XmlHelper;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
-import javax.xml.bind.JAXBException;
 import java.util.*;
 
 /**
@@ -48,16 +46,16 @@ public abstract class ReportDetailsComponent extends CustomComponent {
     /**
      * Common buttons.
      */
-    private Button saveButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.save"));
-    private Button cancelButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cancel"));
-    private Button openCyclicReportsButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.cyclicReports"));
+    private Button saveButton = new Button(VaadinUtil.getValue("dashboard.edit.save"));
+    private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
+    private Button openCyclicReportsButton = new Button(VaadinUtil.getValue("dashboard.edit.cyclicReports"));
 
     private VerticalLayout mainPanel = new VerticalLayout();
     private VerticalLayout reportDetailsPanel = new VerticalLayout();
 
     private Select reportSelect;
     private ReportParametersComponent reportParametersComponent;
-    private Panel reportParametersPanel = new Panel(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.parameters"));
+    private Panel reportParametersPanel = new Panel(VaadinUtil.getValue("dashboard.edit.report.parameters"));
 
     private TextField cacheTimeoutField = new TextField();
     private CheckBox allowRefreshField = new CheckBox();
@@ -149,7 +147,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
         mainPanel.addComponent(getButtonsPanel());
         mainPanel.setSizeFull();
 
-        reportSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.report"));
+        reportSelect = new Select(VaadinUtil.getValue("dashboard.edit.table.report"));
         reportSelect.setImmediate(true);
         reportSelect.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
         reportSelect.addListener(new Property.ValueChangeListener() {
@@ -180,7 +178,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
         cacheTimeoutField.setImmediate(true);
         cacheTimeoutField.setMaxLength(4);
         cacheTimeoutField.setColumns(3);
-        cacheTimeoutField.addValidator(new IntegerValidator(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.cacheTimeout.error")));
+        cacheTimeoutField.addValidator(new IntegerValidator(VaadinUtil.getValue("dashboard.edit.report.cacheTimeout.error")));
         cacheTimeoutField.addListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
@@ -191,17 +189,17 @@ public abstract class ReportDetailsComponent extends CustomComponent {
             }
         });
 
-        reportDetailsPanel.addComponent(new SimpleHorizontalLayout(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.cacheTimeout")), cacheTimeoutField,
-                new Label(" s [" + pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.cacheTimeout.instructions") + "]")));
+        reportDetailsPanel.addComponent(new SimpleHorizontalLayout(new Label(VaadinUtil.getValue("dashboard.edit.report.cacheTimeout")), cacheTimeoutField,
+                new Label(" s [" + VaadinUtil.getValue("dashboard.edit.report.cacheTimeout.instructions") + "]")));
 
         HorizontalLayout hl = new HorizontalLayout();
         hl.setSpacing(true);
         hl.setSizeFull();
-        hl.addComponent(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.allowRefresh")));
+        hl.addComponent(new Label(VaadinUtil.getValue("dashboard.edit.report.allowRefresh")));
         hl.addComponent(allowRefreshField);
         reportDetailsPanel.addComponent(hl);
 
-        for (Constants.ReportType rt : Constants.ReportType.values()) {
+        for (ReportConstants.ReportType rt : ReportConstants.ReportType.values()) {
             formatsMap.put(rt.name(), new CheckBox(rt.name()));
         }
         GridLayout grid = new GridLayout(formatsMap.values().size(), 1);
@@ -213,7 +211,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
         for (int i = 0; i < grid.getColumns(); ++i) {
             grid.setColumnExpandRatio(i, 2f);
         }
-        reportDetailsPanel.addComponent(new SimpleHorizontalLayout(new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.report.formats")), grid));
+        reportDetailsPanel.addComponent(new SimpleHorizontalLayout(new Label(VaadinUtil.getValue("dashboard.edit.report.formats")), grid));
     }
 
     /**
@@ -237,7 +235,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
      * Fills in the data of all the GUI components. The data is fetched from database.
      */
     private void initData() {
-        String reportType = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.type.online");
+        String reportType = VaadinUtil.getValue("dashboard.edit.table.type.online");
         Collection<ReportTemplate> reports = ReportTemplateDAO.fetchAllReports(true);
         for (ReportTemplate rep : reports) {
             reportSelect.addItem(rep);
@@ -246,7 +244,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
                 reportSelect.setValue(rep);
             }
         }
-        reportType = pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("dashboard.edit.table.type.cyclic");
+        reportType = VaadinUtil.getValue("dashboard.edit.table.type.cyclic");
         Collection<CyclicReportOrder> cyclicReportOrders = CyclicReportOrderDAO.fetchAllEnabledCyclicReports();
         for (CyclicReportOrder rep : cyclicReportOrders) {
             ReportTemplate r = rep.getReport();
@@ -289,20 +287,16 @@ public abstract class ReportDetailsComponent extends CustomComponent {
                 List<ReportConfigParameter> params = reportConfig != null ? reportConfig.getParameters() : null;
                 if (selectedItem instanceof CyclicReportOrder) {
                     CyclicReportOrder cro = (CyclicReportOrder) selectedItem;
-                    params = XmlHelper.xmlAsParameters(cro.getParametersXml() != null ? new String(cro.getParametersXml()) : "");
+                    params = XmlReportConfigLoader.getInstance().xmlAsParameters(cro.getParametersXml() != null ? new String(cro.getParametersXml()) : "");
                 }
                 readonly = selectedItem instanceof CyclicReportOrder;
                 reportParametersPanel.addComponent(new TPTLazyLoadingLayout(reportParametersComponent =
                         new ReportParametersComponent(new String(reportTemplate.getContent()), reportTemplate.getId(), params,
                                 false, true, readonly), true));
             }
-            catch (JRException e) {
-                ExceptionUtil.logSevereException(e);
-                NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
-            }
-            catch (JAXBException e) {
-                ExceptionUtil.logSevereException(e);
-                NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.gui.error"));
+            catch (Exception e) {
+                ExceptionUtils.logSevereException(e);
+                NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
             }
         }
         reportParametersPanel.setVisible(reportTemplate != null);
@@ -336,7 +330,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
         reportConfig.setCyclicReportId(selectedItem instanceof CyclicReportOrder ? ((CyclicReportOrder) selectedItem).getId() : null);
         reportConfig.setReportId(selectedItem instanceof CyclicReportOrder ? null : reportTemplate.getId());
         reportConfig.setCacheTimeout(Integer.parseInt("" + cacheTimeoutField.getValue()));
-        reportConfig.setParameters(XmlHelper.mapToParameterList(reportParametersComponent.collectParametersValues()));
+        reportConfig.setParameters(XmlReportConfigLoader.getInstance().mapToParameterList(reportParametersComponent.collectParametersValues()));
     }
 
     /**

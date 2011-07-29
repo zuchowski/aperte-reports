@@ -2,12 +2,13 @@ package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Window;
-import pl.net.bluesoft.rnd.apertereports.components.VriesInvokerComponent;
 import pl.net.bluesoft.rnd.apertereports.components.ReportManagerComponent;
+import pl.net.bluesoft.rnd.apertereports.components.VriesInvokerComponent;
 import pl.net.bluesoft.rnd.apertereports.components.VriesReportOrderBrowserComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.EditDashboardComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.ViewDashboardComponent;
 import pl.net.bluesoft.rnd.apertereports.dashboard.cyclic.CyclicReportsPanel;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * This portlet displays the main components used in every other portlet.
@@ -47,7 +48,7 @@ public class ComboApplication extends AbstractReportingApplication {
         tabs.addTab(cyclicReportsPanel);
         tabs.getTab(cyclicReportsPanel).setCaption("cyclic reports");
 
-        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.window.title"), tabs);
+        Window mainWindow = new Window(VaadinUtil.getValue("invoker.window.title"), tabs);
 
         setMainWindow(mainWindow);
     }

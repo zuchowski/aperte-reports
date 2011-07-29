@@ -1,8 +1,8 @@
 package pl.net.bluesoft.rnd.apertereports;
 
 import com.vaadin.ui.Window;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.components.VriesInvokerComponent;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 /**
  * This portlet displays a list of available reports.
@@ -19,7 +19,7 @@ public class InvokerApplication extends AbstractReportingApplication {
     public void portletInit() {
         VriesInvokerComponent invoker = new VriesInvokerComponent(true);
 
-        Window mainWindow = new Window(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("invoker.window.title"), invoker);
+        Window mainWindow = new Window(VaadinUtil.getValue("invoker.window.title"), invoker);
 
         setMainWindow(mainWindow);
     }

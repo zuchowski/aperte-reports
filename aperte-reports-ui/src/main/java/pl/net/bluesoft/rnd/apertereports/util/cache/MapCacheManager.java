@@ -2,8 +2,8 @@ package pl.net.bluesoft.rnd.apertereports.util.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.net.bluesoft.rnd.apertereports.util.Constants;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 
 import java.util.*;
 
@@ -25,10 +25,10 @@ public final class MapCacheManager {
             while (true) {
                 checkCaches(System.currentTimeMillis());
                 try {
-                    sleep(Constants.CACHE_MANAGER_CHECK_INTERVAL);
+                    sleep(ReportConstants.CACHE_MANAGER_CHECK_INTERVAL);
                 }
                 catch (InterruptedException e) {
-                    ExceptionUtil.logSevereException(e);
+                    ExceptionUtils.logSevereException(e);
                     invalidatingThread = null;
                 }
             }

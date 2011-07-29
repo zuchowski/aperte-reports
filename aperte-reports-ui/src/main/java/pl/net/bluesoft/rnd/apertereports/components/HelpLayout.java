@@ -1,13 +1,12 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import eu.livotov.tpt.i18n.TM;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.Iterator;
 
@@ -17,7 +16,7 @@ import java.util.Iterator;
 public class HelpLayout extends HorizontalLayout {
     public HelpLayout(Module module, Tab tab) {
         setSpacing(true);
-        Label helpText = new Label(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("global.help.title"));
+        Label helpText = new Label(VaadinUtil.getValue("global.help.title"));
         helpText.setSizeFull();
         addComponent(helpText);
         addComponent(new HelpButton(module, tab));

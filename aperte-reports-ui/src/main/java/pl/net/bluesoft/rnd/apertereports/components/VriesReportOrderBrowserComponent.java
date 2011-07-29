@@ -6,14 +6,14 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import eu.livotov.tpt.i18n.TM;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.data.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportOrderColumnGenerator;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -95,7 +95,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
      */
     private void initFilteringControls() {
         Form form = new Form();
-        reportOrderSelect = new Select(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.report"));
+        reportOrderSelect = new Select(VaadinUtil.getValue("report_order.filter.report"));
         reportOrderSelect.setNullSelectionAllowed(true);
         reportTemplates = ReportTemplateDAO.fetchAllReports(true);
         for (ReportTemplate reportTemplate : reportTemplates) {
@@ -116,7 +116,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         Calendar threeDaysAgo = Calendar.getInstance();
         threeDaysAgo.add(Calendar.DATE, -3);
 
-        createdAfter = new DateField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.created_after"));
+        createdAfter = new DateField(VaadinUtil.getValue("report_order.filter.created_after"));
         createdAfter.setResolution(DateField.RESOLUTION_MIN);
         createdAfter.setValue(threeDaysAgo.getTime());
         createdAfter.addListener(new Property.ValueChangeListener() {
@@ -127,7 +127,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         });
         form.addField("created_after", createdAfter);
 
-        createdBefore = new DateField(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.filter.created_before"));
+        createdBefore = new DateField(VaadinUtil.getValue("report_order.filter.created_before"));
         createdBefore.setResolution(DateField.RESOLUTION_MIN);
         createdBefore.addListener(new Property.ValueChangeListener() {
             @Override
@@ -140,7 +140,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         form.setImmediate(true);
         filterBox.addComponent(form);
 
-        Button refreshButton = new Button(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.refresh"));
+        Button refreshButton = new Button(VaadinUtil.getValue("report_order.table.refresh"));
         refreshButton.setImmediate(true);
         refreshButton.addListener(new Button.ClickListener() {
             @Override
@@ -165,7 +165,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         reportOrderTable.setVisibleColumns(visibleCols);
         for (Columns col : visibleCols) {
             reportOrderTable.setColumnHeader(col,
-                    pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("report_order.table.column." + StringUtils.lowerCase(col.toString())));
+                    VaadinUtil.getValue("report_order.table.column." + StringUtils.lowerCase(col.toString())));
         }
         filterItems();
     }

@@ -3,23 +3,20 @@
  */
 package pl.net.bluesoft.rnd.apertereports.test;
 
-import static org.junit.Assert.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReport;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
+import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-
-import org.junit.Test;
-
-import org.apache.commons.codec.binary.Base64;
-
-import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
-import pl.net.bluesoft.rnd.apertereports.util.TextUtil;
+import static org.junit.Assert.*;
 
 /**
  * @author Think
@@ -32,7 +29,7 @@ public class ReportMasterTester {
 
     /**
      * Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(java.lang.String, java.lang.Integer)}
+     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(String, String)}
      * .
      *
      * @throws IOException
@@ -49,7 +46,7 @@ public class ReportMasterTester {
 
     /**
      * Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(java.lang.String, java.lang.Integer)}
+     * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(String, String)}
      * .
      *
      * @throws IOException
@@ -170,7 +167,7 @@ public class ReportMasterTester {
     public final void testReportMasterStringInteger() throws IOException, JRException {
         String ds = readTestFileToString(defaultTestReport);
         ds = toBase64(ds);
-        Integer cacheId = 2;
+        String cacheId = "2";
 
         assertNull(ReportCache.getReport(cacheId));
         new ReportMaster(ds, cacheId);
@@ -188,11 +185,11 @@ public class ReportMasterTester {
      * @throws IOException
      */
     private String readTestFileToString(String path) throws IOException {
-        return TextUtil.readTestFileToString(getClass().getResourceAsStream(path));
+        return TextUtils.readTestFileToString(getClass().getResourceAsStream(path));
     }
 
     private String toBase64(String source) throws UnsupportedEncodingException {
-        return String.valueOf(Base64.encodeBase64(source.getBytes("UTF-8")));
+        return new String(Base64.encodeBase64(source.getBytes("UTF-8")));
 
     }
 

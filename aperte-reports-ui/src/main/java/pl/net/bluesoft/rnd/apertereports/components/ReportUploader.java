@@ -9,11 +9,12 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.data.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.util.ExceptionUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -67,9 +68,9 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
      */
     @Override
     public void uploadFailed(FailedEvent event) {
-        ExceptionUtil.logSevereException(event.getReason());
-        NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.upload_failed.title"),
-                pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.upload_failed.description"));
+        ExceptionUtils.logSevereException(event.getReason());
+        NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.upload_failed.title"),
+                VaadinUtil.getValue("exception.upload_failed.description"));
     }
 
     /**
@@ -86,9 +87,9 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 			ReportMaster rm = new ReportMaster(content);
 			report.setReportname(rm.getReportName());
 		}catch (JRException e) {
-			ExceptionUtil.logSevereException(e);
-			NotificationUtil.showExceptionNotification(getWindow(), pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.compilation_failed.title"),
-					pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("exception.compilation_failed.description"));
+			ExceptionUtils.logSevereException(e);
+			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.compilation_failed.title"),
+                    VaadinUtil.getValue("exception.compilation_failed.description"));
 		}
 		report.setContent(content.toCharArray());
 		report.setFilename(event.getFilename());
@@ -103,7 +104,7 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 //            }
 
 		if (report.getId() != null) {
-			ReportCache.removeReport(report.getId());
+			ReportCache.removeReport(report.getId().toString());
 		}
 		reportEditForm.reload();
 
@@ -117,8 +118,8 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
     private Layout buildMainLayout() {
         root = new HorizontalLayout();
 
-        final Upload upload = new Upload(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.upload.prompt"), this);
-        upload.setButtonCaption(pl.net.bluesoft.rnd.apertereports.util.VaadinUtil.getValue("manager.form.upload.button"));
+        final Upload upload = new Upload(VaadinUtil.getValue("manager.form.upload.prompt"), this);
+        upload.setButtonCaption(VaadinUtil.getValue("manager.form.upload.button"));
         upload.setSizeFull();
         upload.addListener((Upload.SucceededListener) this);
         upload.addListener((Upload.FailedListener) this);

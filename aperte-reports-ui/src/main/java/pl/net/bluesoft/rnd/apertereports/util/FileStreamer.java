@@ -3,11 +3,11 @@ package pl.net.bluesoft.rnd.apertereports.util;
 import com.vaadin.Application;
 import com.vaadin.terminal.StreamResource;
 import org.apache.commons.lang.StringUtils;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportMimeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
-import static pl.net.bluesoft.rnd.apertereports.util.Constants.ReportMimeType;
 
 /**
  * A utility class that handles opening of a new window with a report stream.
@@ -48,7 +48,7 @@ public class FileStreamer {
             openFileInNewWindow(app, fileName, report, ReportMimeType.valueOf(format).mimeType());
         }
         catch (Exception e) {
-            ExceptionUtil.logSevereException(e);
+            ExceptionUtils.logSevereException(e);
             NotificationUtil.showExceptionNotification(app.getMainWindow(), "exception.conversion", e);
         }
     }
