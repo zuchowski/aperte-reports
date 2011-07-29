@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
 import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
@@ -46,23 +47,19 @@ public class BackgroundOrderProcessor implements MessageListener {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
             reportOrder = ReportOrderDAO.fetchReport(id);
             processReport(reportOrder);
+            if (reportOrder != null) {
+                forwardResults(reportOrder);
+            }
         }
-        catch (JMSException e) {
-            ExceptionUtils.logSevereException(e);
-        }
-        catch (VriesException e) {
+        catch (Exception e) {
             ExceptionUtils.logSevereException(e);
             if (reportOrder != null) {
                 reportOrder.setReportStatus(Status.FAILED);
                 reportOrder.setErrorDetails(e.getMessage());
                 ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
             }
+            throw new VriesRuntimeException("Error while processing background report order", e);
         }
-
-        if (reportOrder != null) {
-            forwardResults(reportOrder);
-        }
-
     }
 
     /**
@@ -70,7 +67,7 @@ public class BackgroundOrderProcessor implements MessageListener {
      *
      * @param reportOrder
      */
-    private void addToJMS(ReportOrder reportOrder) {
+    private void addToJMS(ReportOrder reportOrder) throws NamingException, JMSException {
         Connection connection = null;
         Session session = null;
         try {
@@ -85,26 +82,14 @@ public class BackgroundOrderProcessor implements MessageListener {
             Message reportOrderMessage = session.createMessage();
             reportOrderMessage.setIntProperty(ReportConstants.REPORT_ORDER_ID, reportOrder.getId().intValue());
             producer.send(reportOrderMessage);
-
             ExceptionUtils.logDebugMessage("sent to " + reportOrder.getReplyToQ() + ": " + reportOrder.getId());
         }
-        catch (NamingException e) {
-            ExceptionUtils.logSevereException(e);
-        }
-        catch (JMSException e) {
-            ExceptionUtils.logSevereException(e);
-        }
         finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-                if (session != null) {
-                    session.close();
-                }
+            if (connection != null) {
+                connection.close();
             }
-            catch (JMSException e) {
-                ExceptionUtils.logSevereException(e);
+            if (session != null) {
+                session.close();
             }
         }
     }
@@ -114,7 +99,7 @@ public class BackgroundOrderProcessor implements MessageListener {
      *
      * @param reportOrder Generated report order.
      */
-    private void forwardResults(ReportOrder reportOrder) {
+    private void forwardResults(ReportOrder reportOrder) throws Exception {
         if (StringUtils.isNotEmpty(reportOrder.getRecipientEmail())) {
             ExceptionUtils.logDebugMessage("ReportOrder id: " + reportOrder.getId() + " sending email to: " + reportOrder.getRecipientEmail());
             try {
@@ -122,6 +107,7 @@ public class BackgroundOrderProcessor implements MessageListener {
             }
             catch (Exception e) {
                 ExceptionUtils.logWarningException("Unable to send email to: " + reportOrder.getRecipientEmail(), e);
+                throw e;
             }
         }
         if (StringUtils.isNotEmpty(reportOrder.getReplyToQ())) {

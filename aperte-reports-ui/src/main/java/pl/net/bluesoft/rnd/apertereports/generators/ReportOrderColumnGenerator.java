@@ -30,8 +30,8 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
      * a rerun action button for {@link Columns#ACTION} or creation date for {@link Columns#CREATE_DATE}.
      * Should be used with a {@link ReportOrder} data bean.
      *
-     * @param source Source table
-     * @param itemId Item id
+     * @param source   Source table
+     * @param itemId   Item id
      * @param columnId Column id
      * @return A resulting cell component
      */

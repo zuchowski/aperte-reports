@@ -10,7 +10,6 @@ import java.util.List;
  */
 @XStreamAlias("cyclicReportConfig")
 public class CyclicReportConfig {
-    @XStreamAlias("reportParameters")
     @XStreamImplicit
     private List<ReportConfigParameter> parameters;
 

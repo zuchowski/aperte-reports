@@ -14,7 +14,6 @@ import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
 import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.util.Map;
 
 /**
@@ -44,11 +43,9 @@ public class ReportOrderPusher {
             producer.send(reportOrderMessage);
             ExceptionUtils.logDebugMessage(ReportConstants.REPORT_ORDER_ID + ": " + id);
         }
-        catch (NamingException e) {
+        catch (Exception e) {
             ExceptionUtils.logSevereException(e);
-        }
-        catch (JMSException e) {
-            ExceptionUtils.logSevereException(e);
+            throw new RuntimeException(e);
         }
         finally {
             try {
@@ -59,8 +56,9 @@ public class ReportOrderPusher {
                     session.close();
                 }
             }
-            catch (JMSException e) {
+            catch (Exception e) {
                 ExceptionUtils.logSevereException(e);
+                throw new RuntimeException(e);
             }
         }
     }

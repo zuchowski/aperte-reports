@@ -1,6 +1,7 @@
 package pl.net.bluesoft.rnd.apertereports.backbone.jms;
 
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
 import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
@@ -39,6 +40,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
         }
         catch (JMSException e) {
             ExceptionUtils.logSevereException(e);
+            throw new VriesRuntimeException("Error while cyclic report order", e);
         }
     }
 
