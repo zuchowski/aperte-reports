@@ -76,6 +76,11 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.sourceforge.barbecue</groupId>
+            <artifactId>barbecue</artifactId>
+            <version>1.5-beta1</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>

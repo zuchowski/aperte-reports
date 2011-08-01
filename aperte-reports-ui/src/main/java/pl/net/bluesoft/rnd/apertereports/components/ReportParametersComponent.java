@@ -5,11 +5,11 @@ import com.vaadin.data.Buffered;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.*;
-import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
 import pl.net.bluesoft.rnd.apertereports.AbstractReportingApplication;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TimeUtils;
@@ -53,12 +53,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private boolean includeReportFormat = true;
     private boolean readonly = false;
 
-    public ReportParametersComponent(ReportMaster reportMaster) throws JRException {
+    public ReportParametersComponent(ReportMaster reportMaster) throws ReportException {
         this.reportMaster = reportMaster;
         init();
     }
 
-    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws JRException {
+    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws ReportException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         if (!lazyLoad) {
@@ -68,7 +68,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad) throws JRException {
+                                     boolean includeReportFormat, boolean lazyLoad) throws ReportException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;
@@ -80,7 +80,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, List<ReportConfigParameter> reportParameters,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws JRException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportParameters;
@@ -93,7 +93,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws JRException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;

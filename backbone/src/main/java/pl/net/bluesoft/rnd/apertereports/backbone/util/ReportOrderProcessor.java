@@ -1,16 +1,14 @@
 package pl.net.bluesoft.rnd.apertereports.backbone.util;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRSaver;
 import org.apache.commons.codec.binary.Base64;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
@@ -62,7 +60,7 @@ public class ReportOrderProcessor {
             reportOrder.setReportStatus(ReportOrder.Status.SUCCEEDED);
             pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
         }
-        catch (JRException e) {
+        catch (Exception e) {
             ExceptionUtils.logSevereException(e);
             throw new VriesException(e);
         }

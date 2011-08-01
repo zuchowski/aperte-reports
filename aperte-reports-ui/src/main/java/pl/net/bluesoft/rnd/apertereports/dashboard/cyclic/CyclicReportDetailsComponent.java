@@ -11,12 +11,9 @@ import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -270,8 +267,8 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
                     try {
                         ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString());
                         Map<String, String> parameters = parametersComponent.collectParametersValues();
-                        byte[] data = reportMaster.generateAndExportReport(new HashMap<String, Object>(parameters),
-                                reportType.name(), pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+                        byte[] data = reportMaster.generateAndExportReport(reportType.name(), new HashMap<String, Object>(parameters),
+                                pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), report.getReportname(), data, reportType.name());
                     }
                     catch (Exception e) {

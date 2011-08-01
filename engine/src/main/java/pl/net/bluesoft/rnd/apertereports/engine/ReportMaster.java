@@ -53,9 +53,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * Creates a new ReportMaster instance that omits the {@link ReportCache} and compiles the report from source directly.
      *
      * @param reportSource A JRXML report source
-     * @throws JRException on Jasper error
+     * @throws JRException on Jasper compilation error
      */
-    public ReportMaster(String reportSource) throws JRException {
+    public ReportMaster(String reportSource) throws ReportException {
         this(reportSource, null);
     }
 
@@ -65,9 +65,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      *
      * @param reportSource A JRXML report source
      * @param cacheId      A report cache id
-     * @throws JRException on Jasper error
+     * @throws ReportException on Jasper compilation error
      */
-    public ReportMaster(String reportSource, String cacheId) throws JRException {
+    public ReportMaster(String reportSource, String cacheId) throws ReportException {
         super();
         report = compileReport(reportSource, cacheId);
     }
@@ -78,9 +78,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      *
      * @param reportSource Bytes of a JRXML report source
      * @param cacheId      A report cache id
-     * @throws JRException on Jasper error
+     * @throws ReportException on Jasper compilation error
      */
-    public ReportMaster(byte[] reportSource, String cacheId) throws JRException {
+    public ReportMaster(byte[] reportSource, String cacheId) throws ReportException {
         super();
         report = compileReport(reportSource, cacheId);
     }
@@ -181,12 +181,19 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @return Compiled report
      * @throws JRException on Jasper error
      */
-    public static JasperReport compileReport(byte[] reportSource, String cacheId) throws JRException {
+    public static JasperReport compileReport(byte[] reportSource, String cacheId) throws ReportException {
         logger.info("Trying to fetch report '" + cacheId + "' from cache");
         JasperReport compiledReport = ReportCache.getReport(cacheId);
         if (compiledReport == null) {
             logger.info("Report not found. Compiling...");
-            compiledReport = JasperCompileManager.compileReport(new ByteArrayInputStream(reportSource));
+            try {
+                compiledReport = JasperCompileManager.compileReport(new ByteArrayInputStream(reportSource));
+            }
+            catch (JRException e) {
+                String message = "Report compilation failed";
+                logger.severe(message);
+                throw new ReportException(ErrorCodes.REPORT_SOURCE_EXCEPTION, message, e);
+            }
             ReportCache.putReport(cacheId, compiledReport);
             logger.info("Finished compiling");
         }
@@ -196,7 +203,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         return compiledReport;
     }
 
-    public static JasperReport compileReport(String reportSource, String cacheId) throws JRException {
+    public static JasperReport compileReport(String reportSource, String cacheId) throws ReportException {
         try {
             return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId);
         }
@@ -208,21 +215,28 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
                                           Map<JRExporterParameter, Object> exporterParameters,
-                                          Map<String, String> configuration) throws ReportException {
-        JasperPrint jasperPrint = generateReport(reportParameters, configuration);
+                                          Map<String, String> configuration, Object dataSource) throws ReportException {
+        JasperPrint jasperPrint = generateReport(reportParameters, configuration, dataSource);
         return exportReport(jasperPrint, format, exporterParameters, configuration);
+    }
+
+    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
+                                          Map<JRExporterParameter, Object> exporterParameters,
+                                          Map<String, String> configuration) throws ReportException {
+        return generateAndExportReport(format, reportParameters, exporterParameters, configuration, null);
     }
 
     /**
      * Generates and exports a report to the desired format from the source passed as a constructor parameter.
      * Returns <code>null</code> on error. The error is noticed by a {@link Logger} instance.
      *
-     * @param reportParameters    Report parameters
+     *
      * @param format        Output format
+     * @param reportParameters    Report parameters
      * @param configuration Exporter configuration
      * @return Bytes of a generated report
      */
-    public byte[] generateAndExportReport(Map<String, Object> reportParameters, String format,
+    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
                                           Map<String, String> configuration) throws ReportException {
         return generateAndExportReport(format, reportParameters, null, configuration);
     }
@@ -232,11 +246,13 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * Returns <code>null</code> on error. The error is noticed by a {@link Logger} instance.
      *
      * @param reportParameters Report parameters
+     * @param configuration Configuration
+     * @param dataSource Optional data source
      * @return Output JasperPrint
      */
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration) throws ReportException {
+    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration, Object dataSource) throws ReportException {
         try {
-            JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration);
+            JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration, dataSource);
             return jasperPrint;
         }
         catch (Exception e) {
@@ -244,15 +260,17 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
             throw new ReportException(e);
         }
     }
-    public JasperPrint generateReport(Map<String, Object> parameters) {
-        try {
-            JasperPrint jasperPrint = buildJasperPrint(parameters, new HashMap<String, String>());
-            return jasperPrint;
-        }
-        catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
-            throw new VriesRuntimeException("Exception while generating report", e);
-        }
+
+    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration) throws ReportException {
+        return generateReport(reportParameters, configuration, null);
+    }
+
+    public JasperPrint generateReport(Map<String, Object> reportParameters, Object dataSource) throws ReportException {
+        return generateReport(reportParameters, new HashMap<String, String>(), dataSource);
+    }
+
+    public JasperPrint generateReport(Map<String, Object> reportParameters) throws ReportException {
+        return generateReport(reportParameters, new HashMap<String, String>());
     }
 
     /**
@@ -308,29 +326,51 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
     }
 
     /**
+     * Gets current Jasper report.
+     *
+     * @return A Jasper report
+     */
+    public JasperReport getReport() {
+        return report;
+    }
+
+    /**
      * Builds a new {@link JasperPrint} of the current report using given parameters.
      *
      * @param reportParameters Input report parameters
      * @param configuration Jasper configuration parameters
+     * @param dataSource Optional Jasper data source
      * @return A {@link JasperPrint}
      * @throws JRException     on Jasper error
      * @throws NamingException on errors while accessing the initial context
      * @throws SQLException    on errors while accessing a configured datasource
      */
-    private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration)
+    private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration, Object dataSource)
             throws JRException, NamingException, SQLException {
         logger.info("Starting building jasper print");
         JasperPrint jasperPrint = null;
 
         injectDefaultValues(reportParameters);
 
-        String dataSource = configuration.get(Parameter.DATASOURCE.name());
         Connection connection = null;
         try {
-            connection = dataSource != null ? getConnectionByJNDI(dataSource) : getConnectionFromReport(report);
-            jasperPrint = connection != null ? JasperFillManager.fillReport(report, reportParameters, connection)
-                    : JasperFillManager.fillReport(report, reportParameters,
-                            new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
+            if (dataSource == null) {
+                String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
+                connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(report);
+                jasperPrint = connection != null ? JasperFillManager.fillReport(report, reportParameters, connection)
+                        : JasperFillManager.fillReport(report, reportParameters, new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
+            }
+            else {
+                if (dataSource instanceof Connection) {
+                    jasperPrint = JasperFillManager.fillReport(report, reportParameters, (Connection) dataSource);
+                }
+                else if (dataSource instanceof JRDataSource) {
+                    jasperPrint = JasperFillManager.fillReport(report, reportParameters, (JRDataSource) dataSource);
+                }
+                else {
+                    throw new VriesRuntimeException("Invalid data source type: " + dataSource.getClass());
+                }
+            }
         }
         finally {
             if (connection != null) {
@@ -354,7 +394,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         JRParameter[] parameters = jasperReport.getParameters();
         Connection con = null;
         for (JRParameter parameter : parameters) {
-            if (parameter.getName().equalsIgnoreCase(Parameter.DATASOURCE.toString())) {
+            if (parameter.getName().equalsIgnoreCase(Parameter.DATASOURCE.name())) {
                 String jndiName = parameter.getDescription();
                 con = getConnectionByJNDI(jndiName);
                 break;

@@ -12,7 +12,6 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.naming.NamingException;
 import java.io.ByteArrayOutputStream;
@@ -101,7 +100,7 @@ public class EngineTest {
         for (ReportTemplate rt : reports) {
             try {
                 ReportMaster rm = new ReportMaster(new String(rt.getContent()), rt.getId().toString());
-                sb.append(new String(rm.generateAndExportReport(new HashMap<String, Object>(), ReportConstants.ReportType.HTML.name(),
+                sb.append(new String(rm.generateAndExportReport(ReportConstants.ReportType.HTML.name(), new HashMap<String, Object>(),
                         new HashMap<String, String>())));
                 if (!sb.toString().isEmpty()) {
                     break;

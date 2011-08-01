@@ -6,13 +6,13 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
-import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
@@ -86,7 +86,7 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 		try {
 			ReportMaster rm = new ReportMaster(content);
 			report.setReportname(rm.getReportName());
-		}catch (JRException e) {
+		}catch (ReportException e) {
 			ExceptionUtils.logSevereException(e);
 			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.compilation_failed.title"),
                     VaadinUtil.getValue("exception.compilation_failed.description"));

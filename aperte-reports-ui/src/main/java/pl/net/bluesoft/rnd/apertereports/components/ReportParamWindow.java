@@ -54,7 +54,7 @@ public class ReportParamWindow extends Window {
     private byte[] getReportAsBytes() {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
         try {
-            return rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
+            return rm.generateAndExportReport(reportParametersComponent.getSelectedFormat(), new HashMap<String, Object>(parameters),
                     pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
         }
         catch (ReportException e) {
@@ -69,7 +69,7 @@ public class ReportParamWindow extends Window {
     private void sendForm() {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
         try {
-            byte[] reportData = rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
+            byte[] reportData = rm.generateAndExportReport(reportParametersComponent.getSelectedFormat(), new HashMap<String, Object>(parameters),
                     pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
             FileStreamer.showFile(getApplication(), this.report.getReportname(), reportData,
                     reportParametersComponent.getSelectedFormat());

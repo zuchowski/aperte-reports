@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
@@ -33,11 +34,10 @@ public class ReportMasterTester {
      * .
      *
      * @throws IOException
-     * @throws Base64DecodingException
      * @throws JRException
      */
     @Test
-    public final void testCompileMalformedReport() throws IOException, JRException {
+    public final void testCompileMalformedReport() throws IOException, ReportException {
         String ds = readTestFileToString(defaultTestReport);
         ds = toBase64(ds);
         JasperReport report = ReportMaster.compileReport(ds, null);
@@ -50,7 +50,6 @@ public class ReportMasterTester {
      * .
      *
      * @throws IOException
-     * @throws Base64DecodingException
      * @throws JRException
      */
     @Test
@@ -61,7 +60,7 @@ public class ReportMasterTester {
             JasperReport report = ReportMaster.compileReport(ds, null);
             fail("Should throw exception during compilation");
         }
-        catch (JRException e) {
+        catch (ReportException e) {
             // fine - should throw this exception
         }
     }
@@ -83,7 +82,6 @@ public class ReportMasterTester {
      *
      * @throws JRException
      * @throws IOException
-     * @throws Base64DecodingException
      */
     @Test
     public final void testGenerateReport() throws IOException, JRException {
@@ -99,10 +97,9 @@ public class ReportMasterTester {
      *
      * @throws JRException
      * @throws IOException
-     * @throws Base64DecodingException
      */
     @Test
-    public final void testGetParameters() throws IOException, JRException {
+    public final void testGetParameters() throws IOException, ReportException {
         ReportMaster rm = createReportMaster(defaultTestReport);
         List<ReportParameter> parameters = rm.getParameters();
         assertNotNull("No parameters fetched", parameters);
@@ -121,10 +118,9 @@ public class ReportMasterTester {
      *
      * @throws JRException
      * @throws IOException
-     * @throws Base64DecodingException
      */
     @Test
-    public final void testGetReportName() throws IOException, JRException {
+    public final void testGetReportName() throws IOException, ReportException {
         String name = "test apertereports 1";
         ReportMaster rm = createReportMaster(defaultTestReport);
         assertEquals(name, rm.getReportName());
@@ -147,10 +143,9 @@ public class ReportMasterTester {
      * .
      *
      * @throws JRException
-     * @throws Base64DecodingException
      */
     @Test
-    public final void testReportMasterString() throws IOException, JRException {
+    public final void testReportMasterString() throws IOException, ReportException {
         createReportMaster(defaultTestReport);
     }
 
@@ -161,10 +156,9 @@ public class ReportMasterTester {
      *
      * @throws JRException
      * @throws IOException
-     * @throws Base64DecodingException
      */
     @Test
-    public final void testReportMasterStringInteger() throws IOException, JRException {
+    public final void testReportMasterStringInteger() throws IOException, ReportException {
         String ds = readTestFileToString(defaultTestReport);
         ds = toBase64(ds);
         String cacheId = "2";
@@ -174,7 +168,7 @@ public class ReportMasterTester {
         assertNotNull(ReportCache.getReport(cacheId));
     }
 
-    private ReportMaster createReportMaster(String path) throws IOException, JRException {
+    private ReportMaster createReportMaster(String path) throws IOException, ReportException {
         String ds = readTestFileToString(path);
         ds = toBase64(ds);
         return new ReportMaster(ds);
