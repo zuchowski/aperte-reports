@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.domain;
+package pl.net.bluesoft.rnd.apertereports.dao.utils;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;

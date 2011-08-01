@@ -10,11 +10,11 @@ import com.vaadin.ui.Button.ClickListener;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate.Fields;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate.Fields;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.generators.CheckBoxColumnGenerator;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -214,7 +214,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
      */
     public final void deleteReport(ReportTemplate rt) {
         allReportTemplates.remove(rt);
-        ReportTemplateDAO.remove(rt);
+        pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.remove(rt);
         ReportCache.removeReport(rt.getId().toString());
         refreshContainer(allReportTemplates);
 
@@ -288,7 +288,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
     private void reloadCurrentReport() {
         if (currentTableSelection != null && currentTableSelection.getId() != null) {
             allReportTemplates.remove(currentTableSelection);
-            allReportTemplates.add(ReportTemplateDAO.fetchReport(currentTableSelection.getId()));
+            allReportTemplates.add(pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReport(currentTableSelection.getId()));
             refreshContainer(allReportTemplates);
         }
     }
@@ -306,7 +306,7 @@ public class ReportManagerComponent extends Panel implements Serializable {
         reportTableData.addContainerProperty(Fields.FILENAME, String.class, null);
         reportTableData.addContainerProperty(Fields.ID, Integer.class, null);
 
-        Collection<ReportTemplate> list = ReportTemplateDAO.fetchAllReports(false);
+        Collection<ReportTemplate> list = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(false);
         allReportTemplates = new PriorityQueue<ReportTemplate>(list.size()+1, new Comparator<ReportTemplate>() {
             @Override
             public int compare(ReportTemplate o1, ReportTemplate o2) {

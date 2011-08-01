@@ -1,7 +1,7 @@
 /**
  *
  */
-package pl.net.bluesoft.rnd.apertereports.domain.model;
+package pl.net.bluesoft.rnd.apertereports.model;
 
 import org.hibernate.annotations.Type;
 
@@ -100,7 +100,7 @@ public class ReportOrder {
     private ReportTemplate report;
 
     /**
-     * Report status as defined in enum pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status
+     * Report status as defined in enum pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status
      * <dl>
      * <dt>0</dt>
      * <dd>new</dd>

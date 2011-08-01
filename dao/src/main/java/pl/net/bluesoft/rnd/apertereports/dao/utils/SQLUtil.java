@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.domain;
+package pl.net.bluesoft.rnd.apertereports.dao.utils;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -6,10 +6,13 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.domain.model.VriesConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 /**
  * DAO utility class. Initializes Hibernate session factory with annotated classes. Has methods for providing a new Hibernate session.
@@ -27,7 +30,7 @@ public class SQLUtil {
             annotationConfiguration.addAnnotatedClass(ReportTemplate.class);
             annotationConfiguration.addAnnotatedClass(ReportOrder.class);
             annotationConfiguration.addAnnotatedClass(CyclicReportOrder.class);
-            annotationConfiguration.addAnnotatedClass(VriesConfigurationEntry.class);
+            annotationConfiguration.addAnnotatedClass(ConfigurationEntry.class);
 
             Configuration cfg = null;
             try {

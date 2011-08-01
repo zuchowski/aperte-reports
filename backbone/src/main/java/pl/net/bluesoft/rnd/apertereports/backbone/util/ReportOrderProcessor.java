@@ -7,10 +7,10 @@ import org.apache.commons.codec.binary.Base64;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
@@ -45,7 +45,7 @@ public class ReportOrderProcessor {
     public void processReport(ReportOrder reportOrder) throws VriesException {
         reportOrder.setStartDate(Calendar.getInstance());
         reportOrder.setReportStatus(ReportOrder.Status.PROCESSING);
-        ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+        pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
 
         ReportTemplate reportTemplate = reportOrder.getReport();
 
@@ -60,7 +60,7 @@ public class ReportOrderProcessor {
             reportOrder.setReportResult(new String(Base64.encodeBase64(baos.toByteArray())).toCharArray());
             reportOrder.setFinishDate(Calendar.getInstance());
             reportOrder.setReportStatus(ReportOrder.Status.SUCCEEDED);
-            ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
         }
         catch (JRException e) {
             ExceptionUtils.logSevereException(e);

@@ -1,6 +1,6 @@
 package pl.net.bluesoft.rnd.apertereports.dashboard.html;
 
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 /**
  * A closure for custom report data handling.

@@ -9,9 +9,9 @@ import pl.net.bluesoft.rnd.apertereports.components.HelpLayout;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
@@ -112,7 +112,7 @@ public class CyclicReportsPanel extends CustomComponent {
                 return;
             }
 
-            Collection<CyclicReportOrder> deletedCyclicReports = CyclicReportOrderDAO.trimAndUpdate(reportOrders);
+            Collection<CyclicReportOrder> deletedCyclicReports = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.trimAndUpdate(reportOrders);
             for (CyclicReportOrder cro : deletedCyclicReports) {
                 CyclicReportOrderScheduler.unscheduleCyclicReportOrder(cro);
             }
@@ -192,7 +192,7 @@ public class CyclicReportsPanel extends CustomComponent {
      */
     private void initData() {
         int i = 0;
-        Collection<CyclicReportOrder> reportOrders = CyclicReportOrderDAO.fetchAllEnabledCyclicReports();
+        Collection<CyclicReportOrder> reportOrders = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchAllEnabledCyclicReports();
         for (final CyclicReportOrder reportOrder : reportOrders) {
             reportOrder.setComponentId(i++);
             reportOrderMap.put(reportOrder.getComponentId(), reportOrder);

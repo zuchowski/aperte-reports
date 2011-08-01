@@ -7,10 +7,9 @@ import org.quartz.JobExecutionException;
 import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import java.util.Map;
 
@@ -46,14 +45,14 @@ public class CyclicReportOrderJob implements Job {
     private ReportOrder processOrder(JobDetail details) {
         String instName = details.getName();
         Long reportId = Long.valueOf(instName);
-        CyclicReportOrder cRO = CyclicReportOrderDAO.fetchCyclicReportOrder(reportId);
+        CyclicReportOrder cRO = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportOrder(reportId);
         ReportOrder newOrder = null;
         if (cRO != null && cRO.getProcessedOrder() == null) {
             Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(new String(cRO.getParametersXml()));
             newOrder = ReportOrderPusher.buildNewOrder(cRO.getReport(), params, cRO.getOutputFormat(),
-                    cRO.getRecipientEmail(), null, ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT));
+                    cRO.getRecipientEmail(), null, pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT));
             cRO.setProcessedOrder(newOrder);
-            CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cRO);
+            pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cRO);
             ReportOrderPusher.addToJMS(newOrder.getId());
         }
         return newOrder;

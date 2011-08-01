@@ -14,13 +14,12 @@ import pl.net.bluesoft.rnd.apertereports.backbone.jms.CyclicOrderResponseProcess
 import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.Message;
 import javax.naming.NamingException;
@@ -62,7 +61,7 @@ public class CyclicOrderResponseProcessorTest {
 
         try {
             reportTemplate = new ReportTemplate();
-            ReportTemplateDAO.saveOrUpdate(reportTemplate);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate);
             reportOrder1 = ReportOrderPusher.buildNewOrder(reportTemplate, new HashMap<String, String>(), "a", "", "",
                     "");
 
@@ -72,32 +71,32 @@ public class CyclicOrderResponseProcessorTest {
             reportOrder1.setReportResult(testResult);
             reportOrder2.setReportStatus(Status.FAILED);
 
-            ReportOrderDAO.saveOrUpdateReportOrder(reportOrder1);
-            ReportOrderDAO.saveOrUpdateReportOrder(reportOrder2);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder1);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder2);
 
             cyclicReportOrder = new CyclicReportOrder();
             cyclicReportOrder.setProcessedOrder(reportOrder1);
-            Long cyclicId = CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder);
+            Long cyclicId = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder);
 
             CyclicOrderResponseProcessor corp = new CyclicOrderResponseProcessor();
             Message message = new ActiveMQMessage();
             message.setIntProperty(ReportConstants.REPORT_ORDER_ID, reportOrder1.getId().intValue());
             corp.onMessage(message);
 
-            CyclicReportOrder cyclicReportOrder1 = CyclicReportOrderDAO.fetchCyclicReportOrder(cyclicId);
+            CyclicReportOrder cyclicReportOrder1 = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportOrder(cyclicId);
 
             assertNull(cyclicReportOrder1.getProcessedOrder());
             assertNotNull(cyclicReportOrder1.getReportOrder());
             assertEquals(reportOrder1.getId(), cyclicReportOrder1.getReportOrder().getId());
 
             cyclicReportOrder1.setProcessedOrder(reportOrder2);
-            CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder1);
+            pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder1);
 
             message = new ActiveMQMessage();
             message.setIntProperty(ReportConstants.REPORT_ORDER_ID, reportOrder2.getId().intValue());
             corp.onMessage(message);
 
-            CyclicReportOrder cyclicReportOrder2 = CyclicReportOrderDAO.fetchCyclicReportOrder(cyclicId);
+            CyclicReportOrder cyclicReportOrder2 = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportOrder(cyclicId);
             assertNull(cyclicReportOrder2.getProcessedOrder());
             assertNotNull(cyclicReportOrder2.getReportOrder());
             assertEquals(reportOrder1.getId(), cyclicReportOrder2.getReportOrder().getId());
@@ -109,14 +108,14 @@ public class CyclicOrderResponseProcessorTest {
         }
         finally {
             try {
-                CyclicReportOrderDAO.removeCyclicReportOrder(cyclicReportOrder);
+                pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.removeCyclicReportOrder(cyclicReportOrder);
             }
             finally {
                 try {
-                    ReportOrderDAO.removeReportOrder(reportOrder1, reportOrder2);
+                    pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.removeReportOrder(reportOrder1, reportOrder2);
                 }
                 finally {
-                    ReportTemplateDAO.remove(reportTemplate);
+                    pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.remove(reportTemplate);
                 }
             }
         }

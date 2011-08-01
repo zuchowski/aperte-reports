@@ -6,7 +6,6 @@ package pl.net.bluesoft.rnd.apertereports.backbone.tests;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-import pl.net.bluesoft.rnd.apertereports.domain.SQLUtil;
 
 import javax.naming.NamingException;
 import java.io.IOException;
@@ -49,6 +48,6 @@ public class TestUtil {
     @Test
     public void testInitialization() throws IllegalStateException, NamingException, IOException {
         initDB();
-        SQLUtil.getSession();
+        pl.net.bluesoft.rnd.apertereports.dao.utils.SQLUtil.getSession();
     }
 }

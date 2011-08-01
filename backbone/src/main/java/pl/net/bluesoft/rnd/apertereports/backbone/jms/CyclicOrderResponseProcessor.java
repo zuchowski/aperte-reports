@@ -3,10 +3,9 @@ package pl.net.bluesoft.rnd.apertereports.backbone.jms;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -35,7 +34,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
     public void onMessage(Message message) {
         try {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-            ReportOrder reportOrder = ReportOrderDAO.fetchReport(id);
+            ReportOrder reportOrder = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchReport(id);
             processReport(reportOrder);
         }
         catch (JMSException e) {
@@ -50,7 +49,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
      * @param reportOrder Generated report order
      */
     private void processReport(final ReportOrder reportOrder) {
-        CyclicReportOrder cyclicReportOrder = CyclicReportOrderDAO.fetchForReportOrder(reportOrder.getId());
+        CyclicReportOrder cyclicReportOrder = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchForReportOrder(reportOrder.getId());
 
         if (cyclicReportOrder == null) {
             return;
@@ -62,6 +61,6 @@ public class CyclicOrderResponseProcessor implements MessageListener {
             cyclicReportOrder.setReportOrder(reportOrder);
         }
 
-        CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder);
+        pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder);
     }
 }

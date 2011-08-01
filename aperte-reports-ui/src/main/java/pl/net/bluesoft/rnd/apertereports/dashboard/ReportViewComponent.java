@@ -16,12 +16,11 @@ import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.HtmlReportBuilder;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportDataProvider;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -134,7 +133,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
         }
         if (drillConfig.getReportId() == null) {
-            List<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchReportsByName(reportName);
+            List<ReportTemplate> reportTemplates = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReportsByName(reportName);
             if (reportTemplates.size() == 0) {
                 throw new VriesRuntimeException(VaadinUtil.getValue("exception.drilldown.report.not.found"));
             }
@@ -190,7 +189,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     @Override
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
-            ReportTemplate report = ReportTemplateDAO.fetchReport(config.getReportId());
+            ReportTemplate report = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReport(config.getReportId());
             if (report != null) {
                 reportMap.put(config.getReportId(), report);
             }
@@ -256,7 +255,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 customParameters = new HashMap<JRExporterParameter, Object>();
                 customParameters.put(JRHtmlExporterParameter.IMAGES_URI, DashboardUtil.CHART_SOURCE_PREFIX_TEXT);
             }
-            data = ReportMaster.exportReport(jasperPrint, format.name(), customParameters, ConfigurationCache.getConfiguration());
+            data = ReportMaster.exportReport(jasperPrint, format.name(), customParameters, pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
         }
         catch (ReportException e) {
             NotificationUtil.showExceptionNotification(getWindow(),
@@ -288,7 +287,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     }
                 }
             }
-            List<CyclicReportOrder> cyclicReports = CyclicReportOrderDAO.fetchCyclicReportsByIds(
+            List<CyclicReportOrder> cyclicReports = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportsByIds(
                     cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
             for (CyclicReportOrder rep : cyclicReports) {
                 ReportConfig rc = cyclicConfigMap.get(rep.getId());
@@ -297,7 +296,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 cyclicReportMap.put(rep.getId(), rep);
             }
 
-            List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(reportIds.toArray(new Integer[configIds.size()]));
+            List<ReportTemplate> reports = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReports(reportIds.toArray(new Integer[configIds.size()]));
             for (ReportTemplate rep : reports) {
                 reportMap.put(rep.getId(), rep);
             }

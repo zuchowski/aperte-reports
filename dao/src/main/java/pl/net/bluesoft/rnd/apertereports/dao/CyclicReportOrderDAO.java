@@ -1,9 +1,9 @@
-package pl.net.bluesoft.rnd.apertereports.domain.dao;
+package pl.net.bluesoft.rnd.apertereports.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import pl.net.bluesoft.rnd.apertereports.domain.WHS;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ public class CyclicReportOrderDAO {
      * @return A collection of cyclic reports
      */
     public static Collection<CyclicReportOrder> fetchAllCyclicReportOrders() {
-        return new WHS<Collection<CyclicReportOrder>>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
             @Override
             public Collection<CyclicReportOrder> lambda() {
                 return sess.createCriteria(CyclicReportOrder.class).list();
@@ -34,7 +34,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the given id
      */
     public static CyclicReportOrder fetchCyclicReportOrder(final Long reportId) {
-        return new WHS<CyclicReportOrder>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<CyclicReportOrder>() {
             @Override
             public CyclicReportOrder lambda() {
                 CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class)
@@ -53,7 +53,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the processed order
      */
     public static CyclicReportOrder fetchForReportOrder(final Long reportId) {
-        return new WHS<CyclicReportOrder>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<CyclicReportOrder>() {
             @Override
             public CyclicReportOrder lambda() {
                 CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class)
@@ -72,7 +72,7 @@ public class CyclicReportOrderDAO {
      * @param reports An array of cyclic reports to remove
      */
     public static void removeCyclicReportOrder(final CyclicReportOrder... reports) {
-        new WHS<Boolean>() {
+        new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Boolean>() {
             @Override
             public Boolean lambda() {
                 for (CyclicReportOrder reportOrder : reports) {
@@ -92,7 +92,7 @@ public class CyclicReportOrderDAO {
      * @return id The cyclic report id
      */
     public static Long saveOrUpdateCyclicReportOrder(final CyclicReportOrder cyclicReportOrder) {
-        return new WHS<Long>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Long>() {
             @Override
             public Long lambda() {
                 sess.saveOrUpdate(cyclicReportOrder);
@@ -107,7 +107,7 @@ public class CyclicReportOrderDAO {
      * @return A collection of enabled cyclic report orders.
      */
     public static Collection<CyclicReportOrder> fetchAllEnabledCyclicReports() {
-        return new WHS<Collection<CyclicReportOrder>>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
             @Override
             public Collection<CyclicReportOrder> lambda() {
                 return sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("enabled", true)).list();
@@ -118,11 +118,11 @@ public class CyclicReportOrderDAO {
     /**
      * Returns a list of cyclic report orders relevant to given ids.
      *
-     * @param reportIds An array of {@link pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder} primary key values.
+     * @param reportIds An array of {@link pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder} primary key values.
      * @return A list of cyclic report orders
      */
     public static List<CyclicReportOrder> fetchCyclicReportsByIds(final Long... reportIds) {
-        return new WHS<List<CyclicReportOrder>>(false) {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<List<CyclicReportOrder>>(false) {
             @Override
             public List<CyclicReportOrder> lambda() {
                 if (reportIds.length == 0) {
@@ -147,7 +147,7 @@ public class CyclicReportOrderDAO {
      * @return A collection of deleted cyclic reports
      */
     public static Collection<CyclicReportOrder> trimAndUpdate(final Collection<CyclicReportOrder> reportOrders) {
-        return new WHS<Collection<CyclicReportOrder>>(true) {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>(true) {
             @Override
             public Collection<CyclicReportOrder> lambda() {
                 Set<Long> ids = new HashSet<Long>();

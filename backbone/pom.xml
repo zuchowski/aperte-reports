@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-            <artifactId>domain</artifactId>
+            <artifactId>dao</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

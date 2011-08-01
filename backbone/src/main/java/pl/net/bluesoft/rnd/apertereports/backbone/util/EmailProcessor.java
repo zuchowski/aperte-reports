@@ -14,12 +14,12 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.VriesConfigurationDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.domain.model.VriesConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import javax.activation.DataSource;
 import javax.naming.Context;
@@ -100,8 +100,8 @@ public class EmailProcessor implements ConfigurationConstants {
      * The configuration should contain keys specified by {@link pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants}.
      */
     private EmailProcessor() {
-        Collection<VriesConfigurationEntry> entries = VriesConfigurationDAO.loadAll();
-        for (VriesConfigurationEntry entry : entries) {
+        Collection<ConfigurationEntry> entries = pl.net.bluesoft.rnd.apertereports.dao.VriesConfigurationDAO.loadAll();
+        for (ConfigurationEntry entry : entries) {
             if (entry.getKey().equals(MESSAGE_PROVIDER_RESOURCE)) {
                 messageProviderResource = entry.getValue();
             }
@@ -279,7 +279,7 @@ public class EmailProcessor implements ConfigurationConstants {
                 .getReportResult()).getBytes()));
         try {
             return ReportMaster.exportReport((JasperPrint) JRLoader.loadObject(bais), reportOrder.getOutputFormat(),
-                    ConfigurationCache.getConfiguration());
+                    pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
         }
         finally {
             try {

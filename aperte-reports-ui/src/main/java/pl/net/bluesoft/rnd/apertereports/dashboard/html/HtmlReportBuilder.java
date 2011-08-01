@@ -15,7 +15,7 @@ import org.vaadin.activelink.ActiveLink;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;

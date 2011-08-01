@@ -7,8 +7,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportStreamReceiver;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.ArrayList;
@@ -129,7 +129,7 @@ public class VriesInvokerComponent extends CustomComponent {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 Integer reportId = (Integer) reportSelect.getValue();
-                report = ReportTemplateDAO.fetchReport(reportId);
+                report = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReport(reportId);
             }
         });
     }
@@ -153,7 +153,7 @@ public class VriesInvokerComponent extends CustomComponent {
      * Downloads the report template list from database. The reports are sorted by report name.
      */
     private void fillReportSelect() {
-        List<ReportTemplate> reports = new ArrayList<ReportTemplate>(ReportTemplateDAO.fetchAllReports(true));
+        List<ReportTemplate> reports = new ArrayList<ReportTemplate>(pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(true));
         Collections.sort(reports, new Comparator<ReportTemplate>() {
             @Override
             public int compare(ReportTemplate o1, ReportTemplate o2) {

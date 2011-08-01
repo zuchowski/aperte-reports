@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.domain.dao;
+package pl.net.bluesoft.rnd.apertereports.dao;
 
 import pl.net.bluesoft.rnd.apertereports.common.wrappers.DictionaryItem;
 

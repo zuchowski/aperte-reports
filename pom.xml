@@ -24,7 +24,8 @@
         <module>backbone</module>
         <module>common</module>
         <module>engine</module>
-        <module>domain</module>
+        <module>model</module>
+        <module>dao</module>
         <module>aperte-reports-ui</module>
         <module>aperte-reports-ws</module>
     </modules>

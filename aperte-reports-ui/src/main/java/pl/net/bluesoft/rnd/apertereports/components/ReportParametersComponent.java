@@ -16,7 +16,6 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.TimeUtils;
 import pl.net.bluesoft.rnd.apertereports.common.wrappers.DictionaryItem;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigParameter;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.DictionaryDAO;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportProperty;
@@ -215,12 +214,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             if (StringUtils.isNotEmpty(fieldProperties.getDictQuery())) {
                 String login = getLogin();
                 String dictQuery = fieldProperties.getDictQuery().replaceAll("\\$LOGIN", login);
-                items = DictionaryDAO.fetchDictionary(dictQuery);
+                items = pl.net.bluesoft.rnd.apertereports.dao.DictionaryDAO.fetchDictionary(dictQuery);
             }
 
             /** DICT_ITEM_LIST **/
             if (StringUtils.isNotEmpty(fieldProperties.getDictItemList())) {
-                items = DictionaryDAO.readDictionaryFromString(fieldProperties.getDictItemList());
+                items = pl.net.bluesoft.rnd.apertereports.dao.DictionaryDAO.readDictionaryFromString(fieldProperties.getDictItemList());
             }
 
             /** SPECIAL_DATA_QUERY_CODE **/

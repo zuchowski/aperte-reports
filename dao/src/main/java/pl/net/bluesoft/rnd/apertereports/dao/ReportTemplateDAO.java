@@ -1,15 +1,16 @@
 /**
  *
  */
-package pl.net.bluesoft.rnd.apertereports.domain.dao;
+package pl.net.bluesoft.rnd.apertereports.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.WHS;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.dao.utils.WHS;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import java.util.ArrayList;
 import java.util.Collection;

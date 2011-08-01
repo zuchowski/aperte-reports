@@ -6,8 +6,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportStatusColumn;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 /**
  * Displays a cyclic report order table.
- * Invokes {@link #onItemSelected(pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder)} on selected item row.
+ * Invokes {@link #onItemSelected(pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder)} on selected item row.
  * Supports lazy loading.
  */
 public abstract class CyclicReportBrowserComponent extends AbstractLazyLoaderComponent {

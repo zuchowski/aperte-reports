@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.domain.model;
+package pl.net.bluesoft.rnd.apertereports.model;
 
 import org.hibernate.annotations.Type;
 

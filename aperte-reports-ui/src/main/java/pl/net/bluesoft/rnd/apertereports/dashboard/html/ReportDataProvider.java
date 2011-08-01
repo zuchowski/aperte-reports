@@ -4,7 +4,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import java.util.List;
 import java.util.Map;

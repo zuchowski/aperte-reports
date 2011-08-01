@@ -11,9 +11,9 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.components.VriesReportOrderBrowserComponent.Columns;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.util.*;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
 
@@ -104,7 +104,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                                 @Override
                                 public void onConfirm() {
                                     ReportOrder shallowCopy = reportOrder.shallowCopy();
-                                    Long newReportId = ReportOrderDAO.saveOrUpdateReportOrder(shallowCopy);
+                                    Long newReportId = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(shallowCopy);
                                     ReportOrderPusher.addToJMS(newReportId);
                                 }
 

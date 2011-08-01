@@ -5,11 +5,11 @@ import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.WHS;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.dao.utils.WHS;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.*;
 import javax.naming.Context;
@@ -32,11 +32,11 @@ public class ReportOrderPusher {
             InitialContext initCtx = new InitialContext();
             Context envContext = (Context) initCtx.lookup("");
             ConnectionFactory connectionFactory = (ConnectionFactory) envContext.lookup(
-                    ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY));
+                    pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY));
             connection = connectionFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer producer = session.createProducer((Destination) envContext.lookup(
-                    ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT)));
+                    pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT)));
 
             Message reportOrderMessage = session.createMessage();
             reportOrderMessage.setIntProperty(ReportConstants.REPORT_ORDER_ID, id.intValue());
@@ -100,7 +100,7 @@ public class ReportOrderPusher {
         if (alreadyExists) {
             return null;
         }
-        Long id = ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+        Long id = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
         reportOrder.setId(id);
         return reportOrder;
     }

@@ -9,13 +9,14 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -24,7 +25,7 @@ import pl.net.bluesoft.rnd.apertereports.util.validators.CronValidator;
 import java.util.*;
 
 import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
-import static pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status.*;
+import static pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status.*;
 
 /**
  * Displays cyclic report order details (i.e. description, format, cron expression).
@@ -89,7 +90,7 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
             outputFormatSelect.setItemCaption(rt, rt.name());
         }
         reportSelect.removeAllItems();
-        List<ReportTemplate> reports = new ArrayList<ReportTemplate>(ReportTemplateDAO.fetchAllReports(true));
+        List<ReportTemplate> reports = new ArrayList<ReportTemplate>(pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(true));
         Collections.sort(reports, new Comparator<ReportTemplate>() {
             @Override
             public int compare(ReportTemplate o1, ReportTemplate o2) {
@@ -270,7 +271,7 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
                         ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString());
                         Map<String, String> parameters = parametersComponent.collectParametersValues();
                         byte[] data = reportMaster.generateAndExportReport(new HashMap<String, Object>(parameters),
-                                reportType.name(), ConfigurationCache.getConfiguration());
+                                reportType.name(), pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), report.getReportname(), data, reportType.name());
                     }
                     catch (Exception e) {

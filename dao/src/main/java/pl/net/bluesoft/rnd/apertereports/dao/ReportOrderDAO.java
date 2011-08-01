@@ -1,12 +1,11 @@
 /**
  *
  */
-package pl.net.bluesoft.rnd.apertereports.domain.dao;
+package pl.net.bluesoft.rnd.apertereports.dao;
 
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import pl.net.bluesoft.rnd.apertereports.domain.WHS;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import java.util.Collection;
 
@@ -22,7 +21,7 @@ public class ReportOrderDAO {
      * @return A collection of report orders
      */
     public static Collection<ReportOrder> fetchAllReportOrders() {
-        return new WHS<Collection<ReportOrder>>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Collection<ReportOrder>>() {
             @Override
             public Collection<ReportOrder> lambda() {
                 return sess.createCriteria(ReportOrder.class).addOrder(Order.desc("createDate")).list();
@@ -37,7 +36,7 @@ public class ReportOrderDAO {
      * @return A report order or <code>null</code> if not found
      */
     public static ReportOrder fetchReport(final Long reportId) {
-        return new WHS<ReportOrder>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<ReportOrder>() {
             @Override
             public ReportOrder lambda() {
                 ReportOrder ro = (ReportOrder) sess.createCriteria(ReportOrder.class)
@@ -54,7 +53,7 @@ public class ReportOrderDAO {
      * @param reports An array of report orders to delete.
      */
     public static void removeReportOrder(final ReportOrder... reports) {
-        new WHS<Void>() {
+        new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Void>() {
             @Override
             public Void lambda() {
                 for (ReportOrder reportOrder : reports) {
@@ -74,7 +73,7 @@ public class ReportOrderDAO {
      * @return The id
      */
     public static Long saveOrUpdateReportOrder(final ReportOrder reportOrder) {
-        return new WHS<Long>() {
+        return new pl.net.bluesoft.rnd.apertereports.dao.utils.WHS<Long>() {
             @Override
             public Long lambda() {
                 sess.saveOrUpdate(reportOrder);

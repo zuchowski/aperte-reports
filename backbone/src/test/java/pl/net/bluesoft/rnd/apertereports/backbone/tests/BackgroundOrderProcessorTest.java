@@ -16,10 +16,9 @@ import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.Message;
 import javax.naming.NamingException;
@@ -54,7 +53,7 @@ public class BackgroundOrderProcessorTest {
             String content = TextUtils.readTestFileToString(getClass().getResourceAsStream(defaultTestReport));
             char[] contentCA = new String(Base64.encodeBase64(content.getBytes("UTF-8"))).toCharArray();
             reportTemplate.setContent(contentCA);
-            ReportTemplateDAO.saveOrUpdate(reportTemplate);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate);
             reportOrder = ReportOrderPusher
                     .buildNewOrder(reportTemplate, new HashMap<String, String>(), "", "", "", "");
             BackgroundOrderProcessor bop = new BackgroundOrderProcessor();
@@ -75,10 +74,10 @@ public class BackgroundOrderProcessorTest {
         }
         finally {
             try {
-                ReportOrderDAO.removeReportOrder(reportOrder);
+                pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.removeReportOrder(reportOrder);
             }
             finally {
-                ReportTemplateDAO.remove(reportTemplate.getId());
+                pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.remove(reportTemplate.getId());
             }
         }
     }

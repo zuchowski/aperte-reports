@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.domain.model;
+package pl.net.bluesoft.rnd.apertereports.model;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(schema = "public", name = "ar_configuration")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class VriesConfigurationEntry implements Serializable {
+public class ConfigurationEntry implements Serializable {
     /**
      * Primary key.
      */

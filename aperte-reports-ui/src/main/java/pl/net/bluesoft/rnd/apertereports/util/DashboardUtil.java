@@ -8,8 +8,7 @@ import org.w3c.dom.*;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.common.wrappers.Pair;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -213,7 +212,7 @@ public final class DashboardUtil {
     }
 
     /**
-     * Extracts the report data from given {@link pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder} instance.
+     * Extracts the report data from given {@link pl.net.bluesoft.rnd.apertereports.model.ReportOrder} instance.
      *
      * @param reportOrder Input report order
      * @param format      Output format
@@ -226,7 +225,7 @@ public final class DashboardUtil {
     public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws ReportException, JRException {
         JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(
                 new ByteArrayInputStream(Base64.decodeBase64(new String(reportOrder.getReportResult()).getBytes())));
-        return ReportMaster.exportReport(jasperPrint, format.toString(), ConfigurationCache.getConfiguration());
+        return ReportMaster.exportReport(jasperPrint, format.toString(), pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
     }
 
     /**

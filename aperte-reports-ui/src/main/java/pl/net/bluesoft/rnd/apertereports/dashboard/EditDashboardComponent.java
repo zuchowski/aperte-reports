@@ -7,10 +7,10 @@ import pl.net.bluesoft.rnd.apertereports.components.HelpLayout;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Module;
 import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.VriesModalWindow;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -238,13 +238,13 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
         }
         reportsTable.removeAllItems();
         if (!reportIds.isEmpty() || !cyclicReportIds.isEmpty()) {
-            List<CyclicReportOrder> cyclicReports = CyclicReportOrderDAO.fetchCyclicReportsByIds(cyclicReportIds.toArray(new Long[cyclicReportIds.size()]));
+            List<CyclicReportOrder> cyclicReports = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportsByIds(cyclicReportIds.toArray(new Long[cyclicReportIds.size()]));
             Map<Long, CyclicReportOrder> cyclicReportOrders = new HashMap<Long, CyclicReportOrder>();
             for (CyclicReportOrder rep : cyclicReports) {
                 cyclicReportOrders.put(rep.getId(), rep);
                 reportIds.add(rep.getReport().getId());
             }
-            List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(reportIds.toArray(new Integer[reportIds.size()]));
+            List<ReportTemplate> reports = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReports(reportIds.toArray(new Integer[reportIds.size()]));
             Map<Integer, ReportTemplate> reportOrders = new HashMap<Integer, ReportTemplate>();
             for (ReportTemplate rep : reports) {
                 reportOrders.put(rep.getId(), rep);

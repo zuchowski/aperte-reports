@@ -5,8 +5,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.*;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.util.List;
@@ -123,7 +122,7 @@ public class ReportBeanFieldFactory extends DefaultFieldFactory {
                         if (report == null) {
                             return true;
                         }
-                        List<ReportTemplate> reports = ReportTemplateDAO.fetchReportsByName((String) value);
+                        List<ReportTemplate> reports = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchReportsByName((String) value);
                         if (reports != null && !reports.isEmpty()) {
                             ReportTemplate rt = reports.get(0);
                             return rt.getId().equals(report.getId());

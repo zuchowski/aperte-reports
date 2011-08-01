@@ -12,9 +12,8 @@ import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportStreamReceiver;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
@@ -56,7 +55,7 @@ public class ReportParamWindow extends Window {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
         try {
             return rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
-                    ConfigurationCache.getConfiguration());
+                    pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
         }
         catch (ReportException e) {
             ExceptionUtils.logSevereException(e);
@@ -71,7 +70,7 @@ public class ReportParamWindow extends Window {
         Map<String, String> parameters = reportParametersComponent.collectParametersValues();
         try {
             byte[] reportData = rm.generateAndExportReport(new HashMap<String, Object>(parameters), reportParametersComponent.getSelectedFormat(),
-                    ConfigurationCache.getConfiguration());
+                    pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
             FileStreamer.showFile(getApplication(), this.report.getReportname(), reportData,
                     reportParametersComponent.getSelectedFormat());
         }

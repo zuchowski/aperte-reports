@@ -12,10 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class ReportOrderPusherTest {
 
     /**
      * Test method for
-     * {@link pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher#buildNewOrder(pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate,
+     * {@link pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher#buildNewOrder(pl.net.bluesoft.rnd.apertereports.model.ReportTemplate,
      * java.util.Map, String, String, String, String)}
      * .
      *
@@ -62,31 +61,31 @@ public class ReportOrderPusherTest {
             parameters2.put("id1", "1");
             parameters2.put("id2", "2");
 
-            ReportTemplateDAO.saveOrUpdate(reportTemplate1);
-            ReportTemplateDAO.saveOrUpdate(reportTemplate2);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate1);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate2);
 
-            int reportOrders0 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders0 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             rep1 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
 
-            int reportOrders1 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders1 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             rep2 = ReportOrderPusher.buildNewOrder(reportTemplate2, parameters1, "", "", "", "");
 
-            int reportOrders2 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders2 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             rep3 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
 
-            int reportOrders3 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders3 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             rep4 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters2, "", "", "", "");
 
-            int reportOrders4 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders4 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             rep5 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, format, recipientEmail, username,
                     replyToQ);
 
-            int reportOrders5 = ReportOrderDAO.fetchAllReportOrders().size();
+            int reportOrders5 = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 
             assertNotNull("reportOrder1 not created", rep1);
             assertNotNull("reportOrder2 not created", rep2);
@@ -115,14 +114,14 @@ public class ReportOrderPusherTest {
         }
         finally {
             try {
-                ReportOrderDAO.removeReportOrder(rep1, rep2, rep3, rep4, rep5);
+                pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.removeReportOrder(rep1, rep2, rep3, rep4, rep5);
             }
             finally {
                 try {
-                    ReportTemplateDAO.remove(reportTemplate1.getId());
+                    pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.remove(reportTemplate1.getId());
                 }
                 finally {
-                    ReportTemplateDAO.remove(reportTemplate2.getId());
+                    pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.remove(reportTemplate2.getId());
                 }
             }
         }

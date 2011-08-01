@@ -7,12 +7,12 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportOrderColumnGenerator;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.io.Serializable;
@@ -97,7 +97,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         Form form = new Form();
         reportOrderSelect = new Select(VaadinUtil.getValue("report_order.filter.report"));
         reportOrderSelect.setNullSelectionAllowed(true);
-        reportTemplates = ReportTemplateDAO.fetchAllReports(true);
+        reportTemplates = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(true);
         for (ReportTemplate reportTemplate : reportTemplates) {
             if (reportTemplate == null || StringUtils.isEmpty(reportTemplate.getDescription())) {
                 continue;
@@ -181,7 +181,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
         container.addContainerProperty(Columns.CREATE_DATE, Date.class, null);
         container.addContainerProperty(Columns.REPORT_ORDER, ReportOrder.class, null);
         container.addContainerProperty(Columns.RESULT, Status.class, null);
-        allReportOrders = ReportOrderDAO.fetchAllReportOrders();
+        allReportOrders = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders();
         return container;
     }
 
@@ -210,7 +210,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
      * Loads all report orders from database and shows them in the table view.
      */
     protected void refresh() {
-        allReportOrders = ReportOrderDAO.fetchAllReportOrders();
+        allReportOrders = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchAllReportOrders();
         filterItems();
     }
 

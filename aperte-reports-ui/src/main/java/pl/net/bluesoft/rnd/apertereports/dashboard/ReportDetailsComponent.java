@@ -15,10 +15,10 @@ import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
 import pl.net.bluesoft.rnd.apertereports.dashboard.cyclic.CyclicReportsPanel;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
@@ -236,7 +236,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
      */
     private void initData() {
         String reportType = VaadinUtil.getValue("dashboard.edit.table.type.online");
-        Collection<ReportTemplate> reports = ReportTemplateDAO.fetchAllReports(true);
+        Collection<ReportTemplate> reports = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(true);
         for (ReportTemplate rep : reports) {
             reportSelect.addItem(rep);
             reportSelect.setItemCaption(rep, reportType + ": " + rep.getReportname() + " (" + rep.getDescription() + ")");
@@ -245,7 +245,7 @@ public abstract class ReportDetailsComponent extends CustomComponent {
             }
         }
         reportType = VaadinUtil.getValue("dashboard.edit.table.type.cyclic");
-        Collection<CyclicReportOrder> cyclicReportOrders = CyclicReportOrderDAO.fetchAllEnabledCyclicReports();
+        Collection<CyclicReportOrder> cyclicReportOrders = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchAllEnabledCyclicReports();
         for (CyclicReportOrder rep : cyclicReportOrders) {
             ReportTemplate r = rep.getReport();
             reportSelect.addItem(rep);

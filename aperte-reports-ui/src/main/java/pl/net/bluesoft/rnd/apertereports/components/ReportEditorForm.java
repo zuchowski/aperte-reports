@@ -7,11 +7,11 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory.FieldChangeNotifier;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -147,7 +147,7 @@ public abstract class ReportEditorForm extends Panel {
         if (messages.isEmpty()) {
             reportEditorForm.commit();
             boolean isNew = report.getId() == null;
-            ReportTemplateDAO.saveOrUpdate(report);
+            pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(report);
             ReportCache.removeReport(report.getId().toString());
             valueChanged = false;
             onSaveReport(isNew, report);

@@ -9,10 +9,8 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.ConfigurationCache;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportOrder.Status;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
 import pl.net.bluesoft.rnd.apertereports.backbone.util.EmailProcessor;
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportOrderProcessor;
 
@@ -45,7 +43,7 @@ public class BackgroundOrderProcessor implements MessageListener {
         ReportOrder reportOrder = null;
         try {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-            reportOrder = ReportOrderDAO.fetchReport(id);
+            reportOrder = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchReport(id);
             processReport(reportOrder);
             if (reportOrder != null) {
                 forwardResults(reportOrder);
@@ -56,7 +54,7 @@ public class BackgroundOrderProcessor implements MessageListener {
             if (reportOrder != null) {
                 reportOrder.setReportStatus(Status.FAILED);
                 reportOrder.setErrorDetails(e.getMessage());
-                ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+                pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
             }
             throw new VriesRuntimeException("Error while processing background report order", e);
         }
@@ -74,7 +72,7 @@ public class BackgroundOrderProcessor implements MessageListener {
             InitialContext initCtx = new InitialContext();
             Context envContext = (Context) initCtx.lookup("");
             ConnectionFactory connectionFactory =
-                    (ConnectionFactory) envContext.lookup(ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY));
+                    (ConnectionFactory) envContext.lookup(pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY));
             connection = connectionFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer producer =

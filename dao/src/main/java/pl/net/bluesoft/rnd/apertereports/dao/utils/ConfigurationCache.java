@@ -1,7 +1,6 @@
-package pl.net.bluesoft.rnd.apertereports.domain;
+package pl.net.bluesoft.rnd.apertereports.dao.utils;
 
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.VriesConfigurationDAO;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class ConfigurationCache implements ConfigurationConstants {
      */
     synchronized private static void init() {
         if (configuration == null || Calendar.getInstance().after(validUntil)) {
-            configuration = VriesConfigurationDAO.loadAllToMap();
+            configuration = pl.net.bluesoft.rnd.apertereports.dao.VriesConfigurationDAO.loadAllToMap();
             String timeout = configuration.get(CONFIGURATION_CACHE_TIMEOUT_IN_MINUTES);
             if (timeout == null) timeout = "15";
             validUntil = Calendar.getInstance();

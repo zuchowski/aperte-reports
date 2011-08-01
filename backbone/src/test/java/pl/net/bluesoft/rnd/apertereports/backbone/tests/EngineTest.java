@@ -10,9 +10,9 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.naming.NamingException;
 import java.io.ByteArrayOutputStream;
@@ -95,7 +95,7 @@ public class EngineTest {
 
     @Test
     public void testEngine() throws Exception {
-        Collection<ReportTemplate> reports = ReportTemplateDAO.fetchAllReports(true);
+        Collection<ReportTemplate> reports = pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.fetchAllReports(true);
 
         StringBuffer sb = new StringBuffer();
         for (ReportTemplate rt : reports) {

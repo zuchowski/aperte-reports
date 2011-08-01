@@ -7,8 +7,8 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.HolidayCalendar;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.domain.dao.CyclicReportOrderDAO;
-import pl.net.bluesoft.rnd.apertereports.domain.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 
 import java.text.ParseException;
 import java.util.Collection;
@@ -121,7 +121,7 @@ public class CyclicReportOrderScheduler {
             for (String jobName : jobNames) {
                 sched.deleteJob(jobName, CyclicReportOrder.class.toString());
             }
-            Collection<CyclicReportOrder> cROs = CyclicReportOrderDAO.fetchAllCyclicReportOrders();
+            Collection<CyclicReportOrder> cROs = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchAllCyclicReportOrders();
             for (CyclicReportOrder cRO : cROs) {
                 scheduleCyclicReportOrder(cRO);
             }
