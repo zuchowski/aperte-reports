@@ -60,7 +60,9 @@ public class ReportWebServiceHelper {
             logger.info(e.getMessage());
             throw new ReportException(ErrorCodes.SERIALIZATION_EXCEPTION, "Unable to deserialize report parameters", e);
         }
-        reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, ReportConstants.DATETIME_PATTERN);
+        if (!reportParameters.containsKey(JRXPathQueryExecuterFactory.XML_DATE_PATTERN)) {
+            reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, ReportConstants.DATETIME_PATTERN);
+        }
         if (StringUtils.hasText(reportData.getLocale())) {
             reportParameters.put(JRParameter.REPORT_LOCALE, reportData.getLocale());
         }
