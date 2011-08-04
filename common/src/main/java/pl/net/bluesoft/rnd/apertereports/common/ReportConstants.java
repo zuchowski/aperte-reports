@@ -55,6 +55,11 @@ public interface ReportConstants {
      * Report order id property name.
      */
     public static final String REPORT_ORDER_ID = "reportOrderId";
+    
+    /**
+     * Key used to pass map with compiled subreports to JasperFiller
+     */
+    public static final String SUBREPORT_MAP_PARAMETER_NAME = "SUBREPORT_MAP";
 
     /**
      * Represents a boolean report property.

@@ -21,6 +21,10 @@ public class ReportGeneratorUtils {
         return Base64.decodeBase64(content.getBytes("UTF-8"));
     }
 
+	public static byte[] decodeContent(char[] content) throws UnsupportedEncodingException {
+		return decodeContent(new String(content));
+	}
+
     public static Object deserializeObject(byte[] bytes) throws Exception {
         ObjectInputStream ois = null;
         try {
