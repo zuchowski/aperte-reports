@@ -7,6 +7,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import org.junit.Test;
+
+import pl.net.bluesoft.rnd.apertereports.engine.AperteReport;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +41,7 @@ public class ReportCacheTester {
     public final void testGetReport() throws IOException, JRException {
         String ds = readTestFileToString(defaultTestReport);
         ByteArrayInputStream contentInputStream = new ByteArrayInputStream(ds.getBytes());
-        JasperReport testReport = JasperCompileManager.compileReport(contentInputStream);
+        AperteReport testReport = new AperteReport(JasperCompileManager.compileReport(contentInputStream));
         String report1 = "1";
         String report2 = "2";
 
