@@ -2,7 +2,6 @@ package pl.net.bluesoft.rnd.apertereports.backbone.util;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailAttachment;
@@ -14,12 +13,11 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ReportGeneratorUtils;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.activation.DataSource;
 import javax.naming.Context;
@@ -275,8 +273,7 @@ public class EmailProcessor implements ConfigurationConstants {
      * @throws Exception on ReportMaster error
      */
     private byte[] getReportContent(ReportOrder reportOrder) throws Exception {
-        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decodeBase64(new String(reportOrder
-                .getReportResult()).getBytes()));
+        ByteArrayInputStream bais = new ByteArrayInputStream(ReportGeneratorUtils.decodeContent(reportOrder.getReportResult()));
         try {
             return ReportMaster.exportReport((JasperPrint) JRLoader.loadObject(bais), reportOrder.getOutputFormat(),
                     pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());

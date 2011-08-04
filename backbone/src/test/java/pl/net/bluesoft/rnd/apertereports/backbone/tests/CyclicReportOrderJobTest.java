@@ -9,8 +9,6 @@ import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -78,7 +75,7 @@ public class CyclicReportOrderJobTest {
             String format = "a", recipientEmail = "b";
             cro = new CyclicReportOrder();
             cro.setOutputFormat(format);
-            cro.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters1).toCharArray());
+            cro.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters1));
             cro.setRecipientEmail(recipientEmail);
             cro.setReport(reportTemplate1);
             Long croId = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cro);
@@ -96,7 +93,7 @@ public class CyclicReportOrderJobTest {
             ReportOrder repOrderFromDB = pl.net.bluesoft.rnd.apertereports.dao.ReportOrderDAO.fetchReport(rep1.getId());
             assertEquals(reportTemplate1.getId(), repOrderFromDB.getReport().getId());
             assertEquals(cro.getOutputFormat(), repOrderFromDB.getOutputFormat());
-            assertArrayEquals(cro.getParametersXml(), repOrderFromDB.getParametersXml());
+            assertEquals(cro.getParametersXml(), repOrderFromDB.getParametersXml());
             assertEquals(cro.getRecipientEmail(), repOrderFromDB.getRecipientEmail());
             assertEquals(ReportConstants.CYCLIC_REPORT_ORDER_RESPONSE_Q, repOrderFromDB.getReplyToQ());
 

@@ -24,10 +24,10 @@ public class ReportTemplate implements Serializable {
      * JRXML data formatted in Base64 manner.
      */
     @Lob
-    @Type(type = "org.hibernate.type.CharacterArrayClobType")
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column
     @Basic(fetch = FetchType.LAZY)
-    private char[] content;
+    private String content;
 
     /**
      * Date of creation.
@@ -79,7 +79,7 @@ public class ReportTemplate implements Serializable {
         return active != null && active;
     }
 
-    public char[] getContent() {
+    public String getContent() {
         return content;
     }
 
@@ -123,8 +123,8 @@ public class ReportTemplate implements Serializable {
         this.allowOnlineDisplay = allowOnlineDisplay;
     }
 
-    public void setContent(char[] content) {
-        this.content = content.clone();
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setCreated(Date created) {

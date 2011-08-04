@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
@@ -93,9 +92,9 @@ public class ReportOrderPusherTest {
             assertNotNull("reportOrder4 not created");
             assertNotNull("reportOrder5 not created");
 
-            assertArrayEquals("parameters1 saved incorrectly", XmlReportConfigLoader.getInstance().mapAsXml(parameters1).toCharArray(),
+            assertEquals("parameters1 saved incorrectly", XmlReportConfigLoader.getInstance().mapAsXml(parameters1),
                     rep1.getParametersXml());
-            assertArrayEquals("parameters2 saved incorrectly", XmlReportConfigLoader.getInstance().mapAsXml(parameters2).toCharArray(),
+            assertEquals("parameters2 saved incorrectly", XmlReportConfigLoader.getInstance().mapAsXml(parameters2),
                     rep4.getParametersXml());
             assertEquals("format not saved", format, rep5.getOutputFormat());
             assertEquals("email not saved", recipientEmail, rep5.getRecipientEmail());

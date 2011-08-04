@@ -1,20 +1,11 @@
 package pl.net.bluesoft.rnd.apertereports.dashboard;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.commons.lang.StringUtils;
-
+import com.vaadin.Application;
+import com.vaadin.ui.Panel;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
@@ -29,16 +20,18 @@ import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.HtmlReportBuilder;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportDataProvider;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.cache.MapCache;
 
-import com.vaadin.Application;
-import com.vaadin.ui.Panel;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This component is used to display the generated reports in the portlet. It analyzes the template and report config list
@@ -223,12 +216,12 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             ReportTemplate report = provideReportTemplate(config);
             if (report != null) {
                 try {
-                    ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString(), new ReportTemplateProvider());
+                    ReportMaster reportMaster = new ReportMaster(report.getContent(), report.getId().toString(), new ReportTemplateProvider());
                     Map<String, Object> parameters;
                     if (config.getCyclicReportId() != null) {
                         CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
-                        parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().xmlAsMap(cro.getParametersXml() != null
-                                ? new String(cro.getParametersXml()) : ""));
+                        parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().xmlAsMap(
+                                cro.getParametersXml() != null ? cro.getParametersXml() : ""));
                     }
                     else {
                         parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().parameterListToMap(config.getParameters()));

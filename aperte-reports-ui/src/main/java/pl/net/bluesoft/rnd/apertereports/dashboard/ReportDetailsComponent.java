@@ -17,8 +17,6 @@ import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
 import pl.net.bluesoft.rnd.apertereports.dashboard.cyclic.CyclicReportsPanel;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
@@ -287,11 +285,11 @@ public abstract class ReportDetailsComponent extends CustomComponent {
                 List<ReportConfigParameter> params = reportConfig != null ? reportConfig.getParameters() : null;
                 if (selectedItem instanceof CyclicReportOrder) {
                     CyclicReportOrder cro = (CyclicReportOrder) selectedItem;
-                    params = XmlReportConfigLoader.getInstance().xmlAsParameters(cro.getParametersXml() != null ? new String(cro.getParametersXml()) : "");
+                    params = XmlReportConfigLoader.getInstance().xmlAsParameters(cro.getParametersXml() != null ? cro.getParametersXml() : "");
                 }
                 readonly = selectedItem instanceof CyclicReportOrder;
                 reportParametersPanel.addComponent(new TPTLazyLoadingLayout(reportParametersComponent =
-                        new ReportParametersComponent(new String(reportTemplate.getContent()), reportTemplate.getId(), params,
+                        new ReportParametersComponent(reportTemplate.getContent(), reportTemplate.getId(), params,
                                 false, true, readonly), true));
             }
             catch (Exception e) {

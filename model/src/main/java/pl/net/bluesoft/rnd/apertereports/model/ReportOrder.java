@@ -53,19 +53,19 @@ public class ReportOrder {
      * Input parameters formatted as XML.
      */
     @Lob
-    @Type(type = "org.hibernate.type.CharacterArrayClobType")
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "parameters_xml")
     @Basic(fetch = FetchType.LAZY)
-    private char[] parametersXml;
+    private String parametersXml;
 
     /**
      * Report result formatted as BASE64.
      */
     @Lob
-    @Type(type = "org.hibernate.type.CharacterArrayClobType")
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "report_result")
     @Basic(fetch = FetchType.LAZY)
-    private char[] reportResult;
+    private String reportResult;
 
     /**
      * Output format, e.g. CSV, HTML, PDF, XLS.
@@ -136,7 +136,7 @@ public class ReportOrder {
         return outputFormat;
     }
 
-    public char[] getParametersXml() {
+    public String getParametersXml() {
         return parametersXml;
     }
 
@@ -152,7 +152,7 @@ public class ReportOrder {
         return report;
     }
 
-    public char[] getReportResult() {
+    public String getReportResult() {
         return reportResult;
     }
 
@@ -188,8 +188,8 @@ public class ReportOrder {
         this.outputFormat = outputFormat;
     }
 
-    public void setParametersXml(char[] parametersXml) {
-        this.parametersXml = parametersXml.clone();
+    public void setParametersXml(String parametersXml) {
+        this.parametersXml = parametersXml;
     }
 
     public void setRecipientEmail(String recipientEmail) {
@@ -204,8 +204,8 @@ public class ReportOrder {
         this.report = report;
     }
 
-    public void setReportResult(char[] reportResult) {
-        this.reportResult = reportResult.clone();
+    public void setReportResult(String reportResult) {
+        this.reportResult = reportResult;
     }
 
     public void setReportStatus(Status reportStatus) {

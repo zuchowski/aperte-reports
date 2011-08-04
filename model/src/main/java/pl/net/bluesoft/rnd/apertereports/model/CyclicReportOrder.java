@@ -67,9 +67,9 @@ public class CyclicReportOrder {
      * Report input parameters formatted as XML.
      */
     @Lob
-    @Type(type = "org.hibernate.type.CharacterArrayClobType")
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "parameters_xml")
-    private char[] parametersXml;
+    private String parametersXml;
 
     /**
      * Output format.
@@ -134,7 +134,7 @@ public class CyclicReportOrder {
         return outputFormat;
     }
 
-    public char[] getParametersXml() {
+    public String getParametersXml() {
         return parametersXml;
     }
 
@@ -170,8 +170,8 @@ public class CyclicReportOrder {
         this.outputFormat = outputFormat;
     }
 
-    public void setParametersXml(char[] parametersXml) {
-        this.parametersXml = parametersXml.clone();
+    public void setParametersXml(String parametersXml) {
+        this.parametersXml = parametersXml;
     }
 
     public void setProcessedOrder(ReportOrder processedOrder) {

@@ -111,7 +111,7 @@ public class ReportParamWindow extends Window {
     protected void initDialog() {
         VerticalLayout vl = new VerticalLayout();
         try {
-            rm = new ReportMaster(new String(report.getContent()), report.getId().toString(), new ReportTemplateProvider());
+            rm = new ReportMaster(report.getContent(), report.getId().toString(), new ReportTemplateProvider());
             reportParametersComponent = new ReportParametersComponent(rm);
 
             HorizontalLayout buttons = new HorizontalLayout();

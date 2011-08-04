@@ -97,7 +97,7 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.compilation_failed.title"),
                     VaadinUtil.getValue("exception.compilation_failed.description"));
 		}
-		report.setContent(content.toCharArray());
+		report.setContent(content);
 		report.setFilename(event.getFilename());
 		if (StringUtils.isEmpty(report.getDescription())) {
 			report.setDescription("");

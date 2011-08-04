@@ -8,7 +8,6 @@ import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 import java.util.Map;
@@ -48,7 +47,7 @@ public class CyclicReportOrderJob implements Job {
         CyclicReportOrder cRO = pl.net.bluesoft.rnd.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportOrder(reportId);
         ReportOrder newOrder = null;
         if (cRO != null && cRO.getProcessedOrder() == null) {
-            Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(new String(cRO.getParametersXml()));
+            Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(cRO.getParametersXml());
             newOrder = ReportOrderPusher.buildNewOrder(cRO.getReport(), params, cRO.getOutputFormat(),
                     cRO.getRecipientEmail(), null, pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT));
             cRO.setProcessedOrder(newOrder);

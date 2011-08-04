@@ -7,7 +7,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory;
 import pl.net.bluesoft.rnd.apertereports.generators.ReportBeanFieldFactory.FieldChangeNotifier;
@@ -176,7 +175,7 @@ public abstract class ReportEditorForm extends Panel {
      * Opens a download generated report popup.
      */
     protected void downloadReport() {
-        byte[] reportContent = Base64.decodeBase64(new String(report.getContent()).getBytes());
+        byte[] reportContent = Base64.decodeBase64(report.getContent().getBytes());
         FileStreamer.openFileInNewWindow(getApplication(), report.getFilename(), reportContent, "application/octet-stream");
     }
 

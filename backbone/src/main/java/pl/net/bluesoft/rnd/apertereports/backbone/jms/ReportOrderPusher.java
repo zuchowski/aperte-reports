@@ -7,8 +7,6 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.dao.utils.WHS;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.*;
@@ -79,7 +77,7 @@ public class ReportOrderPusher {
     public static ReportOrder buildNewOrder(final ReportTemplate report, Map<String, String> parameters, String format,
                                             String recipientEmail, String username, String replyToQ) {
         final ReportOrder reportOrder = new ReportOrder();
-        reportOrder.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters).toCharArray());
+        reportOrder.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters));
         reportOrder.setOutputFormat(format);
         reportOrder.setRecipientEmail(recipientEmail);
         reportOrder.setUsername(username);

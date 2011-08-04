@@ -9,8 +9,6 @@ import pl.net.bluesoft.rnd.apertereports.components.HelpWindow.Tab;
 import pl.net.bluesoft.rnd.apertereports.components.VriesModalWindow;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
@@ -262,7 +260,7 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
                     if (cyclicRep != null) {
                         rep = reportOrders.get(cyclicRep.getReport().getId());
                         reportType = VaadinUtil.getValue("dashboard.edit.table.type.cyclic");
-                        r.setParameters(XmlReportConfigLoader.getInstance().xmlAsParameters(new String(cyclicRep.getParametersXml())));
+                        r.setParameters(XmlReportConfigLoader.getInstance().xmlAsParameters(cyclicRep.getParametersXml()));
                     }
                 }
                 if (rep != null) {

@@ -105,7 +105,7 @@ public class EngineTest {
         StringBuffer sb = new StringBuffer();
         for (ReportTemplate rt : reports) {
             try {
-                ReportMaster rm = new ReportMaster(new String(rt.getContent()), rt.getId().toString(), new EmptySubreportProvider());
+                ReportMaster rm = new ReportMaster(rt.getContent(), rt.getId().toString(), new EmptySubreportProvider());
                 sb.append(new String(rm.generateAndExportReport(ReportConstants.ReportType.HTML.name(), new HashMap<String, Object>(),
                         new HashMap<String, String>())));
                 if (!sb.toString().isEmpty()) {

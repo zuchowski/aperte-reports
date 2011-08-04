@@ -25,6 +25,10 @@ public class ReportGeneratorUtils {
 		return decodeContent(new String(content));
 	}
 
+    public static String encodeContent(byte[] content) {
+        return new String(Base64.encodeBase64(content));
+    }
+
     public static Object deserializeObject(byte[] bytes) throws Exception {
         ObjectInputStream ois = null;
         try {

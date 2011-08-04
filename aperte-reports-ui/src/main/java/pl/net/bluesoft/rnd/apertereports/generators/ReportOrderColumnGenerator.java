@@ -13,7 +13,6 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.components.VriesReportOrderBrowserComponent.Columns;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.util.*;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil.ConfirmListener;
 
@@ -86,7 +85,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                 Button paramsLink = new Button(VaadinUtil.getValue("report_order.table.parameters"));
                 paramsLink.setStyleName(BaseTheme.BUTTON_LINK);
                 paramsLink.addListener(new OnClickOpenMessageInNewWindow(source, TM
-                        .get("report_order.table.parameters.popup.title"), new String(reportOrder.getParametersXml()),
+                        .get("report_order.table.parameters.popup.title"), reportOrder.getParametersXml(),
                         Label.CONTENT_PREFORMATTED));
                 return paramsLink;
             case ACTION:

@@ -224,7 +224,7 @@ public final class DashboardUtil {
      */
     public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws ReportException, JRException {
         JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(
-                new ByteArrayInputStream(Base64.decodeBase64(new String(reportOrder.getReportResult()).getBytes())));
+                new ByteArrayInputStream(Base64.decodeBase64(reportOrder.getReportResult())));
         return ReportMaster.exportReport(jasperPrint, format.toString(), pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
     }
 

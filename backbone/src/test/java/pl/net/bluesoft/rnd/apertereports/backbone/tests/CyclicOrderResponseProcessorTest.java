@@ -15,10 +15,8 @@ import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.Message;
@@ -57,7 +55,7 @@ public class CyclicOrderResponseProcessorTest {
         ReportOrder reportOrder1 = null;
         ReportOrder reportOrder2 = null;
 
-        char[] testResult = "success".toCharArray();
+        String testResult = "success";
 
         try {
             reportTemplate = new ReportTemplate();

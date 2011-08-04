@@ -1,26 +1,23 @@
 package pl.net.bluesoft.rnd.apertereports.backbone.tests;
 
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.Map;
-
-import javax.naming.NamingException;
-
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
 import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.util.Map;
+
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "/testEnvContext.xml" })
@@ -62,7 +59,7 @@ public class ReportTemplateProviderTest{
 			if (ReportTemplateDAO.fetchReportsByName(TEST_REPORT) == null) {
 				ReportTemplate rt = new ReportTemplate();
 				rt.setReportname(TEST_REPORT);
-				rt.setContent("test content".toCharArray());
+				rt.setContent("test content");
 				ReportTemplateDAO.saveOrUpdate(rt);
 			}
 		} catch (VriesRuntimeException e) {

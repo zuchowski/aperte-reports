@@ -17,7 +17,6 @@ import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.jms.Message;
@@ -51,7 +50,7 @@ public class BackgroundOrderProcessorTest {
         try {
             reportTemplate = new ReportTemplate();
             String content = TextUtils.readTestFileToString(getClass().getResourceAsStream(defaultTestReport));
-            char[] contentCA = new String(Base64.encodeBase64(content.getBytes("UTF-8"))).toCharArray();
+            String contentCA = new String(Base64.encodeBase64(content.getBytes("UTF-8")));
             reportTemplate.setContent(contentCA);
             pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate);
             reportOrder = ReportOrderPusher
