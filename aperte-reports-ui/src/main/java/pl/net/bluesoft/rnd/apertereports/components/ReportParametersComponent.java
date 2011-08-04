@@ -30,6 +30,7 @@ import pl.net.bluesoft.rnd.apertereports.AbstractReportingApplication;
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TimeUtils;
@@ -39,7 +40,6 @@ import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigParameter
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportProperty;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.wrappers.DictionaryItemsWrapper;

@@ -1,34 +1,28 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.apache.commons.lang.StringUtils;
-
 import pl.net.bluesoft.rnd.apertereports.AbstractReportingApplication;
 import pl.net.bluesoft.rnd.apertereports.backbone.jms.ReportOrderPusher;
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportStreamReceiver;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
-import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This window contains a configuration of a report generation. It contains report parameters,

@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.engine.*;
 import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;

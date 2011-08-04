@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ReportGeneratorUtils;
@@ -787,7 +788,10 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 //return con;
 //}
 //
-	private JasperReport getJasperReport() {
+    /*
+
+     */
+	public JasperReport getJasperReport() {
 		return report.getJasperReport();
 	}
 }

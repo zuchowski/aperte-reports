@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.engine;
+package pl.net.bluesoft.rnd.apertereports.common.exception;
 
 public class SubreportNotFoundException extends Exception {
 

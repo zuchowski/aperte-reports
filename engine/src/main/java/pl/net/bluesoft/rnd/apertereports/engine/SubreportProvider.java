@@ -3,7 +3,9 @@
  */
 package pl.net.bluesoft.rnd.apertereports.engine;
 
-import java.io.ByteArrayInputStream;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
+
 import java.util.Map;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Map;
  */
 public interface SubreportProvider {
 
-	Map<String, Subreport> getSubreports(String... reportNames) throws SubreportNotFoundException;
+	Map<String, Subreport> getSubreports(String... reportNames) throws SubreportNotFoundException, ReportException;
 
 	public class Subreport {
 		private String name;

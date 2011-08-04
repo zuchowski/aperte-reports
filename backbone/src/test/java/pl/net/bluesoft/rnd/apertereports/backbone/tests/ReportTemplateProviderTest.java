@@ -16,9 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 

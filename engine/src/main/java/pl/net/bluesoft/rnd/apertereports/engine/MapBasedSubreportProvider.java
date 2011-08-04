@@ -1,5 +1,7 @@
 package pl.net.bluesoft.rnd.apertereports.engine;
 
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
+
 import java.util.HashMap;
 import java.util.Map;
 

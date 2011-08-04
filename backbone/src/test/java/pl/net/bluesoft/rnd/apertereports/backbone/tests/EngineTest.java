@@ -11,13 +11,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
 import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
 import pl.net.bluesoft.rnd.apertereports.engine.AperteReport;
 import pl.net.bluesoft.rnd.apertereports.engine.EmptySubreportProvider;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 
 import javax.naming.NamingException;

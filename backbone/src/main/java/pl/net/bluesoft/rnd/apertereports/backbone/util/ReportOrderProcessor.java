@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRSaver;
 
@@ -15,14 +14,8 @@ import pl.net.bluesoft.rnd.apertereports.common.exception.VriesException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A helper class for processing reports by JMS listeners.

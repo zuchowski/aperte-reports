@@ -1,28 +1,25 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-
-import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
-import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
-import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
-import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
-
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
+import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 /**
  * A component that handles a report upload from a user.

@@ -15,12 +15,12 @@ import org.apache.commons.lang.StringUtils;
 
 import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import pl.net.bluesoft.rnd.apertereports.common.exception.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
