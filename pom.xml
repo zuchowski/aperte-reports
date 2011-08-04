@@ -208,11 +208,6 @@
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.sf.jasperreports</groupId>
-                <artifactId>jasperreports</artifactId>
-                <version>${jasperReport.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate</artifactId>
                 <version>3.2.7.ga</version>
@@ -302,7 +297,7 @@
         <quartz.version>1.8.4</quartz.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <log4j.version>1.2.16</log4j.version>
-        <jasperReport.version>3.7.4</jasperReport.version>
+        <jasperReport.version>4.0.2</jasperReport.version>
         <itext.version>2.1.7</itext.version>
         <hibernate.validator.version>4.0.2.GA</hibernate.validator.version>
         <jackson.mapper.version>1.5.2</jackson.mapper.version>
