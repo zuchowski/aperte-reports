@@ -1,11 +1,23 @@
 package pl.net.bluesoft.rnd.apertereports.dashboard;
 
-import com.vaadin.Application;
-import com.vaadin.ui.Panel;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
+import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
@@ -19,17 +31,14 @@ import pl.net.bluesoft.rnd.apertereports.dashboard.html.ReportDataProvider;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.cache.MapCache;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import com.vaadin.Application;
+import com.vaadin.ui.Panel;
 
 /**
  * This component is used to display the generated reports in the portlet. It analyzes the template and report config list
@@ -214,7 +223,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             ReportTemplate report = provideReportTemplate(config);
             if (report != null) {
                 try {
-                    ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString());
+                    ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString(), new ReportTemplateProvider());
                     Map<String, Object> parameters;
                     if (config.getCyclicReportId() != null) {
                         CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
@@ -226,6 +235,12 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     }
                     jasperPrint = reportMaster.generateReport(parameters);
                     cache.cacheData(config.getId().toString(), TimeUtils.secondsToMilliseconds(config.getCacheTimeout()), jasperPrint);
+                }
+                catch (SubreportNotFoundException e) {
+        			NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
+                            VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
+                    logger.log(Level.INFO, e.getLocalizedMessage(), e);
+                    return null;
                 }
                 catch (Exception e) {
                     NotificationUtil.showExceptionNotification(application.getMainWindow(),

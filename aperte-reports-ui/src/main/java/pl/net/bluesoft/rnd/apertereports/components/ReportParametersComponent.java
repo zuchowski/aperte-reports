@@ -1,13 +1,33 @@
 package pl.net.bluesoft.rnd.apertereports.components;
 
-import com.liferay.portal.model.User;
-import com.vaadin.data.Buffered;
-import com.vaadin.data.Validator;
-import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.ui.*;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.CHECKBOXES;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.DATE;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.FILTER;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.FILTERED_SELECT;
+import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.MULTISELECT;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+
 import org.apache.commons.lang.StringUtils;
+
 import pl.net.bluesoft.rnd.apertereports.AbstractLazyLoaderComponent;
 import pl.net.bluesoft.rnd.apertereports.AbstractReportingApplication;
+import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
@@ -19,6 +39,7 @@ import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigParameter
 import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
 import pl.net.bluesoft.rnd.apertereports.engine.ReportProperty;
+import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.wrappers.DictionaryItemsWrapper;
@@ -26,14 +47,21 @@ import pl.net.bluesoft.rnd.apertereports.util.wrappers.FieldContainer;
 import pl.net.bluesoft.rnd.apertereports.util.wrappers.FieldProperties;
 import pl.net.bluesoft.rnd.apertereports.util.wrappers.FilterContainer;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.text.ParseException;
-import java.util.*;
-
-import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.InputTypes.*;
+import com.liferay.portal.model.User;
+import com.vaadin.data.Buffered;
+import com.vaadin.data.Validator;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.TextField;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin fields in a form. Supports lazy loading.
@@ -58,49 +86,50 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         init();
     }
 
-    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws ReportException {
+
+    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws ReportException, SubreportNotFoundException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         if (!lazyLoad) {
-            reportMaster = new ReportMaster(reportSource, cacheId.toString());
+            reportMaster = new ReportMaster(reportSource, cacheId.toString(), new ReportTemplateProvider());
             init();
         }
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad) throws ReportException {
+                                     boolean includeReportFormat, boolean lazyLoad) throws ReportException, SubreportNotFoundException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;
         this.includeReportFormat = includeReportFormat;
         if (!lazyLoad) {
-            reportMaster = new ReportMaster(reportSource, cacheId.toString());
+            reportMaster = new ReportMaster(reportSource, cacheId.toString(), new ReportTemplateProvider());
             init();
         }
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, List<ReportConfigParameter> reportParameters,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException, SubreportNotFoundException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportParameters;
         this.includeReportFormat = includeReportFormat;
         this.readonly = readonly;
         if (!lazyLoad) {
-            reportMaster = new ReportMaster(reportSource, cacheId.toString());
+            reportMaster = new ReportMaster(reportSource, cacheId.toString(), new ReportTemplateProvider());
             init();
         }
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException, SubreportNotFoundException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;
         this.includeReportFormat = includeReportFormat;
         this.readonly = readonly;
         if (!lazyLoad) {
-            reportMaster = new ReportMaster(reportSource, cacheId.toString());
+            reportMaster = new ReportMaster(reportSource, cacheId.toString(), new ReportTemplateProvider());
             init();
         }
     }
@@ -168,7 +197,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      */
     @Override
     public void lazyLoad() throws Exception {
-        reportMaster = new ReportMaster(reportSource, cacheId.toString());
+        reportMaster = new ReportMaster(reportSource, cacheId.toString(), new ReportTemplateProvider());
         init();
     }
 

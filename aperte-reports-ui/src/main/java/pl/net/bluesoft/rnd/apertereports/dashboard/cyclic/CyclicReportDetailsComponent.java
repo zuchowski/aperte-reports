@@ -1,28 +1,49 @@
 package pl.net.bluesoft.rnd.apertereports.dashboard.cyclic;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
-import com.vaadin.ui.*;
-import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
+import static pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status.FAILED;
+import static pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status.PROCESSING;
+import static pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status.SUCCEEDED;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
+
+import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
 import pl.net.bluesoft.rnd.apertereports.components.ReportParametersComponent;
 import pl.net.bluesoft.rnd.apertereports.components.SimpleHorizontalLayout;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 import pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
 import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 import pl.net.bluesoft.rnd.apertereports.util.validators.CronValidator;
 
-import java.util.*;
+import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Select;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
-import static pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
-import static pl.net.bluesoft.rnd.apertereports.model.ReportOrder.Status.*;
+import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
 
 /**
  * Displays cyclic report order details (i.e. description, format, cron expression).
@@ -265,11 +286,16 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
                 if (report != null && validateParameters()) {
                     ReportType reportType = (ReportType) downloadFormatSelect.getValue();
                     try {
-                        ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString());
+                        ReportMaster reportMaster = new ReportMaster(new String(report.getContent()), report.getId().toString(), new ReportTemplateProvider());
                         Map<String, String> parameters = parametersComponent.collectParametersValues();
                         byte[] data = reportMaster.generateAndExportReport(reportType.name(), new HashMap<String, Object>(parameters),
                                 pl.net.bluesoft.rnd.apertereports.dao.utils.ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), report.getReportname(), data, reportType.name());
+                    }
+                    catch (SubreportNotFoundException e) {
+            			ExceptionUtils.logSevereException(e);
+            			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
+                                VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
                     }
                     catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
