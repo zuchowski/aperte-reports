@@ -45,6 +45,17 @@ public class ReportTemplateDAO {
             }
         }.p();
     }
+    
+	public static List<ReportTemplate> fetchReportsByNames(final String... reportNames) {
+		return new WHS<List<ReportTemplate>>(false) {
+			@Override
+			public List<ReportTemplate> lambda() {
+				List<ReportTemplate> list = sess.createCriteria(ReportTemplate.class)
+						.add(Restrictions.in("reportname", reportNames)).list();
+				return list != null ? list : new ArrayList<ReportTemplate>();
+			}
+		}.p();
+	}
 
     public static ReportTemplate fetchReport(final Integer reportId) {
         return new WHS<ReportTemplate>() {
