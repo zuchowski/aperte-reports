@@ -1,5 +1,26 @@
 package pl.net.bluesoft.rnd.apertereports.backbone.tests;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
+import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
+import pl.net.bluesoft.rnd.apertereports.dao.ReportTemplateDAO;
+import pl.net.bluesoft.rnd.apertereports.engine.AperteReport;
+import pl.net.bluesoft.rnd.apertereports.engine.EmptySubreportProvider;
+import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
+import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
+import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
+
+import javax.naming.NamingException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,30 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.naming.NamingException;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRHtmlExporter;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-
-import org.apache.commons.codec.binary.Base64;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import pl.net.bluesoft.rnd.apertereports.backbone.util.ReportTemplateProvider;
-import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
-import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
-import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.engine.AperteReport;
-import pl.net.bluesoft.rnd.apertereports.engine.EmptySubreportProvider;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
 
 public class EngineTest {
 
@@ -108,7 +105,7 @@ public class EngineTest {
         StringBuffer sb = new StringBuffer();
         for (ReportTemplate rt : reports) {
             try {
-                ReportMaster rm = new ReportMaster(new String(rt.getContent()), rt.getId().toString());
+                ReportMaster rm = new ReportMaster(new String(rt.getContent()), rt.getId().toString(), new EmptySubreportProvider());
                 sb.append(new String(rm.generateAndExportReport(ReportConstants.ReportType.HTML.name(), new HashMap<String, Object>(),
                         new HashMap<String, String>())));
                 if (!sb.toString().isEmpty()) {

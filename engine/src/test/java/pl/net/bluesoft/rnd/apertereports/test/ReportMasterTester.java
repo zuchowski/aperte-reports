@@ -3,10 +3,14 @@
  */
 package pl.net.bluesoft.rnd.apertereports.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import net.sf.jasperreports.engine.JRException;
+import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
+import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
+import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
+import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
+import pl.net.bluesoft.rnd.apertereports.engine.*;
+import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,29 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.ConnectionEvent;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-
-import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
-
-import pl.net.bluesoft.rnd.apertereports.common.ReportConstants.ReportType;
-import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
-import pl.net.bluesoft.rnd.apertereports.common.exception.VriesRuntimeException;
-import pl.net.bluesoft.rnd.apertereports.common.utils.TextUtils;
-import pl.net.bluesoft.rnd.apertereports.engine.AperteReport;
-import pl.net.bluesoft.rnd.apertereports.engine.EmptySubreportProvider;
-import pl.net.bluesoft.rnd.apertereports.engine.MapBasedSubreportProvider;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportCache;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportMaster;
-import pl.net.bluesoft.rnd.apertereports.engine.ReportParameter;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportNotFoundException;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider;
-import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;
-
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import static org.junit.Assert.*;
 
 /**
  * @author Think
@@ -58,10 +40,7 @@ public class ReportMasterTester {
 	private String subsubreport2 = "/report1_subreport1_subreport2.jrxml";
 
 	/**
-	 * Test method for
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(String, String)}
-	 * .
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws SubreportNotFoundException
 	 * @throws JRException
@@ -80,7 +59,6 @@ public class ReportMasterTester {
 	 * .
 	 * 
 	 * @throws IOException
-	 * @throws Base64DecodingException
 	 * @throws JRException
 	 * @throws SubreportNotFoundException
 	 * @throws ReportException
@@ -120,7 +98,6 @@ public class ReportMasterTester {
 	 * .
 	 * 
 	 * @throws IOException
-	 * @throws Base64DecodingException
 	 * @throws JRException
 	 * @throws SubreportNotFoundException
 	 * @throws ReportException
@@ -140,10 +117,7 @@ public class ReportMasterTester {
 	}
 
 	/**
-	 * Test method for
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#ReportMaster(java.lang.String)}
-	 * .
-	 * 
+	 *
 	 * @throws SubreportNotFoundException
 	 * 
 	 * @throws JRException
@@ -159,7 +133,6 @@ public class ReportMasterTester {
 	 * .
 	 * 
 	 * @throws IOException
-	 * @throws Base64DecodingException
 	 * @throws JRException
 	 * @throws SubreportNotFoundException
 	 */
@@ -190,12 +163,8 @@ public class ReportMasterTester {
 	/**
 	 * Test method for
 	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#compileReport(String, String, SubreportProvider)}
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#generateReport(java.util.Map, java.lang.String)}
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#exportReport(net.sf.jasperreports.engine.JasperPrint, java.lang.String)}
-	 * .
-	 * 
+	 *
 	 * @throws IOException
-	 * @throws Base64DecodingException
 	 * @throws JRException
 	 * @throws ReportException
 	 * @throws SubreportNotFoundException
@@ -231,24 +200,14 @@ public class ReportMasterTester {
 
 	}
 
-	/**
-	 * Test method for
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#exportReport(net.sf.jasperreports.engine.JasperPrint, java.lang.String)}
-	 * .
-	 */
 	@Test
 	public final void testExportReport() throws Exception {
 		// fail("Not yet implemented"); // TODO
 	}
 
 	/**
-	 * Test method for
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#generateReport(java.util.Map, java.lang.String)}
-	 * .
-	 * 
 	 * @throws JRException
 	 * @throws IOException
-	 * @throws Base64DecodingException
 	 */
 	@Test
 	public final void testGenerateReport() throws IOException, JRException {
@@ -266,7 +225,6 @@ public class ReportMasterTester {
 	 * @throws JRException
 	 * @throws IOException
 	 * @throws SubreportNotFoundException
-	 * @throws Base64DecodingException
 	 */
 	@Test
 	public final void testGetParameters() throws IOException, ReportException, SubreportNotFoundException {
@@ -283,14 +241,10 @@ public class ReportMasterTester {
 	}
 
 	/**
-	 * Test method for
-	 * {@link pl.net.bluesoft.rnd.apertereports.engine.ReportMaster#ReportMaster(java.lang.String, java.lang.Integer)}
-	 * .
-	 * 
+	 *
 	 * @throws JRException
 	 * @throws IOException
 	 * @throws SubreportNotFoundException
-	 * @throws Base64DecodingException
 	 */
 	@Test
 	public final void testReportMasterStringInteger() throws IOException, ReportException, SubreportNotFoundException {

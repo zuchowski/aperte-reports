@@ -1,50 +1,10 @@
 package pl.net.bluesoft.rnd.apertereports.engine;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
-import net.sf.jasperreports.engine.export.JRHtmlExporter;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
-
 import org.apache.commons.lang.StringUtils;
-
 import pl.net.bluesoft.rnd.apertereports.common.ConfigurationConstants;
 import pl.net.bluesoft.rnd.apertereports.common.ReportConstants;
 import pl.net.bluesoft.rnd.apertereports.common.exception.ReportException;
@@ -53,6 +13,19 @@ import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
 import pl.net.bluesoft.rnd.apertereports.common.utils.ReportGeneratorUtils;
 import pl.net.bluesoft.rnd.apertereports.engine.SubreportProvider.Subreport;
 import pl.net.bluesoft.util.lang.StringUtil;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A workhorse of the Jasper reports engine. This class is responsible for
@@ -270,7 +243,6 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 * @param cacheId
 	 *            Report cache id
 	 * @param subreportProvider
-	 * @param hasParent
 	 * @return Compiled report
 	 * @throws JRException
 	 *             on Jasper error
