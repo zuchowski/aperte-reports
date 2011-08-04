@@ -67,7 +67,7 @@ public class CyclicReportOrder {
      * Report input parameters formatted as XML.
      */
     @Lob
-    @Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.CharacterArrayClobType")
     @Column(name = "parameters_xml")
     private char[] parametersXml;
 

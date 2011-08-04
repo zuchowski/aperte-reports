@@ -24,7 +24,7 @@ public class ReportTemplate implements Serializable {
      * JRXML data formatted in Base64 manner.
      */
     @Lob
-    @Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.CharacterArrayClobType")
     @Column
     @Basic(fetch = FetchType.LAZY)
     private char[] content;

@@ -53,7 +53,7 @@ public class ReportOrder {
      * Input parameters formatted as XML.
      */
     @Lob
-    @Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.CharacterArrayClobType")
     @Column(name = "parameters_xml")
     @Basic(fetch = FetchType.LAZY)
     private char[] parametersXml;
@@ -62,7 +62,7 @@ public class ReportOrder {
      * Report result formatted as BASE64.
      */
     @Lob
-    @Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.CharacterArrayClobType")
     @Column(name = "report_result")
     @Basic(fetch = FetchType.LAZY)
     private char[] reportResult;
