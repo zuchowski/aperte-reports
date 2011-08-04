@@ -265,7 +265,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 			String source = processSubreports(hasParent, new String(reportSource), subreportNames);
 			ByteArrayInputStream bis = new ByteArrayInputStream(source.getBytes());
             try {
-                compiledReport = new AperteReport(JasperCompileManager.compileReport(new ByteArrayInputStream(reportSource)));
+                compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
         		logger.info("Compiled.");
             }
             catch (JRException e) {
@@ -289,6 +289,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	private static void compileSubreports(SubreportProvider subreportProvider, AperteReport compiledReport,
 			Set<String> subreportNames) throws SubreportNotFoundException, ReportException {
 		if (subreportNames.size() > 0) {
+			if(subreportProvider == null){
+				subreportProvider = new EmptySubreportProvider();
+			}
 			Map<String, Subreport> subreports = subreportProvider.getSubreports((String[]) subreportNames
 					.toArray(new String[subreportNames.size()]));
 			Map<String, AperteReport> compiledSubreports = new HashMap<String, AperteReport>(subreports.size(), 1);
