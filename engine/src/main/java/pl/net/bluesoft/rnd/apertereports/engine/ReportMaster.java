@@ -449,7 +449,11 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 		return getJasperReport().getName();
 	}
 
-	/**
+    public AperteReport getAperteReport() {
+        return report;
+    }
+
+    /**
 	 * Builds a new {@link JasperPrint} of the current report using given
 	 * parameters.
 	 * 
@@ -791,7 +795,7 @@ private static String processSubreports(boolean hasParent, String source, Set<St
     /*
 
      */
-	public JasperReport getJasperReport() {
+	private JasperReport getJasperReport() {
 		return report.getJasperReport();
 	}
 }
