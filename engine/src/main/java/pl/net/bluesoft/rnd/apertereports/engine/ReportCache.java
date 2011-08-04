@@ -8,7 +8,7 @@ import java.util.HashMap;
  * A simple thread-safe cache for Jasper reports.
  */
 public class ReportCache {
-    static HashMap<String, JasperReport> reports;
+    static HashMap<String, AperteReport> reports;
 
     /**
      * Gets a cached report. Returns <code>null</code> if not found.
@@ -16,7 +16,7 @@ public class ReportCache {
      * @param reportId
      * @return
      */
-    public static JasperReport getReport(String reportId) {
+    public static AperteReport getReport(String reportId) {
         if (reportId == null) {
             return null;
         }
@@ -32,7 +32,7 @@ public class ReportCache {
      * @param reportId Report cache id
      * @param report   A {@link JasperReport} to cache
      */
-    public static void putReport(String reportId, JasperReport report) {
+    public static void putReport(String reportId, AperteReport report) {
         if (reportId == null) {
             return;
         }
@@ -62,7 +62,7 @@ public class ReportCache {
      */
     synchronized private static void init() {
         if (reports == null) {
-            reports = new HashMap<String, JasperReport>();
+            reports = new HashMap<String, AperteReport>();
         }
     }
 

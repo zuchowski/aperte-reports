@@ -32,7 +32,7 @@ public class ReportWebServiceHelper {
                 throw new ReportException(ErrorCodes.JASPER_REPORTS_EXCEPTION, "Report source cannot be empty for report: "
                         + (reportData.getName() != null ? reportData.getName() : reportData.getId()));
             }
-            content = new ReportMaster(content, reportData.getId())
+            content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider())
                     .generateAndExportReport(reportData.getFormat(), reportParameters, exporterParameters, configuration);
         }
         catch (Exception e) {
