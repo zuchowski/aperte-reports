@@ -6,6 +6,7 @@
         <constructor-arg ref="messageFactory"/>
         <constructor-arg ref="marshaller"/>
         <property name="enableLogging" value="false"/>
+        <property name="defaultUri" value="http://localhost:18666/aperte-reports-ws-endpoint/AperteReportsService/"/>
     </bean>
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>

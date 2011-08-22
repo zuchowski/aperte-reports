@@ -47,7 +47,7 @@
     <sws:interceptors>
         <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
         <bean class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
-            <property name="schema" value="classpath*:*apertereports.xsd"/>
+            <property name="schema" value="/WEB-INF/classes/apertereports.xsd"/>
             <property name="validateRequest" value="false"/>
             <property name="validateResponse" value="true"/>
         </bean>
@@ -55,7 +55,7 @@
 
     <sws:dynamic-wsdl id="reportGenerator" portTypeName="AperteReportsService" locationUri="/AperteReportsService/"
                       targetNamespace="http://bluesoft.net.pl/rnd/apertereports/schemas">
-        <sws:xsd location="classpath*:*apertereports.xsd"/>
+        <sws:xsd location="/WEB-INF/classes/apertereports.xsd"/>
     </sws:dynamic-wsdl>
 
 </beans>
