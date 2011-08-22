@@ -18,6 +18,7 @@ import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
 import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
 import pl.net.bluesoft.rnd.apertereports.util.DashboardUtil;
 import pl.net.bluesoft.rnd.apertereports.util.FileStreamer;
+import pl.net.bluesoft.rnd.apertereports.util.NotificationUtil;
 import pl.net.bluesoft.rnd.apertereports.util.VaadinUtil;
 
 import java.awt.*;
@@ -315,6 +316,8 @@ public class HtmlReportBuilder {
                     }
                     catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
+                        NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
+                                VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
                     }
                 }
             }
@@ -382,6 +385,8 @@ public class HtmlReportBuilder {
                     }
                     catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
+                        NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
+                                VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
                     }
                 }
             }

@@ -3,20 +3,20 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
 
-    <display-name>Archetype Created Web Application</display-name>
+    <display-name>Aperte Reports WebService Endpoint</display-name>
 
     <servlet>
-        <servlet-name>apertereports</servlet-name>
+        <servlet-name>endpoint</servlet-name>
         <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
         <init-param>
             <param-name>transformWsdlLocations</param-name>
             <param-value>true</param-value>
         </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>apertereports</servlet-name>
+        <servlet-name>endpoint</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-
 </web-app>

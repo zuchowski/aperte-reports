@@ -32,6 +32,11 @@
             </exclusions>
             <scope>compile</scope>
         </dependency>
+<!--        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.1</version>
+        </dependency>-->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
@@ -41,6 +46,11 @@
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -71,6 +81,11 @@
             <groupId>net.sourceforge.barbecue</groupId>
             <artifactId>barbecue</artifactId>
             <version>1.5-beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openspml</groupId>
+            <artifactId>openspml</artifactId>
+            <version>0.5</version>
         </dependency>
 
         <dependency>

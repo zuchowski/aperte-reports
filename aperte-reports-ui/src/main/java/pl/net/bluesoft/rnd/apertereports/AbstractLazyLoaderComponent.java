@@ -27,7 +27,7 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
         }
         catch (Exception e) {
             ExceptionUtils.logSevereException(e);
-            NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+            NotificationUtil.showExceptionNotification(getWindow(), "exception.gui.error", e.getMessage());
         }
         return this;
     }
