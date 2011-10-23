@@ -120,9 +120,11 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
             }
             catch (PortalException e) {
                 ExceptionUtils.logSevereException(e);
+                throw new RuntimeException(e);
             }
             catch (SystemException e) {
                 ExceptionUtils.logSevereException(e);
+                throw new RuntimeException(e);
             }
         }
     }

@@ -124,6 +124,7 @@ public class CyclicReportsPanel extends CustomComponent {
         catch (SchedulerException e) {
             ExceptionUtils.logSevereException(e);
             NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+            throw new RuntimeException(e);
         }
     }
 

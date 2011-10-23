@@ -92,10 +92,13 @@ public class ReportUploader extends CustomComponent implements Upload.SucceededL
 			ExceptionUtils.logSevereException(e);
 			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
                     VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
+            throw new RuntimeException(e);
 		}catch (ReportException e) {
 			ExceptionUtils.logSevereException(e);
 			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.compilation_failed.title"),
                     VaadinUtil.getValue("exception.compilation_failed.description"));
+            throw new RuntimeException(e);
+
 		}
 		report.setContent(content);
 		report.setFilename(event.getFilename());

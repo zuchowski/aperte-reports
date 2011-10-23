@@ -4,9 +4,15 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.datasource">java:comp/env/jdbc/aperte-reports</property>
-        <!--<property name="connection.driver_class">org.postgresql.Driver</property>-->
-        <!--<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>-->
+        <!-- uncomment this to use the JNDI datasource -->
+        <!-- <property name="hibernate.connection.datasource">java:comp/env/jdbc/aperte-reports</property> -->
+
+        <property name="connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="connection.url">jdbc:hsqldb:${liferay.home}/data/hsql/apertereports</property>
+        <property name="connection.username">sa</property>
+        <property name="connection.password"></property>
+
+
         <property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
         <property name="current_session_context_class">thread</property>
         <property name="hibernate.show_sql">false</property>

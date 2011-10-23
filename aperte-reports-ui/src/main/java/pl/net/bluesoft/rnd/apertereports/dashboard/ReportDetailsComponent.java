@@ -295,6 +295,8 @@ public abstract class ReportDetailsComponent extends CustomComponent {
             catch (Exception e) {
                 ExceptionUtils.logSevereException(e);
                 NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+                throw new RuntimeException(e);
+
             }
         }
         reportParametersPanel.setVisible(reportTemplate != null);

@@ -50,6 +50,7 @@ public class FileStreamer {
         catch (Exception e) {
             ExceptionUtils.logSevereException(e);
             NotificationUtil.showExceptionNotification(app.getMainWindow(), "exception.conversion", e);
+            throw new RuntimeException(e);
         }
     }
 }

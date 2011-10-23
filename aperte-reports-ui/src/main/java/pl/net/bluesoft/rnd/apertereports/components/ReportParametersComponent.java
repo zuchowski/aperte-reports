@@ -174,6 +174,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
         catch (Exception e) {
             ExceptionUtils.logWarningException(VaadinUtil.getValue("liferay.get.login.exception"), e);
+            throw new RuntimeException(e);
         }
         if (login.contains("@")) {
             login = login.split("@", 2)[0];
@@ -278,7 +279,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             return container;
         }
         catch (BuildingFailedException e) {
-            return null;
+//            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -589,6 +591,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         catch (ParseException e) {
                             ExceptionUtils.logSevereException(e);
                             NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"), e);
+                            throw new RuntimeException(e);
                         }
                         break;
                     }

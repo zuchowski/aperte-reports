@@ -106,6 +106,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             catch (IOException e) {
                 ExceptionUtils.logSevereException(e);
                 NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+                throw new RuntimeException(e);
+
             }
         }
     }
@@ -267,6 +269,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             NotificationUtil.showExceptionNotification(getWindow(),
                     VaadinUtil.getValue("exception.gui.error"), e);
             ExceptionUtils.logSevereException(e);
+            throw new RuntimeException(e);
         }
         return new Pair<JasperPrint, byte[]>(jasperPrint, data);
     }

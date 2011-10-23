@@ -271,6 +271,7 @@ public class HtmlReportBuilder {
         }
         catch (IOException e) {
             ExceptionUtils.logSevereException(e);
+            throw new RuntimeException(e);
         }
 
         return reportLayout;
@@ -318,6 +319,7 @@ public class HtmlReportBuilder {
                         ExceptionUtils.logSevereException(e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -387,6 +389,7 @@ public class HtmlReportBuilder {
                         ExceptionUtils.logSevereException(e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
+                        throw new RuntimeException(e);
                     }
                 }
             }

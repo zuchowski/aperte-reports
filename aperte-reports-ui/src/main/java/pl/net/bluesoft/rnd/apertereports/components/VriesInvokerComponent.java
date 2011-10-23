@@ -69,6 +69,7 @@ public class VriesInvokerComponent extends CustomComponent {
         panel.setStyleName("borderless light");
         panel.setSizeUndefined();
         panel.setContent(mainLayout);
+        panel.setWidth("100%");
 
         setCompositionRoot(panel);
         initShowReportParamsButton();
@@ -108,7 +109,7 @@ public class VriesInvokerComponent extends CustomComponent {
     private void fillReportList() {
         reportSelect = new Select(VaadinUtil.getValue("invoker.intro.select_report"));
         reportSelect.setNullSelectionAllowed(false);
-        reportSelect.setWidth(250, UNITS_PIXELS);
+        reportSelect.setWidth("100%");
 
         fillReportSelect();
 

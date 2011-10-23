@@ -59,6 +59,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                                 catch (Exception e) {
                                     ExceptionUtils.logSevereException(e);
                                     NotificationUtil.showExceptionNotification(source.getWindow(), new VriesException(e));
+                                    throw new RuntimeException(e);
                                 }
                             }
                         });

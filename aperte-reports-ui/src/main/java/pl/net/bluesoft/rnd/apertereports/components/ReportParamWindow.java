@@ -165,10 +165,12 @@ public class ReportParamWindow extends Window {
 			ExceptionUtils.logSevereException(e);
 			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
                     VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
+            throw new RuntimeException(e);
         }
         catch (Exception e) {
             NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
             ExceptionUtils.logSevereException(e);
+            throw new RuntimeException(e);
         }
     }
 

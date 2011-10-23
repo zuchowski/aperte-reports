@@ -230,6 +230,8 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
             catch (Exception e) {
                 ExceptionUtils.logSevereException(e);
                 NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+                throw new RuntimeException(e);
+
             }
         }
         reportParametersPanel.setVisible(report != null);
@@ -277,10 +279,13 @@ public abstract class CyclicReportDetailsComponent extends CustomComponent {
             			ExceptionUtils.logSevereException(e);
             			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
                                 VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
+                        throw new RuntimeException(e);
                     }
                     catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
                         NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
+                        throw new RuntimeException(e);
+
                     }
                 }
             }
