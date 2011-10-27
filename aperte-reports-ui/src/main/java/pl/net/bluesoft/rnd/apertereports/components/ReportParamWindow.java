@@ -61,7 +61,9 @@ public class ReportParamWindow extends Window {
         }
         catch (ReportException e) {
             ExceptionUtils.logSevereException(e);
-            throw new VriesRuntimeException("Error while generating report", e);
+            VriesRuntimeException ve = new VriesRuntimeException("Error while generating report", e);
+			NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
+            throw ve;
         }
     }
 
@@ -78,7 +80,10 @@ public class ReportParamWindow extends Window {
         }
         catch (ReportException e) {
             ExceptionUtils.logSevereException(e);
-            throw new VriesRuntimeException("Error while generating report", e);
+            VriesRuntimeException ve = new VriesRuntimeException("Error while generating report", e);
+			NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
+            throw ve;
+            
         }
     }
 
