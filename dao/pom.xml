@@ -6,12 +6,12 @@
     <parent>
         <artifactId>apertereports</artifactId>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>1.0</version>
+        <version>${aperte.version}</version>
     </parent>
 
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>dao</artifactId>
-    <version>1.0</version>
+    <version>${aperte.version}</version>
 
     <name>DAO</name>
     <packaging>jar</packaging>

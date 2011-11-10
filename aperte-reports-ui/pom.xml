@@ -7,7 +7,7 @@
     </parent>
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>aperte-reports-ui</artifactId>
-    <version>1.2a</version>
+    <version>${aperte.version}</version>
     <packaging>war</packaging>
     <name>Portlets for uploading and generating reports</name>
     <dependencies>

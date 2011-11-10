@@ -3,11 +3,11 @@
     <parent>
         <artifactId>apertereports</artifactId>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>1.0</version>
+        <version>${aperte.version}</version>
     </parent>
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>backbone</artifactId>
-    <version>1.0</version>
+    <version>${aperte.version}</version>
     <name>Backbone</name>
     <packaging>jar</packaging>
     <dependencies>

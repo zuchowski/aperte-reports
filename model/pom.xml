@@ -7,12 +7,12 @@
     <parent>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
         <artifactId>apertereports</artifactId>
-        <version>1.0</version>
+        <version>${aperte.version}</version>
     </parent>
 
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>model</artifactId>
-    <version>1.0</version>
+    <version>${aperte.version}</version>
 
     <name>Model</name>
     <packaging>jar</packaging>

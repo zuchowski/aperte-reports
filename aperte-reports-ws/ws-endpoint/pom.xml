@@ -4,7 +4,7 @@
     <parent>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
         <artifactId>aperte-reports-ws</artifactId>
-        <version>1.0</version>
+        <version>${aperte.version}</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,6 +13,7 @@
 
     <name>Aperte Reports WebService Endpoint</name>
 
+    <version>${aperte.version}</version>
     <build>
         <finalName>aperte-reports-ws-endpoint</finalName>
         <resources>
