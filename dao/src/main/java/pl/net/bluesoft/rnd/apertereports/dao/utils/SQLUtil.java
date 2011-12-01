@@ -24,6 +24,7 @@ public class SQLUtil {
 	private static void configureSessions() {
 		try {
 			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
+//			loaction of hibernate.cfg.xml: WEB-INF
 			Configuration cfg = annotationConfiguration.configure("../hibernate.cfg.xml");
 
 			sessions = cfg.buildSessionFactory();
@@ -50,6 +51,8 @@ public class SQLUtil {
 	 * @return A session factory
 	 */
 	public static SessionFactory getSessionFactory() {
+		if (sessions == null)
+			configureSessions();
 		return sessions;
 	}
 
