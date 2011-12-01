@@ -23,7 +23,7 @@
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>ws-utils</artifactId>
-            <version>1.0</version>
+            <version>${aperte.version}</version>
         </dependency>
     </dependencies>
 </project>

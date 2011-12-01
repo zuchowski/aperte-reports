@@ -14,31 +14,17 @@
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>engine</artifactId>
-            <version>1.0</version>
+            <version>${aperte.version}</version>
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>dao</artifactId>
-            <version>1.0</version>
+            <version>${aperte.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-            <version>3.2.7.ga</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.4.0.GA</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.surefire</groupId>

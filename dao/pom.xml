@@ -20,14 +20,12 @@
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>model</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>${aperte.version}</version>
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>common</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>${aperte.version}</version>
         </dependency>
     </dependencies>
 

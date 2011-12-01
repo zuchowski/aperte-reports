@@ -1,87 +1,59 @@
 package pl.net.bluesoft.rnd.apertereports.dao.utils;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+
 import pl.net.bluesoft.rnd.apertereports.common.utils.ExceptionUtils;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
-import pl.net.bluesoft.rnd.apertereports.model.CyclicReportOrder;
-import pl.net.bluesoft.rnd.apertereports.model.ReportTemplate;
-import pl.net.bluesoft.rnd.apertereports.model.ConfigurationEntry;
-import pl.net.bluesoft.rnd.apertereports.model.ReportOrder;
 
 /**
- * DAO utility class. Initializes Hibernate session factory with annotated classes. Has methods for providing a new Hibernate session.
+ * DAO utility class. Initializes Hibernate session factory with annotated
+ * classes. Has methods for providing a new Hibernate session.
  */
 public class SQLUtil {
-    protected static SessionFactory sessions;
+	protected static SessionFactory sessions;
 
-    /**
-     * Static initializer of the session factory.
-     */
-    static {
-        try {
-            final AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
+	/**
+	 * Static initializer of the session factory.
+	 */
+	static {
+		configureSessions();
+	}
 
-            annotationConfiguration.addAnnotatedClass(ReportTemplate.class);
-            annotationConfiguration.addAnnotatedClass(ReportOrder.class);
-            annotationConfiguration.addAnnotatedClass(CyclicReportOrder.class);
-            annotationConfiguration.addAnnotatedClass(ConfigurationEntry.class);
+	private static void configureSessions() {
+		try {
+			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
+			Configuration cfg = annotationConfiguration.configure("../hibernate.cfg.xml");
 
-            Configuration cfg = null;
-            try {
-                cfg = annotationConfiguration.configure("../hibernate.cfg.xml");
-            }
-            catch (HibernateException e) {
-                ExceptionUtils.logSevereException(e);
-                try {
-                    cfg = annotationConfiguration.configure("hibernate.cfg.xml");
-                }
-                catch (HibernateException ex) {
-                    ExceptionUtils.logSevereException(ex);
-                }
-            }
+			sessions = cfg.buildSessionFactory();
+			sessions.getStatistics().setStatisticsEnabled(true);
+		} catch (Exception e) {
+			ExceptionUtils.logSevereException(e);
+		}
+	}
 
-            cfg.setProperty("hibernate.connection.autocommit", "false");
-            cfg.setProperty("hibernate.hbm2ddl.auto", "update");
-            cfg.setProperty("hibernate.hbm2ddl", "update");
-            cfg.setProperty("hibernate.jdbc.batch_size", "50");
-            cfg.setProperty("hibernate.show_sql", "true");
-            cfg.setProperty("hibernate.use_outer_join", "true");
-            cfg.setProperty("hibernate.cglib.use_reflection_optimizer", "true");
+	/**
+	 * Used to open a new Hibernate session.
+	 * 
+	 * @return A new DAO session
+	 */
+	public static Session getSession() {
+		if (sessions == null)
+			configureSessions();
+		return sessions.openSession();
+	}
 
-            sessions = cfg.buildSessionFactory();
-            sessions.getStatistics().setStatisticsEnabled(true);
-        }
-        catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
-        }
+	/**
+	 * Gets the session factory.
+	 * 
+	 * @return A session factory
+	 */
+	public static SessionFactory getSessionFactory() {
+		return sessions;
+	}
 
-    }
-
-    /**
-     * Used to open a new Hibernate session.
-     *
-     * @return A new DAO session
-     */
-    public static Session getSession() {
-        return sessions.openSession();
-    }
-
-    /**
-     * Gets the session factory.
-     *
-     * @return A session factory
-     */
-    public static SessionFactory getSessionFactory() {
-        return sessions;
-    }
-
-    protected SQLUtil() {
-    }
+	protected SQLUtil() {
+	}
 
 }
