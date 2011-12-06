@@ -3,17 +3,16 @@
     <parent>
         <artifactId>apertereports</artifactId>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>${aperte.version}</version>
+        <version>1.2.1</version>
     </parent>
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-    <artifactId>engine</artifactId>
-    <version>${aperte.version}</version>
+    <artifactId>engine</artifactId>	
     <name>Jasper Integration</name>
     <dependencies>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>common</artifactId>
-            <version>${aperte.version}</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -31,11 +30,6 @@
             </exclusions>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.1</version>
-        </dependency>-->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>

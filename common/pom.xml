@@ -4,11 +4,10 @@
 	<parent>
 		<artifactId>apertereports</artifactId>
 		<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-		<version>${aperte.version}</version>
+		<version>1.2.1</version>
 	</parent>
 	<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
 	<artifactId>common</artifactId>
-	<version>${aperte.version}</version>
 	<name>Exceptions and utils</name>
 	<packaging>jar</packaging>
 	<dependencies>

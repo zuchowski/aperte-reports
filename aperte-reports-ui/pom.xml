@@ -4,11 +4,10 @@
 	<parent>
 		<artifactId>apertereports</artifactId>
 		<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-		<version>${aperte.version}</version>
+		<version>1.2.1</version>
 	</parent>
 	<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
 	<artifactId>aperte-reports-ui</artifactId>
-	<version>${aperte.version}</version>
 	<packaging>war</packaging>
 	<name>Portlets for uploading and generating reports</name>
 	<dependencies>
@@ -33,17 +32,17 @@
 		<dependency>
 			<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
 			<artifactId>common</artifactId>
-			<version>${aperte.version}</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
 			<artifactId>dao</artifactId>
-			<version>${aperte.version}</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
 			<artifactId>backbone</artifactId>
-			<version>${aperte.version}</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>

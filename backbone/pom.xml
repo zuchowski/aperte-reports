@@ -3,23 +3,22 @@
     <parent>
         <artifactId>apertereports</artifactId>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>${aperte.version}</version>
+        <version>1.2.1</version>
     </parent>
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>backbone</artifactId>
-    <version>${aperte.version}</version>
     <name>Backbone</name>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>engine</artifactId>
-            <version>${aperte.version}</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>dao</artifactId>
-            <version>${aperte.version}</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

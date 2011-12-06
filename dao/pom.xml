@@ -6,12 +6,12 @@
     <parent>
         <artifactId>apertereports</artifactId>
         <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>${aperte.version}</version>
+        <version>1.2.1</version>
     </parent>
 
     <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
     <artifactId>dao</artifactId>
-    <version>${aperte.version}</version>
+    
 
     <name>DAO</name>
     <packaging>jar</packaging>
@@ -20,12 +20,12 @@
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>model</artifactId>
-            <version>${aperte.version}</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
             <artifactId>common</artifactId>
-            <version>${aperte.version}</version>
+            <version>1.2.1</version>
         </dependency>
     </dependencies>
 
