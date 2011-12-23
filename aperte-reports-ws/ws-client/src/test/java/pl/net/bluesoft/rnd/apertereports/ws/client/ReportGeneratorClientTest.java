@@ -1,4 +1,4 @@
-package pl.net.bluesoft.rnd.apertereports.ws.client;
+package org.apertereports.ws.client;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -6,10 +6,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import pl.net.bluesoft.rnd.apertereports.common.utils.ReportGeneratorUtils;
-import pl.net.bluesoft.rnd.apertereports.common.xml.ws.GenerateReportRequest;
-import pl.net.bluesoft.rnd.apertereports.common.xml.ws.GenerateReportResponse;
-import pl.net.bluesoft.rnd.apertereports.common.xml.ws.ReportData;
+import org.apertereports.common.utils.ReportGeneratorUtils;
+import org.apertereports.common.xml.ws.GenerateReportRequest;
+import org.apertereports.common.xml.ws.GenerateReportResponse;
+import org.apertereports.common.xml.ws.ReportData;
 
 import java.io.IOException;
 

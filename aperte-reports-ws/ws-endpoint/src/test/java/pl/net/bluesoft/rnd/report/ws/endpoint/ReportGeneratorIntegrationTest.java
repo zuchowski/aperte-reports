@@ -13,9 +13,9 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.test.server.MockWebServiceClient;
 import org.springframework.ws.test.server.ResponseMatcher;
 import org.springframework.xml.transform.StringSource;
-import pl.net.bluesoft.rnd.apertereports.common.xml.ws.GenerateReportRequest;
-import pl.net.bluesoft.rnd.apertereports.common.xml.ws.ReportData;
-import pl.net.bluesoft.rnd.apertereports.common.utils.ReportGeneratorUtils;
+import org.apertereports.common.xml.ws.GenerateReportRequest;
+import org.apertereports.common.xml.ws.ReportData;
+import org.apertereports.common.utils.ReportGeneratorUtils;
 
 import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;

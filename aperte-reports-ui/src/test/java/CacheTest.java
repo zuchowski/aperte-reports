@@ -1,5 +1,5 @@
+import org.apertereports.util.cache.MapCache;
 import org.junit.Test;
-import pl.net.bluesoft.rnd.apertereports.util.cache.MapCache;
 
 import static org.junit.Assert.*;
 

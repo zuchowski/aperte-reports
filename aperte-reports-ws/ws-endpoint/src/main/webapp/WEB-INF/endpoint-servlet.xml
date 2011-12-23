@@ -8,7 +8,7 @@
 
     <context:property-placeholder location="classpath*:*.properties"/>
 
-    <context:component-scan base-package="pl.net.bluesoft.rnd.apertereports.ws"/>
+    <context:component-scan base-package="org.apertereports.ws"/>
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
 
@@ -22,8 +22,8 @@
 
     <bean id="marshallingMethodProcessor" class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor">
         <constructor-arg>
-            <bean class="pl.net.bluesoft.rnd.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
-                <property name="basePackage" value="pl.net.bluesoft.rnd.apertereports.common.xml.ws"/>
+            <bean class="org.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
+                <property name="basePackage" value="org.apertereports.common.xml.ws"/>
                 <property name="mtomEnabled" value="true"/>
             </bean>
         </constructor-arg>

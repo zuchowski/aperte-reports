@@ -20,7 +20,7 @@
 
     <servlet>
         <servlet-name>clearCacheServlet</servlet-name>
-        <servlet-class>pl.net.bluesoft.rnd.apertereports.util.servlet.ClearCacheServlet</servlet-class>
+        <servlet-class>org.apertereports.util.servlet.ClearCacheServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

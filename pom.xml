@@ -15,9 +15,9 @@
 
 	<inceptionYear>2011</inceptionYear>
 
-	<groupId>pl.net.bluesoft.rnd.apertereports</groupId>
+	<groupId>org.apertereports</groupId>
 	<artifactId>apertereports</artifactId>
-	<version>${aperte.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -68,6 +68,17 @@
 			<organization>BlueSoft</organization>
 			<timezone>+1</timezone>
 		</developer>
+		<developer>
+			<id>zmalinowski</id>
+			<name>Zbigniew Malinowski</name>
+			<email>zmalinowski@bluesoft.net.pl</email>
+			<roles>
+				<role>Developer</role>
+				<role>Designer</role>
+			</roles>
+			<organization>BlueSoft</organization>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 
 	<profiles>
@@ -89,10 +100,6 @@
 			<id>ibiblio</id>
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 		</repository>
-		<!-- <repository> -->
-		<!-- <id>jboss</id> -->
-		<!-- <url>http://repository.jboss.org/maven2</url> -->
-		<!-- </repository> -->
 		<repository>
 			<id>java.net</id>
 			<url>http://download.java.net/maven/2</url>
@@ -180,8 +187,113 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<!-- version management of common dependencies -->
 	<dependencyManagement>
 		<dependencies>
+			<!-- internal dependencies -->
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>model</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>dao</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>engine</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>common</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>backbone</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>aperte-reports-ws</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>aperte-reports-ui</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>ws-utils</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>ws-client</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apertereports</groupId>
+				<artifactId>ws-endpoint</artifactId>
+				<version>${apertereports.version}</version>
+			</dependency>
+
+			<!-- external dependencies -->
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate-core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>${javaassist.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commons-lang.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-email</artifactId>
+				<version>${commons-email.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-digester</groupId>
+				<artifactId>commons-digester</artifactId>
+				<version>${commons-digester.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons-logging.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aspects</artifactId>
@@ -191,6 +303,17 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ws</groupId>
+				<artifactId>spring-ws-core</artifactId>
+				<version>${spring-ws-core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.ws</groupId>
+				<artifactId>spring-ws-test</artifactId>
+				<version>${spring-ws-core.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
@@ -203,19 +326,25 @@
 				<version>${ibatis.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${groovy-all.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.vaadin.addons</groupId>
-				<artifactId>toolkit-productivity-tools</artifactId>
-				<version>1.1.1</version>
+				<groupId>org.apache.maven.surefire</groupId>
+				<artifactId>surefire-junit4</artifactId>
+				<version>${surefire-junit4.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>com.springsource.org.junit</artifactId>
-				<version>4.7.0</version>
+				<version>${com.springsource.org.junit.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -226,11 +355,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -246,11 +370,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -276,6 +395,7 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!-- easy-readable versions of dependencies -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
@@ -287,25 +407,39 @@
 		<itext.version>2.1.7</itext.version>
 		<hibernate.validator.version>4.0.2.GA</hibernate.validator.version>
 		<jackson.mapper.version>1.5.2</jackson.mapper.version>
-		<gwt.version>2.1-SNAPSHOT</gwt.version>
-		<gwtVersion>2.1-SNAPSHOT</gwtVersion>
 		<joda.time.version>1.6.1</joda.time.version>
 		<junit.version>4.8.1</junit.version>
 		<commons.dbcp.version>1.3</commons.dbcp.version>
 		<postgres.version>8.3-603.jdbc4</postgres.version>
-		<aperte.version>1.2.1</aperte.version>
+		<velocity.version>1.5</velocity.version>
+		<hibernate-core.version>3.6.8.Final</hibernate-core.version>
+		<javaassist.version>3.12.1.GA</javaassist.version>
+		<commons-io.version>2.0.1</commons-io.version>
+		<commons-lang.version>2.6</commons-lang.version>
+		<commons-codec.version>1.4</commons-codec.version>
+		<commons-email.version>1.2</commons-email.version>
+		<commons-collections.version>3.2.1</commons-collections.version>
+		<commons-digester.version>2.1</commons-digester.version>
+		<commons-logging.version>1.1.1</commons-logging.version>
+		<com.springsource.org.junit.version>4.7.0</com.springsource.org.junit.version>
+		<surefire-junit4.version>2.6</surefire-junit4.version>
+		<slf4j.version>1.4.2</slf4j.version>
+		<groovy-all.version>1.8.0</groovy-all.version>
+		<spring-ws-core.version>2.0.3.RELEASE</spring-ws-core.version>
+		<apertereports.version>1.0-SNAPSHOT</apertereports.version>
+
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.4.2</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.2</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
 

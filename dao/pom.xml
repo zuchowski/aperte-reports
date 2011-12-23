@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>apertereports</artifactId>
-        <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
-        <version>1.2.1</version>
+        <groupId>org.apertereports</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
+    <groupId>org.apertereports</groupId>
     <artifactId>dao</artifactId>
     
 
@@ -18,14 +18,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
+            <groupId>org.apertereports</groupId>
             <artifactId>model</artifactId>
-            <version>1.2.1</version>
         </dependency>
         <dependency>
-            <groupId>pl.net.bluesoft.rnd.apertereports</groupId>
+            <groupId>org.apertereports</groupId>
             <artifactId>common</artifactId>
-            <version>1.2.1</version>
         </dependency>
     </dependencies>
 

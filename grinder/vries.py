@@ -33,12 +33,12 @@ headers2= \
 
 headers3= \
   [ NVPair('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
-    NVPair('Referer', 'http://saffron:18080/html/VAADIN/widgetsets/pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet/33FB50D25766B6F52C88F45EBB85D5FB.cache.html'),
+    NVPair('Referer', 'http://saffron:18080/html/VAADIN/widgetsets/org.apertereports.widgetset.VriesWidgetSet/33FB50D25766B6F52C88F45EBB85D5FB.cache.html'),
     NVPair('Cache-Control', 'no-cache'), ]
 
 headers4= \
   [ NVPair('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'),
-    NVPair('Referer', 'http://saffron:18080/html/VAADIN/widgetsets/pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet/33FB50D25766B6F52C88F45EBB85D5FB.cache.html'), ]
+    NVPair('Referer', 'http://saffron:18080/html/VAADIN/widgetsets/org.apertereports.widgetset.VriesWidgetSet/33FB50D25766B6F52C88F45EBB85D5FB.cache.html'), ]
 
 url0 = 'http://saffron:18080'
 
@@ -49,7 +49,7 @@ request101 = HTTPRequest(url=url0, headers=headers0)
 request101 = Test(101, 'GET home').wrap(request101)
 
 # request102 = HTTPRequest(url=url0, headers=headers1)
-# request102 = Test(102, 'GET pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet.nocache.js').wrap(request102)
+# request102 = Test(102, 'GET org.apertereports.widgetset.VriesWidgetSet.nocache.js').wrap(request102)
 
 # request103 = HTTPRequest(url=url0, headers=headers2)
 # request103 = Test(103, 'GET styles.css').wrap(request103)
@@ -127,7 +127,7 @@ class TestRunner:
       httpUtilities.valueFromBodyURI('p_l_id') # '10563'
 
     # grinder.sleep(219)
-    # request102.GET('/html/VAADIN/widgetsets/pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet/pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet.nocache.js' +
+    # request102.GET('/html/VAADIN/widgetsets/org.apertereports.widgetset.VriesWidgetSet/org.apertereports.widgetset.VriesWidgetSet.nocache.js' +
       # '?1295006761461')
 
     # grinder.sleep(157)

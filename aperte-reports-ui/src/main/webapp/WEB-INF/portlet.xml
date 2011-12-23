@@ -10,11 +10,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.InvokerApplication</value>
+            <value>org.apertereports.InvokerApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
@@ -37,11 +37,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.ManagerApplication</value>
+            <value>org.apertereports.ManagerApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
@@ -64,11 +64,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.ReportOrderApplication</value>
+            <value>org.apertereports.ReportOrderApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
@@ -92,11 +92,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.ComboApplication</value>
+            <value>org.apertereports.ComboApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
@@ -120,11 +120,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.DashboardPortletApplication</value>
+            <value>org.apertereports.DashboardPortletApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <supports>
@@ -147,11 +147,11 @@
         <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
         <init-param>
             <name>application</name>
-            <value>pl.net.bluesoft.rnd.apertereports.CyclicReportsApplication</value>
+            <value>org.apertereports.CyclicReportsApplication</value>
         </init-param>
         <!--<init-param>-->
             <!--<name>widgetset</name>-->
-            <!--<value>pl.net.bluesoft.rnd.apertereports.widgetset.VriesWidgetSet</value>-->
+            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
         <!--</init-param>-->
 
         <supports>
@@ -168,7 +168,7 @@
 
     <filter>
         <filter-name>I18nFilter</filter-name>
-        <filter-class>pl.net.bluesoft.rnd.apertereports.util.I18nHelperFilter</filter-class>
+        <filter-class>org.apertereports.util.I18nHelperFilter</filter-class>
         <lifecycle>RENDER_PHASE</lifecycle>
         <lifecycle>ACTION_PHASE</lifecycle>
         <lifecycle>RESOURCE_PHASE</lifecycle>

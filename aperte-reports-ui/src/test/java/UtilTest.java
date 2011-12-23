@@ -1,8 +1,8 @@
 import org.junit.Test;
-import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfig;
-import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigParameter;
-import pl.net.bluesoft.rnd.apertereports.common.xml.config.ReportConfigRoot;
-import pl.net.bluesoft.rnd.apertereports.common.xml.config.XmlReportConfigLoader;
+import org.apertereports.common.xml.config.ReportConfig;
+import org.apertereports.common.xml.config.ReportConfigParameter;
+import org.apertereports.common.xml.config.ReportConfigRoot;
+import org.apertereports.common.xml.config.XmlReportConfigLoader;
 
 import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
