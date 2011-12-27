@@ -336,7 +336,7 @@
 		<slf4j.version>1.4.2</slf4j.version>
 		<groovy-all.version>1.8.0</groovy-all.version>
 		<spring-ws-core.version>2.0.3.RELEASE</spring-ws-core.version>
-		<apertereports.version>2.0-SNAPSHOT</apertereports.version>
+		<apertereports.version>${project.version}</apertereports.version>
 
 	</properties>
 
