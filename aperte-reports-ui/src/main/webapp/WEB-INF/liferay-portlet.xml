@@ -14,7 +14,7 @@
         <portlet-name>Report Manager portlet</portlet-name>
         <instanceable>false</instanceable>
         <ajaxable>false</ajaxable>
-        <control-panel-entry-category>content</control-panel-entry-category>
+        <control-panel-entry-category>portal</control-panel-entry-category>
         <control-panel-entry-weight>1</control-panel-entry-weight>
     </portlet>
     <portlet>
