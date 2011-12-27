@@ -30,6 +30,20 @@
 		<module>aperte-reports-ws</module>
 	</modules>
 
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License, Version 2.1</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<scm>
 		<connection>scm:git:https://code.google.com/p/aperte-reports/</connection>
 		<developerConnection>
@@ -97,62 +111,8 @@
 	</profiles>
 
 
-	<!-- version management of common dependencies -->
 	<dependencyManagement>
 		<dependencies>
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>model</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>dao</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>engine</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>common</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>backbone</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>aperte-reports-ws</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>aperte-reports-ui</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>ws-utils</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>ws-client</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.apertereports</groupId> -->
-<!-- 				<artifactId>ws-endpoint</artifactId> -->
-<!-- 				<version>${apertereports.version}</version> -->
-<!-- 			</dependency> -->
-
-			<!-- external dependencies -->
-
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
@@ -335,7 +295,6 @@
 		<slf4j.version>1.4.2</slf4j.version>
 		<groovy-all.version>1.8.0</groovy-all.version>
 		<spring-ws-core.version>2.0.3.RELEASE</spring-ws-core.version>
-<!-- 		<apertereports.version>${project.version}</apertereports.version> -->
 
 	</properties>
 
@@ -406,7 +365,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.1</version>
 				<configuration>
 					<pushChanges>false</pushChanges>
 					<mavenExecutorId>forked-path</mavenExecutorId>
