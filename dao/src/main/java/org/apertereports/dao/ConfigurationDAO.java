@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class VriesConfigurationDAO {
+public class ConfigurationDAO {
     public static Collection<ConfigurationEntry> loadAll() {
         return new org.apertereports.dao.utils.WHS<Collection<ConfigurationEntry>>() {
             @Override

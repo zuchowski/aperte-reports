@@ -3,15 +3,10 @@
  */
 package org.apertereports.test;
 
-import net.sf.jasperreports.engine.JRException;
-import org.apache.commons.codec.binary.Base64;
-import org.apertereports.engine.*;
-import org.apertereports.engine.SubreportProvider.Subreport;
-import org.junit.Test;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.exception.SubreportNotFoundException;
-import org.apertereports.common.utils.TextUtils;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,7 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import junit.framework.Assert;
+import net.sf.jasperreports.engine.JRException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.utils.TextUtils;
+import org.apertereports.engine.AperteReport;
+import org.apertereports.engine.EmptySubreportProvider;
+import org.apertereports.engine.MapBasedSubreportProvider;
+import org.apertereports.engine.ReportCache;
+import org.apertereports.engine.ReportMaster;
+import org.apertereports.engine.ReportParameter;
+import org.apertereports.engine.SubreportProvider;
+import org.apertereports.engine.SubreportProvider.Subreport;
+import org.junit.Test;
 
 /**
  * @author Think
@@ -47,7 +58,7 @@ public class ReportMasterTester {
 	 * @throws JRException
 	 */
 	@Test
-	public final void testCompileMalformedReport() throws IOException, ReportException, SubreportNotFoundException {
+	public final void testCompileMalformedReport() throws Exception {
 		String ds = readTestFileToString(defaultTestReport);
 		ds = toBase64(ds);
 		AperteReport report = ReportMaster.compileReport(ds, null, new EmptySubreportProvider());
@@ -65,13 +76,13 @@ public class ReportMasterTester {
 	 * @throws ReportException
 	 */
 	@Test
-	public final void testCompileReport() throws IOException, SubreportNotFoundException {
+	public final void testCompileReport() throws Exception {
 		try {
 			String ds = readTestFileToString(malformedTestReport);
 			ds = toBase64(ds);
 			AperteReport report = ReportMaster.compileReport(ds, null, new EmptySubreportProvider());
 			fail("Should throw exception during compilation");
-		} catch (ReportException e) {
+		} catch (AperteReportsException e) {
 			e.printStackTrace();
 			// fine - should throw this exception
 		}
@@ -87,7 +98,7 @@ public class ReportMasterTester {
 	 * @throws SubreportNotFoundException
 	 */
 	@Test
-	public final void testGetReportName() throws IOException, ReportException, SubreportNotFoundException {
+	public final void testGetReportName() throws Exception {
 		String name = "test apertereports 1";
 		ReportMaster rm = createReportMaster(defaultTestReport);
 		assertEquals(name, rm.getReportName());
@@ -104,7 +115,7 @@ public class ReportMasterTester {
 	 * @throws ReportException
 	 */
 	@Test
-	public final void testCompileReportWithSubreports() throws IOException, SubreportNotFoundException, ReportException {
+	public final void testCompileReportWithSubreports() throws Exception {
 		final Map<String, Subreport> map = new HashMap<String, Subreport>();
 		map.put(subreport1_ID, new Subreport(subreport1_ID, subreport1_ID, readTestFileToString(subreport1).getBytes()));
 		map.put(subsubreport1_ID, new Subreport(subsubreport1_ID, subsubreport1_ID, readTestFileToString(subsubreport1)
@@ -124,7 +135,7 @@ public class ReportMasterTester {
 	 * @throws JRException
 	 */
 	@Test
-	public final void testReportMasterString() throws IOException, ReportException, SubreportNotFoundException {
+	public final void testReportMasterString() throws Exception  {
 		createReportMaster(defaultTestReport);
 	}
 
@@ -138,8 +149,7 @@ public class ReportMasterTester {
 	 * @throws SubreportNotFoundException
 	 */
 	@Test
-	public final void testCompileReportWithMissingSubreports() throws IOException, ReportException,
-			SubreportNotFoundException {
+	public final void testCompileReportWithMissingSubreports() throws Exception {
 		final Map<String, Subreport> map = new HashMap<String, Subreport>();
 		map.put(subreport1_ID, new Subreport(subreport1_ID, subreport1_ID, readTestFileToString(subreport1).getBytes()));
 		map.put(subsubreport1_ID, new Subreport(subsubreport1_ID, subsubreport1_ID, readTestFileToString(subsubreport1)
@@ -149,13 +159,13 @@ public class ReportMasterTester {
 			String ds = toBase64(readTestFileToString(reportWithSubreport));
 			ReportMaster.compileReport(ds, null, new MapBasedSubreportProvider(map));
 			fail("Should have failed");
-		} catch (SubreportNotFoundException e) {
+		} catch (AperteReportsException e) {
+			Assert.assertEquals(ErrorCodes.SUBREPORT_NOT_FOUND, e.getErrorCode());
 			// Great - subreport not found
 		}
 	}
 
-	private ReportMaster createReportMaster(String path) throws IOException, ReportException,
-			SubreportNotFoundException {
+	private ReportMaster createReportMaster(String path) throws AperteReportsException, IOException {
 		String ds = readTestFileToString(path);
 		ds = toBase64(ds);
 		return new ReportMaster(ds, new EmptySubreportProvider());
@@ -171,8 +181,7 @@ public class ReportMasterTester {
 	 * @throws SubreportNotFoundException
 	 */
 	@Test
-	public final void testCompileAndGenerateAndExportReportWithSubreports() throws IOException, JRException,
-			ReportException, SubreportNotFoundException {
+	public final void testCompileAndGenerateAndExportReportWithSubreports() throws Exception {
 		final Map<String, Subreport> map = new HashMap<String, Subreport>();
 
 		map.put(subreport1_ID, new Subreport(subreport1_ID, subreport1_ID, readTestFileToString(subreport1).getBytes()));
@@ -228,7 +237,7 @@ public class ReportMasterTester {
 	 * @throws SubreportNotFoundException
 	 */
 	@Test
-	public final void testGetParameters() throws IOException, ReportException, SubreportNotFoundException {
+	public final void testGetParameters() throws Exception {
 		ReportMaster rm = createReportMaster(defaultTestReport);
 		List<ReportParameter> parameters = rm.getParameters();
 		assertNotNull("No parameters fetched", parameters);
@@ -248,7 +257,7 @@ public class ReportMasterTester {
 	 * @throws SubreportNotFoundException
 	 */
 	@Test
-	public final void testReportMasterStringInteger() throws IOException, ReportException, SubreportNotFoundException {
+	public final void testReportMasterStringInteger() throws Exception {
 		String ds = readTestFileToString(defaultTestReport);
 		ds = toBase64(ds);
 		String cacheId = "5";

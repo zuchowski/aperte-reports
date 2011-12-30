@@ -3,6 +3,8 @@ package org.apertereports.common.utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.mail.ByteArrayDataSource;
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.exception.AperteReportsException;
 
 import javax.activation.DataHandler;
 import java.io.*;
@@ -58,8 +60,15 @@ public class ReportGeneratorUtils {
         return new DataHandler(new ByteArrayDataSource(content, mimeType));
     }
 
-    public static byte[] unwrapDataHandler(DataHandler handler) throws IOException {
-        return IOUtils.toByteArray(handler.getInputStream());
+    public static byte[] unwrapDataHandler(DataHandler handler) throws AperteReportsException {
+        try {
+			byte[] content = IOUtils.toByteArray(handler.getInputStream());
+			if (content.length == 0)
+				throw new IllegalStateException();
+			return content;
+		} catch (Exception e) {
+				throw new AperteReportsException(ErrorCodes.EMPTY_REPORT_SOURCE);
+		}
     }
 
     public static Object convertBytesToInputStreams(Object object) {

@@ -1,33 +1,57 @@
 package org.apertereports.engine;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import net.sf.jasperreports.engine.export.*;
-import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
-import org.apache.commons.lang.StringUtils;
-import org.apertereports.engine.SubreportProvider.Subreport;
-
-import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.exception.SubreportNotFoundException;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.common.utils.ReportGeneratorUtils;
-import pl.net.bluesoft.util.lang.StringUtil;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRCsvExporterParameter;
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.apertereports.common.ConfigurationConstants;
+import org.apertereports.common.ReportConstants;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.ReportGeneratorUtils;
+import org.apertereports.engine.SubreportProvider.Subreport;
+
+import pl.net.bluesoft.util.lang.StringUtil;
 
 /**
  * A workhorse of the Jasper reports engine. This class is responsible for
@@ -80,11 +104,10 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 *            A JRXML report source
 	 * @param subreportProvider
 	 *            TODO
-	 * @throws JRException
-	 *             on Jasper error
-	 * @throws SubreportNotFoundException 
+	 * @throws AperteReportsException
+	 *             on error
 	 */
-	public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws ReportException, SubreportNotFoundException {
+	public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws AperteReportsException {
 		this(reportSource, null, subreportProvider);
 	}
 
@@ -101,9 +124,10 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 *            TODO
 	 * @throws JRException
 	 *             on Jasper error
-	 * @throws SubreportNotFoundException 
+	 * @throws SubreportNotFoundException
 	 */
-	public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider) throws ReportException, SubreportNotFoundException {
+	public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider)
+			throws AperteReportsException {
 		super();
 		report = compileReport(reportSource, cacheId, subreportProvider);
 	}
@@ -119,12 +143,11 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 *            A report cache id
 	 * @param subreportProvider
 	 *            TODO
-	 * @throws JRException
-	 *             on Jasper error
-	 * @throws SubreportNotFoundException
+	 * @throws AperteReportsException
+	 *             on error
 	 */
-	public ReportMaster(byte[] reportSource, String cacheId, SubreportProvider subreportProvider) throws ReportException,
-			SubreportNotFoundException {
+	public ReportMaster(byte[] reportSource, String cacheId, SubreportProvider subreportProvider)
+			throws AperteReportsException {
 		super();
 		report = compileReport(reportSource, cacheId, subreportProvider);
 	}
@@ -148,12 +171,12 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 * @param configuration
 	 *            Configuration parameters
 	 * @return Bytes of a generated report
-	 * @throws ReportException
-	 *             on Jasper error
+	 * @throws AperteReportsException
+	 *             on error
 	 */
 	public static byte[] exportReport(JasperPrint jasperPrint, String format,
 			Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
-			throws ReportException {
+			throws AperteReportsException {
 
 		if (configuration == null) {
 			configuration = new HashMap<String, String>();
@@ -192,9 +215,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 				exporter.setParameter(JRCsvExporterParameter.RECORD_DELIMITER, RECORD_DELIMITER);
 				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER, FIELD_DELIMITER);
 			} else {
-				String message = "Invalid report type. Permitted types are: HTML, PDF, XLS, CSV";
-				logger.info(message);
-				throw new ReportException(ErrorCodes.INVALID_REPORT_TYPE, message);
+				throw new IllegalStateException("Invalid report type. Permitted types are: HTML, PDF, XLS, CSV");
 			}
 
 			if (exporterParameters != null && !exporterParameters.isEmpty()) {
@@ -210,8 +231,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 			exporter.exportReport();
 			return bos.toByteArray();
 		} catch (JRException e) {
-			ExceptionUtils.logSevereException("Error while generating report", e);
-			throw new ReportException(ErrorCodes.JASPER_REPORTS_EXCEPTION, e.getMessage(), e);
+			throw new AperteReportsException(ErrorCodes.JASPER_REPORTS_EXCEPTION, e);
 		}
 	}
 
@@ -225,13 +245,13 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 * @param configuration
 	 *            Configuration parameters
 	 * @return Bytes of a generated report
-	 * @throws ReportException
-	 *             on Jasper error
+	 * @throws AperteReportsException
+	 *             on error
 	 * @see #exportReport(net.sf.jasperreports.engine.JasperPrint, String,
 	 *      java.util.Map, java.util.Map)
 	 */
 	public static byte[] exportReport(JasperPrint jasperPrint, String format, Map<String, String> configuration)
-			throws ReportException {
+			throws AperteReportsException {
 		return exportReport(jasperPrint, format, null, configuration);
 	}
 
@@ -251,12 +271,12 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	 * @throws SubreportNotFoundException
 	 */
 	public static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider)
-			throws ReportException, SubreportNotFoundException {
+			throws AperteReportsException {
 		return compileReport(reportSource, cacheId, subreportProvider, false);
 	}
 
 	private static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider,
-			boolean hasParent) throws ReportException, SubreportNotFoundException {
+			boolean hasParent) throws AperteReportsException {
 		logger.info("Trying to fetch report '" + cacheId + "' from cache");
 		AperteReport compiledReport = ReportCache.getReport(cacheId);
 		Set<String> subreportNames = new HashSet<String>();
@@ -265,18 +285,15 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 
 			String source = processSubreports(hasParent, new String(reportSource), subreportNames);
 			ByteArrayInputStream bis = new ByteArrayInputStream(source.getBytes());
-            try {
-                compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
-        		logger.info("Compiled.");
-            }
-            catch (JRException e) {
-                String message = "Report compilation failed";
-                logger.severe(message);
-                throw new ReportException(ErrorCodes.REPORT_SOURCE_EXCEPTION, message, e);
-            }
+			try {
+				compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
+				logger.info("Compiled.");
+			} catch (JRException e) {
+				throw new AperteReportsException(ErrorCodes.REPORT_SOURCE_EXCEPTION, e);
+			}
 		} else {
 			logger.info("Report found");
-			
+
 			subreportNames.addAll(compiledReport.getSubreports().keySet());
 			compiledReport.getSubreports().clear();
 		}
@@ -288,9 +305,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 	}
 
 	private static void compileSubreports(SubreportProvider subreportProvider, AperteReport compiledReport,
-			Set<String> subreportNames) throws SubreportNotFoundException, ReportException {
+			Set<String> subreportNames) throws AperteReportsException {
 		if (subreportNames.size() > 0) {
-			if(subreportProvider == null){
+			if (subreportProvider == null) {
 				subreportProvider = new EmptySubreportProvider();
 			}
 			Map<String, Subreport> subreports = subreportProvider.getSubreports((String[]) subreportNames
@@ -305,45 +322,49 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 		}
 	}
 
-    public static AperteReport compileReport(String reportSource, String cacheId, SubreportProvider subreportProvider) throws ReportException, SubreportNotFoundException {
-    try {
-        return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId, subreportProvider);
-    }
-    catch (UnsupportedEncodingException e) {
-        ExceptionUtils.logSevereException("Unsupported encoding", e);
-        throw new VriesRuntimeException(e.getMessage(), e);
-    }
-}
-    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-                                          Map<JRExporterParameter, Object> exporterParameters,
-                                          Map<String, String> configuration, Object dataSource) throws ReportException {
-        JasperPrint jasperPrint = generateReport(reportParameters, configuration, dataSource);
-        return exportReport(jasperPrint, format, exporterParameters, configuration);
-    }
+	public static AperteReport compileReport(String reportSource, String cacheId, SubreportProvider subreportProvider)
+			throws AperteReportsException {
+		try {
+			return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId, subreportProvider);
+		} catch (UnsupportedEncodingException e) {
+			throw new AperteReportsRuntimeException(ErrorCodes.UNSUPPORTED_ENCODING, e);
+		}
+	}
 
-    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-                                          Map<JRExporterParameter, Object> exporterParameters,
-                                          Map<String, String> configuration) throws ReportException {
-        return generateAndExportReport(format, reportParameters, exporterParameters, configuration, null);
-    }
+	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
+			Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration, Object dataSource)
+			throws AperteReportsException {
+		JasperPrint jasperPrint = generateReport(reportParameters, configuration, dataSource);
+		return exportReport(jasperPrint, format, exporterParameters, configuration);
+	}
 
-    /**
-     * Generates and exports a report to the desired format from the source passed as a constructor parameter.
-     * Returns <code>null</code> on error. The error is noticed by a {@link Logger} instance.
-     *
-     *
-     * @param format        Output format
-     * @param reportParameters    Report parameters
-     * @param configuration Exporter configuration
-     * @return Bytes of a generated report
-     */
-    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-                                          Map<String, String> configuration) throws ReportException {
-        return generateAndExportReport(format, reportParameters, null, configuration);
-    }
+	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
+			Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
+			throws AperteReportsException {
+		return generateAndExportReport(format, reportParameters, exporterParameters, configuration, null);
+	}
 
-private static String processSubreports(boolean hasParent, String source, Set<String> subreportNames) {
-	Matcher m = subreportPattern.matcher(source);
+	/**
+	 * Generates and exports a report to the desired format from the source
+	 * passed as a constructor parameter. Returns <code>null</code> on error.
+	 * The error is noticed by a {@link Logger} instance.
+	 * 
+	 * 
+	 * @param format
+	 *            Output format
+	 * @param reportParameters
+	 *            Report parameters
+	 * @param configuration
+	 *            Exporter configuration
+	 * @return Bytes of a generated report
+	 */
+	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
+			Map<String, String> configuration) throws AperteReportsException {
+		return generateAndExportReport(format, reportParameters, null, configuration);
+	}
+
+	private static String processSubreports(boolean hasParent, String source, Set<String> subreportNames) {
+		Matcher m = subreportPattern.matcher(source);
 		while (m.find()) {
 			String subReportName = m.group(1);
 			subreportNames.add(subReportName);
@@ -351,7 +372,7 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 					.replaceFirst("<subreportExpression class=\"net.sf.jasperreports.engine.JasperReport\"><![CDATA[\\$P{"
 							+ SUBREPORT_MAP_PARAMETER_NAME + "}.get(\"" + subReportName + "\").getJasperReport()");
 			m.reset(source);
-		}		
+		}
 		m = subreport_reportElementPattern.matcher(source);
 
 		if (m.find()) {
@@ -369,37 +390,43 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 		}
 		return source;
 	}
-    /**
-     * Generates a {@link JasperPrint} using given parameters from the source passed as a constructor parameter.
-     * Returns <code>null</code> on error. The error is noticed by a {@link Logger} instance.
-     *
-     * @param reportParameters Report parameters
-     * @param configuration Configuration
-     * @param dataSource Optional data source
-     * @return Output JasperPrint
-     */
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration, Object dataSource) throws ReportException {
-        try {
-            JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration, dataSource);
-            return jasperPrint;
-        }
-        catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
-            throw new ReportException(e);
-        }
-    }
 
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration) throws ReportException {
-        return generateReport(reportParameters, configuration, null);
-    }
+	/**
+	 * Generates a {@link JasperPrint} using given parameters from the source
+	 * passed as a constructor parameter. Returns <code>null</code> on error.
+	 * The error is noticed by a {@link Logger} instance.
+	 * 
+	 * @param reportParameters
+	 *            Report parameters
+	 * @param configuration
+	 *            Configuration
+	 * @param dataSource
+	 *            Optional data source
+	 * @return Output JasperPrint
+	 */
+	public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration,
+			Object dataSource) throws AperteReportsException {
+		try {
+			JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration, dataSource);
+			return jasperPrint;
+		} catch (Exception e) {
+			throw new AperteReportsException(e);
+		}
+	}
 
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Object dataSource) throws ReportException {
-        return generateReport(reportParameters, new HashMap<String, String>(), dataSource);
-    }
+	public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration)
+			throws AperteReportsException {
+		return generateReport(reportParameters, configuration, null);
+	}
 
-    public JasperPrint generateReport(Map<String, Object> reportParameters) throws ReportException {
-        return generateReport(reportParameters, new HashMap<String, String>());
-    }
+	public JasperPrint generateReport(Map<String, Object> reportParameters, Object dataSource)
+			throws AperteReportsException {
+		return generateReport(reportParameters, new HashMap<String, String>(), dataSource);
+	}
+
+	public JasperPrint generateReport(Map<String, Object> reportParameters) throws AperteReportsException {
+		return generateReport(reportParameters, new HashMap<String, String>());
+	}
 
 	/**
 	 * Gets a list of report parameters derived from the compiled Jasper report.
@@ -433,9 +460,7 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 					ReportProperty property = new ReportProperty(key, propertiesMap.getProperty(propertyName));
 					outputProperties.put(key, property);
 				} catch (IllegalArgumentException e) {
-					String msg = "Unknown property: " + propertyName;
-					ExceptionUtils.logSevereException(msg, e);
-					throw new VriesRuntimeException(msg, e);
+					throw new AperteReportsRuntimeException(propertyName, ErrorCodes.UNKNOWN_PROPERTY_NAME);
 				}
 			}
 			outputParameter.setProperties(outputProperties);
@@ -453,11 +478,11 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 		return getJasperReport().getName();
 	}
 
-    public AperteReport getAperteReport() {
-        return report;
-    }
+	public AperteReport getAperteReport() {
+		return report;
+	}
 
-    /**
+	/**
 	 * Builds a new {@link JasperPrint} of the current report using given
 	 * parameters.
 	 * 
@@ -473,8 +498,8 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 	 * @throws SQLException
 	 *             on errors while accessing a configured datasource
 	 */
-	private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration, Object dataSource)
-			throws JRException, NamingException, SQLException {
+	private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration,
+			Object dataSource) throws JRException, NamingException, SQLException {
 
 		if (configuration == null) {
 			configuration = new HashMap<String, String>();
@@ -490,28 +515,29 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 
 		if (report.getSubreports().size() > 0)
 			reportParameters.put(SUBREPORT_MAP_PARAMETER_NAME, report.getAllNestedSubreports());
-			
+
 		Connection connection = null;
 		try {
-            if (dataSource == null) {
-                String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
-                connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(getJasperReport());
-                jasperPrint = connection != null ? JasperFillManager.fillReport(getJasperReport(), reportParameters, connection)
-                        : JasperFillManager.fillReport(getJasperReport(), reportParameters, new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
-            }
-            else {
-                if (dataSource instanceof Connection) {
-                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, (Connection) dataSource);
-                }
-                else if (dataSource instanceof JRDataSource) {
-                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, (JRDataSource) dataSource);
-                }
-                else {
-                    throw new VriesRuntimeException("Invalid data source type: " + dataSource.getClass());
-                }
-            }
-        }
-        finally {
+			if (dataSource == null) {
+				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
+				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
+						: getConnectionFromReport(getJasperReport());
+				jasperPrint = connection != null ? JasperFillManager.fillReport(getJasperReport(), reportParameters,
+						connection) : JasperFillManager.fillReport(getJasperReport(), reportParameters,
+						new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
+			} else {
+				if (dataSource instanceof Connection) {
+					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+							(Connection) dataSource);
+				} else if (dataSource instanceof JRDataSource) {
+					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+							(JRDataSource) dataSource);
+				} else {
+					throw new AperteReportsRuntimeException(dataSource.getClass().toString(),
+							ErrorCodes.INVALID_DATASOURCE_TYPE);
+				}
+			}
+		} finally {
 			if (connection != null) {
 				connection.close();
 			}
@@ -618,189 +644,8 @@ private static String processSubreports(boolean hasParent, String source, Set<St
 			logger.info("Unable to find locale parameter. Injecting default locale: " + defaultLocale);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	public static AperteReport compileReport(String reportSource, String cacheId, SubreportProvider subreportProvider)
-//	throws JRException, SubreportNotFoundException {
-//try {
-//	return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId, subreportProvider);
-//} catch (UnsupportedEncodingException e) {
-//	ExceptionUtils.logSevereException("Unsupported encoding", e);
-//	throw new VriesRuntimeException(e.getMessage(), e);
-//}
-//}
-///**
-//* Gets current Jasper report.
-//*
-//* @return A Jasper report
-//*/
-//public JasperReport getReport() {
-//return report;
-//}
-//
-//
-//public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-//	Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
-//	throws ReportException {
-//JasperPrint jasperPrint = generateReport(reportParameters, configuration);
-//return exportReport(jasperPrint, format, exporterParameters, configuration);
-//}
-//
-///**
-//* Generates and exports a report to the desired format from the source
-//* passed as a constructor parameter. Returns <code>null</code> on error.
-//* The error is noticed by a {@link Logger} instance.
-//* 
-//* @param reportParameters
-//*            Report parameters
-//* @param format
-//*            Output format
-//* @param configuration
-//*            Exporter configuration
-//* @return Bytes of a generated report
-//*/
-//public byte[] generateAndExportReport(Map<String, Object> reportParameters, String format,
-//	Map<String, String> configuration) throws ReportException {
-//return generateAndExportReport(format, reportParameters, null, configuration);
-//}
-///**
-//* Builds a new {@link JasperPrint} of the current report using given parameters.
-//*
-//* @param reportParameters Input report parameters
-//* @param configuration Jasper configuration parameters
-//* @param dataSource Optional Jasper data source
-//* @return A {@link JasperPrint}
-//* @throws JRException     on Jasper error
-//* @throws NamingException on errors while accessing the initial context
-//* @throws SQLException    on errors while accessing a configured datasource
-//*/
-//private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration, Object dataSource)
-//throws JRException, NamingException, SQLException {
-//logger.info("Starting building jasper print");
-//JasperPrint jasperPrint = null;
-//Connection connection = null;
-//try {
-//    if (dataSource == null) {
-//        String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
-//        connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(report);
-//        jasperPrint = connection != null ? JasperFillManager.fillReport(report, reportParameters, connection)
-//                : JasperFillManager.fillReport(report, reportParameters, new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
-//    }
-//    else {
-//        if (dataSource instanceof Connection) {
-//            jasperPrint = JasperFillManager.fillReport(report, reportParameters, (Connection) dataSource);
-//        }
-//        else if (dataSource instanceof JRDataSource) {
-//            jasperPrint = JasperFillManager.fillReport(report, reportParameters, (JRDataSource) dataSource);
-//        }
-//        else {
-//            throw new VriesRuntimeException("Invalid data source type: " + dataSource.getClass());
-//        }
-//    }
-//}
-//finally {
-//    if (connection != null) {
-//        connection.close();
-//    }
-//}
-//logger.info("Finished building jasper print");
-//return jasperPrint;
-//}
-//>>>>>>> .r88
-//
-//<<<<<<< .mine
-///**
-//* Generates a {@link JasperPrint} using given parameters from the source
-//* passed as a constructor parameter. Returns <code>null</code> on error.
-//* The error is noticed by a {@link Logger} instance.
-//* 
-//* @param reportParameters
-//*            Report parameters
-//* @return Output JasperPrint
-//*/
-//public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration)
-//	throws ReportException {
-//try {
-//	JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration);
-//	return jasperPrint;
-//} catch (Exception e) {
-//	ExceptionUtils.logSevereException(e);
-//	throw new ReportException(e);
-//}
-//}
-//=======
-///**
-//* Returns a connection to the configured datasource if the right parameter is found.
-//*
-//* @param jasperReport Input jasper report
-//* @return The connection to the datasource
-//* @throws NamingException on errors while accessing the initial context
-//* @throws SQLException    on errors while connecting to the datasource
-//*/
-//private Connection getConnectionFromReport(JasperReport jasperReport) throws NamingException, SQLException {
-//logger.info("Getting database connection from report");
-//JRParameter[] parameters = jasperReport.getParameters();
-//Connection con = null;
-//for (JRParameter parameter : parameters) {
-//    if (parameter.getName().equalsIgnoreCase(Parameter.DATASOURCE.name())) {
-//        String jndiName = parameter.getDescription();
-//        con = getConnectionByJNDI(jndiName);
-//        break;
-//    }
-//}
-//return con;
-//}
-//
-    /*
 
-     */
 	private JasperReport getJasperReport() {
 		return report.getJasperReport();
 	}
 }
-//}

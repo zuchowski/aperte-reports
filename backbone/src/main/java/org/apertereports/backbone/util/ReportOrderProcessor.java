@@ -2,7 +2,7 @@ package org.apertereports.backbone.util;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRSaver;
-import org.apertereports.common.exception.VriesException;
+import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
@@ -38,9 +38,9 @@ public class ReportOrderProcessor {
      * of this report order.
      *
      * @param reportOrder A processed report order
-     * @throws VriesException on JasperReports error
+     * @throws AperteReportsException on JasperReports error
      */
-    public void processReport(ReportOrder reportOrder) throws VriesException {
+    public void processReport(ReportOrder reportOrder) throws AperteReportsException {
         reportOrder.setStartDate(Calendar.getInstance());
         reportOrder.setReportStatus(ReportOrder.Status.PROCESSING);
         org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
@@ -62,7 +62,7 @@ public class ReportOrderProcessor {
         }        
         catch (Exception e) {
             ExceptionUtils.logSevereException(e);
-            throw new VriesException(e);
+            throw new AperteReportsException(e);
         }
     }
 }

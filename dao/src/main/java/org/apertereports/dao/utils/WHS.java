@@ -1,5 +1,6 @@
 package org.apertereports.dao.utils;
 
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -55,7 +56,7 @@ public abstract class WHS<resultType> {
             if (tx != null) {
                 tx.rollback();
             }
-            throw e;
+            throw new AperteReportsRuntimeException(e);
         }
         finally {
             sess.close();

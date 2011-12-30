@@ -1,9 +1,10 @@
 package org.apertereports.engine;
 
-import org.apertereports.common.exception.SubreportNotFoundException;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.exception.AperteReportsException;
 
 public class MapBasedSubreportProvider implements SubreportProvider {
 
@@ -15,14 +16,14 @@ public class MapBasedSubreportProvider implements SubreportProvider {
 	}
 
 	@Override
-	public Map<String, Subreport> getSubreports(String... reportNames) throws SubreportNotFoundException {
+	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
 		Map<String, Subreport> newMap = new HashMap<String, Subreport>();
 		if (reportNames != null) {
 			for (String reportName : reportNames) {
 				if (map.containsKey(reportName)) {
 					newMap.put(reportName, map.get(reportName));
 				} else {
-					throw new SubreportNotFoundException("Subreport " + reportName + " not found", reportName);
+					throw new AperteReportsException(ErrorCodes.SUBREPORT_NOT_FOUND, reportName);
 				}
 			}
 		}

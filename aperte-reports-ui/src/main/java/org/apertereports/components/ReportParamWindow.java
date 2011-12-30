@@ -8,16 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.dashboard.html.ReportStreamReceiver;
 import org.apertereports.util.FileStreamer;
-import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.exception.SubreportNotFoundException;
-import org.apertereports.common.exception.VriesException;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
@@ -60,15 +56,12 @@ public class ReportParamWindow extends Window {
             return rm.generateAndExportReport(reportParametersComponent.getSelectedFormat(), new HashMap<String, Object>(parameters),
                     org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
         }
-        catch (ReportException e) {
-            ExceptionUtils.logSevereException(e);
-            VriesRuntimeException ve = new VriesRuntimeException("Error while generating report", e);
-			NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
-            throw ve;
+        catch (AperteReportsException e) {
+        	throw new AperteReportsRuntimeException(e);
         }
     }
 
-    /**
+    /**l
      * Displays a report download popup.
      */
     private void sendForm() {
@@ -79,11 +72,8 @@ public class ReportParamWindow extends Window {
             FileStreamer.showFile(getApplication(), this.report.getReportname(), reportData,
                     reportParametersComponent.getSelectedFormat());
         }
-        catch (ReportException e) {
-            ExceptionUtils.logSevereException(e);
-            VriesRuntimeException ve = new VriesRuntimeException("Error while generating report", e);
-			NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
-            throw ve;
+        catch (AperteReportsException e) {
+            throw new AperteReportsRuntimeException(e);
             
         }
     }
@@ -167,16 +157,8 @@ public class ReportParamWindow extends Window {
             vl.addComponent(buttons);
             addComponent(vl);
         }
-        catch (SubreportNotFoundException e) {
-			ExceptionUtils.logSevereException(e);
-			NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.subreport_not_found.title"),
-                    VaadinUtil.getValue("exception.subreport_not_found.description" + StringUtils.join(e.getReportName(), ", ")));
-            throw new RuntimeException(e);
-        }
         catch (Exception e) {
-            NotificationUtil.showExceptionNotification(getWindow(), new VriesException(e));
-            ExceptionUtils.logSevereException(e);
-            throw new RuntimeException(e);
+            throw new AperteReportsRuntimeException(e);
         }
     }
 

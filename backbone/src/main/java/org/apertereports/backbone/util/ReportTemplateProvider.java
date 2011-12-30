@@ -1,23 +1,28 @@
 package org.apertereports.backbone.util;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.common.exception.SubreportNotFoundException;
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.SubreportProvider;
 import org.apertereports.model.ReportTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class ReportTemplateProvider implements SubreportProvider {
 	private static final Logger logger = Logger.getLogger(ReportTemplateProvider.class.getName());
 
 	@Override
-	public Map<String, Subreport> getSubreports(String... reportNames) throws SubreportNotFoundException {
+	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
 		List<ReportTemplate> list = ReportTemplateDAO.fetchReportsByNames(reportNames);
 		Map<String, Subreport> map = new HashMap<String, Subreport>(list.size());
 
@@ -35,7 +40,7 @@ public class ReportTemplateProvider implements SubreportProvider {
 		if(!notFound.isEmpty()){
 			String[] notFoundArray = (String[]) notFound.toArray(new String[notFound.size()]);
 			String message = "Subreports not found: " + StringUtils.join(notFoundArray, ", ");
-			throw new SubreportNotFoundException(message, notFoundArray);
+			throw new AperteReportsException(ErrorCodes.SUBREPORT_NOT_FOUND, notFoundArray);
 		}
 
 		return map;

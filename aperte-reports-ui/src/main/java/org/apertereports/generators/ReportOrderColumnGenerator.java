@@ -8,7 +8,8 @@ import eu.livotov.tpt.i18n.TM;
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.VriesException;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportOrder.Status;
@@ -16,7 +17,7 @@ import org.apertereports.model.ReportOrder.Status;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apertereports.components.VriesReportOrderBrowserComponent.Columns;
+import org.apertereports.components.ReportOrderBrowserComponent.Columns;
 import org.apertereports.util.*;
 import org.apertereports.util.NotificationUtil.ConfirmListener;
 
@@ -58,9 +59,7 @@ public class ReportOrderColumnGenerator implements ColumnGenerator {
                                             DashboardUtil.exportReportOrderData(reportOrder, format), format.toString());
                                 }
                                 catch (Exception e) {
-                                    ExceptionUtils.logSevereException(e);
-                                    NotificationUtil.showExceptionNotification(source.getWindow(), new VriesException(e));
-                                    throw new RuntimeException(e);
+                                	throw new AperteReportsRuntimeException(e);
                                 }
                             }
                         });

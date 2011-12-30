@@ -3,18 +3,14 @@
  */
 package org.apertereports.dao;
 
-import org.apertereports.dao.utils.WHS;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.exception.ConstraintViolationException;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.model.ReportTemplate;
-import org.apertereports.model.ReportTemplate;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.apertereports.dao.utils.WHS;
+import org.apertereports.model.ReportTemplate;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * @author MW
@@ -109,7 +105,6 @@ public class ReportTemplateDAO {
     }
 
     public static void saveOrUpdate(final ReportTemplate report) {
-        try {
             new WHS<Void>() {
                 @Override
                 public Void lambda() {
@@ -118,10 +113,5 @@ public class ReportTemplateDAO {
                 }
             }.p();
 
-        }
-        catch (ConstraintViolationException e) {
-            ExceptionUtils.logSevereException(e);
-            throw new VriesRuntimeException("manager.form.duplicate.report.name");
-        }
     }
 }

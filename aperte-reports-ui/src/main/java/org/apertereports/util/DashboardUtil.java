@@ -1,24 +1,36 @@
 package org.apertereports.util;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.commons.codec.binary.Base64;
-import org.w3c.dom.*;
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.wrappers.Pair;
-import org.apertereports.model.ReportOrder;
-import org.apertereports.engine.ReportMaster;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.util.JRLoader;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.wrappers.Pair;
+import org.apertereports.engine.ReportMaster;
+import org.apertereports.model.ReportOrder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Utility class with methods for report tags retrieval, regexp matching etc.
@@ -222,9 +234,14 @@ public final class DashboardUtil {
      * @throws net.sf.jasperreports.engine.JRException
      *          On JasperPrint load error
      */
-    public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws ReportException, JRException {
-        JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(
-                new ByteArrayInputStream(Base64.decodeBase64(reportOrder.getReportResult())));
+    public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws AperteReportsException {
+        JasperPrint jasperPrint;
+		try {
+			jasperPrint = (JasperPrint) JRLoader.loadObject(
+			        new ByteArrayInputStream(Base64.decodeBase64(reportOrder.getReportResult())));
+		} catch (JRException e) {
+			throw new AperteReportsException(e);
+		}
         return ReportMaster.exportReport(jasperPrint, format.toString(), org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
     }
 

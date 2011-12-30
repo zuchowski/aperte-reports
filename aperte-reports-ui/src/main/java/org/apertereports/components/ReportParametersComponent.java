@@ -22,21 +22,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.AbstractReportingApplication;
-import org.apertereports.util.NotificationUtil;
-import org.apertereports.util.VaadinUtil;
-import org.apertereports.util.wrappers.DictionaryItemsWrapper;
-import org.apertereports.util.wrappers.FieldContainer;
-import org.apertereports.util.wrappers.FieldProperties;
-import org.apertereports.util.wrappers.FilterContainer;
-
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.exception.SubreportNotFoundException;
+import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
@@ -46,6 +37,12 @@ import org.apertereports.common.xml.config.ReportConfigParameter;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.engine.ReportParameter;
 import org.apertereports.engine.ReportProperty;
+import org.apertereports.util.NotificationUtil;
+import org.apertereports.util.VaadinUtil;
+import org.apertereports.util.wrappers.DictionaryItemsWrapper;
+import org.apertereports.util.wrappers.FieldContainer;
+import org.apertereports.util.wrappers.FieldProperties;
+import org.apertereports.util.wrappers.FilterContainer;
 
 import com.liferay.portal.model.User;
 import com.vaadin.data.Buffered;
@@ -81,13 +78,13 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private boolean includeReportFormat = true;
     private boolean readonly = false;
 
-    public ReportParametersComponent(ReportMaster reportMaster) throws ReportException {
+    public ReportParametersComponent(ReportMaster reportMaster) throws AperteReportsException {
         this.reportMaster = reportMaster;
         init();
     }
 
 
-    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws ReportException, SubreportNotFoundException {
+    public ReportParametersComponent(String reportSource, Integer cacheId, boolean lazyLoad) throws AperteReportsException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         if (!lazyLoad) {
@@ -97,7 +94,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad) throws ReportException, SubreportNotFoundException {
+                                     boolean includeReportFormat, boolean lazyLoad) throws AperteReportsException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;
@@ -109,7 +106,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, List<ReportConfigParameter> reportParameters,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException, SubreportNotFoundException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws AperteReportsException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportParameters;
@@ -122,7 +119,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     public ReportParametersComponent(String reportSource, Integer cacheId, ReportConfig reportConfig,
-                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws ReportException, SubreportNotFoundException {
+                                     boolean includeReportFormat, boolean lazyLoad, boolean readonly) throws AperteReportsException {
         this.reportSource = reportSource;
         this.cacheId = cacheId;
         this.reportParameters = reportConfig != null ? reportConfig.getParameters() : null;

@@ -1,18 +1,22 @@
 package org.apertereports.generators;
 
+import org.apertereports.common.ReportConstants;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.model.ReportOrder;
 import org.apertereports.util.DashboardUtil;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.OnClickOpenMessageInNewWindow;
 import org.apertereports.util.VaadinUtil;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.BaseTheme;
+
 import eu.livotov.tpt.i18n.TM;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.model.ReportOrder;
-import org.apertereports.model.ReportOrder;
 
 /**
  * Displays a cyclic report status based on a given report order instance.
@@ -51,8 +55,7 @@ public class ReportStatusColumn extends CustomComponent {
                                     DashboardUtil.exportReportOrderData(reportOrder, format), format.toString());
                         }
                         catch (Exception e) {
-                            ExceptionUtils.logSevereException(e);
-                            throw new VriesRuntimeException("exception.gui.error", e);
+                            throw new AperteReportsRuntimeException(e);
                         }
                     }
                 });

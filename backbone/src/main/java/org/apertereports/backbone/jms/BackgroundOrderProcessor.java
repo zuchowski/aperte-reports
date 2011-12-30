@@ -3,24 +3,31 @@
  */
 package org.apertereports.backbone.jms;
 
-import org.apache.commons.lang.StringUtils;
-import org.apertereports.backbone.util.EmailProcessor;
-import org.apertereports.backbone.util.ReportOrderProcessor;
-
-import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.VriesException;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.model.ReportOrder;
-import org.apertereports.model.ReportOrder.Status;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apertereports.backbone.util.EmailProcessor;
+import org.apertereports.backbone.util.ReportOrderProcessor;
+import org.apertereports.common.ConfigurationConstants;
+import org.apertereports.common.ReportConstants;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.dao.ReportOrderDAO;
+import org.apertereports.model.ReportOrder;
+import org.apertereports.model.ReportOrder.Status;
 
 /**
  * A {@link MessageListener} implementation that asynchronously receives generation orders.
@@ -44,7 +51,7 @@ public class BackgroundOrderProcessor implements MessageListener {
         ReportOrder reportOrder = null;
         try {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-            reportOrder = org.apertereports.dao.ReportOrderDAO.fetchReport(id);
+            reportOrder = ReportOrderDAO.fetchReport(id);
             processReport(reportOrder);
             if (reportOrder != null) {
                 forwardResults(reportOrder);
@@ -55,9 +62,9 @@ public class BackgroundOrderProcessor implements MessageListener {
             if (reportOrder != null) {
                 reportOrder.setReportStatus(Status.FAILED);
                 reportOrder.setErrorDetails(e.getMessage());
-                org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+                ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
             }
-            throw new VriesRuntimeException("Error while processing background report order", e);
+            throw new AperteReportsRuntimeException(e);
         }
     }
 
@@ -118,9 +125,9 @@ public class BackgroundOrderProcessor implements MessageListener {
      * Invokes the main workhorse of the listener - the {@link ReportOrderProcessor}.
      *
      * @param reportOrder Processed report order
-     * @throws VriesException on error while generating jasper report
+     * @throws AperteReportsException on error while generating jasper report
      */
-    private void processReport(final ReportOrder reportOrder) throws VriesException {
+    private void processReport(final ReportOrder reportOrder) throws AperteReportsException {
         ReportOrderProcessor.getInstance().processReport(reportOrder);
     }
 }

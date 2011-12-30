@@ -3,10 +3,9 @@
  */
 package org.apertereports.engine;
 
-import org.apertereports.common.exception.ReportException;
-import org.apertereports.common.exception.SubreportNotFoundException;
-
 import java.util.Map;
+
+import org.apertereports.common.exception.AperteReportsException;
 
 /**
  * @author MW
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 public interface SubreportProvider {
 
-	Map<String, Subreport> getSubreports(String... reportNames) throws SubreportNotFoundException, ReportException;
+	Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException;
 
 	public class Subreport {
 		private String name;

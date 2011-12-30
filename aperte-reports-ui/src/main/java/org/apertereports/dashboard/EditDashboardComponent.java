@@ -9,7 +9,7 @@ import org.apertereports.model.ReportTemplate;
 import java.util.*;
 
 import org.apertereports.components.HelpLayout;
-import org.apertereports.components.VriesModalWindow;
+import org.apertereports.components.ModalWindow;
 import org.apertereports.components.HelpWindow.Module;
 import org.apertereports.components.HelpWindow.Tab;
 import org.apertereports.util.DashboardUtil;
@@ -310,7 +310,7 @@ public class EditDashboardComponent extends AbstractDashboardComponent {
      * @param report Corresponding report template
      */
     private void showDetails(final ReportConfig config, final ReportTemplate report) {
-        reportDetailsWindow = new VriesModalWindow(VaadinUtil.getValue("dashboard.edit.report.details"),
+        reportDetailsWindow = new ModalWindow(VaadinUtil.getValue("dashboard.edit.report.details"),
                 new ReportDetailsComponent(report, config, true) {
                     @Override
                     public void onCancel() {

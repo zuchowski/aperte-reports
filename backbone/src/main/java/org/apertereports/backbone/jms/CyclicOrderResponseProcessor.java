@@ -1,17 +1,17 @@
 package org.apertereports.backbone.jms;
 
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.VriesRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.model.CyclicReportOrder;
-import org.apertereports.model.ReportOrder;
-import org.apertereports.model.ReportOrder;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+
+import org.apertereports.common.ReportConstants;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.dao.ReportOrderDAO;
+import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.ReportOrder;
 
 /**
  * A {@link MessageListener} implementation that asynchronously handles the cyclic report orders.
@@ -34,12 +34,12 @@ public class CyclicOrderResponseProcessor implements MessageListener {
     public void onMessage(Message message) {
         try {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-            ReportOrder reportOrder = org.apertereports.dao.ReportOrderDAO.fetchReport(id);
+            ReportOrder reportOrder = ReportOrderDAO.fetchReport(id);
             processReport(reportOrder);
         }
         catch (JMSException e) {
             ExceptionUtils.logSevereException(e);
-            throw new VriesRuntimeException("Error while cyclic report order", e);
+            throw new AperteReportsRuntimeException(e);
         }
     }
 

@@ -45,7 +45,7 @@ public class ConfigurationCache implements ConfigurationConstants {
      */
     synchronized private static void init() {
         if (configuration == null || Calendar.getInstance().after(validUntil)) {
-            configuration = org.apertereports.dao.VriesConfigurationDAO.loadAllToMap();
+            configuration = org.apertereports.dao.ConfigurationDAO.loadAllToMap();
             String timeout = configuration.get(CONFIGURATION_CACHE_TIMEOUT_IN_MINUTES);
             if (timeout == null) timeout = "15";
             validUntil = Calendar.getInstance();

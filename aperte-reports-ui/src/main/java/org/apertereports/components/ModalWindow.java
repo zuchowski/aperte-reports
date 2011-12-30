@@ -7,8 +7,8 @@ import com.vaadin.ui.Window;
 /**
  * A simple modal window with fixed height. The base component is added to a scrollable panel.
  */
-public class VriesModalWindow extends Window {
-    public VriesModalWindow(String caption, Component component) {
+public class ModalWindow extends Window {
+    public ModalWindow(String caption, Component component) {
         super(caption);
 
         Panel content = new Panel();

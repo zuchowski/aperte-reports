@@ -1,22 +1,22 @@
 package org.apertereports.ws.endpoint;
 
-import org.springframework.ws.server.endpoint.annotation.Endpoint;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
-import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.ReportException;
+import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.ws.GenerateReportRequest;
 import org.apertereports.common.xml.ws.GenerateReportResponse;
 import org.apertereports.common.xml.ws.ObjectFactory;
 import org.apertereports.common.xml.ws.ReportData;
-import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.ReportWebServiceHelper;
 import org.apertereports.ws.exception.ReportWebServiceException;
-
-import java.io.IOException;
-import java.util.logging.Logger;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
 public class ReportGeneratorEndpoint implements ReportConstants, ConfigurationConstants {
@@ -37,8 +37,7 @@ public class ReportGeneratorEndpoint implements ReportConstants, ConfigurationCo
             byte[] content = helper.generateAndExportReport(reportData);
             response.setContent(ReportGeneratorUtils.wrapBytesInDataHandler(content, mimeType));
         }
-        catch (ReportException e) {
-            logger.info(e.getErrorDesc());
+        catch (AperteReportsException e) {
             throw new ReportWebServiceException(e);
         }
         catch (IOException e) {

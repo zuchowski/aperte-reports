@@ -26,7 +26,7 @@ import java.util.Date;
  * A report order can be generated again or downloaded in a desired output format.
  * The row also contains an information about possible failure of the report generation.
  */
-public class VriesReportOrderBrowserComponent extends CustomComponent implements Serializable {
+public class ReportOrderBrowserComponent extends CustomComponent implements Serializable {
     private static final long serialVersionUID = 384175771652213854L;
 
     private final Columns[] visibleCols = new Columns[] {Columns.REPORT_NAME, Columns.CREATE_DATE,
@@ -43,7 +43,7 @@ public class VriesReportOrderBrowserComponent extends CustomComponent implements
     private DateField createdAfter;
     private DateField createdBefore;
 
-    public VriesReportOrderBrowserComponent() {
+    public ReportOrderBrowserComponent() {
         buildMainLayout();
         setCompositionRoot(mainLayout);
         initFilteringControls();
