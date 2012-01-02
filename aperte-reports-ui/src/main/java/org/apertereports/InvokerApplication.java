@@ -18,10 +18,11 @@ public class InvokerApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        AperteInvokerComponent invoker = new AperteInvokerComponent(true);
+        AperteInvokerComponent invoker = new AperteInvokerComponent();
 
         Window mainWindow = new Window(VaadinUtil.getValue("invoker.window.title"), invoker);
 
         setMainWindow(mainWindow);
+        setTheme("chameleon");
     }
 }

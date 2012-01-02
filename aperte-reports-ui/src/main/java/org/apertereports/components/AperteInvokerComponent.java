@@ -1,178 +1,121 @@
 package org.apertereports.components;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apertereports.dashboard.html.ReportStreamReceiver;
+import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.model.ReportTemplate;
+import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.VaadinUtil;
 
-import org.apertereports.model.ReportTemplate;
-
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
- * Displays a component with a list of available report templates and lets manually generate a report with
- * temporal parameters.
+ * Displays a component with a list of available report templates and lets
+ * manually generate a report with temporal parameters.
  */
-public class AperteInvokerComponent extends CustomComponent {
+@SuppressWarnings("serial")
+public class AperteInvokerComponent extends Panel {
 
-    private VerticalLayout mainLayout;
+	private static final String COMPONENT_STYLE_NAME = "borderless light";
+	private VerticalLayout reportList;
 
-    /**
-     * A window with report parameters.
-     */
-    private ReportParamWindow reportParamWindow;
-    /**
-     * Generates a report.
-     */
-    private Button generateReportButton;
-    /**
-     * Refreshes the report list.
-     */
-    private Button refreshButton;
+	public AperteInvokerComponent() {
+		
+		init();
+	}
 
-    private ReportTemplate report;
+	/**
+	 * List item component.
+	 * 
+	 * @author zmalinowski
+	 *
+	 */
+	private class ReportPanel extends Panel {
+		
+		private static final String INVOKER_WINDOW_TITLE = "invoker.window.title";
+		private static final String INVOKER_INTRO_GENERATE = "invoker.intro.generate";
+		private static final String DESCRIPTION_STYLE_NAME = "tiny";
+		private static final String REPORT_NAME_STYLE_NAME = "h4";
+		private static final String PANEL_STYLE_NAME = COMPONENT_STYLE_NAME;
 
-    private Select reportSelect;
+		public ReportPanel(final ReportTemplate report) {
+			setStyleName(PANEL_STYLE_NAME);
+			HorizontalLayout row = ComponentFactory.createHLayoutFull(this);
+			Label name = ComponentFactory.createSimpleLabel(report.getReportname(), REPORT_NAME_STYLE_NAME, row);
+			Label desc = ComponentFactory.createSimpleLabel(report.getDescription(), DESCRIPTION_STYLE_NAME, row);
+			Label spacer = new Label();
+			row.addComponent(spacer);
+			Button invoke = ComponentFactory.createButton(VaadinUtil.getValue(INVOKER_INTRO_GENERATE), BaseTheme.BUTTON_LINK, row);
+			invoke.addListener(new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					ReportParamWindow reportParamWindow = new ReportParamWindow(report, VaadinUtil.getValue(INVOKER_WINDOW_TITLE),
+							null);
+					getWindow().addWindow(reportParamWindow);
+					
+				}
+			});
+			addComponent(row);
+			row.setExpandRatio(spacer, 1.0f);
+			row.setComponentAlignment(name, Alignment.MIDDLE_RIGHT);
+			row.setComponentAlignment(desc, Alignment.MIDDLE_RIGHT);
+			row.setSpacing(true);
+		}
+	}
 
-    private ReportStreamReceiver receiver = null;
+	/**
+	 * Build the main layout.
+	 */
+	private void init() {
+		setScrollable(true);
+		setStyleName(COMPONENT_STYLE_NAME);
 
-    private HorizontalLayout buttons;
+		ComponentFactory.createSearchBox(new TextChangeListener() {
+			
+			@Override
+			public void textChange(TextChangeEvent event) {
+				refreshList(event.getText());
+				
+			}}, this);
+		reportList = new VerticalLayout();
+		
+		addComponent(reportList);
+		refreshList(null);
+		
+		
+		
 
-    public AperteInvokerComponent(boolean showReportList) {
-        this(null, showReportList);
-    }
+	}
 
-    public AperteInvokerComponent(boolean showReportList, ReportStreamReceiver receiver) {
-        this(null, showReportList);
-        this.receiver = receiver;
-    }
+	private void refreshList(String filter) {
+		reportList.removeAllComponents();
+		List<ReportTemplate> list = (List<ReportTemplate>) ReportTemplateDAO.filterReports(filter);
+		Collections.sort(list, new Comparator<ReportTemplate>() {
 
-    /**
-     * Creates a main layout.
-     *
-     * @param report Pre-selected report.
-     * @param showReportList <code>TRUE</code> to show the report list
-     */
-    public AperteInvokerComponent(ReportTemplate report, boolean showReportList) {
-        this.report = report;
-        buildMainLayout();
+			@Override
+			public int compare(ReportTemplate o1, ReportTemplate o2) {
+				return o1.getCreated().compareTo(o2.getCreated());
+			}
+			
+		});
+		for (ReportTemplate reportTemplate : list) {
+			reportList.addComponent(new ReportPanel(reportTemplate));
+		}
+		
+	}
 
-        Panel panel = new Panel();
-        panel.setScrollable(true);
-        panel.setStyleName("borderless light");
-        panel.setSizeUndefined();
-        panel.setContent(mainLayout);
-        panel.setWidth("100%");
-
-        setCompositionRoot(panel);
-        initShowReportParamsButton();
-        if (showReportList) {
-            fillReportList();
-        }
-    }
-
-    /**
-     * Sets currently selected report
-     *
-     * @param report A report
-     */
-    public void setReport(ReportTemplate report) {
-        this.report = report;
-    }
-
-    /**
-     * Build the main layout.
-     */
-    private void buildMainLayout() {
-        mainLayout = new VerticalLayout();
-
-        generateReportButton = new Button(VaadinUtil.getValue("invoker.intro.generate"));
-        generateReportButton.setImmediate(true);
-
-        buttons = new HorizontalLayout();
-        buttons.setSpacing(true);
-        buttons.addComponent(generateReportButton);
-
-        mainLayout.addComponent(buttons);
-    }
-
-    /**
-     * Initializes the report select.
-     */
-    private void fillReportList() {
-        reportSelect = new Select(VaadinUtil.getValue("invoker.intro.select_report"));
-        reportSelect.setNullSelectionAllowed(false);
-        reportSelect.setWidth("100%");
-
-        fillReportSelect();
-
-        mainLayout.addComponent(reportSelect, 0);
-
-        refreshButton = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
-        refreshButton.setImmediate(true);
-        refreshButton.addListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                reportSelect.removeAllItems();
-                fillReportSelect();
-            }
-        });
-        buttons.addComponent(refreshButton);
-
-        reportSelect.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                Integer reportId = (Integer) reportSelect.getValue();
-                report = org.apertereports.dao.ReportTemplateDAO.fetchReport(reportId);
-            }
-        });
-    }
-
-    /**
-     * Initializes the generate button. Once clicked it opens a new window with report parameters.
-     */
-    private void initShowReportParamsButton() {
-        generateReportButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                if (report != null) {
-                    reportParamWindow = new ReportParamWindow(report, VaadinUtil.getValue("invoker.window.title"), receiver);
-                    getWindow().addWindow(reportParamWindow);
-                }
-            }
-        });
-    }
-
-    /**
-     * Downloads the report template list from database. The reports are sorted by report name.
-     */
-    private void fillReportSelect() {
-        List<ReportTemplate> reports = new ArrayList<ReportTemplate>(org.apertereports.dao.ReportTemplateDAO.fetchAllReports(true));
-        Collections.sort(reports, new Comparator<ReportTemplate>() {
-            @Override
-            public int compare(ReportTemplate o1, ReportTemplate o2) {
-                return o1.getReportname().compareTo(o2.getReportname());
-            }
-        });
-        for (ReportTemplate report : reports) {
-            if (report == null || StringUtils.isEmpty(report.getDescription())) {
-                continue;
-            }
-            reportSelect.addItem(report.getId());
-            reportSelect.setItemCaption(report.getId(), report.getReportname() + " (" + report.getDescription() + ")");
-        }
-    }
+	
 }

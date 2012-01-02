@@ -11,17 +11,17 @@ import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.ReportCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
-import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -38,16 +38,21 @@ import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+/**
+ * Component to manage reports.
+ * 
+ * @author Zbigniew Malinowski
+ *
+ */
 @SuppressWarnings("serial")
 public class ReportManagerComponent extends Panel {
 
-	private static final String MAIN_LABEL_STYLE = "h3";
 	private static final String DESC_STYLE = "small";
 	private static final String CHANGED_DATE_STYLE = "h3";
 	private static final String REPORT_NAME_STYLE = "h4";
 	private static final String FILE_NAME_STYLE = "h3";
 	private static final String EDIT_PANEL_STYLE = "bubble";
-	private static final String PANEL_STYLE = "bubble light";
+	private static final String PANEL_STYLE = "borderless";
 
 	private static final String DESCRIPTION_PROPERTY = "description";
 	private static final String FILENAME_PROPERTY = "filename";
@@ -58,7 +63,6 @@ public class ReportManagerComponent extends Panel {
 	private static final String ACTIVE_PROPERTY = "active";
 
 	private static final String REPORT_MANAGER_NEW_REPORT_BUTTON = "report.manager.newReportButton";
-	private static final String REPORT_MANAGER_MAINLABEL = "report.manager.mainlabel";
 	private static final String REPORT_MANAGER_ITEM_DOWNLOAD = "report.manager.item.download";
 	private static final String REPORT_MANAGER_ITEM_EDIT = "report.manager.item.edit";
 	private static final String REPORT_MANAGER_ITEM_RUN = "report.manager.item.run";
@@ -82,7 +86,6 @@ public class ReportManagerComponent extends Panel {
 
 	private void init() {
 		VerticalLayout mainLayout = new VerticalLayout();
-		Label mainLabel = ComponentFactory.createSimpleLabel(REPORT_MANAGER_MAINLABEL, MAIN_LABEL_STYLE, mainLayout);
 		newReportReceiver = new ReportReceiver(new ReportTemplate());
 		newReportReceiver.addListener(new ReportReceivedListener() {
 
@@ -97,19 +100,23 @@ public class ReportManagerComponent extends Panel {
 		newReportUpload.addListener((FailedListener) newReportReceiver);
 		newReportUpload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_NEW_REPORT_BUTTON));
 		newReportUpload.setImmediate(true);
-		HorizontalLayout hl = new HorizontalLayout();
+		HorizontalLayout hl = ComponentFactory.createHLayoutFull(mainLayout);
 		list = new VerticalLayout();
 
-		hl.addComponent(mainLabel);
-		hl.setComponentAlignment(mainLabel, Alignment.MIDDLE_LEFT);
+		TextField search = ComponentFactory.createSearchBox(new TextChangeListener() {
+			
+			@Override
+			public void textChange(TextChangeEvent event) {
+				reloadData(event.getText());
+			}
+		}, hl);
+		hl.setExpandRatio(search, 1.0f);
 		hl.addComponent(newReportUpload);
+		hl.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
 		hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
-		hl.setSpacing(true);
-		hl.setWidth("100%");
-		mainLayout.addComponent(hl);
 		mainLayout.addComponent(list);
 		addComponent(mainLayout);
-		reloadData();
+		reloadData(null);
 	}
 
 	private void addNewReport(ReportTemplate reportTemplate) {
@@ -119,8 +126,8 @@ public class ReportManagerComponent extends Panel {
 		newReportReceiver.reportTemplate = new ReportTemplate();
 	}
 
-	private void reloadData() {
-		List<ReportTemplate> raportTemplates = loadReports();
+	private void reloadData(String filter) {
+		List<ReportTemplate> raportTemplates = loadReports(filter);
 		list.removeAllComponents();
 		for (ReportTemplate reportTemplate : raportTemplates) {
 			list.addComponent(new ReportItemPanel(reportTemplate));
@@ -128,6 +135,12 @@ public class ReportManagerComponent extends Panel {
 
 	}
 
+	/**
+	 * List item in edit state.
+	 * 
+	 * @author Zbigniew Malinowski
+	 *
+	 */
 	private class EditReportItemPanel extends Panel {
 
 		private ReportItemPanel item;
@@ -216,10 +229,17 @@ public class ReportManagerComponent extends Panel {
 			list.replaceComponent(this, this.item);
 			deepCopy(temporaryData, item.reportTemplate);
 			item.requestRepaintAll();
+			ReportTemplateDAO.saveOrUpdate(item.reportTemplate);
 
 		}
 	}
 
+	/**
+	 * List item in normal state.
+	 * 
+	 * @author Zbigniew Malinowski
+	 *
+	 */
 	private class ReportItemPanel extends Panel {
 
 		private ReportTemplate reportTemplate;
@@ -247,8 +267,6 @@ public class ReportManagerComponent extends Panel {
 
 			HorizontalLayout uploadRow = new HorizontalLayout();
 			addComponent(uploadRow);
-
-			ComponentFactory.createLabel(beanItem, FILENAME_PROPERTY, FILE_NAME_STYLE, uploadRow);
 
 			ComponentFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, DESC_STYLE, this);
 
@@ -326,6 +344,12 @@ public class ReportManagerComponent extends Panel {
 		list.removeComponent(reportItemPanel);
 	}
 
+	/**
+	 * Class handling file upload.
+	 * 
+	 * @author Zbigniew Malinowski
+	 *
+	 */
 	private class ReportReceiver implements Upload.Receiver, Upload.SucceededListener, Upload.FailedListener {
 
 		private ByteArrayOutputStream baos;
@@ -395,8 +419,8 @@ public class ReportManagerComponent extends Panel {
 		target.setReportname(source.getReportname());
 	}
 
-	private List<ReportTemplate> loadReports() {
-		return (List<ReportTemplate>) ReportTemplateDAO.fetchAllReports(false);
+	private List<ReportTemplate> loadReports(String filter) {
+		return (List<ReportTemplate>) ReportTemplateDAO.filterReports(filter);
 	}
 
 }

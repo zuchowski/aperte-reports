@@ -23,7 +23,7 @@ public class SQLUtil {
 
 	private static void configureSessions() {
 		try {
-			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
+			Configuration annotationConfiguration = new AnnotationConfiguration();
 			Configuration cfg = annotationConfiguration.configure("hibernate.cfg.xml");
 
 			sessions = cfg.buildSessionFactory();
