@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.util.ReportTemplateProvider;
+import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
@@ -338,11 +339,7 @@ public class ReportManagerComponent extends Panel {
 
 		@Override
 		public void uploadFailed(FailedEvent event) {
-			ExceptionUtils.logSevereException(event.getReason());
-			NotificationUtil.showExceptionNotification(getWindow(),
-					VaadinUtil.getValue("exception.upload_failed.title"),
-					VaadinUtil.getValue("exception.upload_failed.description"));
-
+			throw new AperteReportsRuntimeException(ErrorCodes.DUPLICATE_REPORT_NAME);
 		}
 
 		@Override
