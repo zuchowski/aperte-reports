@@ -23,11 +23,6 @@
         <ajaxable>false</ajaxable>
     </portlet>
     <portlet>
-        <portlet-name>Combo portlet</portlet-name>
-        <instanceable>true</instanceable>
-        <ajaxable>false</ajaxable>
-    </portlet>
-    <portlet>
         <portlet-name>Cyclic Reports portlet</portlet-name>
         <instanceable>true</instanceable>
         <ajaxable>false</ajaxable>

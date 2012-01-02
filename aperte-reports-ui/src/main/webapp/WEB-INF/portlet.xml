@@ -12,10 +12,6 @@
             <name>application</name>
             <value>org.apertereports.InvokerApplication</value>
         </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
         <supports>
@@ -39,10 +35,6 @@
             <name>application</name>
             <value>org.apertereports.ManagerApplication</value>
         </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
         <supports>
@@ -66,10 +58,6 @@
             <name>application</name>
             <value>org.apertereports.ReportOrderApplication</value>
         </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
 
         <!-- Supported portlet modes and content types. -->
         <supports>
@@ -86,34 +74,6 @@
     </portlet>
 
     <portlet>
-        <portlet-name>Combo portlet</portlet-name>
-        <display-name>Aperte Reports Combo</display-name>
-
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.ComboApplication</value>
-        </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
-
-        <!-- Supported portlet modes and content types. -->
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-        </supports>
-
-        <!-- Not always required but Liferay uses these. -->
-        <portlet-info>
-            <title>Aperte Reports Combo</title>
-            <short-title>Combo</short-title>
-            <keywords>invoker,report</keywords>
-        </portlet-info>
-    </portlet>
-
-    <portlet>
         <portlet-name>Dashboard portlet</portlet-name>
         <display-name>Aperte Reports Dashboard</display-name>
 
@@ -122,10 +82,6 @@
             <name>application</name>
             <value>org.apertereports.DashboardPortletApplication</value>
         </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
 
         <supports>
             <mime-type>text/html</mime-type>
@@ -149,10 +105,6 @@
             <name>application</name>
             <value>org.apertereports.CyclicReportsApplication</value>
         </init-param>
-        <!--<init-param>-->
-            <!--<name>widgetset</name>-->
-            <!--<value>org.apertereports.widgetset.VriesWidgetSet</value>-->
-        <!--</init-param>-->
 
         <supports>
             <mime-type>text/html</mime-type>
@@ -183,11 +135,6 @@
     <filter-mapping>
         <filter-name>I18nFilter</filter-name>
         <portlet-name>Dashboard portlet</portlet-name>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>I18nFilter</filter-name>
-        <portlet-name>Combo portlet</portlet-name>
     </filter-mapping>
     <filter-mapping>
         <filter-name>I18nFilter</filter-name>
