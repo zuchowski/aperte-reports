@@ -1,18 +1,27 @@
 package org.apertereports.backbone.jms;
 
-import org.hibernate.criterion.Restrictions;
+import java.util.Map;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
 import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
-
-import javax.jms.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.util.Map;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Helper class for creating a report order and pushing it to JMS queue.
@@ -24,6 +33,8 @@ public class ReportOrderPusher {
      * @param id Report order ID
      */
     public static void addToJMS(Long id) {
+    	if(!isJmsAvailable())
+    		throw new AperteReportsRuntimeException(ErrorCodes.JMS_UNAVAILABLE);
         Connection connection = null;
         Session session = null;
         try {
@@ -42,8 +53,7 @@ public class ReportOrderPusher {
             ExceptionUtils.logDebugMessage(ReportConstants.REPORT_ORDER_ID + ": " + id);
         }
         catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
-            throw new RuntimeException(e);
+        	throw new AperteReportsRuntimeException(e);
         }
         finally {
             try {
@@ -55,8 +65,7 @@ public class ReportOrderPusher {
                 }
             }
             catch (Exception e) {
-                ExceptionUtils.logSevereException(e);
-                throw new RuntimeException(e);
+                throw new AperteReportsRuntimeException(e);
             }
         }
     }
@@ -76,6 +85,8 @@ public class ReportOrderPusher {
      */
     public static ReportOrder buildNewOrder(final ReportTemplate report, Map<String, String> parameters, String format,
                                             String recipientEmail, String username, String replyToQ) {
+    	if(!isJmsAvailable())
+    		throw new AperteReportsRuntimeException(ErrorCodes.JMS_UNAVAILABLE);
         final ReportOrder reportOrder = new ReportOrder();
         reportOrder.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters));
         reportOrder.setOutputFormat(format);
@@ -101,5 +112,9 @@ public class ReportOrderPusher {
         Long id = org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
         reportOrder.setId(id);
         return reportOrder;
+    }
+    
+    public static boolean isJmsAvailable(){
+    	return ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY) != null;
     }
 }

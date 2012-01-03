@@ -17,7 +17,9 @@ import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
+import org.apertereports.util.ReportParamPanel;
 import org.apertereports.util.VaadinUtil;
+import org.apertereports.util.ReportParamPanel.ReportInvocationListener;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -67,7 +69,6 @@ public class ReportManagerComponent extends Panel {
 	private static final String REPORT_MANAGER_ITEM_EDIT = "report.manager.item.edit";
 	private static final String REPORT_MANAGER_ITEM_RUN = "report.manager.item.run";
 	private static final String REPORT_MANAGER_ITEM_UPLOAD_CHANGE = "report.manager.item.upload.change";
-	private static final String INVOKER_WINDOW_TITLE = "invoker.window.title";
 	private static final String REPORT_MANAGER_ITEM_REMOVE = "report.manager.item.remove";
 	private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
 	private static final String BUTTON_CANCEL = "button.cancel";
@@ -75,6 +76,8 @@ public class ReportManagerComponent extends Panel {
 	private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
 	private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
 	private static final String REPORT_MANAGER_ITEM_EDIT_ACTIVE = "report.manager.item.edit.active";
+	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
+	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
 
 	private VerticalLayout list;
 	private ReportReceiver newReportReceiver;
@@ -240,10 +243,12 @@ public class ReportManagerComponent extends Panel {
 	 * @author Zbigniew Malinowski
 	 *
 	 */
-	private class ReportItemPanel extends Panel {
+	private class ReportItemPanel extends Panel  implements ReportInvocationListener{
 
 		private ReportTemplate reportTemplate;
 		private BeanItem<ReportTemplate> beanItem;
+		private ReportParamPanel paramsPanel = null;
+		private Button toggleParams;
 
 		public ReportItemPanel(ReportTemplate reportTemplate) {
 			this.reportTemplate = reportTemplate;
@@ -273,12 +278,12 @@ public class ReportManagerComponent extends Panel {
 			HorizontalLayout footerRow = new HorizontalLayout();
 			addComponent(footerRow);
 			footerRow.setSpacing(true);
-			Button runReport = ComponentFactory.createButton(REPORT_MANAGER_ITEM_RUN, BaseTheme.BUTTON_LINK, footerRow);
-			runReport.addListener(new ClickListener() {
+			toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK, footerRow);
+			toggleParams.addListener(new ClickListener() {
 
 				@Override
 				public void buttonClick(ClickEvent event) {
-					runReport();
+					toggleParams();
 				}
 
 			});
@@ -320,15 +325,28 @@ public class ReportManagerComponent extends Panel {
 
 		}
 
-		private void runReport() {
-			getWindow().addWindow(
-					new ReportParamWindow(reportTemplate, VaadinUtil.getValue(INVOKER_WINDOW_TITLE), null));
+		private void toggleParams() {
+			if (paramsPanel == null){
+				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ReportItemPanel.this));
+				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+			}
+			else {
+				removeComponent(paramsPanel);
+				paramsPanel = null;
+				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+			}
 		}
 
 		private void download() {
 			byte[] reportContent = Base64.decodeBase64(reportTemplate.getContent().getBytes());
 			FileStreamer.openFileInCurrentWindow(getApplication(), reportTemplate.getFilename(), reportContent,
 					"application/octet-stream");
+		}
+
+		@Override
+		public void reportInvoked() {
+			toggleParams();
+			
 		}
 
 	}

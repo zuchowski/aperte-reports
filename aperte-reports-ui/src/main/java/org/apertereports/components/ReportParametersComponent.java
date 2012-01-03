@@ -7,7 +7,7 @@ import static org.apertereports.common.ReportConstants.InputTypes.FILTERED_SELEC
 import static org.apertereports.common.ReportConstants.InputTypes.MULTISELECT;
 
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +50,7 @@ import com.vaadin.data.Validator;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
@@ -67,7 +68,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private Form form = new Form();
     private HashMap<String, FilterContainer> filters;
     private List<FieldContainer> fields = new LinkedList<FieldContainer>();
-    private OptionGroup format;
+    private ComboBox format;
 
     private ReportMaster reportMaster;
 
@@ -632,15 +633,19 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         /** ADD FORMAT SELECTION **/
         if (includeReportFormat) {
-            format = new OptionGroup(VaadinUtil.getValue("invoker.form.select_format"), new ArrayList<String>(
-                    ReportConstants.ReportType.values().length) {
-                {
-                    for (ReportConstants.ReportType reportType : ReportConstants.ReportType.values()) {
-                        add(reportType.toString());
-                    }
-                }
-            });
-            format.setValue(ReportConstants.ReportType.PDF.toString());
+        	format = new ComboBox(VaadinUtil.getValue("invoker.form.select_format"), Arrays.asList(ReportConstants.ReportType.values()));
+//            format = new OptionGroup(VaadinUtil.getValue("invoker.form.select_format"), new ArrayList<String>(
+//                    ReportConstants.ReportType.values().length) {
+//                {
+//                    for (ReportConstants.ReportType reportType : ReportConstants.ReportType.values()) {
+//                        add(reportType.toString());
+//                    }
+//                }
+//            });
+            format.setValue(ReportConstants.ReportType.PDF);
+        	format.setStyleName("small");
+        	format.setNullSelectionAllowed(false);
+        	format.setTextInputAllowed(false);
             form.addField("format", format);
         }
 
@@ -674,7 +679,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         String inputTypeString = getValueFromMap(props, ReportConstants.Keys.INPUT_TYPE, ReportConstants.InputTypes.values(),
                 ReportConstants.InputTypes.CHECKBOX.name());
         fieldProperties.setInputType(ReportConstants.InputTypes.valueOf(StringUtils.upperCase(inputTypeString)));
-
         /** WIDTH **/
         fieldProperties.setWidth(getValueFromMap(props, ReportConstants.Keys.WIDTH, null, ""));
 

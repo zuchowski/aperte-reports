@@ -7,6 +7,8 @@ import java.util.List;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
+import org.apertereports.util.ReportParamPanel;
+import org.apertereports.util.ReportParamPanel.ReportInvocationListener;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -32,48 +34,70 @@ public class AperteInvokerComponent extends Panel {
 	private VerticalLayout reportList;
 
 	public AperteInvokerComponent() {
-		
+
 		init();
 	}
 
 	/**
 	 * List item component.
 	 * 
-	 * @author zmalinowski
-	 *
+	 * @author Zbigniew Malinowski
+	 * 
 	 */
-	private class ReportPanel extends Panel {
-		
-		private static final String INVOKER_WINDOW_TITLE = "invoker.window.title";
-		private static final String INVOKER_INTRO_GENERATE = "invoker.intro.generate";
-		private static final String DESCRIPTION_STYLE_NAME = "tiny";
+	private class ReportPanel extends Panel implements ReportInvocationListener{
+
+		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
+		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
 		private static final String REPORT_NAME_STYLE_NAME = "h4";
 		private static final String PANEL_STYLE_NAME = COMPONENT_STYLE_NAME;
 
+		private ReportParamPanel paramsPanel = null;
+		private Button toggleParams;
+		private ReportTemplate reportTemplate;
+
 		public ReportPanel(final ReportTemplate report) {
+			this.reportTemplate = report;
 			setStyleName(PANEL_STYLE_NAME);
 			HorizontalLayout row = ComponentFactory.createHLayoutFull(this);
 			Label name = ComponentFactory.createSimpleLabel(report.getReportname(), REPORT_NAME_STYLE_NAME, row);
-			Label desc = ComponentFactory.createSimpleLabel(report.getDescription(), DESCRIPTION_STYLE_NAME, row);
+			
 			Label spacer = new Label();
 			row.addComponent(spacer);
-			Button invoke = ComponentFactory.createButton(VaadinUtil.getValue(INVOKER_INTRO_GENERATE), BaseTheme.BUTTON_LINK, row);
-			invoke.addListener(new ClickListener() {
-				
+			toggleParams = ComponentFactory.createButton(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE),
+					"link", row);
+			toggleParams.addListener(new ClickListener() {
+
 				@Override
 				public void buttonClick(ClickEvent event) {
-					ReportParamWindow reportParamWindow = new ReportParamWindow(report, VaadinUtil.getValue(INVOKER_WINDOW_TITLE),
-							null);
-					getWindow().addWindow(reportParamWindow);
-					
+					toggleParams();
+
 				}
+				
 			});
-			addComponent(row);
+			name.setDescription(report.getDescription());
 			row.setExpandRatio(spacer, 1.0f);
 			row.setComponentAlignment(name, Alignment.MIDDLE_RIGHT);
-			row.setComponentAlignment(desc, Alignment.MIDDLE_RIGHT);
 			row.setSpacing(true);
 		}
+
+		@Override
+		public void reportInvoked() {
+			toggleParams();
+			
+		}
+		
+		private void toggleParams() {
+			if (paramsPanel == null){
+				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ReportPanel.this));
+				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+			}
+			else {
+				removeComponent(paramsPanel);
+				paramsPanel = null;
+				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+			}
+		}
+
 	}
 
 	/**
@@ -84,19 +108,17 @@ public class AperteInvokerComponent extends Panel {
 		setStyleName(COMPONENT_STYLE_NAME);
 
 		ComponentFactory.createSearchBox(new TextChangeListener() {
-			
+
 			@Override
 			public void textChange(TextChangeEvent event) {
 				refreshList(event.getText());
-				
-			}}, this);
+
+			}
+		}, this);
 		reportList = new VerticalLayout();
-		
+
 		addComponent(reportList);
 		refreshList(null);
-		
-		
-		
 
 	}
 
@@ -109,13 +131,12 @@ public class AperteInvokerComponent extends Panel {
 			public int compare(ReportTemplate o1, ReportTemplate o2) {
 				return o1.getCreated().compareTo(o2.getCreated());
 			}
-			
+
 		});
 		for (ReportTemplate reportTemplate : list) {
 			reportList.addComponent(new ReportPanel(reportTemplate));
 		}
-		
+
 	}
 
-	
 }
