@@ -120,6 +120,7 @@ public class ReportManagerComponent extends Panel {
 		mainLayout.addComponent(list);
 		addComponent(mainLayout);
 		reloadData(null);
+		setWidth("100%");
 	}
 
 	private void addNewReport(ReportTemplate reportTemplate) {
@@ -273,7 +274,8 @@ public class ReportManagerComponent extends Panel {
 			HorizontalLayout uploadRow = new HorizontalLayout();
 			addComponent(uploadRow);
 
-			ComponentFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, DESC_STYLE, this);
+			Label desc = ComponentFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, DESC_STYLE, this);
+			desc.setWidth("100%");
 
 			HorizontalLayout footerRow = new HorizontalLayout();
 			addComponent(footerRow);

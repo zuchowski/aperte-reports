@@ -49,7 +49,8 @@ public class AperteInvokerComponent extends Panel {
 		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
 		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
 		private static final String REPORT_NAME_STYLE_NAME = "h4";
-		private static final String PANEL_STYLE_NAME = COMPONENT_STYLE_NAME;
+		private static final String REPORT_DESC_STYLE_NAME = "tiny";
+		private static final String PANEL_STYLE_NAME = "borderless light";
 
 		private ReportParamPanel paramsPanel = null;
 		private Button toggleParams;
@@ -61,10 +62,11 @@ public class AperteInvokerComponent extends Panel {
 			HorizontalLayout row = ComponentFactory.createHLayoutFull(this);
 			Label name = ComponentFactory.createSimpleLabel(report.getReportname(), REPORT_NAME_STYLE_NAME, row);
 			
+			
 			Label spacer = new Label();
 			row.addComponent(spacer);
 			toggleParams = ComponentFactory.createButton(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE),
-					"link", row);
+					BaseTheme.BUTTON_LINK, row);
 			toggleParams.addListener(new ClickListener() {
 
 				@Override
@@ -74,10 +76,12 @@ public class AperteInvokerComponent extends Panel {
 				}
 				
 			});
-			name.setDescription(report.getDescription());
+			Label desc = ComponentFactory.createSimpleLabel(report.getDescription(), REPORT_DESC_STYLE_NAME, this);
+			desc.setWidth("100%");
 			row.setExpandRatio(spacer, 1.0f);
 			row.setComponentAlignment(name, Alignment.MIDDLE_RIGHT);
 			row.setSpacing(true);
+			setWidth("100%");
 		}
 
 		@Override
