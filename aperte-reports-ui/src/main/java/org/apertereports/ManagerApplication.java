@@ -28,7 +28,7 @@ public class ManagerApplication extends AbstractReportingApplication {
         Window mainWindow = new Window(VaadinUtil.getValue("manager.window.title"), manager);
 
         setMainWindow(mainWindow);
-        setTheme("chameleon");
+        setTheme("reindeer");
     }
 
 }
