@@ -1,28 +1,27 @@
-package org.apertereports.util;
+package org.apertereports.components;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.components.ReportParametersComponent;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
+import org.apertereports.util.ComponentFactory;
+import org.apertereports.util.FileStreamer;
+import org.apertereports.util.UserUtil;
+import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
@@ -60,7 +59,8 @@ public class ReportParamPanel extends Panel {
 				public void buttonClick(ClickEvent event) {
 					if (reportParametersComponent.validateForm()) {
 						sendForm();
-						parent.reportInvoked();
+						if (parent != null)
+							parent.reportInvoked();
 					}
 				}
 			});
@@ -79,7 +79,8 @@ public class ReportParamPanel extends Panel {
 						if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE)
 							email = null;
 						sendFormToJMS(UserUtil.getUsername(), email);
-						parent.reportInvoked();
+						if (parent != null)
+							parent.reportInvoked();
 					}
 				}
 			});

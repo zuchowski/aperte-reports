@@ -1,22 +1,33 @@
 package org.apertereports.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 
 /**
  * Factory class providing components in frequently used form.
@@ -42,7 +53,7 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static Label createLabel(BeanItem<?> item, String propertyId, String style, ComponentContainer parent) {
+	public static Label createLabel(Item item, String propertyId, String style, ComponentContainer parent) {
 		Property property = item.getItemProperty(propertyId);
 		return createLabelByProperty(style, parent, property);
 	}
@@ -61,7 +72,8 @@ public class ComponentFactory {
 	public static Label createSimpleLabel(String valueKey, String style, ComponentContainer parent) {
 		Label label = new Label(VaadinUtil.getValue(valueKey));
 		label.setStyleName(style);
-		parent.addComponent(label);
+		if (parent != null)
+			parent.addComponent(label);
 		label.setWidth(null);
 		return label;
 	}
@@ -69,7 +81,8 @@ public class ComponentFactory {
 	private static Label createLabelByProperty(String style, ComponentContainer parent, Property property) {
 		Label label = new Label(property);
 		label.setStyleName(style);
-		parent.addComponent(label);
+		if (parent != null)
+			parent.addComponent(label);
 		label.setWidth(null);
 		return label;
 	}
@@ -86,10 +99,32 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static Button createButton(String captionCode, String style, ComponentContainer container) {
+	public static Button createButton(String captionCode, String style, ComponentContainer parent) {
 		Button button = new Button(VaadinUtil.getValue(captionCode));
 		button.setStyleName(style);
-		container.addComponent(button);
+		if (parent != null)
+			parent.addComponent(button);
+		return button;
+	}
+
+	/**
+	 * Creates button with caption code (for localization), registers listener
+	 * and adds it to parent.
+	 * 
+	 * @param captionCode
+	 *            localization code of button's caption
+	 * @param style
+	 *            style name to apply
+	 * @param container
+	 *            container of the component
+	 * @param listener
+	 *            listener to register on click
+	 * @return
+	 */
+	public static Button createButton(String captionCode, String style, ComponentContainer container,
+			ClickListener listener) {
+		Button button = createButton(captionCode, style, container);
+		button.addListener(listener);
 		return button;
 	}
 
@@ -106,10 +141,9 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static Label createDateLabel(BeanItem<ReportTemplate> beanItem, String propertyName, String style,
-			HorizontalLayout parent) {
+	public static Label createDateLabel(Item item, String propertyName, String style, HorizontalLayout parent) {
 
-		return createLabelByProperty(style, parent, new DateProperty(beanItem.getItemProperty(propertyName)));
+		return createLabelByProperty(style, parent, new DateProperty(item.getItemProperty(propertyName)));
 	}
 
 	/**
@@ -126,10 +160,10 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static CheckBox createCheckBox(String captionCode, BeanItem<?> item, String propertyId,
-			ComponentContainer parent) {
+	public static CheckBox createCheckBox(String captionCode, Item item, String propertyId, ComponentContainer parent) {
 		CheckBox checkBox = new CheckBox(VaadinUtil.getValue(captionCode), item.getItemProperty(propertyId));
-		parent.addComponent(checkBox);
+		if (parent != null)
+			parent.addComponent(checkBox);
 		return checkBox;
 	}
 
@@ -146,12 +180,12 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static TextArea createTextArea(BeanItem<?> item, String propertyId, String promptKey,
-			ComponentContainer parent) {
+	public static TextArea createTextArea(Item item, String propertyId, String promptKey, ComponentContainer parent) {
 		TextArea area = new TextArea(item.getItemProperty(propertyId));
 		area.setInputPrompt(VaadinUtil.getValue(promptKey));
 		area.setWidth("100%");
-		parent.addComponent(area);
+		if (parent != null)
+			parent.addComponent(area);
 		return area;
 	}
 
@@ -176,7 +210,8 @@ public class ComponentFactory {
 	 */
 	public static HorizontalLayout createHLayout(ComponentContainer parent) {
 		HorizontalLayout hLayout = new HorizontalLayout();
-		parent.addComponent(hLayout);
+		if (parent != null)
+			parent.addComponent(hLayout);
 		hLayout.setSpacing(true);
 		return hLayout;
 	}
@@ -219,7 +254,7 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static TextField createSearchBox(TextChangeListener listener, ComponentContainer container) {
+	public static TextField createSearchBox(TextChangeListener listener, ComponentContainer parent) {
 		TextField search = new TextField();
 		search.setInputPrompt(VaadinUtil.getValue(SEARCH_FILTER_INPUT_PROMPT));
 		search.setWidth("100%");
@@ -227,7 +262,32 @@ public class ComponentFactory {
 		search.setTextChangeTimeout(500);
 		search.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		search.addListener(listener);
-		container.addComponent(search);
+		if (parent != null)
+			parent.addComponent(search);
 		return search;
+	}
+
+	public static ComboBox createFormatCombo(ReportType selectedValue, String captionKey) {
+		Container all = new BeanItemContainer<String>(String.class, Arrays.asList(ReportType.stringValues()));
+		ComboBox format = new ComboBox(VaadinUtil.getValue(captionKey),
+				all );
+		format.setValue(selectedValue.name());
+		format.setStyleName("small");
+		format.setNullSelectionAllowed(false);
+		format.setTextInputAllowed(false);
+		return format;
+	}
+
+	public static ComboBox createReportTemplateCombo(ReportTemplate selectedValue, String captionKey) {
+		
+		Collection<ReportTemplate> allReports = ReportTemplateDAO.fetchAllReports(true);
+		ComboBox reports = new ComboBox(VaadinUtil.getValue(captionKey),
+				new BeanItemContainer<ReportTemplate>(ReportTemplate.class, allReports));
+		reports.setItemCaptionPropertyId("reportname");
+		reports.setValue(selectedValue);
+		reports.setTextInputAllowed(false);
+		reports.setNullSelectionAllowed(false);
+
+		return reports;
 	}
 }

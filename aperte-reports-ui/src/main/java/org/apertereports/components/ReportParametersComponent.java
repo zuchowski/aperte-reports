@@ -27,6 +27,7 @@ import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.TextUtils;
@@ -37,6 +38,7 @@ import org.apertereports.common.xml.config.ReportConfigParameter;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.engine.ReportParameter;
 import org.apertereports.engine.ReportProperty;
+import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 import org.apertereports.util.wrappers.DictionaryItemsWrapper;
@@ -633,20 +635,9 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         /** ADD FORMAT SELECTION **/
         if (includeReportFormat) {
-        	format = new ComboBox(VaadinUtil.getValue("invoker.form.select_format"), Arrays.asList(ReportConstants.ReportType.values()));
-//            format = new OptionGroup(VaadinUtil.getValue("invoker.form.select_format"), new ArrayList<String>(
-//                    ReportConstants.ReportType.values().length) {
-//                {
-//                    for (ReportConstants.ReportType reportType : ReportConstants.ReportType.values()) {
-//                        add(reportType.toString());
-//                    }
-//                }
-//            });
-            format.setValue(ReportConstants.ReportType.PDF);
-        	format.setStyleName("small");
-        	format.setNullSelectionAllowed(false);
-        	format.setTextInputAllowed(false);
+        	format = ComponentFactory.createFormatCombo(ReportType.PDF, "invoker.form.select_format");
             form.addField("format", format);
+            
         }
 
         if (fields.isEmpty()) {

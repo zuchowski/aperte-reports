@@ -1,6 +1,7 @@
 package org.apertereports.common;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * Contains constant fields used in the report generation process.
@@ -100,7 +101,16 @@ public interface ReportConstants {
      * Allowed report formats.
      */
     public static enum ReportType {
-        CSV, HTML, PDF, XLS
+        CSV, HTML, PDF, XLS;
+        
+        public static String[] stringValues() {
+        	String[] values = new String[values().length];
+        	for (int i = 0; i < values.length; i++) {
+				values[i] = values()[i].name(); 
+			}
+        	return values;
+        }
+    
     }
 
     /**

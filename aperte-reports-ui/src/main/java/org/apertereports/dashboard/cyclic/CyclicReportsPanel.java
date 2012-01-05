@@ -21,8 +21,7 @@ import java.util.*;
 /**
  * This component is used to display and configure cyclic reports in the portlet.
  * <p/>A user can define a new cyclic report based on an existing report template.
- * The due time is specified with a cron expression. Each configured report must be confirmed
- * by clicking the "save" button which registers the cyclic report in the scheduler.
+ * The due time is specified with a cron expression. 
  */
 public class CyclicReportsPanel extends CustomComponent {
     /**

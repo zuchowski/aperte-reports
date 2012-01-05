@@ -1,5 +1,6 @@
 package org.apertereports;
 
+import org.apertereports.components.CyclicReportsComponent;
 import org.apertereports.dashboard.cyclic.CyclicReportsPanel;
 import org.apertereports.util.VaadinUtil;
 
@@ -19,11 +20,12 @@ public class CyclicReportsApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        CyclicReportsPanel panel = new CyclicReportsPanel();
+        CyclicReportsComponent crc = new CyclicReportsComponent();
 
-        Window mainWindow = new Window(VaadinUtil.getValue("dashboard.edit.cyclicReports"), panel);
+        Window mainWindow = new Window(VaadinUtil.getValue("dashboard.edit.cyclicReports"), crc);
 
         setMainWindow(mainWindow);
+        setTheme("reindeer");
     }
 
     /**

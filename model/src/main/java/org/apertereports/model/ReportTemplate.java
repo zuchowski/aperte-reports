@@ -165,4 +165,29 @@ public class ReportTemplate implements Serializable {
     public enum Fields {
         ACTIVE, CONTENT, CREATED, DESCRIPTION, FILENAME, ALLOW_ONLINE_DISPLAY, ALLOW_BACKGROUND_ORDER, REPORTNAME, ID
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ReportTemplate other = (ReportTemplate) obj;
+		if (reportname == null) {
+			if (other.reportname != null)
+				return false;
+		} else if (!reportname.equals(other.reportname))
+			return false;
+		return true;
+	}
 }

@@ -2,8 +2,10 @@ package org.apertereports.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.CyclicReportOrder;
 import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.ReportTemplate;
 
 import java.util.*;
 
@@ -167,4 +169,24 @@ public class CyclicReportOrderDAO {
             }
         }.p();
     }
+
+	public static List<CyclicReportOrder> filterReports(final String filter) {
+		return new WHS<List<CyclicReportOrder>>(false) {
+			@Override
+			public List<CyclicReportOrder> lambda() {
+				if (filter == null || filter.isEmpty()) {
+					return (List<CyclicReportOrder>) fetchAllCyclicReportOrders();
+					
+				}
+				String extendedFilter = "%" + filter + "%";
+				List<CyclicReportOrder> list = sess.createCriteria(CyclicReportOrder.class)
+						.add(Restrictions.ilike("description", extendedFilter)).list();
+				if (list == null || list.size() == 0) {
+					return new ArrayList<CyclicReportOrder>();
+				}
+				return list;
+			}
+		}.p();
+	}
+	
 }

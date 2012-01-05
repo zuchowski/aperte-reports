@@ -4,11 +4,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apertereports.components.ReportParamPanel.ReportInvocationListener;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
-import org.apertereports.util.ReportParamPanel;
-import org.apertereports.util.ReportParamPanel.ReportInvocationListener;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
