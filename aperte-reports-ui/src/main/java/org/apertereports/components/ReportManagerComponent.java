@@ -2,22 +2,26 @@ package org.apertereports.components;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.components.ReportParamPanel.ParamPanelType;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.ReportCache;
 import org.apertereports.engine.ReportMaster;
+import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
+import org.apertereports.util.UserUtil;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.data.util.BeanItem;
@@ -27,6 +31,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -66,7 +71,6 @@ public class ReportManagerComponent extends Panel {
 	private static final String REPORT_MANAGER_NEW_REPORT_BUTTON = "report.manager.newReportButton";
 	private static final String REPORT_MANAGER_ITEM_DOWNLOAD = "report.manager.item.download";
 	private static final String REPORT_MANAGER_ITEM_EDIT = "report.manager.item.edit";
-	private static final String REPORT_MANAGER_ITEM_RUN = "report.manager.item.run";
 	private static final String REPORT_MANAGER_ITEM_UPLOAD_CHANGE = "report.manager.item.upload.change";
 	private static final String REPORT_MANAGER_ITEM_REMOVE = "report.manager.item.remove";
 	private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
@@ -77,6 +81,8 @@ public class ReportManagerComponent extends Panel {
 	private static final String REPORT_MANAGER_ITEM_EDIT_ACTIVE = "report.manager.item.edit.active";
 	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
 	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
+	
+	private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
 
 	private VerticalLayout list;
 	private ReportReceiver newReportReceiver;
@@ -328,7 +334,7 @@ public class ReportManagerComponent extends Panel {
 
 		private void toggleParams() {
 			if (paramsPanel == null){
-				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ParamPanelType.REPORT_MANAGER));
+				addComponent(paramsPanel = createParamsPanel());
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
 			}
 			else {
@@ -336,6 +342,64 @@ public class ReportManagerComponent extends Panel {
 				paramsPanel = null;
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
 			}
+		}
+
+//		TODO: could be better
+		private ReportParamPanel createParamsPanel() {
+			final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
+			HorizontalLayout hl = ComponentFactory.createHLayout(panel);
+			ComponentFactory.createButton("params-form.generate", BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					try {
+						ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId()
+								.toString(), new ReportTemplateProvider());
+						byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
+								new HashMap<String, Object>(panel.collectParametersValues()),
+								org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+						FileStreamer.showFile(getApplication(), reportTemplate.getReportname(), reportData,
+								panel.getOuptutFormat());
+					} catch (AperteReportsException e) {
+						throw new AperteReportsRuntimeException(e);
+
+					}
+
+				}
+			});
+
+			Button backgroundGenerate = ComponentFactory.createButton("params-form.background-generate",
+					BaseTheme.BUTTON_LINK, hl);
+			final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(PARAMS_FORM_SEND_EMAIL));
+			hl.addComponent(sendEmailCheckbox);
+			backgroundGenerate.addListener(new ClickListener() {
+
+				@Override
+				public void buttonClick(ClickEvent event) {
+					Map<String, String> parameters = panel.collectParametersValues();
+					String email = UserUtil.getUserEmail();
+					if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE)
+						email = null;
+					ReportOrder reportOrder = ReportOrderPusher.buildNewOrder(reportTemplate, parameters,
+							panel.getOuptutFormat(), email, UserUtil.getUsername(), null);
+					Long id = reportOrder.getId();
+					if (id != null) {
+						ReportOrderPusher.addToJMS(id);
+					}
+				}
+			});
+			if (!backgorundGenerationAvail()) {
+				backgroundGenerate.setEnabled(false);
+				sendEmailCheckbox.setEnabled(false);
+			}
+
+			panel.addComponent(hl);
+			return panel;
+		}	
+
+		private boolean backgorundGenerationAvail() {
+			return ReportOrderPusher.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+					&& reportTemplate.getActive();
 		}
 
 		private void download() {
