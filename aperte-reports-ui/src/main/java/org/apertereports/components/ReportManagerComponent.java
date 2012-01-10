@@ -11,7 +11,7 @@ import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.components.ReportParamPanel.ReportInvocationListener;
+import org.apertereports.components.ReportParamPanel.ParamPanelType;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.ReportCache;
 import org.apertereports.engine.ReportMaster;
@@ -243,7 +243,7 @@ public class ReportManagerComponent extends Panel {
 	 * @author Zbigniew Malinowski
 	 *
 	 */
-	private class ReportItemPanel extends Panel  implements ReportInvocationListener{
+	private class ReportItemPanel extends Panel{
 
 		private ReportTemplate reportTemplate;
 		private BeanItem<ReportTemplate> beanItem;
@@ -328,7 +328,7 @@ public class ReportManagerComponent extends Panel {
 
 		private void toggleParams() {
 			if (paramsPanel == null){
-				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ReportItemPanel.this));
+				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ParamPanelType.REPORT_MANAGER));
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
 			}
 			else {
@@ -342,12 +342,6 @@ public class ReportManagerComponent extends Panel {
 			byte[] reportContent = Base64.decodeBase64(reportTemplate.getContent().getBytes());
 			FileStreamer.openFileInCurrentWindow(getApplication(), reportTemplate.getFilename(), reportContent,
 					"application/octet-stream");
-		}
-
-		@Override
-		public void reportInvoked() {
-			toggleParams();
-			
 		}
 
 	}

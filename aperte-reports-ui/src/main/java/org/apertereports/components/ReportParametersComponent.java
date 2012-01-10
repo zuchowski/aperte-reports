@@ -7,7 +7,6 @@ import static org.apertereports.common.ReportConstants.InputTypes.FILTERED_SELEC
 import static org.apertereports.common.ReportConstants.InputTypes.MULTISELECT;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -134,7 +133,13 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
     }
 
-    /**
+    public ReportParametersComponent(ReportMaster rm, boolean showFormat) throws AperteReportsException {
+		this(rm);
+		includeReportFormat = showFormat;
+	}
+
+
+	/**
      * Returns a map of report parameters collected from the generated form fields.
      *
      * @return A map of report parameters

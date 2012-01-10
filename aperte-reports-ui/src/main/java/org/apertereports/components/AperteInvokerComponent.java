@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apertereports.components.ReportParamPanel.ReportInvocationListener;
+import org.apertereports.components.ReportParamPanel.ParamPanelType;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
@@ -43,7 +43,7 @@ public class AperteInvokerComponent extends Panel {
 	 * @author Zbigniew Malinowski
 	 * 
 	 */
-	private class ReportPanel extends Panel implements ReportInvocationListener{
+	private class ReportPanel extends Panel {
 
 		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
 		private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
@@ -83,15 +83,10 @@ public class AperteInvokerComponent extends Panel {
 			setWidth("100%");
 		}
 
-		@Override
-		public void reportInvoked() {
-			toggleParams();
-			
-		}
 		
 		private void toggleParams() {
 			if (paramsPanel == null){
-				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ReportPanel.this));
+				addComponent(paramsPanel = new ReportParamPanel(reportTemplate, ParamPanelType.REPORT_INVOKER));
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
 			}
 			else {
