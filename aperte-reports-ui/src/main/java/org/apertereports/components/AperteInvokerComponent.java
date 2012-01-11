@@ -25,6 +25,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -71,6 +72,7 @@ public class AperteInvokerComponent extends Panel {
 		public ReportPanel(final ReportTemplate report) {
 			this.reportTemplate = report;
 			setStyleName(PANEL_STYLE_NAME);
+			((AbstractLayout) getContent()).setMargin(true, false, false, false);
 			HorizontalLayout row = ComponentFactory.createHLayoutFull(this);
 			Label name = ComponentFactory.createSimpleLabel(report.getReportname(), REPORT_NAME_STYLE_NAME, row);
 

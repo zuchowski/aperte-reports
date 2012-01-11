@@ -25,11 +25,11 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -107,7 +107,9 @@ public class CyclicReportsComponent extends Panel {
 
 		list = new VerticalLayout();
 		addComponent(list);
+		setStyleName("borderless light");
 		filter(null);
+		
 
 	}
 
@@ -119,6 +121,7 @@ public class CyclicReportsComponent extends Panel {
 	}
 
 	private void filter(String text) {
+		list.removeAllComponents();
 		List<CyclicReportOrder> orders = CyclicReportOrderDAO.filterReports(text);
 		for (CyclicReportOrder order : orders) {
 			list.addComponent(new CyclicReportPanel(order));
@@ -127,30 +130,52 @@ public class CyclicReportsComponent extends Panel {
 
 	private class CyclicReportPanel extends Panel {
 
+		private static final String REPORT_PANEL_STYLE = "borderless light";
 		private CyclicReportOrder order;
 		private ReportParamPanel paramsPanel;
 		private Button toggleParams;
+		private HorizontalLayout container;
+		private Button enabledButton;
 
 		public CyclicReportPanel(CyclicReportOrder order) {
 			this.order = order;
-			setWidth("100%");
+			((AbstractLayout) getContent()).setMargin(true, false, false, false);
+			setStyleName(REPORT_PANEL_STYLE);
 			BeanItem<CyclicReportOrder> item = new BeanItem<CyclicReportOrder>(order);
 			HorizontalLayout row1 = ComponentFactory.createHLayoutFull(this);
 			HorizontalLayout row2 = ComponentFactory.createHLayoutFull(this);
 
-			CheckBox icon = ComponentFactory.createCheckBox("", item, ORDER_ENABLED, row1);
+			
+			container = ComponentFactory.createHLayout(row1);
+			container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
 			Label name = ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
-					ORDER_REPORT_REPORTNAME, FORMAT_STYLE, row1);
-
+					ORDER_REPORT_REPORTNAME, FORMAT_STYLE, container);
+			
+			Label format = ComponentFactory.createLabel(item, ORDER_OUTPUT_FORMAT, "", container);
 			Label spacer = new Label();
 			row1.addComponent(spacer);
+			enabledButton = ComponentFactory.createButton(getStateLabelCaption(), BaseTheme.BUTTON_LINK, row1, new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					toggleEnable();
+					
+				}
 
-			Label format = ComponentFactory.createLabel(item, ORDER_OUTPUT_FORMAT, FORMAT_STYLE, row1);
-			row1.setComponentAlignment(format, Alignment.MIDDLE_RIGHT);
-			row1.setComponentAlignment(icon, Alignment.MIDDLE_LEFT);
-			row1.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
+				private void toggleEnable() {
+					CyclicReportPanel.this.order.setEnabled(CyclicReportPanel.this.order.getEnabled()!= Boolean.TRUE);
+					container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
+					enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
+					CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(CyclicReportPanel.this.order);
+					
+				}
+			});
+			row1.setComponentAlignment(container, Alignment.MIDDLE_LEFT);
+			row1.setComponentAlignment(enabledButton, Alignment.MIDDLE_RIGHT);
+			container.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
+			container.setComponentAlignment(format, Alignment.MIDDLE_LEFT);
 			row1.setExpandRatio(spacer, 1.0f);
-
+			
 			Label spacer2 = new Label("");
 			ComponentFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, null, row2);
 			row2.addComponent(spacer2);
@@ -159,7 +184,7 @@ public class CyclicReportsComponent extends Panel {
 
 			Label desc = ComponentFactory.createLabel(item, ORDER_DESCRIPTION, DESCRIPTION_STYLE, this);
 			desc.setWidth("100%");
-
+			
 			HorizontalLayout row3 = ComponentFactory.createHLayout(this);
 
 			toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
@@ -188,6 +213,11 @@ public class CyclicReportsComponent extends Panel {
 				}
 			});
 
+		}
+
+		private String getStateLabelCaption() {
+			
+			return order.getEnabled() == Boolean.TRUE ? "cyclc.button.disable" : "cyclc.button.enable";
 		}
 
 		protected void remove() {
@@ -260,8 +290,9 @@ public class CyclicReportsComponent extends Panel {
 			this.newItem = newItem;
 			this.order = order;
 			setWidth("100%");
+//			((AbstractLayout) getContent()).setMargin(true, false, false, false);
 			addComponent(form = new EditCyclicReportForm(order));
-			HorizontalLayout buttons = ComponentFactory.createHLayoutFull(this);
+			HorizontalLayout buttons = ComponentFactory.createHLayout(this);
 			ComponentFactory.createButton(CYCLIC_EDIT_BUTTON_SAVE, BaseTheme.BUTTON_LINK, buttons, new ClickListener() {
 
 				@Override
@@ -305,7 +336,7 @@ public class CyclicReportsComponent extends Panel {
 		private GridLayout layout;
 
 		public EditCyclicReportForm(CyclicReportOrder order) {
-			layout = new GridLayout(3, 3);
+			layout = new GridLayout(2, 3);
 			layout.setWidth("100%");
 			layout.setSpacing(true);
 			setLayout(layout);
@@ -324,22 +355,24 @@ public class CyclicReportsComponent extends Panel {
 				layout.addComponent(field, 0, 0);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
 			} else if (propertyId.equals("outputFormat")) {
-				layout.addComponent(field, 2, 0);
+				layout.addComponent(field, 1, 0);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
 			} else if (propertyId.equals("recipientEmail")) {
 				layout.addComponent(field, 0, 1);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
 			} else if (propertyId.equals("cronSpec")) {
-				layout.addComponent(field, 2, 1);
+				layout.addComponent(field, 1, 1);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
 			} else if (propertyId.equals("description")) {
-				layout.addComponent(field, 0, 2, 2, 2);
+				layout.addComponent(field, 0, 2, 1, 2);
 				field.setWidth("100%");
 			}
 		}
 	}
 
 	private class EditCyclicFormFactory extends DefaultFieldFactory {
+
+		private static final String CYCLIC_EDIT_CAPTION = "cyclic.edit.caption.";
 
 		@Override
 		public Field createField(Item item, Object propertyId, Component uiContext) {
@@ -348,27 +381,31 @@ public class CyclicReportsComponent extends Panel {
 				if (value == null)
 					value = ReportType.PDF.name();
 				ReportType selectedValue = ReportType.valueOf(value);
-				ComboBox format = ComponentFactory.createFormatCombo(selectedValue, "");
+				ComboBox format = ComponentFactory.createFormatCombo(selectedValue, CYCLIC_EDIT_CAPTION + propertyId);
 				format.setRequired(true);
 				format.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR_FORMAT));
 				format.setInputPrompt(VaadinUtil.getValue(CYCLIC_EDIT_INPUT_PROMPT_FORMAT));
+				format.setWidth("100%");
 				return format;
 			} else if (propertyId.equals(ORDER_REPORT)) {
 				ComboBox reportname = ComponentFactory.createReportTemplateCombo(
-						(ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), "");
+						(ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), CYCLIC_EDIT_CAPTION + propertyId);
 				reportname.setRequired(true);
 				reportname.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR_REPORTNAME));
 				reportname.setInputPrompt(VaadinUtil.getValue(CYCLIC_EDIT_INPUT_PROMPT_REPORTNAME));
+				reportname.setWidth("100%");
 				return reportname;
 			} else if (propertyId.equals(ORDER_DESCRIPTION)) {
 				TextArea field = ComponentFactory.createTextArea(item, ORDER_DESCRIPTION,
 						CYCLIC_REPORT_EDIT_INPUT_PROMPT_DESC, null);
 				field.setNullRepresentation("");
+				field.setCaption(VaadinUtil.getValue(CYCLIC_EDIT_CAPTION + propertyId));
+				field.setWidth("100%");
 				return field;
 			} else {
 				Field field = super.createField(item, propertyId, uiContext);
 				field.setWidth("100%");
-				field.setCaption(null);
+				field.setCaption(VaadinUtil.getValue(CYCLIC_EDIT_CAPTION + propertyId));
 				field.setRequired(true);
 				if (propertyId.equals(ORDER_CRON_SPEC) || propertyId.equals(ORDER_RECIPIENT_EMAIL)) {
 					((TextField) field).setNullRepresentation("");
