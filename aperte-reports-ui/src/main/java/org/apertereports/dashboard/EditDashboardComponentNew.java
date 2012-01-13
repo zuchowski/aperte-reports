@@ -46,12 +46,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 	private Item datasource;
 
 	public EditDashboardComponentNew() {
-		template = "<report idx=\"0\"></report>";
-		reportConfigs = new LinkedList<ReportConfig>();
-		ReportConfig rc = new ReportConfig();
-		reportConfigs.add(rc);
-		rc.setId(0);
-		config = rc;
+		
 	}
 
 	@Override
@@ -147,6 +142,12 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 		} catch (InvalidValueException e) {
 			return;
 		}
+		template = "<report idx=\"0\"></report>";
+		reportConfigs = new LinkedList<ReportConfig>();
+		ReportConfig rc = new ReportConfig();
+		reportConfigs.add(rc);
+		rc.setId(0);
+		config = rc;
 		ReportTemplate report = (ReportTemplate) datasource.getItemProperty("report").getValue();
 		config.setReportId(report.getId());
 		config.setCacheTimeout((Integer) datasource.getItemProperty("cacheTimeout").getValue());
