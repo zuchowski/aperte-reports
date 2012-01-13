@@ -440,7 +440,8 @@ public class ReportManagerComponent extends Panel {
 
 		@Override
 		public void uploadFailed(FailedEvent event) {
-			throw new AperteReportsRuntimeException(ErrorCodes.DUPLICATE_REPORT_NAME);
+			
+			throw new AperteReportsRuntimeException(event.getReason());
 		}
 
 		@Override

@@ -177,7 +177,7 @@ public class HtmlReportBuilder {
                 }
             });
         }
-        if (config.getAllowRefresh()) {
+        if (config.getAllowRefresh() == Boolean.TRUE) {
             Button b = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {

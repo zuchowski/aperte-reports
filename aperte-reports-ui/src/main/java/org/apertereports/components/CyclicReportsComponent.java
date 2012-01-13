@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
@@ -25,6 +26,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.terminal.UserError;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -46,6 +48,8 @@ import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
 public class CyclicReportsComponent extends Panel {
+
+	private static final String COMPONENT_STYLE_NAME = "borderless light";
 
 	private VerticalLayout list;
 
@@ -84,6 +88,7 @@ public class CyclicReportsComponent extends Panel {
 	}
 
 	private void init() {
+		
 		HorizontalLayout header = ComponentFactory.createHLayoutFull(this);
 		TextField search = ComponentFactory.createSearchBox(new TextChangeListener() {
 
@@ -106,10 +111,17 @@ public class CyclicReportsComponent extends Panel {
 		});
 
 		list = new VerticalLayout();
+		list.setMargin(false, false, true, false);
 		addComponent(list);
-		setStyleName("borderless light");
+		setStyleName(COMPONENT_STYLE_NAME);
 		filter(null);
 		
+		if(!ReportOrderPusher.isJmsAvailable()) {
+			HorizontalLayout validator = ComponentFactory.createHLayoutFull(this);
+			Form form = new Form();
+			form.setComponentError(new UserError("JMS unavailable, cyclic reports execution is disabled!"));
+			validator.addComponent(form);
+		}
 
 	}
 
@@ -130,7 +142,7 @@ public class CyclicReportsComponent extends Panel {
 
 	private class CyclicReportPanel extends Panel {
 
-		private static final String REPORT_PANEL_STYLE = "borderless light";
+		private static final String REPORT_PANEL_STYLE = COMPONENT_STYLE_NAME;
 		private CyclicReportOrder order;
 		private ReportParamPanel paramsPanel;
 		private Button toggleParams;

@@ -6,6 +6,7 @@ import org.apertereports.context.ContextReloadListener;
 import org.apertereports.context.PortletContextHolder;
 import org.apertereports.dashboard.AbstractDashboardComponent;
 import org.apertereports.dashboard.EditDashboardComponent;
+import org.apertereports.dashboard.EditDashboardComponentNew;
 import org.apertereports.dashboard.ViewDashboardComponent;
 import org.apertereports.util.VaadinUtil;
 
@@ -32,7 +33,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
     /**
      * Dashboard edit view.
      */
-    private AbstractDashboardComponent editMode = new EditDashboardComponent();
+    private AbstractDashboardComponent editMode = new EditDashboardComponentNew();
     /**
      * Displays help view.
      */

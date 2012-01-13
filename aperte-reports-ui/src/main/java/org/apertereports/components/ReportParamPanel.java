@@ -36,6 +36,12 @@ public class ReportParamPanel extends Panel {
 		}
 	}
 	
+	/**
+	 * Empty panel
+	 */
+	public ReportParamPanel() {
+	}
+
 	public void addButton(Button button){
 		buttons.addComponent(button);
 	}

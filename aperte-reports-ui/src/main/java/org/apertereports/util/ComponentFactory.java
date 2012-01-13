@@ -2,28 +2,36 @@ package org.apertereports.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.terminal.ClassResource;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
@@ -35,10 +43,11 @@ import com.vaadin.ui.TextField;
  * @author Zbigniew Malinowski
  * 
  */
-public class ComponentFactory {
+public abstract class ComponentFactory {
 
 	private static final String SEARCH_FILTER_INPUT_PROMPT = "search-filter.input-prompt";
 	private static final String REPORT_MANAGER_DATE_FORMAT = "report.manager.date.format";
+	public static final String ICON_PATH = "/icons/16x16/";
 
 	/**
 	 * Creates label bound to property,
@@ -141,9 +150,14 @@ public class ComponentFactory {
 	 *            container of the component
 	 * @return
 	 */
-	public static Label createDateLabel(Item item, String propertyName, String style, HorizontalLayout parent) {
+	public static Label createDateLabel(Item item, String propertyName, String style, ComponentContainer parent) {
 
 		return createLabelByProperty(style, parent, new DateProperty(item.getItemProperty(propertyName)));
+	}
+	
+	public static Label createCalendarLabel(Item item, String propertyName, String style, ComponentContainer parent) {
+
+		return createLabelByProperty(style, parent, new CalendarProperty(item.getItemProperty(propertyName)));
 	}
 
 	/**
@@ -216,10 +230,30 @@ public class ComponentFactory {
 		return hLayout;
 	}
 
+	private static class CalendarProperty extends DateProperty {
+
+		public CalendarProperty(Property itemProperty) {
+			super(itemProperty);
+		}
+
+		@Override
+		public String format(Object value) {
+			return super.format(((Calendar) value).getTime());
+		}
+
+		@Override
+		public Object parse(String formattedValue) throws Exception {
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.setTime(dateFormat.parse(formattedValue));
+			return cal;
+		}
+		
+	}
+	
 	@SuppressWarnings({ "unchecked", "serial" })
 	private static class DateProperty extends PropertyFormatter {
 
-		private SimpleDateFormat dateFormat;
+		protected SimpleDateFormat dateFormat;
 
 		public DateProperty(Property itemProperty) {
 			super(itemProperty);
@@ -289,5 +323,34 @@ public class ComponentFactory {
 		reports.setNullSelectionAllowed(false);
 
 		return reports;
+	}
+
+	public static Embedded createIcon(Item item, String proprtyId, ComponentContainer parent) {
+		Enum<?> value = (Enum<?>) item.getItemProperty(proprtyId).getValue();
+		Embedded icon = new Embedded(null, new ClassResource(AperteIcons.getIconUrl(value), parent.getApplication()));
+		icon.setDescription(value.getClass().getSimpleName()+ ": " + value.name());
+		parent.addComponent(icon);
+		return icon;
+		
+	}
+	
+	public enum AperteIcons {
+		
+		NEW,
+		PROCESSING,
+		FAILED,
+		SUCCEEDED,
+		ERROR,
+		;
+		
+		public static String getIconUrl(Enum<?> e){
+			AperteIcons icon;
+			try {
+				icon = valueOf(e.name());
+			} catch (IllegalArgumentException e1) {
+				return ICON_PATH + ERROR.name().toLowerCase() +".png";
+			}
+			return ICON_PATH + icon.name().toLowerCase() +".png";
+		}
 	}
 }

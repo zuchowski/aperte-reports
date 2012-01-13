@@ -3,11 +3,14 @@
  */
 package org.apertereports.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apertereports.dao.utils.WHS;
+import org.apertereports.model.ReportOrder;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.apertereports.model.ReportOrder;
-
-import java.util.Collection;
 
 /**
  * DAO methods for handling report orders.
@@ -81,4 +84,25 @@ public class ReportOrderDAO {
             }
         }.p();
     }
+
+	public static List<ReportOrder> filter(final String filter) {
+		return new WHS<List<ReportOrder>>() {
+
+			@Override
+			public List<ReportOrder> lambda() {
+				if (filter == null || filter.isEmpty()) {
+					return (List<ReportOrder>) fetchAllReportOrders();
+				}
+				String extendedFilter = "%" + filter + "%";
+				List<ReportOrder> list = sess
+						.createCriteria(ReportOrder.class)
+						.createAlias("report", "r")
+						.add(Restrictions.ilike("r.reportname", extendedFilter)).list();
+				if (list == null || list.size() == 0) {
+					return new ArrayList<ReportOrder>();
+				}
+				return list;
+			}
+		}.p();
+	}
 }
