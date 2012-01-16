@@ -1,225 +1,160 @@
 package org.apertereports.components;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import org.apache.commons.lang.StringUtils;
-import org.apertereports.generators.ReportOrderColumnGenerator;
-import org.apertereports.util.VaadinUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
+import org.apertereports.common.xml.config.XmlReportConfigLoader;
+import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportOrder.Status;
 import org.apertereports.model.ReportTemplate;
-import org.apertereports.model.ReportOrder;
-import org.apertereports.model.ReportTemplate;
+import org.apertereports.util.ComponentFactory;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.themes.BaseTheme;
 
-/**
- * Displays a table of report orders. Each row contains a processing or finished report order data.
- * A report order can be generated again or downloaded in a desired output format.
- * The row also contains an information about possible failure of the report generation.
- */
-public class ReportOrderBrowserComponent extends CustomComponent implements Serializable {
-    private static final long serialVersionUID = 384175771652213854L;
+@SuppressWarnings("serial")
+public class ReportOrderBrowserComponent extends Panel {
 
-    private final Columns[] visibleCols = new Columns[] {Columns.REPORT_NAME, Columns.CREATE_DATE,
-            Columns.RESULT, Columns.DETAILS, Columns.ACTION};
+	private static final int PAGE_SIZE = 10;
+	private static final String COMPONENT_STYLE = "borderless light";
+	private static final String BACKGROUND_BUTTON_PARAMS = "background.button.params";
+	private static final String BACKGROUND_BUTTON_PREVIEW = "background.button.preview";
+	private static final String CREATE_DATE = "createDate";
+	private static final String REPORTNAME_STYLE = "h4";
+	private static final String REPORTNAME = "reportname";
+	private static final String REPORT_STATUS = "reportStatus";
+	
+	private PaginatedPanelList<ReportOrder, ReportOrderPanel> list;
+	
+	public ReportOrderBrowserComponent() {
+		
+	}
+	
+	@Override
+	public void attach() {
+		super.attach();
+		init();
+	}
 
-    private final VerticalLayout filterBox = new VerticalLayout();
-    private Panel mainLayout;
-    private final Table reportOrderTable = new Table();
+	private void init() {
 
-    private IndexedContainer reportTableData;
-    private Collection<ReportTemplate> reportTemplates;
-    private Collection<ReportOrder> allReportOrders;
-    private Select reportOrderSelect;
-    private DateField createdAfter;
-    private DateField createdBefore;
+		ComponentFactory.createSearchBox(new TextChangeListener() {
+			
+			@Override
+			public void textChange(TextChangeEvent event) {
+				list.filter(event.getText());
+			}
+		}, this);
+		
+		list = new PaginatedPanelList<ReportOrder, ReportOrderBrowserComponent.ReportOrderPanel>(PAGE_SIZE) {
+			
+			@Override
+			protected ReportOrderPanel transform(ReportOrder object) {
+				return new ReportOrderPanel(object);
+			}
+			
+			@Override
+			protected int getListSize(String filter) {
+				return ReportOrderDAO.countMatching(filter);
+			}
+			
+			@Override
+			protected Collection<ReportOrder> fetch(String filter, int firstResult, int maxResults) {
+				return ReportOrderDAO.fetch(filter, firstResult, maxResults);
+			}
+		};
+		addComponent(list);
+		list.filter(null);
+		setStyleName(COMPONENT_STYLE);
+	}
+	
+	private class ReportOrderPanel extends Panel {
+		
 
-    public ReportOrderBrowserComponent() {
-        buildMainLayout();
-        setCompositionRoot(mainLayout);
-        initFilteringControls();
-        initReportTable();
-    }
+		private ReportOrder order;
+		private ReportOrderParamsPanel params;
+		private boolean paramsVisible;
+		
+		public ReportOrderPanel(ReportOrder order) {
+			this.order = order;
+			
+		}
+		@Override
+		public void attach() {
+			super.attach();
+			init();
+		}
+		
+		private void init() {
+			
+			setStyleName(COMPONENT_STYLE);
+			((AbstractLayout) getContent()).setMargin(false, false, false, false);
+			BeanItem<ReportOrder> item = new BeanItem<ReportOrder>(order);
+			GridLayout grid = new GridLayout(6, 1);
+			grid.setWidth("100%");
+			grid.setSpacing(true);
+			grid.setColumnExpandRatio(1, 1);
+			addComponent(grid);
+			ComponentFactory.createIcon(item, REPORT_STATUS, grid);
+			ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, REPORTNAME_STYLE, grid);
+			
+			ComponentFactory.createCalendarLabel(item, CREATE_DATE, "", grid);
+			Button previewButton = ComponentFactory.createButton(BACKGROUND_BUTTON_PREVIEW, BaseTheme.BUTTON_LINK, grid);
+			ComponentFactory.createButton(BACKGROUND_BUTTON_PARAMS, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					toggleParams();
+					
+				}
+				
+			});
 
-    /**
-     * Adds a new report order to the indexed container held by the table.
-     *
-     * @param container The container
-     * @param reportId Input report id
-     * @param createdAfter Filtering date after
-     * @param createdBefore Filtering date before
-     */
-    private void addItems(IndexedContainer container, Integer reportId, Calendar createdAfter, Calendar createdBefore) {
-        for (ReportOrder reportOrder : allReportOrders) {
-            if (reportId != null && !reportId.equals(reportOrder.getReport().getId())) {
-                continue;
-            }
-            if (createdAfter != null && !createdAfter.before(reportOrder.getCreateDate())) {
-                continue;
-            }
-            if (createdBefore != null && !createdBefore.after(reportOrder.getCreateDate())) {
-                continue;
-            }
-
-            Item item = container.addItem(reportOrder.getId());
-            item.getItemProperty(Columns.REPORT_NAME).setValue(reportOrder.getReport().getDescription());
-            item.getItemProperty(Columns.CREATE_DATE).setValue(
-                    reportOrder.getCreateDate() == null ? null : reportOrder.getCreateDate().getTime());
-            item.getItemProperty(Columns.REPORT_ORDER).setValue(reportOrder);
-            item.getItemProperty(Columns.RESULT).setValue(reportOrder.getReportStatus());
-        }
-    }
-
-    /**
-     * Builds main container component.
-     */
-    private void buildMainLayout() {
-        mainLayout = new Panel();
-        mainLayout.setScrollable(true);
-        mainLayout.setStyleName("borderless light");
-        mainLayout.setSizeUndefined();
-        mainLayout.addComponent(filterBox);
-        mainLayout.addComponent(reportOrderTable);
-    }
-
-    /**
-     * Initializes filtering controls. Each filtering control reacts immediately with the user imput.
-     */
-    private void initFilteringControls() {
-        Form form = new Form();
-        reportOrderSelect = new Select(VaadinUtil.getValue("report_order.filter.report"));
-        reportOrderSelect.setNullSelectionAllowed(true);
-        reportTemplates = org.apertereports.dao.ReportTemplateDAO.fetchAllReports(true);
-        for (ReportTemplate reportTemplate : reportTemplates) {
-            if (reportTemplate == null || StringUtils.isEmpty(reportTemplate.getDescription())) {
-                continue;
-            }
-            reportOrderSelect.addItem(reportTemplate.getId());
-            reportOrderSelect.setItemCaption(reportTemplate.getId(), reportTemplate.getReportname() + " (" + reportTemplate.getDescription() + ")");
-        }
-        reportOrderSelect.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                filterItems();
-            }
-        });
-        form.addField("report_order_select", reportOrderSelect);
-
-        Calendar threeDaysAgo = Calendar.getInstance();
-        threeDaysAgo.add(Calendar.DATE, -3);
-
-        createdAfter = new DateField(VaadinUtil.getValue("report_order.filter.created_after"));
-        createdAfter.setResolution(DateField.RESOLUTION_MIN);
-        createdAfter.setValue(threeDaysAgo.getTime());
-        createdAfter.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                filterItems();
-            }
-        });
-        form.addField("created_after", createdAfter);
-
-        createdBefore = new DateField(VaadinUtil.getValue("report_order.filter.created_before"));
-        createdBefore.setResolution(DateField.RESOLUTION_MIN);
-        createdBefore.addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                filterItems();
-            }
-        });
-        form.addField("created_before", createdBefore);
-
-        form.setImmediate(true);
-        filterBox.addComponent(form);
-
-        Button refreshButton = new Button(VaadinUtil.getValue("report_order.table.refresh"));
-        refreshButton.setImmediate(true);
-        refreshButton.addListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                refresh();
-            }
-        });
-
-        filterBox.addComponent(refreshButton);
-    }
-
-    /**
-     * Initializes the table view.
-     */
-    private void initReportTable() {
-        reportTableData = prepareData();
-        reportOrderTable.setContainerDataSource(reportTableData);
-        reportOrderTable.addGeneratedColumn(Columns.RESULT, new ReportOrderColumnGenerator());
-        reportOrderTable.addGeneratedColumn(Columns.DETAILS, new ReportOrderColumnGenerator());
-        reportOrderTable.addGeneratedColumn(Columns.CREATE_DATE, new ReportOrderColumnGenerator());
-        reportOrderTable.addGeneratedColumn(Columns.ACTION, new ReportOrderColumnGenerator());
-        reportOrderTable.setVisibleColumns(visibleCols);
-        for (Columns col : visibleCols) {
-            reportOrderTable.setColumnHeader(col,
-                    VaadinUtil.getValue("report_order.table.column." + StringUtils.lowerCase(col.toString())));
-        }
-        filterItems();
-    }
-
-    /**
-     * Initializes an indexed container for report orders.
-     *
-     * @return A new indexed container
-     */
-    private IndexedContainer prepareData() {
-        IndexedContainer container = new IndexedContainer();
-        container.addContainerProperty(Columns.REPORT_NAME, String.class, null);
-        container.addContainerProperty(Columns.CREATE_DATE, Date.class, null);
-        container.addContainerProperty(Columns.REPORT_ORDER, ReportOrder.class, null);
-        container.addContainerProperty(Columns.RESULT, Status.class, null);
-        allReportOrders = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders();
-        return container;
-    }
-
-    /**
-     * Filters items in the table.
-     */
-    protected void filterItems() {
-        Integer reportId = (Integer) reportOrderSelect.getValue();
-        Calendar createdBeforeCal = null;
-        if (createdBefore.getValue() != null) {
-            createdBeforeCal = Calendar.getInstance();
-            createdBeforeCal.setTime((Date) createdBefore.getValue());
-        }
-        Calendar createdAfterCal = null;
-        if (createdAfter.getValue() != null) {
-            createdAfterCal = Calendar.getInstance();
-            createdAfterCal.setTime((Date) createdAfter.getValue());
-        }
-
-        reportTableData.removeAllItems();
-        addItems(reportTableData, reportId, createdAfterCal, createdBeforeCal);
-        reportOrderTable.setVisibleColumns(visibleCols);
-    }
-
-    /**
-     * Loads all report orders from database and shows them in the table view.
-     */
-    protected void refresh() {
-        allReportOrders = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders();
-        filterItems();
-    }
-
-    /**
-     * Table columns.
-     */
-    public enum Columns {
-        REPORT_NAME, CREATE_DATE, DETAILS, RESULT, ACTION, REPORT_ORDER
-    }
-
+			if(order.getReportStatus() != Status.SUCCEEDED)
+				previewButton.setEnabled(false);
+			
+			params = new ReportOrderParamsPanel(order.getParametersXml());
+		}
+		private void toggleParams() {
+			paramsVisible = !paramsVisible;
+			if(paramsVisible)
+				addComponent(params);
+			else
+				removeComponent(params);
+		}
+	}
+	
+	private class ReportOrderParamsPanel extends Panel {
+		
+		public ReportOrderParamsPanel(String paramsXml) {
+			Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(paramsXml);
+			List<String> sortedParamNames = new ArrayList<String>(params.keySet());
+			Collections.sort(sortedParamNames);
+			PropertysetItem item = new PropertysetItem();
+			for (String string : sortedParamNames) {
+				item.addItemProperty(string, new ObjectProperty<String>(params.get(string)));
+			}
+			Form form = new Form();
+			form.setItemDataSource(item);
+			form.setReadOnly(true);
+			addComponent(form);
+			form.getLayout().setMargin(false);
+			((AbstractLayout) getContent()).setMargin(false, true, false, true);
+		}
+	}
 }

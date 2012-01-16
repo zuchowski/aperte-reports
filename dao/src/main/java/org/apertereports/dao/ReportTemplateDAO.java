@@ -10,6 +10,9 @@ import java.util.List;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportTemplate;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -65,7 +68,7 @@ public class ReportTemplateDAO {
 	}
 
 	public static List<ReportTemplate> fetchReports(final Integer... reportId) {
-		return new WHS<List<ReportTemplate>>(false) {
+		return new WHS<List<ReportTemplate>>() {
 			@Override
 			public List<ReportTemplate> lambda() {
 				if (reportId.length == 0) {
@@ -115,24 +118,39 @@ public class ReportTemplateDAO {
 
 	}
 
-	public static List<ReportTemplate> filterReports(final String filter) {
-		return new WHS<List<ReportTemplate>>(false) {
+
+	public static Integer countMatching(final String filter) {
+		return new WHS<Integer>() {
 			@Override
-			public List<ReportTemplate> lambda() {
-				if (filter == null || filter.isEmpty()) {
-					return (List<ReportTemplate>) fetchAllReports(true);
-					
-				}
-				String extendedFilter = "%" + filter + "%";
-				List<ReportTemplate> list = sess.createCriteria(ReportTemplate.class)
-						.add(Restrictions.or(Restrictions.ilike("reportname", extendedFilter), 
-							Restrictions.ilike("description", extendedFilter)))
-						.add(Restrictions.eq("active", true)).list();
-				if (list == null || list.size() == 0) {
-					return new ArrayList<ReportTemplate>();
-				}
-				return list;
+			public Integer lambda() {
+				return ((Long) createFilterCriteria(sess, filter).setProjection(Projections.rowCount())
+						.uniqueResult()).intValue();
 			}
 		}.p();
+	}
+
+	public static Collection<ReportTemplate> fetch(final String filter, final int firstResult, final int maxResults) {
+		return new WHS<Collection<ReportTemplate>>() {
+
+			@Override
+			public Collection<ReportTemplate> lambda() {
+				Criteria c = createFilterCriteria(sess, filter);
+				c.setFirstResult(firstResult);
+				c.setMaxResults(maxResults);
+				c.addOrder(Order.asc("id"));
+				return c.list();
+			}
+		}.p();
+	}
+	
+	private static Criteria createFilterCriteria(Session session, String filter) {
+		String extendedFilter = "%";
+		if (filter != null && !filter.isEmpty()) {
+			extendedFilter += filter + "%";
+		}
+		return session.createCriteria(ReportTemplate.class)
+				.add(Restrictions.or(Restrictions.ilike("reportname", extendedFilter), 
+					Restrictions.ilike("description", extendedFilter)))
+				.add(Restrictions.eq("active", true));
 	}
 }

@@ -1,7 +1,7 @@
 package org.apertereports;
 
 import org.apertereports.components.ReportOrderBrowserComponent;
-import org.apertereports.components.ReportOrderBrowserComponentNew;
+import org.apertereports.components.ReportOrderBrowserComponent;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.ui.Window;
@@ -19,7 +19,7 @@ public class ReportOrderApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        Window mainWindow = new Window(VaadinUtil.getValue("report_order.window.title"), new ReportOrderBrowserComponentNew());
+        Window mainWindow = new Window(VaadinUtil.getValue("report_order.window.title"), new ReportOrderBrowserComponent());
         setMainWindow(mainWindow);
     }
 }

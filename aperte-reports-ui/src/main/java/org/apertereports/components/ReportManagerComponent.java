@@ -2,6 +2,7 @@ package org.apertereports.components;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +12,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
@@ -53,6 +53,7 @@ import com.vaadin.ui.themes.BaseTheme;
 @SuppressWarnings("serial")
 public class ReportManagerComponent extends Panel {
 
+	private static final int PAGE_SIZE = 10;
 	private static final String DESC_STYLE = "small";
 	private static final String CHANGED_DATE_STYLE = "h3";
 	private static final String REPORT_NAME_STYLE = "h4";
@@ -84,7 +85,7 @@ public class ReportManagerComponent extends Panel {
 	
 	private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
 
-	private VerticalLayout list;
+	private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
 	private ReportReceiver newReportReceiver;
 
 	public ReportManagerComponent() {
@@ -109,13 +110,29 @@ public class ReportManagerComponent extends Panel {
 		newReportUpload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_NEW_REPORT_BUTTON));
 		newReportUpload.setImmediate(true);
 		HorizontalLayout hl = ComponentFactory.createHLayoutFull(mainLayout);
-		list = new VerticalLayout();
+		list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
+			
+			@Override
+			protected ReportItemPanel transform(ReportTemplate object) {
+				return new ReportItemPanel(object);
+			}
+			
+			@Override
+			protected int getListSize(String filter) {
+				return ReportTemplateDAO.countMatching(filter);
+			}
+			
+			@Override
+			protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
+				return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
+			}
+		};
 
 		TextField search = ComponentFactory.createSearchBox(new TextChangeListener() {
 			
 			@Override
 			public void textChange(TextChangeEvent event) {
-				reloadData(event.getText());
+				list.filter(event.getText());
 			}
 		}, hl);
 		hl.setExpandRatio(search, 1.0f);
@@ -124,7 +141,7 @@ public class ReportManagerComponent extends Panel {
 		hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
 		mainLayout.addComponent(list);
 		addComponent(mainLayout);
-		reloadData(null);
+		list.filter(null);
 		setWidth("100%");
 	}
 
@@ -133,15 +150,6 @@ public class ReportManagerComponent extends Panel {
 		list.addComponent(reportItem, 0);
 		editReportData(reportItem);
 		newReportReceiver.reportTemplate = new ReportTemplate();
-	}
-
-	private void reloadData(String filter) {
-		List<ReportTemplate> raportTemplates = loadReports(filter);
-		list.removeAllComponents();
-		for (ReportTemplate reportTemplate : raportTemplates) {
-			list.addComponent(new ReportItemPanel(reportTemplate));
-		}
-
 	}
 
 	/**
@@ -496,9 +504,4 @@ public class ReportManagerComponent extends Panel {
 		target.setId(source.getId());
 		target.setReportname(source.getReportname());
 	}
-
-	private List<ReportTemplate> loadReports(String filter) {
-		return (List<ReportTemplate>) ReportTemplateDAO.filterReports(filter);
-	}
-
 }

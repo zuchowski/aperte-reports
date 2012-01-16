@@ -9,7 +9,11 @@ import java.util.List;
 
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportOrder;
+import org.apertereports.model.ReportTemplate;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -85,24 +89,37 @@ public class ReportOrderDAO {
         }.p();
     }
 
-	public static List<ReportOrder> filter(final String filter) {
-		return new WHS<List<ReportOrder>>() {
-
+	public static Integer countMatching(final String filter) {
+		return new WHS<Integer>() {
 			@Override
-			public List<ReportOrder> lambda() {
-				if (filter == null || filter.isEmpty()) {
-					return (List<ReportOrder>) fetchAllReportOrders();
-				}
-				String extendedFilter = "%" + filter + "%";
-				List<ReportOrder> list = sess
-						.createCriteria(ReportOrder.class)
-						.createAlias("report", "r")
-						.add(Restrictions.ilike("r.reportname", extendedFilter)).list();
-				if (list == null || list.size() == 0) {
-					return new ArrayList<ReportOrder>();
-				}
-				return list;
+			public Integer lambda() {
+				return ((Long) createFilterCriteria(sess, filter).setProjection(Projections.rowCount())
+						.uniqueResult()).intValue();
 			}
 		}.p();
+	}
+
+	public static Collection<ReportOrder> fetch(final String filter, final int firstResult, final int maxResults) {
+		return new WHS<Collection<ReportOrder>>() {
+
+			@Override
+			public Collection<ReportOrder> lambda() {
+				Criteria c = createFilterCriteria(sess, filter);
+				c.setFirstResult(firstResult);
+				c.setMaxResults(maxResults);
+				c.addOrder(Order.asc("id"));
+				return c.list();
+			}
+		}.p();
+	}
+	
+	private static Criteria createFilterCriteria(Session session, String filter) {
+		String extendedFilter = "%";
+		if (filter != null && !filter.isEmpty()) {
+			extendedFilter += filter + "%";
+		}
+		return session.createCriteria(ReportOrder.class)
+				.createAlias("report", "r")
+				.add(Restrictions.ilike("r.reportname", extendedFilter));
 	}
 }
