@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 
 /**
@@ -30,6 +31,7 @@ public class SQLUtil {
 			sessions.getStatistics().setStatisticsEnabled(true);
 		} catch (Exception e) {
 			ExceptionUtils.logSevereException(e);
+			throw new AperteReportsRuntimeException(e);
 		}
 	}
 
