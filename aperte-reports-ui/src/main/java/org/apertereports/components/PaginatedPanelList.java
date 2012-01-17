@@ -25,6 +25,8 @@ import com.vaadin.ui.themes.BaseTheme;
 @SuppressWarnings("serial")
 public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLayout {
 
+	private static final String PAGINATED_LIST_BUTTON_NEXT = "paginated-list.button.next";
+	private static final String PAGINATED_LIST_BUTTON_PREVIOUS = "paginated-list.button.previous";
 	private String filter;
 	private int pageSize;
 	private int listSize;
@@ -80,7 +82,8 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 
 	private void addFooter() {
 		HorizontalLayout hl = ComponentFactory.createHLayout(this);
-		ComponentFactory.createButton("paginated-list.button.previous", BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+		hl.setMargin(true, false, false, false);
+		ComponentFactory.createButton(PAGINATED_LIST_BUTTON_PREVIOUS, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -103,7 +106,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 					}
 				});
 		}
-		ComponentFactory.createButton("paginated-list.button.next", BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+		ComponentFactory.createButton(PAGINATED_LIST_BUTTON_NEXT, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
