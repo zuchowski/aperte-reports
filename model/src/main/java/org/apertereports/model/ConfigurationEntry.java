@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Represents a configuration entry. The data should be kept in <code>ar_configuration</code> table in <code>public</code> schema.
  */
 @Entity
-@Table(schema = "public", name = "ar_configuration")
+@Table(name = "ar_configuration")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ConfigurationEntry implements Serializable {
     /**
@@ -31,13 +31,13 @@ public class ConfigurationEntry implements Serializable {
     /**
      * The key.
      */
-    @Column
+    @Column(name = "ar_key")
     private String key;
 
     /**
      * The value.
      */
-    @Column
+    @Column(name = "ar_value")
     private String value;
 
     public Integer getId() {

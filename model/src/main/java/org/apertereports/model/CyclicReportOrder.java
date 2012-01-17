@@ -9,7 +9,7 @@ import javax.persistence.*;
  * in a table named <code>ar_cyclic_report_order</code>.
  */
 @Entity
-@Table(schema = "public", name = "ar_cyclic_report_order")
+@Table(name = "ar_cyclic_report_order")
 public class CyclicReportOrder {
 
     public CyclicReportOrder() {

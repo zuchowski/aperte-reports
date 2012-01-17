@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
  * Holds all the Jasper report template data and specific report configuration.
  */
 @Entity
-@Table(schema = "public", name = "ar_report_template")
+@Table(name = "ar_report_template")
 public class ReportTemplate implements Serializable {
     private static final long serialVersionUID = -7196776812526154078L;
 
