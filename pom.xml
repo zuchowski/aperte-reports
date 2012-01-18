@@ -118,6 +118,11 @@
 				<version>${hibernate-core.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>${javaassist.version}</version>
@@ -281,6 +286,7 @@
 		<postgres.version>8.3-603.jdbc4</postgres.version>
 		<velocity.version>1.5</velocity.version>
 		<hibernate-core.version>3.6.8.Final</hibernate-core.version>
+		<hibernate-validator.version>3.1.0.GA</hibernate-validator.version>
 		<javaassist.version>3.12.1.GA</javaassist.version>
 		<commons-io.version>2.0.1</commons-io.version>
 		<commons-lang.version>2.6</commons-lang.version>
