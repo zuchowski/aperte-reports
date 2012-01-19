@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>org.apertereports</groupId>
 		<artifactId>apertereports</artifactId>
-		<version>2.2</version>
+		<version>2.2.1</version>
 	</parent>
 
-	<artifactId>model</artifactId>	
+	<artifactId>model</artifactId>
 
 	<name>Model</name>
 	<packaging>jar</packaging>
@@ -19,8 +19,15 @@
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
 		<dependency>
-				<groupId>javassist</groupId>
-				<artifactId>javassist</artifactId>
-			</dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
+		
+<!-- 		dependency required for deployment on jboss -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		
 	</dependencies>
 </project>
