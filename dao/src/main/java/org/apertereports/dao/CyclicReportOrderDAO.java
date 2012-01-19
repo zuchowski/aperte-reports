@@ -1,10 +1,14 @@
 package org.apertereports.dao;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.CyclicReportOrder;
 import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 
 import java.util.*;
@@ -176,26 +180,40 @@ public class CyclicReportOrderDAO {
 		}.p();
 	}
 
-	public static List<CyclicReportOrder> filterReports(final String filter) {
-		return new WHS<List<CyclicReportOrder>>(false) {
+	public static Integer countMatching(final String filter) {
+		return new WHS<Integer>() {
 			@Override
-			public List<CyclicReportOrder> lambda() {
-				if (filter == null || filter.isEmpty()) {
-					return (List<CyclicReportOrder>) fetchAllCyclicReportOrders();
-
-				}
-				String extendedFilter = "%" + filter + "%";
-				List<CyclicReportOrder> list = sess
-						.createCriteria(CyclicReportOrder.class)
-						.createAlias("report", "r")
-						.add(Restrictions.or(Restrictions.ilike("description", extendedFilter),
-								Restrictions.ilike("r.reportname", extendedFilter))).list();
-				if (list == null || list.size() == 0) {
-					return new ArrayList<CyclicReportOrder>();
-				}
-				return list;
+			public Integer lambda() {
+				return ((Long) createFilterCriteria(sess, filter).setProjection(Projections.rowCount())
+						.uniqueResult()).intValue();
 			}
 		}.p();
+	}
+
+	public static Collection<CyclicReportOrder> fetch(final String filter, final int firstResult, final int maxResults) {
+		return new WHS<Collection<CyclicReportOrder>>() {
+
+			@Override
+			public Collection<CyclicReportOrder> lambda() {
+				Criteria c = createFilterCriteria(sess, filter);
+				c.setFirstResult(firstResult);
+				c.setMaxResults(maxResults);
+				c.addOrder(Order.asc("id"));
+				return c.list();
+			}
+		}.p();
+	}
+
+	private static Criteria createFilterCriteria(Session session, String filter) {
+		String extendedFilter = "%";
+		if (filter != null && !filter.isEmpty()) {
+			extendedFilter += filter + "%";
+		}
+		return session
+				.createCriteria(CyclicReportOrder.class)
+				.createAlias("report", "r")
+				.add(Restrictions.or(Restrictions.ilike("description", extendedFilter),
+						Restrictions.ilike("r.reportname", extendedFilter)));
 	}
 
 }

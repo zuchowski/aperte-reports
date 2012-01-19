@@ -1,9 +1,7 @@
 package org.apertereports.components;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apertereports.backbone.jms.ReportOrderPusher;
@@ -21,16 +19,15 @@ import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -40,9 +37,10 @@ import com.vaadin.ui.themes.BaseTheme;
 @SuppressWarnings("serial")
 public class AperteInvokerComponent extends Panel {
 
+	private static final int PAGE_SIZE = 10;
 	private static final String COMPONENT_STYLE_NAME = "borderless light";
 	private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
-	private VerticalLayout reportList;
+	private PaginatedPanelList<ReportTemplate, ReportPanel> reportList;
 
 	public AperteInvokerComponent() {
 
@@ -180,31 +178,30 @@ public class AperteInvokerComponent extends Panel {
 
 			@Override
 			public void textChange(TextChangeEvent event) {
-				refreshList(event.getText());
+				reportList.filter(event.getText());
 
 			}
 		}, this);
-		reportList = new VerticalLayout();
+		reportList = new PaginatedPanelList<ReportTemplate, AperteInvokerComponent.ReportPanel>(PAGE_SIZE) {
+			
+			@Override
+			protected ReportPanel transform(ReportTemplate object) {
+				return new ReportPanel(object);
+			}
+			
+			@Override
+			protected int getListSize(String filter) {
+				return ReportTemplateDAO.countMatching(filter);
+			}
+			
+			@Override
+			protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
+				return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
+			}
+		};
 
 		addComponent(reportList);
-		refreshList(null);
-
-	}
-
-	private void refreshList(String filter) {
-		reportList.removeAllComponents();
-		List<ReportTemplate> list = (List<ReportTemplate>) ReportTemplateDAO.filterReports(filter);
-		Collections.sort(list, new Comparator<ReportTemplate>() {
-
-			@Override
-			public int compare(ReportTemplate o1, ReportTemplate o2) {
-				return o1.getCreated().compareTo(o2.getCreated());
-			}
-
-		});
-		for (ReportTemplate reportTemplate : list) {
-			reportList.addComponent(new ReportPanel(reportTemplate));
-		}
+		reportList.filter(null);
 
 	}
 

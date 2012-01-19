@@ -12,7 +12,7 @@ import java.util.Calendar;
  * Represents a persistent report generation order. The data should be kept in <code>ar_report_order</code> table in <code>public</code> schema.
  */
 @Entity
-@Table(schema = "public", name = "ar_report_order")
+@Table(name = "ar_report_order")
 public class ReportOrder {
 
     /**

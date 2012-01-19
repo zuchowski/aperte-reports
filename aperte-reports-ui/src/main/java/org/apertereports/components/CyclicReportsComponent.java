@@ -1,8 +1,8 @@
 package org.apertereports.components;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
@@ -43,15 +43,16 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
 public class CyclicReportsComponent extends Panel {
 
+	private static final int PAGE_SIZE = 10;
+
 	private static final String COMPONENT_STYLE_NAME = "borderless light";
 
-	private VerticalLayout list;
+	private PaginatedPanelList<CyclicReportOrder, CyclicReportPanel> list;
 
 	private static final String DESCRIPTION_STYLE = "small";
 	private static final String FORMAT_STYLE = "h4";
@@ -94,7 +95,7 @@ public class CyclicReportsComponent extends Panel {
 
 			@Override
 			public void textChange(TextChangeEvent event) {
-				filter(event.getText());
+				list.filter(event.getText());
 			}
 
 		}, header);
@@ -110,11 +111,27 @@ public class CyclicReportsComponent extends Panel {
 			}
 		});
 
-		list = new VerticalLayout();
+		list = new PaginatedPanelList<CyclicReportOrder, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
+			
+			@Override
+			protected CyclicReportPanel transform(CyclicReportOrder object) {
+				return new CyclicReportPanel(object);
+			}
+			
+			@Override
+			protected int getListSize(String filter) {
+				return CyclicReportOrderDAO.countMatching(filter);
+			}
+			
+			@Override
+			protected Collection<CyclicReportOrder> fetch(String filter, int firstResult, int maxResults) {
+				return CyclicReportOrderDAO.fetch(filter, firstResult, maxResults);
+			}
+		};
 		list.setMargin(false, false, true, false);
 		addComponent(list);
 		setStyleName(COMPONENT_STYLE_NAME);
-		filter(null);
+		list.filter(null);
 		
 		if(!ReportOrderPusher.isJmsAvailable()) {
 			HorizontalLayout validator = ComponentFactory.createHLayoutFull(this);
@@ -130,14 +147,6 @@ public class CyclicReportsComponent extends Panel {
 		EditCyclicReportPanel ecrp = new EditCyclicReportPanel(order, true);
 		list.addComponent(ecrp, 0);
 
-	}
-
-	private void filter(String text) {
-		list.removeAllComponents();
-		List<CyclicReportOrder> orders = CyclicReportOrderDAO.filterReports(text);
-		for (CyclicReportOrder order : orders) {
-			list.addComponent(new CyclicReportPanel(order));
-		}
 	}
 
 	private class CyclicReportPanel extends Panel {
@@ -366,16 +375,16 @@ public class CyclicReportsComponent extends Panel {
 			if (propertyId.equals(ORDER_REPORT)) {
 				layout.addComponent(field, 0, 0);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
-			} else if (propertyId.equals("outputFormat")) {
+			} else if (propertyId.equals(ORDER_OUTPUT_FORMAT)) {
 				layout.addComponent(field, 1, 0);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
-			} else if (propertyId.equals("recipientEmail")) {
+			} else if (propertyId.equals(ORDER_RECIPIENT_EMAIL)) {
 				layout.addComponent(field, 0, 1);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
-			} else if (propertyId.equals("cronSpec")) {
+			} else if (propertyId.equals(ORDER_CRON_SPEC)) {
 				layout.addComponent(field, 1, 1);
 				layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
-			} else if (propertyId.equals("description")) {
+			} else if (propertyId.equals(ORDER_DESCRIPTION)) {
 				layout.addComponent(field, 0, 2, 1, 2);
 				field.setWidth("100%");
 			}
