@@ -12,15 +12,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
+import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
-import org.apertereports.engine.ReportCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
+import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.UserUtil;
 import org.apertereports.util.VaadinUtil;
 
@@ -48,7 +49,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * Component to manage reports.
  * 
  * @author Zbigniew Malinowski
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class ReportManagerComponent extends Panel {
@@ -82,7 +83,7 @@ public class ReportManagerComponent extends Panel {
 	private static final String REPORT_MANAGER_ITEM_EDIT_ACTIVE = "report.manager.item.edit.active";
 	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
 	private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
-	
+
 	private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
 
 	private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
@@ -111,17 +112,17 @@ public class ReportManagerComponent extends Panel {
 		newReportUpload.setImmediate(true);
 		HorizontalLayout hl = ComponentFactory.createHLayoutFull(mainLayout);
 		list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
-			
+
 			@Override
 			protected ReportItemPanel transform(ReportTemplate object) {
 				return new ReportItemPanel(object);
 			}
-			
+
 			@Override
 			protected int getListSize(String filter) {
 				return ReportTemplateDAO.countMatching(filter);
 			}
-			
+
 			@Override
 			protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
 				return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
@@ -129,7 +130,7 @@ public class ReportManagerComponent extends Panel {
 		};
 
 		TextField search = ComponentFactory.createSearchBox(new TextChangeListener() {
-			
+
 			@Override
 			public void textChange(TextChangeEvent event) {
 				list.filter(event.getText());
@@ -156,7 +157,7 @@ public class ReportManagerComponent extends Panel {
 	 * List item in edit state.
 	 * 
 	 * @author Zbigniew Malinowski
-	 *
+	 * 
 	 */
 	private class EditReportItemPanel extends Panel {
 
@@ -239,14 +240,27 @@ public class ReportManagerComponent extends Panel {
 		}
 
 		protected void discardChanges() {
-			list.replaceComponent(this, item);
+			if (item.reportTemplate.getId() == null)
+				list.removeComponent(this);
+			else
+				list.replaceComponent(this, item);
 		}
 
 		protected void saveChanges() {
-			list.replaceComponent(this, this.item);
-			deepCopy(temporaryData, item.reportTemplate);
+			checkUnique(temporaryData);
 			item.requestRepaintAll();
+			deepCopy(temporaryData, item.reportTemplate);
 			ReportTemplateDAO.saveOrUpdate(item.reportTemplate);
+			list.replaceComponent(this, this.item);
+
+		}
+
+		private void checkUnique(ReportTemplate reportTemplate) {
+			if (reportTemplate.getId() != null)
+				return;
+			List<ReportTemplate> exists = ReportTemplateDAO.fetchReportsByName(reportTemplate.getReportname());
+			if (exists.size() > 0)
+				throw new AperteReportsRuntimeException(ErrorCodes.DUPLICATE_REPORT_NAME);
 
 		}
 	}
@@ -255,9 +269,9 @@ public class ReportManagerComponent extends Panel {
 	 * List item in normal state.
 	 * 
 	 * @author Zbigniew Malinowski
-	 *
+	 * 
 	 */
-	private class ReportItemPanel extends Panel{
+	private class ReportItemPanel extends Panel {
 
 		private ReportTemplate reportTemplate;
 		private BeanItem<ReportTemplate> beanItem;
@@ -293,7 +307,8 @@ public class ReportManagerComponent extends Panel {
 			HorizontalLayout footerRow = new HorizontalLayout();
 			addComponent(footerRow);
 			footerRow.setSpacing(true);
-			toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK, footerRow);
+			toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
+					footerRow);
 			toggleParams.addListener(new ClickListener() {
 
 				@Override
@@ -341,18 +356,17 @@ public class ReportManagerComponent extends Panel {
 		}
 
 		private void toggleParams() {
-			if (paramsPanel == null){
+			if (paramsPanel == null) {
 				addComponent(paramsPanel = createParamsPanel());
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
-			}
-			else {
+			} else {
 				removeComponent(paramsPanel);
 				paramsPanel = null;
 				toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
 			}
 		}
 
-//		TODO: could be better
+		// TODO: could be better
 		private ReportParamPanel createParamsPanel() {
 			final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
 			HorizontalLayout hl = ComponentFactory.createHLayout(panel);
@@ -403,7 +417,7 @@ public class ReportManagerComponent extends Panel {
 
 			panel.addComponent(hl);
 			return panel;
-		}	
+		}
 
 		private boolean backgorundGenerationAvail() {
 			return ReportOrderPusher.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
@@ -433,7 +447,7 @@ public class ReportManagerComponent extends Panel {
 	 * Class handling file upload.
 	 * 
 	 * @author Zbigniew Malinowski
-	 *
+	 * 
 	 */
 	private class ReportReceiver implements Upload.Receiver, Upload.SucceededListener, Upload.FailedListener {
 
@@ -448,8 +462,8 @@ public class ReportManagerComponent extends Panel {
 
 		@Override
 		public void uploadFailed(FailedEvent event) {
-			
-			throw new AperteReportsRuntimeException(event.getReason());
+			NotificationUtil.showExceptionNotification(getWindow(),
+					new AperteReportsRuntimeException(event.getReason()));
 		}
 
 		@Override
@@ -459,7 +473,8 @@ public class ReportManagerComponent extends Panel {
 				ReportMaster rm = new ReportMaster(content, new ReportTemplateProvider());
 				reportTemplate.setReportname(rm.getReportName());
 			} catch (AperteReportsException e) {
-				throw new AperteReportsRuntimeException(e);
+				NotificationUtil.showExceptionNotification(getWindow(), new AperteReportsRuntimeException(e));
+				return;
 			}
 
 			reportTemplate.setContent(content);
@@ -467,10 +482,6 @@ public class ReportManagerComponent extends Panel {
 			if (StringUtils.isEmpty(reportTemplate.getDescription())) {
 				reportTemplate.setDescription("");
 			}
-			if (reportTemplate.getId() != null) {
-				ReportCache.removeReport(reportTemplate.getId().toString());
-			}
-			ReportTemplateDAO.saveOrUpdate(reportTemplate);
 
 			for (ReportReceivedListener l : listeners) {
 				l.reportReceived(reportTemplate);
