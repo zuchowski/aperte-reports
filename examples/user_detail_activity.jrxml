@@ -84,8 +84,8 @@
 	count(o.id),
 	o.username
 from
-	vries_report_order o,
-	vries_report_template t
+	ar_report_order o,
+	ar_report_template t
 where
 	t.id = o.report_id and
 	o.username = $P{username}
@@ -105,7 +105,7 @@ order by
 		</parameter>
 		<queryString>
 			<![CDATA[select output_format as format, count(output_format)
-from vries_report_order
+from arl_report_order
 where username = $P{username}
 group by output_format]]>
 		</queryString>
@@ -118,7 +118,7 @@ group by output_format]]>
 	</parameter>
 	<parameter name="username" class="java.lang.String">
 		<property name="input_type" value="select"/>
-		<property name="dict_query" value="java:comp/env/jdbc/unirep; select distinct(username), username as displayed_username from vries_report_order"/>
+		<property name="dict_query" value="java:comp/env/jdbc/unirep; select distinct(username), username as displayed_username from ar_report_order"/>
 		<property name="label" value="user name selection"/>
 		<property name="required" value="true"/>
 		<property name="required_error" value="user name is required!"/>
@@ -143,8 +143,8 @@ group by output_format]]>
         count(o.id),
         to_char(date_trunc('day', o.start_date), 'YY.MM.DD') as day
 from
-        vries_report_order o,
-        vries_report_template t
+        ar_report_order o,
+        ar_report_template t
 where
         t.id = o.report_id
         and ($P{date_from} = null or $P{date_from} = '' or o.start_date >= to_date($P{date_from}, 'DD-MM-YYYY HH24:MI'))

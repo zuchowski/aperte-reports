@@ -10,8 +10,8 @@
 	</parameter>
 	<queryString>
 		<![CDATA[select t.reportname, count(c.report_id)
-from vries_report_template t,
-vries_cyclic_report_order c
+from ar_report_template t,
+ar_cyclic_report_order c
 where t.id = c.report_id
 group by t.reportname, c.report_id
 order by  count(c.report_id) desc]]>

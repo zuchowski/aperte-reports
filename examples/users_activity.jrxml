@@ -76,7 +76,7 @@
 	<subDataset name="user list table dataset">
 		<queryString>
 			<![CDATA[select username, count(username)
-from vries_report_order
+from ar_report_order
 where username is not null
 group by username
 order by count(username) desc]]>
@@ -90,7 +90,7 @@ order by count(username) desc]]>
 	</parameter>
 	<queryString>
 		<![CDATA[select username, count(username)
-from vries_report_order
+from ar_report_order
 where username is not null
 group by username]]>
 	</queryString>
