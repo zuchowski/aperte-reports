@@ -118,7 +118,7 @@ group by output_format]]>
 	</parameter>
 	<parameter name="username" class="java.lang.String">
 		<property name="input_type" value="select"/>
-		<property name="dict_query" value="java:comp/env/jdbc/unirep; select distinct(username), username as displayed_username from ar_report_order"/>
+		<property name="dict_query" value="java:comp/env/jdbc/aperte-reports; select distinct(username), username as displayed_username from ar_report_order"/>
 		<property name="label" value="user name selection"/>
 		<property name="required" value="true"/>
 		<property name="required_error" value="user name is required!"/>
