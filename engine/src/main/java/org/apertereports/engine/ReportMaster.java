@@ -6,10 +6,12 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -522,9 +524,15 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
 				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
 						: getConnectionFromReport(getJasperReport());
-				jasperPrint = connection != null ? JasperFillManager.fillReport(getJasperReport(), reportParameters,
-						connection) : JasperFillManager.fillReport(getJasperReport(), reportParameters,
-						new JRMapCollectionDataSource(Collections.singletonList(reportParameters)));
+				if (connection != null)
+					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+							connection);
+				else {
+					Collection<Map<String, ?>> params = new LinkedList<Map<String,?>>();
+					params.add(reportParameters);
+					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+					new JRMapCollectionDataSource(params));
+				}
 			} else {
 				if (dataSource instanceof Connection) {
 					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,

@@ -16,7 +16,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>4.0.1</version>
+            <version>4.5.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>eclipse</groupId>
@@ -27,7 +27,6 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
