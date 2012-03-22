@@ -118,8 +118,10 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 	}
 
 	private void showPage(int pageNumber) {
-		if (hasPage(pageNumber))
+		if (hasPage(pageNumber)) {
 			this.pageNumber = pageNumber;
+			refresh();
+		}
 	}
 
 	private void nextPage() {
@@ -144,7 +146,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 	}
 
 	private boolean hasPage(int pageNumber) {
-		return pageNumber > 0 && pageNumber < countPages() - 1;
+		return pageNumber >= 0 && pageNumber < countPages();
 	}
 
 	private boolean hasPrevious() {
