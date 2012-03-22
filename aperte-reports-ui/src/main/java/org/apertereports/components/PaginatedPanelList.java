@@ -83,14 +83,18 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 	private void addFooter() {
 		HorizontalLayout hl = ComponentFactory.createHLayout(this);
 		hl.setMargin(true, false, false, false);
-		ComponentFactory.createButton(PAGINATED_LIST_BUTTON_PREVIOUS, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+		if (hasPrevious()) {
+			ComponentFactory.createButton(PAGINATED_LIST_BUTTON_PREVIOUS, BaseTheme.BUTTON_LINK, hl,
+					new ClickListener() {
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				previousPage();
+						@Override
+						public void buttonClick(ClickEvent event) {
+							previousPage();
 
-			}
-		});
+						}
+					});
+		} else
+			ComponentFactory.createSimpleLabel(PAGINATED_LIST_BUTTON_PREVIOUS, "", hl);
 		for (int i = 0; i < countPages(); i++) {
 			final int pageIndex = i;
 			String caption = "" + (pageIndex + 1);
@@ -106,14 +110,17 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
 					}
 				});
 		}
-		ComponentFactory.createButton(PAGINATED_LIST_BUTTON_NEXT, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+		if (hasNext()) {
+			ComponentFactory.createButton(PAGINATED_LIST_BUTTON_NEXT, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				nextPage();
+				@Override
+				public void buttonClick(ClickEvent event) {
+					nextPage();
 
-			}
-		});
+				}
+			});
+		} else
+			ComponentFactory.createSimpleLabel(PAGINATED_LIST_BUTTON_NEXT, "", hl);
 
 	}
 
