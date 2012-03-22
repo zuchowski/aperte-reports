@@ -6,6 +6,7 @@ import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
@@ -50,12 +51,14 @@ public class ReportOrderProcessor {
         Map<String, String> parametersMap = XmlReportConfigLoader.getInstance().xmlAsMap(reportOrder.getParametersXml());
 
         try {
-            ReportMaster reportMaster = new ReportMaster(reportTemplate.getContent(),
+            ReportMaster rm = new ReportMaster(reportTemplate.getContent(),
                     reportTemplate.getId().toString(), new ReportTemplateProvider());
-            JasperPrint jasperPrint = reportMaster.generateReport(new HashMap<String, Object>(parametersMap));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            JRSaver.saveObject(jasperPrint, baos);
-            reportOrder.setReportResult(ReportGeneratorUtils.encodeContent(baos.toByteArray()));
+            
+			byte[] reportData = rm.generateAndExportReport(reportOrder.getOutputFormat(),
+					new HashMap<String, Object>(parametersMap),
+					ConfigurationCache.getConfiguration());
+            
+            reportOrder.setReportResult(ReportGeneratorUtils.encodeContent(reportData));
             reportOrder.setFinishDate(Calendar.getInstance());
             reportOrder.setReportStatus(ReportOrder.Status.SUCCEEDED);
             org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);

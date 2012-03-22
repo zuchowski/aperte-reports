@@ -10,6 +10,7 @@ import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
@@ -120,7 +121,7 @@ public class AperteInvokerComponent extends Panel {
 								.toString(), new ReportTemplateProvider());
 						byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
 								new HashMap<String, Object>(panel.collectParametersValues()),
-								org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+								ConfigurationCache.getConfiguration());
 						FileStreamer.showFile(getApplication(), reportTemplate.getReportname(), reportData,
 								panel.getOuptutFormat());
 					} catch (AperteReportsException e) {

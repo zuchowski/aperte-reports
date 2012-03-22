@@ -36,6 +36,7 @@ public class FileStreamer {
 
         StreamResource resource = new StreamResource(source, fileName, app);
         resource.setMIMEType(mimeType);
+        resource.setCacheTime(-1);
         app.getMainWindow().open(resource, windowName);
 	}
 

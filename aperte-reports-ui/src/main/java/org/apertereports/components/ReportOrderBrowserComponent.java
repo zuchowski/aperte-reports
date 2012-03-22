@@ -1,17 +1,21 @@
 package org.apertereports.components;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportOrder.Status;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
+import org.apertereports.util.FileStreamer;
 
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.ObjectProperty;
@@ -114,7 +118,14 @@ public class ReportOrderBrowserComponent extends Panel {
 			ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, REPORTNAME_STYLE, grid);
 			
 			ComponentFactory.createCalendarLabel(item, CREATE_DATE, "", grid);
-			Button previewButton = ComponentFactory.createButton(BACKGROUND_BUTTON_PREVIEW, BaseTheme.BUTTON_LINK, grid);
+			Button previewButton = ComponentFactory.createButton(BACKGROUND_BUTTON_PREVIEW, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+				
+				@Override
+				public void buttonClick(ClickEvent event) {
+					showReport();
+					
+				}
+			});
 			ComponentFactory.createButton(BACKGROUND_BUTTON_PARAMS, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
 				
 				@Override
@@ -129,6 +140,17 @@ public class ReportOrderBrowserComponent extends Panel {
 				previewButton.setEnabled(false);
 			
 			params = new ReportOrderParamsPanel(order.getParametersXml());
+		}
+		private void showReport() {
+			byte[] reportData;
+			try {
+				reportData = ReportGeneratorUtils.decodeContent(this.order.getReportResult());
+			} catch (UnsupportedEncodingException e) {
+				throw new AperteReportsRuntimeException(e);
+			}
+			FileStreamer.showFile(getApplication(), this.order.getReport().getReportname(), reportData,
+					this.order.getOutputFormat());
+			
 		}
 		private void toggleParams() {
 			paramsVisible = !paramsVisible;
