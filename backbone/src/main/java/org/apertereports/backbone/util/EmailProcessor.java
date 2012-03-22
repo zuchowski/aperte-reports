@@ -1,7 +1,21 @@
 package org.apertereports.backbone.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.Properties;
+
+import javax.activation.DataSource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRLoader;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailAttachment;
@@ -12,21 +26,12 @@ import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ConfigurationEntry;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
-
-import javax.activation.DataSource;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.*;
-import java.util.Collection;
-import java.util.Properties;
 
 /**
  * A helper class for processing email messages. Takes advantage of

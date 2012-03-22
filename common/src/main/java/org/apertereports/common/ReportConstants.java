@@ -44,13 +44,18 @@ public interface ReportConstants {
      */
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
     /**
-     * Cyclic reports JMS queue name.
+     * Cyclic reports JMS default queue name.
      */
-    public static final String CYCLIC_REPORT_ORDER_RESPONSE_Q = "jms/queue/CyclicOrderResponse";
+    public static final String CYCLIC_REPORT_ORDER_RESPONSE_Q_DEFAULT_JNDI_NAME = "java:comp/env/jms/queue/CyclicOrderResponse";
     /**
-     * Report generation JMS queue name.
+     * Report generation JMS default queue name.
      */
-    public static final String GENERATE_REPORT_Q = "jms/queue/GenerateReport";
+    public static final String GENERATE_REPORT_Q_DEFAULT_JNDI_NAME = "java:comp/env/jms/queue/GenerateReport";
+    
+    /**
+     * JMS connection factory default name.
+     */
+    public static final String JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME = "java:comp/env/jms/ConnectionFactory";
 
     /**
      * Report order id property name.

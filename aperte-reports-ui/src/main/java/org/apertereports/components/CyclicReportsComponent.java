@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apertereports.backbone.jms.ReportOrderPusher;
+import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
@@ -133,7 +133,7 @@ public class CyclicReportsComponent extends Panel {
 		setStyleName(COMPONENT_STYLE_NAME);
 		list.filter(null);
 		
-		if(!ReportOrderPusher.isJmsAvailable()) {
+		if(!AperteReportsJmsFacade.isJmsAvailable()) {
 			HorizontalLayout validator = ComponentFactory.createHLayoutFull(this);
 			Form form = new Form();
 			form.setComponentError(new UserError("JMS unavailable, cyclic reports execution is disabled!"));

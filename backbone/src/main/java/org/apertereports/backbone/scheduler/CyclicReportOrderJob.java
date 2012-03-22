@@ -1,16 +1,16 @@
 package org.apertereports.backbone.scheduler;
 
-import org.apertereports.backbone.jms.ReportOrderPusher;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import java.util.Map;
+
+import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.model.CyclicReportOrder;
 import org.apertereports.model.ReportOrder;
-
-import java.util.Map;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * Simple Quartz {@link org.quartz.Job} that adapter that picks a cyclic report id from the job
@@ -49,7 +49,7 @@ public class CyclicReportOrderJob implements Job {
         if (cRO != null && cRO.getProcessedOrder() == null) {
             Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(cRO.getParametersXml());
             newOrder = ReportOrderPusher.buildNewOrder(cRO.getReport(), params, cRO.getOutputFormat(),
-                    cRO.getRecipientEmail(), null, org.apertereports.dao.utils.ConfigurationCache.getValue(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT));
+                    cRO.getRecipientEmail(), null, ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT);
             cRO.setProcessedOrder(newOrder);
             org.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cRO);
             ReportOrderPusher.addToJMS(newOrder.getId());

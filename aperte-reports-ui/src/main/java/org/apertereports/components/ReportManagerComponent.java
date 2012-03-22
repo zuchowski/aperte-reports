@@ -10,7 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.backbone.jms.ReportOrderPusher;
+import org.apertereports.backbone.jms.AperteReportsJmsFacade;
+import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
@@ -420,7 +421,7 @@ public class ReportManagerComponent extends Panel {
 		}
 
 		private boolean backgorundGenerationAvail() {
-			return ReportOrderPusher.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+			return AperteReportsJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
 					&& reportTemplate.getActive();
 		}
 

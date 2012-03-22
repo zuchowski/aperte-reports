@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apertereports.backbone.jms.ReportOrderPusher;
+import org.apertereports.backbone.jms.AperteReportsJmsFacade;
+import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
@@ -161,7 +162,7 @@ public class AperteInvokerComponent extends Panel {
 
 		private boolean backgorundGenerationAvail() {
 
-			return ReportOrderPusher.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+			return AperteReportsJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
 					&& reportTemplate.getActive();
 		}
 
