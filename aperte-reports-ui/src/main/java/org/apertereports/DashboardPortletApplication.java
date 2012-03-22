@@ -5,7 +5,6 @@ import org.apertereports.context.AbstractContextReloadHandler;
 import org.apertereports.context.ContextReloadListener;
 import org.apertereports.context.PortletContextHolder;
 import org.apertereports.dashboard.AbstractDashboardComponent;
-import org.apertereports.dashboard.EditDashboardComponent;
 import org.apertereports.dashboard.EditDashboardComponentNew;
 import org.apertereports.dashboard.ViewDashboardComponent;
 import org.apertereports.util.VaadinUtil;

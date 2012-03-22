@@ -1,11 +1,10 @@
 package org.apertereports;
 
+import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
 import org.apertereports.components.CyclicReportsComponent;
-import org.apertereports.dashboard.cyclic.CyclicReportsPanel;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.ui.Window;
-import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
 
 /**
  * This portlet provides the tabular view of the cyclic reports.
