@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 
 import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.dao.utils.ConfigurationCache;
@@ -34,8 +35,9 @@ public class AperteReportsJmsFacade {
 	/**
 	 * If not initialized, subscribes configured listeners to proper queues and
 	 * initialize.
+	 * @throws Exception 
 	 */
-	private static void subscribeMessageListeners() {
+	private static void subscribeMessageListeners() throws Exception {
 		if (initialized)
 			return;
 
@@ -74,7 +76,7 @@ public class AperteReportsJmsFacade {
 			} catch (Exception ex) {
 				ExceptionUtils.logWarningException("Cannot close JMS connection after error", ex);
 			}
-			throw new AperteReportsRuntimeException(e);
+			throw e;
 		}
 	}
 
@@ -100,11 +102,13 @@ public class AperteReportsJmsFacade {
 	 *            configuration key of queue which message will be sent to
 	 */
 	public static void sendOrderToJms(Long orderId, String queueName) {
-		subscribeMessageListeners();
+		
 
 		Connection connection = null;
 		Session session = null;
 		try {
+			subscribeMessageListeners();
+			
 			InitialContext initCtx = new InitialContext();
 			ConnectionFactory connectionFactory = (ConnectionFactory) initCtx
 					.lookup(getJndiNameFromConfiguration(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY));
@@ -119,7 +123,7 @@ public class AperteReportsJmsFacade {
 			producer.send(reportOrderMessage);
 			ExceptionUtils.logDebugMessage(ReportConstants.REPORT_ORDER_ID + ": " + orderId);
 		} catch (Exception e) {
-			throw new AperteReportsRuntimeException(e);
+			throw new AperteReportsRuntimeException(ErrorCodes.JMS_UNAVAILABLE, e);
 		} finally {
 			try {
 				if (connection != null) {
