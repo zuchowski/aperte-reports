@@ -1,5 +1,20 @@
 package org.apertereports;
 
+import java.util.Locale;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.EventRequest;
+import javax.portlet.EventResponse;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+
+import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.util.NotificationUtil;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.User;
@@ -7,17 +22,9 @@ import com.liferay.portal.util.PortalUtil;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
 import com.vaadin.ui.Window;
+
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
-
-import javax.portlet.*;
-
-import org.apertereports.util.NotificationUtil;
-
-import java.util.Locale;
 
 /**
  * This is a stub abstract class for all application portlets. Extending classes
@@ -25,10 +32,6 @@ import java.util.Locale;
  */
 public abstract class AbstractReportingApplication extends TPTApplication implements
 		PortletApplicationContext2.PortletListener {
-	/**
-	 * Application theme name.
-	 */
-	// private static final String VRIES_THEME = "apertereports-chameleon";
 
 	/**
 	 * Liferay user.
@@ -50,7 +53,6 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
 		}
 
 		TM.getDictionary().setDefaultLanguage(getLocale().getLanguage());
-		// setTheme(VRIES_THEME);
 		reloadDictionary();
 		portletInit();
 	}

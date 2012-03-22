@@ -23,6 +23,5 @@ public class InvokerApplication extends AbstractReportingApplication {
         Window mainWindow = new Window(VaadinUtil.getValue("invoker.window.title"), invoker);
 
         setMainWindow(mainWindow);
-        setTheme("reindeer");
     }
 }

@@ -24,7 +24,6 @@ public class CyclicReportsApplication extends AbstractReportingApplication {
         Window mainWindow = new Window(VaadinUtil.getValue("dashboard.edit.cyclicReports"), crc);
 
         setMainWindow(mainWindow);
-        setTheme("reindeer");
     }
 
     /**
