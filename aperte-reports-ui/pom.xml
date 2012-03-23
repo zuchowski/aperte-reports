@@ -47,16 +47,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apertereports</groupId>
-			<artifactId>common</artifactId>
-			<version>2.2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apertereports</groupId>
-			<artifactId>dao</artifactId>
-			<version>2.2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apertereports</groupId>
 			<artifactId>backbone</artifactId>
 			<version>2.2.3-SNAPSHOT</version>
 		</dependency>

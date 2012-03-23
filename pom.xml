@@ -265,6 +265,12 @@
 				<artifactId>postgresql</artifactId>
 				<version>${postgres.version}</version>
 			</dependency>
+			<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${javax.mail.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -300,7 +306,7 @@
 		<slf4j.version>1.4.2</slf4j.version>
 		<groovy-all.version>1.8.0</groovy-all.version>
 		<spring-ws-core.version>2.0.3.RELEASE</spring-ws-core.version>
-
+		<javax.mail.version>1.4.1</javax.mail.version>
 	</properties>
 
 	<dependencies>
