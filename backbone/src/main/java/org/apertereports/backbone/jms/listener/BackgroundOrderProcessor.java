@@ -14,7 +14,6 @@ import org.apertereports.backbone.util.EmailProcessor;
 import org.apertereports.backbone.util.ReportOrderProcessor;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.ReportOrder;
@@ -71,7 +70,7 @@ public class BackgroundOrderProcessor implements MessageListener {
 				reportOrder.setErrorDetails(e.getMessage());
 				ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
 			}
-			throw new AperteReportsRuntimeException(e);
+//			throw new AperteReportsRuntimeException(e);
 		}
 	}
 

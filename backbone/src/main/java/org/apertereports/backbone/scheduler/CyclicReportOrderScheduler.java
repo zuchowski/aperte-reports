@@ -1,18 +1,17 @@
 package org.apertereports.backbone.scheduler;
 
+import java.text.ParseException;
+import java.util.Collection;
+import java.util.logging.Logger;
+
+import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.model.CyclicReportOrder;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.HolidayCalendar;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.model.CyclicReportOrder;
-import org.apertereports.model.CyclicReportOrder;
-
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.logging.Logger;
 
 /**
  * A utility class that can schedule cyclic report generation with a configured {@link org.quartz.CronExpression}.

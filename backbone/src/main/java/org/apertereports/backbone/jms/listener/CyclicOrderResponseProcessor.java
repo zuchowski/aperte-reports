@@ -51,7 +51,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 			processReport(reportOrder);
 		} catch (JMSException e) {
 			ExceptionUtils.logSevereException(e);
-			throw new AperteReportsRuntimeException(e);
+//			throw new AperteReportsRuntimeException(e);
 		}
 	}
 

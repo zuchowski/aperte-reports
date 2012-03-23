@@ -197,8 +197,7 @@ public class CyclicReportsComponent extends Panel {
 						else
 							CyclicReportOrderScheduler.unscheduleCyclicReportOrder(CyclicReportPanel.this.order);
 					} catch (SchedulerException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw new AperteReportsRuntimeException(e);
 					}
 					
 				}

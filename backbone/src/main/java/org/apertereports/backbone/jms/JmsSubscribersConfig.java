@@ -62,6 +62,8 @@ public class JmsSubscribersConfig {
 	 * Default jndi name for a key
 	 */
 	public static String getDefaultJndiName(String key){
+		if (!initialized)
+			readConfiguration();
 		return defaultJndiNames.get(key);
 	}
 	
