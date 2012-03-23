@@ -9,12 +9,9 @@ import java.util.Collection;
 import java.util.Properties;
 
 import javax.activation.DataSource;
-import javax.naming.Context;
+import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.Email;
@@ -28,7 +25,6 @@ import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
-import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ConfigurationEntry;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
@@ -51,7 +47,7 @@ public class EmailProcessor implements ConfigurationConstants {
 	/**
 	 * A singleton instance of this class.
 	 */
-	private static final EmailProcessor instance = new EmailProcessor();
+	private static EmailProcessor instance;
 
 	/**
 	 * A velocity engine instance.
@@ -67,7 +63,7 @@ public class EmailProcessor implements ConfigurationConstants {
 	 * A JNDI name for javax.mail.session instance held in the context of the
 	 * application container.
 	 */
-	private String mailSessionJndi;
+	private String mailSessionJndi="java:comp/env/mail/session";
 
 	/**
 	 * Application container specific mail user key. For instance, this should
@@ -78,31 +74,33 @@ public class EmailProcessor implements ConfigurationConstants {
 	/**
 	 * Email message title key.
 	 */
-	private String backgroundReportTitleKey;
+	private String backgroundReportTitleKey="background.report.email.title";
 
 	/**
 	 * Email message contents key.
 	 */
-	private String backgroundReportMessageKey;
+	private String backgroundReportMessageKey="background.report.email.message";
 
 	/**
 	 * Message provider resource bundle path. This can be useful to initialize
 	 * the message provider per database configuration.
 	 */
-	private String messageProviderResource;
+	private String messageProviderResource = "messages.messages";
 
 	/**
 	 * The send delay between each email message processed. Useful when the SMTP
 	 * server cannot handle too many messages at once.
 	 */
-	private Integer mailSendDelay;
+	private Integer mailSendDelay = 0;
 
 	/**
 	 * Gets the singleton instance of this class.
 	 * 
 	 * @return An EmailProcessor instance
 	 */
-	public static EmailProcessor getInstance() {
+	public static synchronized EmailProcessor getInstance() {
+		if (instance == null)
+			instance = new EmailProcessor();
 		return instance;
 	}
 
@@ -173,24 +171,12 @@ public class EmailProcessor implements ConfigurationConstants {
 			throw new IllegalStateException("empty email title");
 		}
 
-		javax.mail.Session session = null;
-		Context envContext = null;
+		Session session = null;
 		try {
-			InitialContext initCtx = new InitialContext();
-			envContext = (Context) initCtx.lookup("");
-			session = (javax.mail.Session) envContext.lookup(mailSessionJndi);
+			session = (javax.mail.Session) new InitialContext().lookup(mailSessionJndi);
 		} catch (NamingException e) {
 			ExceptionUtils.logSevereException(e);
-			if (envContext != null) {
-				try {
-					session = (javax.mail.Session) envContext.lookup("java:comp/env/" + mailSessionJndi);
-				} catch (NamingException ex) {
-					ExceptionUtils.logSevereException(ex);
-				}
-			}
-		} finally {
-			envContext.close();
-		}
+		} 
 
 		if (session == null) {
 			throw new AperteReportsException(ErrorCodes.EMAIL_SESSION_NOT_FOUND, mailSessionJndi);
@@ -285,18 +271,7 @@ public class EmailProcessor implements ConfigurationConstants {
 	 *             on ReportMaster error
 	 */
 	private byte[] getReportContent(ReportOrder reportOrder) throws Exception {
-		ByteArrayInputStream bais = new ByteArrayInputStream(ReportGeneratorUtils.decodeContent(reportOrder
-				.getReportResult()));
-		try {
-			return ReportMaster.exportReport((JasperPrint) JRLoader.loadObject(bais), reportOrder.getOutputFormat(),
-					org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
-		} finally {
-			try {
-				bais.close();
-			} catch (IOException e) {
-				ExceptionUtils.logSevereException(e);
-			}
-		}
+		return ReportGeneratorUtils.decodeContent(reportOrder.getReportResult());
 	}
 
 	/**

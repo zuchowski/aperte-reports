@@ -1,7 +1,9 @@
 package org.apertereports.backbone.util;
 
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.util.JRSaver;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
@@ -10,11 +12,6 @@ import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A helper class for processing reports by JMS listeners.

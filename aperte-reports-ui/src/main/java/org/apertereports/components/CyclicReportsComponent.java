@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
+import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
@@ -19,6 +20,7 @@ import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.CronExpressionValidator;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.VaadinUtil;
+import org.quartz.SchedulerException;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -184,10 +186,20 @@ public class CyclicReportsComponent extends Panel {
 				}
 
 				private void toggleEnable() {
-					CyclicReportPanel.this.order.setEnabled(CyclicReportPanel.this.order.getEnabled()!= Boolean.TRUE);
-					container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
+					boolean enabled = CyclicReportPanel.this.order.getEnabled()!= Boolean.TRUE;
+					CyclicReportPanel.this.order.setEnabled(enabled);
+					container.setEnabled(enabled);
 					enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
 					CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(CyclicReportPanel.this.order);
+					try {
+						if(enabled)
+						CyclicReportOrderScheduler.rescheduleCyclicReportOrder(CyclicReportPanel.this.order);
+						else
+							CyclicReportOrderScheduler.unscheduleCyclicReportOrder(CyclicReportPanel.this.order);
+					} catch (SchedulerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}
 			});
