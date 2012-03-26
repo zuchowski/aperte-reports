@@ -1,5 +1,6 @@
 org.apertereports
 org.apertereports.backbone.jms
+org.apertereports.backbone.jms.listener
 org.apertereports.backbone.scheduler
 org.apertereports.backbone.util
 org.apertereports.common
@@ -14,10 +15,8 @@ org.apertereports.context
 org.apertereports.dao
 org.apertereports.dao.utils
 org.apertereports.dashboard
-org.apertereports.dashboard.cyclic
 org.apertereports.dashboard.html
 org.apertereports.engine
-org.apertereports.generators
 org.apertereports.model
 org.apertereports.util
 org.apertereports.util.cache
