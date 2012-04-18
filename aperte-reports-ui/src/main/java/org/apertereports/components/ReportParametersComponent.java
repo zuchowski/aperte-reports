@@ -21,6 +21,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import net.sf.jasperreports.engine.JRParameter;
+
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.AbstractReportingApplication;
@@ -159,6 +161,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         parameters.put("login", getLogin());
+        parameters.put(JRParameter.REPORT_LOCALE, getLocale() == null ? null : getLocale().toString());
         return parameters;
 
     }

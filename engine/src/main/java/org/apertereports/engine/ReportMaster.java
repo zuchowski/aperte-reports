@@ -647,7 +647,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
 			}
 		}
 		if (locale == null) {
-			Locale defaultLocale = new Locale("pl", "PL");
+			Locale defaultLocale = Locale.getDefault();
 			reportParameters.put(JRParameter.REPORT_LOCALE, defaultLocale);
 			logger.info("Unable to find locale parameter. Injecting default locale: " + defaultLocale);
 		}
