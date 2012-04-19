@@ -4,10 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.ReportConstants.ReportType;
@@ -309,6 +312,7 @@ public abstract class ComponentFactory {
 		format.setStyleName("small");
 		format.setNullSelectionAllowed(false);
 		format.setTextInputAllowed(false);
+		format.setWidth("100%");
 		return format;
 	}
 
@@ -352,5 +356,26 @@ public abstract class ComponentFactory {
 			}
 			return ICON_PATH + icon.name().toLowerCase() +".png";
 		}
+	}
+
+	public static ComboBox createLocaleCombo(Locale locale, String captionKey) {
+		List<Locale> allLocales = Arrays.asList(Locale.getAvailableLocales());
+		Collections.sort(allLocales, new Comparator<Locale>() {
+
+			@Override
+			public int compare(Locale o1, Locale o2) {
+				return o1.toString().compareTo(o2.toString());
+			}
+			
+		});
+		Container all = new BeanItemContainer<Locale>(Locale.class, allLocales);
+		ComboBox reportLocale = new ComboBox(VaadinUtil.getValue(captionKey),
+				all );
+		reportLocale.setValue(locale);
+		reportLocale.setStyleName("small");
+		reportLocale.setNullSelectionAllowed(false);
+		reportLocale.setTextInputAllowed(true);
+		reportLocale.setWidth("100%");
+		return reportLocale;
 	}
 }

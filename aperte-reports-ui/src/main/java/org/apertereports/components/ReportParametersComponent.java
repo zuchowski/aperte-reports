@@ -72,6 +72,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private HashMap<String, FilterContainer> filters;
     private List<FieldContainer> fields = new LinkedList<FieldContainer>();
     private ComboBox format;
+    private ComboBox reportLocale;
 
     private ReportMaster reportMaster;
 
@@ -81,7 +82,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
     private boolean includeReportFormat = true;
     private boolean readonly = false;
-
+	private boolean includeLocale = true;
+	
     public ReportParametersComponent(ReportMaster reportMaster) throws AperteReportsException {
         this.reportMaster = reportMaster;
         init();
@@ -161,7 +163,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         parameters.put("login", getLogin());
-        parameters.put(JRParameter.REPORT_LOCALE, getLocale() == null ? null : getLocale().toString());
+//        TODO: use property set underneath the form
+        parameters.put(JRParameter.REPORT_LOCALE, reportLocale.getValue() == null ? null : reportLocale.getValue().toString());
         return parameters;
 
     }
@@ -647,13 +650,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             form.addField("format", format);
             
         }
-
-        if (fields.isEmpty()) {
-            Label l = new Label(VaadinUtil.getValue("invoker.form.header.nofields"));
-            l.setWidth("400px");
-            form.getLayout().addComponent(l);
-
+        
+        if (includeLocale ) {
+        	reportLocale = ComponentFactory.createLocaleCombo(getLocale(), "form.select_locale");
+            form.addField(JRParameter.REPORT_LOCALE, reportLocale);
         }
+
         else {
             form.setDescription(readonly ? VaadinUtil.getValue("invoker.form.header.readonly") : VaadinUtil.getValue("invoker.form.header"));
         }
