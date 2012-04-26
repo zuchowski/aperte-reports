@@ -82,6 +82,7 @@ public class ReportOrderBrowserComponent extends Panel {
 				return ReportOrderDAO.fetch(filter, firstResult, maxResults);
 			}
 		};
+		list.setMargin(false, false, true, false);
 		addComponent(list);
 		list.filter(null);
 		setStyleName(COMPONENT_STYLE);
