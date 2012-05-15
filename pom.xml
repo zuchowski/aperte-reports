@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Aperte Reports</name>
@@ -266,11 +267,11 @@
 				<version>${postgres.version}</version>
 			</dependency>
 			<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>${javax.mail.version}</version>
-			<scope>provided</scope>
-		</dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -328,30 +329,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.3</version>
-				<!-- <executions> -->
-				<!-- <execution> -->
-				<!-- <id>copy</id> -->
-				<!-- <phase>package</phase> -->
-				<!-- <goals> -->
-				<!-- <goal>copy</goal> -->
-				<!-- </goals> -->
-				<!-- <configuration> -->
-				<!-- <artifactItems> -->
-				<!-- <artifactItem> -->
-				<!-- <groupId>[ groupId ]</groupId> -->
-				<!-- <artifactId>[ artifactId ]</artifactId> -->
-				<!-- <version>[ version ]</version> -->
-				<!-- <type>[ packaging ]</type> -->
-				<!-- <classifier> [classifier - optional] </classifier> -->
-				<!-- <overWrite>[ true or false ]</overWrite> -->
-				<!-- <outputDirectory>[ output directory ]</outputDirectory> -->
-				<!-- <destFileName>[ filename ]</destFileName> -->
-				<!-- </artifactItem> -->
-				<!-- </artifactItems> -->
-				<!-- other configurations here -->
-				<!-- </configuration> -->
-				<!-- </execution> -->
-				<!-- </executions> -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -394,26 +371,65 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.5</version>
-			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<show>private</show>
-					<charset>${project.build.sourceEncoding}</charset>
-				</configuration>
+				<version>2.8.1</version>
+				<executions>
+					<execution>
+						<id>aggregate</id>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
 			</plugin>
+			
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${ar-wiki-path}/api</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target/site/apidocs</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
-	</reporting>
+	</build>
+
+	<!-- <reporting> -->
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-checkstyle-plugin</artifactId> -->
+	<!-- <version>2.5</version> -->
+	<!-- </plugin> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
+	<!-- <version>2.7</version> -->
+	<!-- <configuration> -->
+	<!-- <show>private</show> -->
+	<!-- <charset>${project.build.sourceEncoding}</charset> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+	<!-- </reporting> -->
 
 </project>
