@@ -398,7 +398,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${ar-wiki-path}/api</outputDirectory>
+							<outputDirectory>${ar-wiki-path}/api/${pom.version}</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target/site/apidocs</directory>
@@ -412,24 +412,5 @@
 
 		</plugins>
 	</build>
-
-	<!-- <reporting> -->
-	<!-- <plugins> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-checkstyle-plugin</artifactId> -->
-	<!-- <version>2.5</version> -->
-	<!-- </plugin> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-	<!-- <version>2.7</version> -->
-	<!-- <configuration> -->
-	<!-- <show>private</show> -->
-	<!-- <charset>${project.build.sourceEncoding}</charset> -->
-	<!-- </configuration> -->
-	<!-- </plugin> -->
-	<!-- </plugins> -->
-	<!-- </reporting> -->
 
 </project>
