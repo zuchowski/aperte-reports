@@ -101,16 +101,6 @@
 		</developer>
 	</developers>
 
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-	</profiles>
-
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -383,6 +373,13 @@
 							<goal>aggregate</goal>
 						</goals>
 						<phase>site</phase>
+					</execution>
+					<execution>
+						<id>deploy</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 			</plugin>
