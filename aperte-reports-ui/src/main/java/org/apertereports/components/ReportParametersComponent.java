@@ -600,6 +600,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * Creates a form with generated Vaadin fields.
      */
     private void initView() {
+        fields.clear();
+
         List<ReportParameter> parameters = reportMaster.getParameters();
         for (ReportParameter param : parameters) {
             Map<ReportConstants.Keys, ReportProperty> props = param.getProperties();

@@ -96,6 +96,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             @Override
             public Field createField(Item item, Object propertyId, Component uiContext) {
                 if (propertyId.equals(REPORT)) {
+
+                    params = new ReportParamPanel();
+
                     ComboBox field = ComponentFactory.createReportTemplateCombo(null, DASHBOARD_EDIT_CAPTION_REPORT_ID);
                     field.setRequired(true);
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID));
