@@ -38,7 +38,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID = "dashboard.edit.required-error.reportId";
     private static final String DASHBOARD_EDIT_CAPTION_REPORT_ID = "dashboard.edit.caption.reportId";
     private Panel mainPanel;
-    private ReportParamPanel params = new ReportParamPanel();
+    private ReportParamPanel paramsPanel = new ReportParamPanel();
     private Button save;
     private ReportConfig config;
     private Form form;
@@ -53,7 +53,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         setCompositionRoot(mainPanel);
         HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(mainPanel);
         reportRow.addComponent(form = new EditDashboardForm());
-        mainPanel.addComponent(params);
+        mainPanel.addComponent(paramsPanel);
 
         save = ComponentFactory.createButton(DASHBOARD_BUTTON_SAVE_CAPTION, "", mainPanel, new ClickListener() {
 
@@ -85,6 +85,20 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         protected void attachField(Object propertyId, Field field) {
             if (propertyId.equals(REPORT)) {
                 layout.addComponent(field, 0, 0);
+
+                //selecting current report
+                ReportConfig current = getCurrentConfig();
+                if (current != null) {
+                    ComboBox cb = (ComboBox) field;
+                    for (Object o : cb.getItemIds()) {
+                        ReportTemplate t = (ReportTemplate) o;
+                        if (t.getId().equals(current.getReportId())) {
+                            cb.setValue(t);
+                            break;
+                        }
+                    }
+                }
+
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
                 layout.addComponent(field, 1, 0);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
@@ -97,7 +111,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             public Field createField(Item item, Object propertyId, Component uiContext) {
                 if (propertyId.equals(REPORT)) {
 
-                    params = new ReportParamPanel();
+                    paramsPanel = new ReportParamPanel();
 
                     ComboBox field = ComponentFactory.createReportTemplateCombo(null, DASHBOARD_EDIT_CAPTION_REPORT_ID);
                     field.setRequired(true);
@@ -126,9 +140,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     }
 
     protected void reloadParams(ReportTemplate template) {
-        ReportParamPanel newParams = new ReportParamPanel(template, false);
-        mainPanel.replaceComponent(params, newParams);
-        params = newParams;
+        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false);
+        mainPanel.replaceComponent(paramsPanel, newParamsPanel);
+        paramsPanel = newParamsPanel;
     }
 
     private void saveConfiguration() {
@@ -146,7 +160,20 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         ReportTemplate report = (ReportTemplate) datasource.getItemProperty("report").getValue();
         config.setReportId(report.getId());
         config.setCacheTimeout((Integer) datasource.getItemProperty("cacheTimeout").getValue());
-        config.setParameters(XmlReportConfigLoader.getInstance().mapToParameterList(params.collectParametersValues()));
+        config.setParameters(XmlReportConfigLoader.getInstance().mapToParameterList(paramsPanel.collectParametersValues()));
         saveData();
+    }
+
+    /**
+     * Returnc config for saved report
+     *
+     * @return Report config or
+     * <code>null</code>
+     */
+    private ReportConfig getCurrentConfig() {
+        if (reportConfigs == null || reportConfigs.isEmpty()) {
+            return null;
+        }
+        return reportConfigs.get(0);
     }
 }

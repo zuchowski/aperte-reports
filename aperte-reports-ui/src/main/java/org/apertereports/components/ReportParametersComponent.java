@@ -81,6 +81,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private boolean includeReportFormat = true;
     private boolean readonly = false;
     private boolean includeLocale = true;
+    private boolean viewInitialized = false;
 
     public ReportParametersComponent(ReportMaster reportMaster) throws AperteReportsException {
         this(reportMaster, true);
@@ -600,7 +601,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * Creates a form with generated Vaadin fields.
      */
     private void initView() {
-        fields.clear();
+        //at the moment there is a chance that this method will be invoked twice per instance
+        //we want only on initialization process of the view
+        if (viewInitialized) {
+            return;
+        }
+        viewInitialized = true;
 
         List<ReportParameter> parameters = reportMaster.getParameters();
         for (ReportParameter param : parameters) {
