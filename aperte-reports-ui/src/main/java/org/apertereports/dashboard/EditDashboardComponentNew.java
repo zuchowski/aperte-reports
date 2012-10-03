@@ -25,6 +25,7 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
+import org.apertereports.common.ReportConstants.ReportType;
 
 @SuppressWarnings("serial")
 public class EditDashboardComponentNew extends AbstractDashboardComponent {
@@ -32,15 +33,18 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_BUTTON_SAVE_CAPTION = "dashboard.button.save.caption";
     private static final String CACHE_TIMEOUT = "cacheTimeout";
     private static final String REPORT = "report";
+    private static final String EXPORT_BUTTONS = "exportButtons";
+    private static final String REFRESH_BUTTON = "refreshButton";
     private static final String DASHBOARD_EDIT_CAPTION_CACHE_TIMEOUT = "dashboard.edit.caption.cacheTimeout";
     private static final String DASHBOARD_EDIT_REQUIRED_ERROR_CACHE_TIMEOUT = "dashboard.edit.required-error.cacheTimeout";
     private static final String DASHBOARD_EDIT_INPUT_PROMPT_REPORT_ID = "dashboard.edit.input-prompt.reportId";
     private static final String DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID = "dashboard.edit.required-error.reportId";
     private static final String DASHBOARD_EDIT_CAPTION_REPORT_ID = "dashboard.edit.caption.reportId";
+    private static final String DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS = "dashboard.edit.caption.showExportButtons";
+    private static final String DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON = "dashboard.edit.caption.showRefreshButton";
     private Panel mainPanel;
     private ReportParamPanel paramsPanel = new ReportParamPanel();
     private Button save;
-    private ReportConfig config;
     private Form form;
     private Item datasource;
 
@@ -69,7 +73,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         private GridLayout layout;
 
         public EditDashboardForm() {
-            layout = new GridLayout(2, 1);
+            layout = new GridLayout(2, 3);
             layout.setSpacing(true);
             layout.setWidth("100%");
             setLayout(layout);
@@ -77,6 +81,8 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             datasource = new PropertysetItem();
             datasource.addItemProperty(REPORT, new ObjectProperty<ReportTemplate>(null, ReportTemplate.class));
             datasource.addItemProperty(CACHE_TIMEOUT, new ObjectProperty<Integer>(0));
+            datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(false));
+            datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(false));
             setItemDataSource(datasource);
 
         }
@@ -98,10 +104,13 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                         }
                     }
                 }
-
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
                 layout.addComponent(field, 1, 0);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
+            } else if (propertyId.equals(EXPORT_BUTTONS)) {
+                layout.addComponent(field, 0, 1, 1, 1);
+            } else if (propertyId.equals(REFRESH_BUTTON)) {
+                layout.addComponent(field, 0, 2, 1, 2);
             }
         }
 
@@ -133,6 +142,10 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_CACHE_TIMEOUT));
                     field.setCaption(VaadinUtil.getValue(DASHBOARD_EDIT_CAPTION_CACHE_TIMEOUT));
                     return field;
+                } else if (propertyId.equals(EXPORT_BUTTONS)) {
+                    return ComponentFactory.createCheckBox(DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS, item, portletId, null);
+                } else if (propertyId.equals(REFRESH_BUTTON)) {
+                    return ComponentFactory.createCheckBox(DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON, item, portletId, null);
                 }
                 return null;
             }
@@ -152,15 +165,26 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             return;
         }
         template = "<report idx=\"0\"></report>";
-        reportConfigs = new LinkedList<ReportConfig>();
-        ReportConfig rc = new ReportConfig();
-        reportConfigs.add(rc);
-        rc.setId(0);
-        config = rc;
-        ReportTemplate report = (ReportTemplate) datasource.getItemProperty("report").getValue();
+
+        ReportTemplate report = (ReportTemplate) datasource.getItemProperty(REPORT).getValue();
+
+        ReportConfig config = new ReportConfig();
+        config.setId(0);
         config.setReportId(report.getId());
-        config.setCacheTimeout((Integer) datasource.getItemProperty("cacheTimeout").getValue());
+        config.setCacheTimeout((Integer) datasource.getItemProperty(CACHE_TIMEOUT).getValue());
+        config.setAllowRefresh((Boolean) datasource.getItemProperty(REFRESH_BUTTON).getValue());
         config.setParameters(XmlReportConfigLoader.getInstance().mapToParameterList(paramsPanel.collectParametersValues()));
+
+        boolean addExportButtons = (Boolean) datasource.getItemProperty(EXPORT_BUTTONS).getValue();
+        String types = "";
+        if (addExportButtons) {
+            types = ReportType.XLS + "," + ReportType.PDF + "," + ReportType.HTML + "," + ReportType.CSV;
+        }
+        config.setAllowedFormats(types);
+
+        reportConfigs = new LinkedList<ReportConfig>();
+        reportConfigs.add(config);
+
         saveData();
     }
 
