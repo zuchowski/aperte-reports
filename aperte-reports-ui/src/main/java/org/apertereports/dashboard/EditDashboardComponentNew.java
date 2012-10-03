@@ -176,7 +176,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         config.setParameters(XmlReportConfigLoader.getInstance().mapToParameterList(paramsPanel.collectParametersValues()));
 
         boolean addExportButtons = (Boolean) datasource.getItemProperty(EXPORT_BUTTONS).getValue();
-        String types = "";
+        String types = null;
         if (addExportButtons) {
             types = ReportType.XLS + "," + ReportType.PDF + "," + ReportType.HTML + "," + ReportType.CSV;
         }
