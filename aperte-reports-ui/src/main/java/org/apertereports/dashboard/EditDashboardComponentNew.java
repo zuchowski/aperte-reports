@@ -89,16 +89,18 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
         @Override
         protected void attachField(Object propertyId, Field field) {
+            
+            ReportConfig config = getCurrentConfig();
+                
             if (propertyId.equals(REPORT)) {
                 layout.addComponent(field, 0, 0);
 
                 //selecting current report
-                ReportConfig current = getCurrentConfig();
-                if (current != null) {
+                if (config != null) {
                     ComboBox cb = (ComboBox) field;
                     for (Object o : cb.getItemIds()) {
                         ReportTemplate t = (ReportTemplate) o;
-                        if (t.getId().equals(current.getReportId())) {
+                        if (t.getId().equals(config.getReportId())) {
                             cb.setValue(t);
                             break;
                         }
@@ -107,10 +109,19 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
                 layout.addComponent(field, 1, 0);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
+                if (config != null) {
+                    field.setValue(config.getCacheTimeout());
+                }
             } else if (propertyId.equals(EXPORT_BUTTONS)) {
                 layout.addComponent(field, 0, 1, 1, 1);
+                if (config != null) {
+                    field.setValue(config.getAllowedFormats() != null);
+                }
             } else if (propertyId.equals(REFRESH_BUTTON)) {
                 layout.addComponent(field, 0, 2, 1, 2);
+                if (config != null) {
+                    field.setValue(config.getAllowRefresh());
+                }
             }
         }
 
@@ -189,7 +200,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     }
 
     /**
-     * Returnc config for saved report
+     * Returns config for saved report
      *
      * @return Report config or
      * <code>null</code>
