@@ -25,7 +25,9 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
+import java.util.List;
 import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.dao.ReportTemplateDAO;
 
 @SuppressWarnings("serial")
 public class EditDashboardComponentNew extends AbstractDashboardComponent {
@@ -73,55 +75,47 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         private GridLayout layout;
 
         public EditDashboardForm() {
+
+            ReportConfig config = getCurrentConfig();
+            if (config == null) {
+                config = new ReportConfig();
+            }
+            ReportTemplate selectedReport = null;
+            if (config != null) {
+                List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(config.getReportId());
+                if (reports != null && reports.size() == 1) {
+                    selectedReport = reports.get(0);
+                }
+            }
+
             layout = new GridLayout(2, 3);
             layout.setSpacing(true);
             layout.setWidth("100%");
             setLayout(layout);
+
             setFormFieldFactory(new EditDashboardFieldFactory());
+
             datasource = new PropertysetItem();
-            datasource.addItemProperty(REPORT, new ObjectProperty<ReportTemplate>(null, ReportTemplate.class));
-            datasource.addItemProperty(CACHE_TIMEOUT, new ObjectProperty<Integer>(0));
-            datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(false));
-            datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(false));
+            datasource.addItemProperty(REPORT, new ObjectProperty<ReportTemplate>(selectedReport, ReportTemplate.class));
+            datasource.addItemProperty(CACHE_TIMEOUT, new ObjectProperty<Integer>(config.getCacheTimeout()));
+            datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(config.getAllowedFormats() != null));
+            datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(config.getAllowRefresh()));
             setItemDataSource(datasource);
 
         }
 
         @Override
         protected void attachField(Object propertyId, Field field) {
-            
-            ReportConfig config = getCurrentConfig();
-                
+
             if (propertyId.equals(REPORT)) {
                 layout.addComponent(field, 0, 0);
-
-                //selecting current report
-                if (config != null) {
-                    ComboBox cb = (ComboBox) field;
-                    for (Object o : cb.getItemIds()) {
-                        ReportTemplate t = (ReportTemplate) o;
-                        if (t.getId().equals(config.getReportId())) {
-                            cb.setValue(t);
-                            break;
-                        }
-                    }
-                }
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
                 layout.addComponent(field, 1, 0);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
-                if (config != null) {
-                    field.setValue(config.getCacheTimeout());
-                }
             } else if (propertyId.equals(EXPORT_BUTTONS)) {
                 layout.addComponent(field, 0, 1, 1, 1);
-                if (config != null) {
-                    field.setValue(config.getAllowedFormats() != null);
-                }
             } else if (propertyId.equals(REFRESH_BUTTON)) {
                 layout.addComponent(field, 0, 2, 1, 2);
-                if (config != null) {
-                    field.setValue(config.getAllowRefresh());
-                }
             }
         }
 
@@ -133,6 +127,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
                     paramsPanel = new ReportParamPanel();
 
+                    //xxx it could be better to manage only list of names and above set only selected report name
+                    //or maybe it is possible to manage ids
+                    //some functionality could be developed in AbstractDashboardComponent
                     ComboBox field = ComponentFactory.createReportTemplateCombo(null, DASHBOARD_EDIT_CAPTION_REPORT_ID);
                     field.setRequired(true);
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID));
