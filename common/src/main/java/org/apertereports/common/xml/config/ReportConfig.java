@@ -24,19 +24,19 @@ import java.util.List;
 @XStreamAlias("reportConfig")
 public class ReportConfig implements Serializable {
     @XStreamAsAttribute
-    private Integer id;
+    private Integer id = -1;
     @XStreamAsAttribute
-    private Integer reportId;
+    private Integer reportId = -1;
     @XStreamAsAttribute
-    private Integer cacheTimeout;
+    private Integer cacheTimeout = 0;
     @XStreamAsAttribute
-    private Long cyclicReportId;
+    private Long cyclicReportId = -1L;
     @XStreamAsAttribute
-    private Boolean allowRefresh;
+    private Boolean allowRefresh = false;
     @XStreamAsAttribute
-    private String allowedFormats;
+    private String allowedFormats = null;
     @XStreamImplicit
-    private List<ReportConfigParameter> parameters;
+    private List<ReportConfigParameter> parameters = null;
 
     public ReportConfig() {
     }
