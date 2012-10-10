@@ -53,6 +53,7 @@ import com.vaadin.ui.Panel;
 public class ReportViewComponent extends AbstractLazyLoaderComponent implements ReportDataProvider {
 
     private static final Logger logger = Logger.getLogger(ReportViewComponent.class.getName());
+    private static final String AR_DASHBOARD_REPORT_PANEL_STYLE_ID = "ar-dashboard-report-panel";
     private Panel reportPanel = new Panel();
     /**
      * Internal caches of configs, templates and cyclic orders.
@@ -70,6 +71,11 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         this.cache = cache;
         this.template = template;
         initInternalData(configs);
+
+        reportPanel.setSizeFull();
+        reportPanel.getContent().setSizeUndefined();
+        reportPanel.getContent().setStyleName(AR_DASHBOARD_REPORT_PANEL_STYLE_ID);
+
         setCompositionRoot(reportPanel);
         if (!lazyLoad) {
             init();
