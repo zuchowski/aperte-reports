@@ -14,7 +14,6 @@ import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
@@ -46,9 +45,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON = "dashboard.edit.caption.showRefreshButton";
     private Panel mainPanel;
     private ReportParamPanel paramsPanel = new ReportParamPanel();
-    private Button save;
     private Form form;
     private Item datasource;
+    private ReportConfig reportConfig;
 
     public EditDashboardComponentNew() {
     }
@@ -61,7 +60,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         reportRow.addComponent(form = new EditDashboardForm());
         mainPanel.addComponent(paramsPanel);
 
-        save = ComponentFactory.createButton(DASHBOARD_BUTTON_SAVE_CAPTION, "", mainPanel, new ClickListener() {
+        ComponentFactory.createButton(DASHBOARD_BUTTON_SAVE_CAPTION, "", mainPanel, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -76,16 +75,12 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
         public EditDashboardForm() {
 
-            ReportConfig config = getCurrentConfig();
-            if (config == null) {
-                config = new ReportConfig();
-            }
+            reportConfig = getCurrentConfig();
+
             ReportTemplate selectedReport = null;
-            if (config != null) {
-                List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(config.getReportId());
-                if (reports != null && reports.size() == 1) {
-                    selectedReport = reports.get(0);
-                }
+            List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(reportConfig.getReportId());
+            if (reports != null && reports.size() == 1) {
+                selectedReport = reports.get(0);
             }
 
             layout = new GridLayout(2, 3);
@@ -97,9 +92,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             datasource = new PropertysetItem();
             datasource.addItemProperty(REPORT, new ObjectProperty<ReportTemplate>(selectedReport, ReportTemplate.class));
-            datasource.addItemProperty(CACHE_TIMEOUT, new ObjectProperty<Integer>(config.getCacheTimeout()));
-            datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(config.getAllowedFormats() != null));
-            datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(config.getAllowRefresh()));
+            datasource.addItemProperty(CACHE_TIMEOUT, new ObjectProperty<Integer>(reportConfig.getCacheTimeout()));
+            datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(reportConfig.getAllowedFormats() != null));
+            datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(reportConfig.getAllowRefresh()));
             setItemDataSource(datasource);
 
         }
@@ -161,7 +156,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     }
 
     protected void reloadParams(ReportTemplate template) {
-        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false);
+        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false, reportConfig);
         mainPanel.replaceComponent(paramsPanel, newParamsPanel);
         paramsPanel = newParamsPanel;
     }
@@ -202,9 +197,10 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
      * @return Report config or
      * <code>null</code>
      */
+    //todots consider moving config management to base class
     private ReportConfig getCurrentConfig() {
         if (reportConfigs == null || reportConfigs.isEmpty()) {
-            return null;
+            return new ReportConfig();
         }
         return reportConfigs.get(0);
     }

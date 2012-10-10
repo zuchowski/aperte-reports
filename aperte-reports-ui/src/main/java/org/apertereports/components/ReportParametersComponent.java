@@ -62,6 +62,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
+import java.util.Locale;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin
@@ -73,23 +74,31 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private HashMap<String, FilterContainer> filters;
     private List<FieldContainer> fields = new LinkedList<FieldContainer>();
     private ComboBox format;
-    private ComboBox reportLocale;
+    private ComboBox localeComboBox;
     private ReportMaster reportMaster;
     private String reportSource;
     private Integer cacheId;
-    private List<ReportConfigParameter> reportParameters;
     private boolean includeReportFormat = true;
     private boolean readonly = false;
     private boolean includeLocale = true;
     private boolean viewInitialized = false;
+    private final ReportConfig reportConfig;
 
     public ReportParametersComponent(ReportMaster reportMaster) throws AperteReportsException {
         this(reportMaster, true);
     }
 
     public ReportParametersComponent(ReportMaster rm, boolean showFormat) throws AperteReportsException {
+        this(rm, showFormat, null);
+    }
+
+    public ReportParametersComponent(ReportMaster rm, boolean showFormat, ReportConfig reportConfig) throws AperteReportsException {
         this.reportMaster = rm;
         this.includeReportFormat = showFormat;
+        if (reportConfig == null) {
+            reportConfig = new ReportConfig();
+        }
+        this.reportConfig = reportConfig;
 
         init();
     }
@@ -160,9 +169,10 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             parameters.put(field.getName(), value);
         }
 
+        //todots move id to id, move management of user properties to base class (?)
         parameters.put("login", getLogin());
 //        TODO: use property set underneath the form
-        parameters.put(JRParameter.REPORT_LOCALE, reportLocale.getValue() == null ? null : reportLocale.getValue().toString());
+        parameters.put(JRParameter.REPORT_LOCALE, localeComboBox.getValue() == null ? null : localeComboBox.getValue().toString());
         return parameters;
 
     }
@@ -567,31 +577,54 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * Loads data to generated Vaadin fields from the XML stored elsewhere.
      */
     private void initFieldsFromConfig() {
-        if (reportParameters != null && !reportParameters.isEmpty()) {
-            for (ReportConfigParameter p : reportParameters) {
-                for (FieldContainer field : fields) {
-                    if (p.getName().equals(field.getName())) {
-                        try {
-                            Field fieldComponent = field.getFieldComponent() instanceof Field ? (Field) field.getFieldComponent() : null;
-                            Class<?> fieldType = fieldComponent == null ? null
-                                    : fieldComponent.getPropertyDataSource() == null ? null
-                                    : fieldComponent.getPropertyDataSource().getType();
-                            if (DATE.equals(field.getComponentType())) {
-                                fieldType = Date.class;
-                            } else if (MULTISELECT.equals(field.getComponentType())
-                                    || CHECKBOXES.equals(field.getComponentType())
-                                    || FILTERED_SELECT.equals(field.getComponentType())) {
-                                fieldType = Collection.class;
-                            }
-                            Object v = TextUtils.encodeSQLToObject(fieldType, p.getValue());
-                            field.setValue(v);
-                        } catch (ParseException e) {
-                            ExceptionUtils.logSevereException(e);
-                            NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"), e);
-                            throw new RuntimeException(e);
-                        }
-                        break;
+
+        List<ReportConfigParameter> params = reportConfig.getParameters();
+        if (params == null) {
+            return;
+        }
+
+        for (ReportConfigParameter param : params) {
+
+            //todots maybe it could be easier to have linked map as parameters instead of list
+            if (param.getName().equals(JRParameter.REPORT_LOCALE)) {
+                if (localeComboBox != null) {
+                    String[] parts = param.getValue().split("_");
+                    if (parts.length == 0) {
+                        continue;
                     }
+                    Locale locale;
+                    if (parts.length == 1) {
+                        locale = new Locale(parts[0]);
+                    } else {
+                        locale = new Locale(parts[0], parts[1]);
+                    }
+                    localeComboBox.setValue(locale);
+                }
+                continue;
+            }
+
+            for (FieldContainer field : fields) {
+                if (param.getName().equals(field.getName())) {
+                    try {
+                        Field fieldComponent = field.getFieldComponent() instanceof Field ? (Field) field.getFieldComponent() : null;
+                        Class<?> fieldType = fieldComponent == null ? null
+                                : fieldComponent.getPropertyDataSource() == null ? null
+                                : fieldComponent.getPropertyDataSource().getType();
+                        if (DATE.equals(field.getComponentType())) {
+                            fieldType = Date.class;
+                        } else if (MULTISELECT.equals(field.getComponentType())
+                                || CHECKBOXES.equals(field.getComponentType())
+                                || FILTERED_SELECT.equals(field.getComponentType())) {
+                            fieldType = Collection.class;
+                        }
+                        Object v = TextUtils.encodeSQLToObject(fieldType, param.getValue());
+                        field.setValue(v);
+                    } catch (ParseException e) {
+                        ExceptionUtils.logSevereException(e);
+                        NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"), e);
+                        throw new RuntimeException(e);
+                    }
+                    break;
                 }
             }
         }
@@ -645,8 +678,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         if (includeLocale) {
-            reportLocale = ComponentFactory.createLocaleCombo(getLocale(), "form.select_locale");
-            form.addField(JRParameter.REPORT_LOCALE, reportLocale);
+            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), "form.select_locale");
+            form.addField(JRParameter.REPORT_LOCALE, localeComboBox);
         } else {
             form.setDescription(readonly ? VaadinUtil.getValue("invoker.form.header.readonly") : VaadinUtil.getValue("invoker.form.header"));
         }
