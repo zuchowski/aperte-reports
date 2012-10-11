@@ -13,7 +13,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import org.apertereports.common.xml.config.ReportConfig;
+import java.util.List;
+import org.apertereports.common.xml.config.ReportConfigParameter;
 
 @SuppressWarnings("serial")
 public class ReportParamPanel extends Panel {
@@ -21,16 +22,15 @@ public class ReportParamPanel extends Panel {
     private ReportParametersComponent reportParametersComponent;
     private HorizontalLayout buttons;
 
-    //todots remove after solving problem with restoring parameters in all panels
     public ReportParamPanel(ReportTemplate reportTemplate, boolean showFormat) {
         this(reportTemplate, showFormat, null);
     }
 
-    public ReportParamPanel(ReportTemplate reportTemplate, boolean showFormat, ReportConfig reportConfig) {
+    public ReportParamPanel(ReportTemplate reportTemplate, boolean showFormat, List<ReportConfigParameter> params) {
         try {
             ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(),
                     new ReportTemplateProvider());
-            this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, reportConfig);
+            this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, params);
             VerticalLayout vl = new VerticalLayout();
             vl.addComponent(reportParametersComponent);
             buttons = ComponentFactory.createHLayout(vl);

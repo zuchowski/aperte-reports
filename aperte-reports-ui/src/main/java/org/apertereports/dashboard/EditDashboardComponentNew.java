@@ -156,7 +156,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     }
 
     protected void reloadParams(ReportTemplate template) {
-        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false, reportConfig);
+        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
         mainPanel.replaceComponent(paramsPanel, newParamsPanel);
         paramsPanel = newParamsPanel;
     }

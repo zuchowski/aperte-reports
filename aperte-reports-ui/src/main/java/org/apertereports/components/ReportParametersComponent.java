@@ -82,23 +82,15 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private boolean readonly = false;
     private boolean includeLocale = true;
     private boolean viewInitialized = false;
-    private final ReportConfig reportConfig;
+    private final List<ReportConfigParameter> params;
 
-    public ReportParametersComponent(ReportMaster reportMaster) throws AperteReportsException {
-        this(reportMaster, true);
-    }
-
-    public ReportParametersComponent(ReportMaster rm, boolean showFormat) throws AperteReportsException {
-        this(rm, showFormat, null);
-    }
-
-    public ReportParametersComponent(ReportMaster rm, boolean showFormat, ReportConfig reportConfig) throws AperteReportsException {
+    public ReportParametersComponent(ReportMaster rm, boolean showFormat, List<ReportConfigParameter> params) throws AperteReportsException {
         this.reportMaster = rm;
         this.includeReportFormat = showFormat;
-        if (reportConfig == null) {
-            reportConfig = new ReportConfig();
+        if (params == null) {
+            params = new LinkedList<ReportConfigParameter>();
         }
-        this.reportConfig = reportConfig;
+        this.params = params;
 
         init();
     }
@@ -577,11 +569,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * Loads data to generated Vaadin fields from the XML stored elsewhere.
      */
     private void initFieldsFromConfig() {
-
-        List<ReportConfigParameter> params = reportConfig.getParameters();
-        if (params == null) {
-            return;
-        }
 
         for (ReportConfigParameter param : params) {
 

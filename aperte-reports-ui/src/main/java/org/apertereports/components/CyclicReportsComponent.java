@@ -46,6 +46,9 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
+import java.util.LinkedList;
+import java.util.List;
+import org.apertereports.common.xml.config.ReportConfigParameter;
 
 @SuppressWarnings("serial")
 public class CyclicReportsComponent extends Panel {
@@ -271,7 +274,13 @@ public class CyclicReportsComponent extends Panel {
         }
 
         private ReportParamPanel createParamsPanel() {
-            final ReportParamPanel panel = new ReportParamPanel(order.getReport(), false);
+            List<ReportConfigParameter> params = new LinkedList<ReportConfigParameter>();
+            String paramsXml = order.getParametersXml();
+            if (paramsXml != null) {
+                params = XmlReportConfigLoader.getInstance().xmlAsParameters(paramsXml);
+            }
+
+            final ReportParamPanel panel = new ReportParamPanel(order.getReport(), false, params);
             HorizontalLayout hl = ComponentFactory.createHLayout(panel);
 
             ComponentFactory.createButton(PARAMS_FORM_SAVE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
