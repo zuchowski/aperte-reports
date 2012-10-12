@@ -58,6 +58,10 @@ public class NotificationUtil {
 		window.showNotification(title, description, TYPE_ERROR_MESSAGE);
 	}
 
+	public static void showErrorNotification(Window window, String messageId) {
+		window.showNotification(VaadinUtil.getValue(messageId), TYPE_ERROR_MESSAGE);
+	}
+
 	public static void validationErrors(Window window) {
 		window.showNotification(VaadinUtil.getValue("exception.validation.errors.title"),
 				"<br/>" + VaadinUtil.getValue("exception.validation.errors.description"), TYPE_WARNING_MESSAGE);

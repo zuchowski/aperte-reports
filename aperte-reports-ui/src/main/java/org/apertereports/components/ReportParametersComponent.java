@@ -415,7 +415,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         select.setItemCaption(item.getCode(), item.getDescription());
                     }
                 } catch (NullPointerException e) {
-                    NotificationUtil.showExceptionNotification(getWindow(),
+                    NotificationUtil.showErrorNotification(getWindow(),
                             VaadinUtil.getValue("invoker.form.no_items_for_exception") + " " + fieldProperties.getCaption());
                     throw new BuildingFailedException();
                 }
@@ -434,7 +434,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         optionGroup.setItemCaption(item.getCode(), item.getDescription());
                     }
                 } catch (NullPointerException e) {
-                    NotificationUtil.showExceptionNotification(getWindow(),
+                    NotificationUtil.showErrorNotification(getWindow(),
                             VaadinUtil.getValue("invoker.form.no_items_for_exception") + " " + fieldProperties.getCaption());
                     throw new BuildingFailedException();
                 }
