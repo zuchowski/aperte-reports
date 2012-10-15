@@ -7,6 +7,7 @@ import java.util.List;
  * Contains constant fields used in the report generation process.
  */
 public interface ReportConstants {
+
     /**
      * Web service namespace.
      */
@@ -32,7 +33,8 @@ public interface ReportConstants {
      */
     public static final String RECORD_DELIMITER = "\n\r";
     /**
-     * Cache manager's thread interval between each cache analysis. Set to 1 second (1000 milliseconds).
+     * Cache manager's thread interval between each cache analysis. Set to 1
+     * second (1000 milliseconds).
      */
     public static final Integer CACHE_MANAGER_CHECK_INTERVAL = 1000;
     /**
@@ -51,17 +53,14 @@ public interface ReportConstants {
      * Report generation JMS default queue name.
      */
     public static final String GENERATE_REPORT_Q_DEFAULT_JNDI_NAME = "java:comp/env/jms/queue/GenerateReport";
-    
     /**
      * JMS connection factory default name.
      */
     public static final String JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME = "java:comp/env/jms/ConnectionFactory";
-
     /**
      * Report order id property name.
      */
     public static final String REPORT_ORDER_ID = "reportOrderId";
-    
     /**
      * Key used to pass map with compiled subreports to JasperFiller
      */
@@ -71,6 +70,7 @@ public interface ReportConstants {
      * Represents a boolean report property.
      */
     public static enum BooleanValues {
+
         FALSE, TRUE
     }
 
@@ -78,13 +78,16 @@ public interface ReportConstants {
      * Report generation error codes.
      */
     public static enum ErrorCodes {
-		INVALID_REPORT_TYPE, JASPER_REPORTS_EXCEPTION, INVALID_EXPORTER_PARAMETER, REPORT_SOURCE_EXCEPTION, SERIALIZATION_EXCEPTION, TECHNICAL_ERROR, INVALID_DATASOURCE_TYPE, UNKNOWN_PROPERTY_NAME, UNSUPPORTED_ENCODING, SUBREPORT_NOT_FOUND, EMPTY_REPORT_SOURCE, DUPLICATE_REPORT_NAME, EMAIL_SESSION_NOT_FOUND, DRILLDOWN_NOT_FOUND, DRILLDOWN_REPORT_NOT_FOUND, JMS_UNAVAILABLE
+
+        INVALID_REPORT_TYPE, JASPER_REPORTS_EXCEPTION, INVALID_EXPORTER_PARAMETER, REPORT_SOURCE_EXCEPTION, SERIALIZATION_EXCEPTION, TECHNICAL_ERROR, INVALID_DATASOURCE_TYPE, UNKNOWN_PROPERTY_NAME, UNSUPPORTED_ENCODING, SUBREPORT_NOT_FOUND, EMPTY_REPORT_SOURCE, DUPLICATE_REPORT_NAME, EMAIL_SESSION_NOT_FOUND, DRILLDOWN_NOT_FOUND, DRILLDOWN_REPORT_NOT_FOUND, JMS_UNAVAILABLE
     }
 
     /**
-     * Represents report parameter input types. This is transformed into an adequate Vaadin input widget.
+     * Represents report parameter input types. This is transformed into an
+     * adequate Vaadin input widget.
      */
     public static enum InputTypes {
+
         TEXT, DATE, TEXTAREA, SELECT, MULTISELECT, RADIOBUTTONS, CHECKBOXES, CHECKBOX, SPECIAL_CONTROL, FILTER, FILTERED_SELECT
     }
 
@@ -92,6 +95,7 @@ public interface ReportConstants {
      * Different types of report parameters.
      */
     public static enum Keys {
+
         INPUT_TYPE, DICT_QUERY, WIDTH, MAXCHARS, REQUIRED, REQUIRED_ERROR, REGEXP, REGEXP_ERROR, ORDER, LABEL, SCRIPT_LANGUAGE, SPECIAL_CONTROL_CODE, SPECIAL_VALIDATION_CODE, SPECIAL_VALIDATION_ERROR, SPECIAL_DATA_QUERY_CODE, LEVEL, FILTER_GROUP, MULTIPLE_CHOICE, SELECT_ALL, DICT_ITEM_LIST
     }
 
@@ -99,6 +103,7 @@ public interface ReportConstants {
      * Datasource parameter.
      */
     public static enum Parameter {
+
         DATASOURCE
     }
 
@@ -106,24 +111,24 @@ public interface ReportConstants {
      * Allowed report formats.
      */
     public static enum ReportType {
+
         CSV, HTML, PDF, XLS;
-        
+
         public static String[] stringValues() {
-        	String[] values = new String[values().length];
-        	for (int i = 0; i < values.length; i++) {
-				values[i] = values()[i].name(); 
-			}
-        	return values;
+            String[] values = new String[values().length];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = values()[i].name();
+            }
+            return values;
         }
-    
     }
 
     /**
      * Simple enum for report type conversion to a mime type.
      */
     public static enum ReportMimeType {
-        CSV("application/csv"), HTML("text/html"), PDF("application/pdf"), XLS("application/vnd.ms-excel");
 
+        CSV("application/csv"), HTML("text/html"), PDF("application/pdf"), XLS("application/vnd.ms-excel");
         private final String mimeType;
 
         ReportMimeType(String mimeType) {
@@ -134,5 +139,4 @@ public interface ReportConstants {
             return mimeType;
         }
     }
-
 }
