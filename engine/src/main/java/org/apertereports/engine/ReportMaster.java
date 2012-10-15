@@ -51,6 +51,7 @@ import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.SubreportProvider.Subreport;
 
@@ -596,17 +597,16 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         Object locale = reportParameters.get(JRParameter.REPORT_LOCALE);
         if (locale != null) {
             if (locale instanceof String) {
-                String[] val = ((String) locale).split("_");
-                reportParameters.put(JRParameter.REPORT_LOCALE, new Locale(val[0], val[1]));
+                locale = LocaleUtils.createLocale((String)locale);
             } else if (!(locale instanceof Locale)) {
                 locale = null;
             }
         }
         if (locale == null) {
             Locale defaultLocale = Locale.getDefault();
-            reportParameters.put(JRParameter.REPORT_LOCALE, defaultLocale);
             logger.info("Unable to find locale parameter. Injecting default locale: " + defaultLocale);
         }
+        reportParameters.put(JRParameter.REPORT_LOCALE, locale);
     }
 
     private JasperReport getJasperReport() {

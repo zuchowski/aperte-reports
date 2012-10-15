@@ -34,7 +34,6 @@ import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
 import org.apertereports.common.wrappers.DictionaryItem;
-import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.common.xml.config.ReportConfigParameter;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.engine.ReportParameter;
@@ -63,6 +62,7 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import java.util.Locale;
+import org.apertereports.common.utils.LocaleUtils;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin
@@ -575,16 +575,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             //todots maybe it could be easier to have linked map as parameters instead of list
             if (param.getName().equals(JRParameter.REPORT_LOCALE)) {
                 if (localeComboBox != null) {
-                    String[] parts = param.getValue().split("_");
-                    if (parts.length == 0) {
-                        continue;
-                    }
-                    Locale locale;
-                    if (parts.length == 1) {
-                        locale = new Locale(parts[0]);
-                    } else {
-                        locale = new Locale(parts[0], parts[1]);
-                    }
+                    Locale locale = LocaleUtils.createLocale(param.getValue());
                     localeComboBox.setValue(locale);
                 }
                 continue;
