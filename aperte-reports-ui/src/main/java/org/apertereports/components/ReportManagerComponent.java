@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
@@ -29,21 +28,13 @@ import org.apertereports.util.VaadinUtil;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -82,6 +73,8 @@ public class ReportManagerComponent extends Panel {
     private static final String REPORT_MANAGER_ITEM_EDIT_ACTIVE = "report.manager.item.edit.active";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
+    private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
+    private static final String DUPLICATE_REPORT_NAME_DESC = "exception.duplicate_report_name.desc";
     private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
     private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
     private ReportReceiver newReportReceiver;
@@ -160,6 +153,7 @@ public class ReportManagerComponent extends Panel {
         private ReportItemPanel item;
         private ReportTemplate temporaryData;
         private BeanItem<ReportTemplate> beanItem;
+        private TextField nameField;
 
         public EditReportItemPanel(ReportItemPanel item) {
             this.item = item;
@@ -169,7 +163,7 @@ public class ReportManagerComponent extends Panel {
 
             HorizontalLayout headerRow = ComponentFactory.createHLayoutFull(this);
 
-            TextField nameField = new TextField(beanItem.getItemProperty(REPORTNAME_PROPERTY));
+            nameField = new TextField(beanItem.getItemProperty(REPORTNAME_PROPERTY));
             headerRow.addComponent(nameField);
             headerRow.setComponentAlignment(nameField, Alignment.MIDDLE_LEFT);
 
@@ -244,7 +238,9 @@ public class ReportManagerComponent extends Panel {
         }
 
         protected void saveChanges() {
-            checkUnique(temporaryData);
+            if (!checkUnique(temporaryData)) {
+                return;
+            }
             item.requestRepaintAll();
             deepCopy(temporaryData, item.reportTemplate);
             ReportTemplateDAO.saveOrUpdate(item.reportTemplate);
@@ -252,15 +248,19 @@ public class ReportManagerComponent extends Panel {
 
         }
 
-        private void checkUnique(ReportTemplate reportTemplate) {
+        private boolean checkUnique(ReportTemplate reportTemplate) {
             if (reportTemplate.getId() != null) {
-                return;
+                //todots check behaviour when editing name of the existing report
+                return true;
             }
             List<ReportTemplate> exists = ReportTemplateDAO.fetchReportsByName(reportTemplate.getReportname());
             if (exists.size() > 0) {
-                throw new AperteReportsRuntimeException(ErrorCodes.DUPLICATE_REPORT_NAME);
+                nameField.focus();
+                getWindow().showNotification(VaadinUtil.getValue(DUPLICATE_REPORT_NAME_TITLE),
+                        "<br/>" + VaadinUtil.getValue(DUPLICATE_REPORT_NAME_DESC), Window.Notification.TYPE_ERROR_MESSAGE);
+                return false;
             }
-
+            return true;
         }
     }
 
