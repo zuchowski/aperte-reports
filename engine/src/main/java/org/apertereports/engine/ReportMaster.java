@@ -44,6 +44,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
+import net.sf.jasperreports.engine.util.JRFontNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.common.ConfigurationConstants;
@@ -327,7 +328,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      */
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
             Map<String, String> configuration) throws AperteReportsException {
-        return generateAndExportReport(format, reportParameters, null, configuration);
+        return generateAndExportReport(format, reportParameters, null, configuration, null);
     }
 
     private static String processSubreports(boolean hasParent, String source, Set<String> subreportNames) {
@@ -389,7 +390,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
     }
 
     public JasperPrint generateReport(Map<String, Object> reportParameters) throws AperteReportsException {
-        return generateReport(reportParameters, new HashMap<String, String>());
+        return generateReport(reportParameters, new HashMap<String, String>(), null);
     }
 
     /**
@@ -504,6 +505,9 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                             ErrorCodes.INVALID_DATASOURCE_TYPE);
                 }
             }
+
+        } catch (JRFontNotFoundException e) {
+            throw new AperteReportsRuntimeException(ErrorCodes.FONT_NOT_FOUND);
         } finally {
             if (connection != null) {
                 connection.close();
