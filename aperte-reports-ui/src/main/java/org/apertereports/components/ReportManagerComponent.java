@@ -370,6 +370,9 @@ public class ReportManagerComponent extends Panel {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    if (!panel.validateForm()) {
+                        return;
+                    }
                     try {
                         ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
@@ -379,7 +382,6 @@ public class ReportManagerComponent extends Panel {
                                 panel.getOuptutFormat());
                     } catch (AperteReportsException e) {
                         throw new AperteReportsRuntimeException(e);
-
                     }
 
                 }

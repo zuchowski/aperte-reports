@@ -115,6 +115,9 @@ public class AperteInvokerComponent extends Panel {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     try {
+                        if (!panel.validateForm()) {
+                            return;
+                        }
                         ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
@@ -137,6 +140,9 @@ public class AperteInvokerComponent extends Panel {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    if (!panel.validateForm()) {
+                        return;
+                    }
                     Map<String, String> parameters = panel.collectParametersValues();
                     String email = UserUtil.getUserEmail();
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {

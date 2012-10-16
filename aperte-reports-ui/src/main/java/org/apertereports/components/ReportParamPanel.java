@@ -1,5 +1,7 @@
 package org.apertereports.components;
 
+import com.vaadin.ui.*;
+import com.vaadin.ui.Window.Notification;
 import java.util.Map;
 
 import org.apertereports.backbone.util.ReportTemplateProvider;
@@ -9,12 +11,9 @@ import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 import org.apertereports.common.xml.config.ReportConfigParameter;
+import org.apertereports.util.VaadinUtil;
 
 @SuppressWarnings("serial")
 public class ReportParamPanel extends Panel {
@@ -61,5 +60,14 @@ public class ReportParamPanel extends Panel {
 
     public String getOuptutFormat() {
         return reportParametersComponent.getSelectedFormat();
+    }
+
+    public boolean validateForm() {
+        boolean result = reportParametersComponent.validateForm();
+        if (!result) {
+            getWindow().showNotification(VaadinUtil.getValue("notification.fill.in.the.form.correctly"), Notification.TYPE_WARNING_MESSAGE);
+            Notification n;
+        }
+        return result;
     }
 }

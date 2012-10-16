@@ -287,10 +287,12 @@ public class CyclicReportsComponent extends Panel {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    if (!paramsPanel.validateForm()) {
+                        return;
+                    }
                     order.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(
                             paramsPanel.collectParametersValues()));
                     CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(order);
-
                 }
             });
             ComponentFactory.createButton(PARAMS_FORM_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
@@ -298,6 +300,9 @@ public class CyclicReportsComponent extends Panel {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     try {
+                        if (!panel.validateForm()) {
+                            return;
+                        }
                         ReportMaster rm = new ReportMaster(order.getReport().getContent(), order.getReport().getId().toString(),
                                 new ReportTemplateProvider());
                         byte[] reportData = rm.generateAndExportReport(order.getOutputFormat(),

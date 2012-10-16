@@ -64,6 +64,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
+                if (!paramsPanel.validateForm()) {
+                    return;
+                }
                 saveConfiguration();
             }
         });

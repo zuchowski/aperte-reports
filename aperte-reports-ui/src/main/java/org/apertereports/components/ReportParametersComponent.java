@@ -226,7 +226,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         try {
             form.commit();
         } catch (Validator.InvalidValueException e) {
-            ExceptionUtils.logSevereException(e);
             result = false;
         } catch (Buffered.SourceException e) {
             ExceptionUtils.logSevereException(e);
