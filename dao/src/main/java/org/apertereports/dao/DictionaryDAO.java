@@ -10,16 +10,20 @@ import java.sql.ResultSet;
 import java.util.*;
 
 /**
- * DAO methods for retrieving custom dictionaries from database and report parameter strings.
+ * DAO methods for retrieving custom dictionaries from database and report
+ * parameter strings.
  *
  * @see DictionaryItem
  */
 public class DictionaryDAO {
+
     /**
-     * This method returns a list of dictionary items returned by the query. The query contains
-     * a JNDI resource name separated by a semicolon from a proper SQL query.
+     * This method returns a list of dictionary items returned by the query. The
+     * query contains a JNDI resource name separated by a semicolon from a
+     * proper SQL query.
      *
-     * @param dictQuery A JNDI resource name separated by a semicolon from an SQL query.
+     * @param dictQuery A JNDI resource name separated by a semicolon from an
+     * SQL query.
      * @return A list of dictionary items
      */
     public static List<DictionaryItem> fetchDictionary(String dictQuery) {
@@ -32,13 +36,11 @@ public class DictionaryDAO {
             DataSource ds;
             try {
                 ds = (DataSource) new InitialContext().lookup(jndiName);
-            }
-            catch (Exception e1) {
+            } catch (Exception e1) {
                 String prefix = "java:comp/env/";
                 if (jndiName.matches(prefix + ".*")) {
                     ds = (DataSource) new InitialContext().lookup(jndiName.substring(prefix.length()));
-                }
-                else {
+                } else {
                     ds = (DataSource) new InitialContext().lookup(prefix + jndiName);
                 }
             }
@@ -58,35 +60,32 @@ public class DictionaryDAO {
                                 e.setColumn(i - 1, rs.getString(i));
                             }
                         }
-                    }
-                    finally {
+                    } finally {
                         rs.close();
                     }
-                }
-                finally {
+                } finally {
                     ps.close();
                 }
-            }
-            finally {
+            } finally {
                 c.rollback(); // żeby komuś nie przyszło coś głupiego do głowy
                 c.close();
             }
             Collections.sort(res, new Comparator<DictionaryItem>() {
+
                 @Override
                 public int compare(DictionaryItem o1, DictionaryItem o2) {
                     return (o1.getDescription() + "").compareToIgnoreCase(o2.getDescription() + "");
                 }
             });
             return res;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Separates an input string into dictionary items. This is used to parse a report parameter
-     * containing static dict values.
+     * Separates an input string into dictionary items. This is used to parse a
+     * report parameter containing static dict values.
      *
      * @param dictItemList A dictionary list report property value
      * @return A list of dictionary items

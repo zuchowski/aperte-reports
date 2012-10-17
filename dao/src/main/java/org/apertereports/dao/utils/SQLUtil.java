@@ -13,51 +13,53 @@ import org.apertereports.common.utils.ExceptionUtils;
  * classes. Has methods for providing a new Hibernate session.
  */
 public class SQLUtil {
-	protected static SessionFactory sessions;
 
-	/**
-	 * Static initializer of the session factory.
-	 */
-	static {
-		configureSessions();
-	}
+    protected static SessionFactory sessions;
 
-	private static void configureSessions() {
-		try {
-			Configuration annotationConfiguration = new AnnotationConfiguration();
-			Configuration cfg = annotationConfiguration.configure("hibernate.cfg.xml");
+    /**
+     * Static initializer of the session factory.
+     */
+    static {
+        configureSessions();
+    }
 
-			sessions = cfg.buildSessionFactory();
-			sessions.getStatistics().setStatisticsEnabled(true);
-		} catch (Exception e) {
-			ExceptionUtils.logSevereException(e);
-			throw new AperteReportsRuntimeException(e);
-		}
-	}
+    private static void configureSessions() {
+        try {
+            Configuration annotationConfiguration = new AnnotationConfiguration();
+            Configuration cfg = annotationConfiguration.configure("hibernate.cfg.xml");
 
-	/**
-	 * Used to open a new Hibernate session.
-	 * 
-	 * @return A new DAO session
-	 */
-	public static Session getSession() {
-		if (sessions == null)
-			configureSessions();
-		return sessions.openSession();
-	}
+            sessions = cfg.buildSessionFactory();
+            sessions.getStatistics().setStatisticsEnabled(true);
+        } catch (Exception e) {
+            ExceptionUtils.logSevereException(e);
+            throw new AperteReportsRuntimeException(e);
+        }
+    }
 
-	/**
-	 * Gets the session factory.
-	 * 
-	 * @return A session factory
-	 */
-	public static SessionFactory getSessionFactory() {
-		if (sessions == null)
-			configureSessions();
-		return sessions;
-	}
+    /**
+     * Used to open a new Hibernate session.
+     *
+     * @return A new DAO session
+     */
+    public static Session getSession() {
+        if (sessions == null) {
+            configureSessions();
+        }
+        return sessions.openSession();
+    }
 
-	protected SQLUtil() {
-	}
+    /**
+     * Gets the session factory.
+     *
+     * @return A session factory
+     */
+    public static SessionFactory getSessionFactory() {
+        if (sessions == null) {
+            configureSessions();
+        }
+        return sessions;
+    }
 
+    protected SQLUtil() {
+    }
 }

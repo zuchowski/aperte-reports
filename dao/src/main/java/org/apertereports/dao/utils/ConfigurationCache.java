@@ -9,6 +9,7 @@ import java.util.Map;
  * A static cache for configuration entries. Thread-safe.
  */
 public class ConfigurationCache implements ConfigurationConstants {
+
     /**
      * Map cache.
      */
@@ -33,21 +34,23 @@ public class ConfigurationCache implements ConfigurationConstants {
         synchronized (ConfigurationCache.class) {
             if (configuration.containsKey(key)) {
                 return configuration.get(key);
-            }
-            else {
+            } else {
                 return null;
             }
         }
     }
 
     /**
-     * Initializes the cache. Retrieves the configuration from database and sets the expiration date.
+     * Initializes the cache. Retrieves the configuration from database and sets
+     * the expiration date.
      */
     synchronized private static void init() {
         if (configuration == null || Calendar.getInstance().after(validUntil)) {
             configuration = org.apertereports.dao.ConfigurationDAO.loadAllToMap();
             String timeout = configuration.get(CONFIGURATION_CACHE_TIMEOUT_IN_MINUTES);
-            if (timeout == null) timeout = "15";
+            if (timeout == null) {
+                timeout = "15";
+            }
             validUntil = Calendar.getInstance();
             validUntil.add(Calendar.MINUTE, Integer.valueOf(timeout));
         }
@@ -62,5 +65,4 @@ public class ConfigurationCache implements ConfigurationConstants {
         init();
         return configuration;
     }
-
 }

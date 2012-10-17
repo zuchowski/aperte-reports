@@ -5,10 +5,12 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 /**
- * This generic class handles the opening and closing Hibernate session.
- * It can also wrap an invocation into transaction. Designed to be used as an inner anonymous class.
+ * This generic class handles the opening and closing Hibernate session. It can
+ * also wrap an invocation into transaction. Designed to be used as an inner
+ * anonymous class.
  */
 public abstract class WHS<resultType> {
+
     /**
      * A Hibernate session retrieved from {@link SQLUtil}.
      */
@@ -33,7 +35,8 @@ public abstract class WHS<resultType> {
     public abstract resultType lambda();
 
     /**
-     * The main workhorse of this class. Retrieves the session from {@link SQLUtil} and wraps the invocation of
+     * The main workhorse of this class. Retrieves the session from {@link SQLUtil}
+     * and wraps the invocation of
      * {@link #lambda()} into transaction.
      *
      * @return The object returned by {@link #lambda()}
@@ -51,18 +54,15 @@ public abstract class WHS<resultType> {
                 tx.commit();
             }
             return res;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             if (tx != null) {
                 tx.rollback();
             }
             throw new AperteReportsRuntimeException(e);
-        }
-        finally {
+        } finally {
             sess.close();
             sess = null;
         }
 
     }
-
 }
