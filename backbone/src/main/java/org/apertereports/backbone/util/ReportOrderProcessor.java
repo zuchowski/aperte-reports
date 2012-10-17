@@ -41,7 +41,7 @@ public class ReportOrderProcessor {
     public void processReport(ReportOrder reportOrder) throws AperteReportsException {
         reportOrder.setStartDate(Calendar.getInstance());
         reportOrder.setReportStatus(ReportOrder.Status.PROCESSING);
-        org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+        org.apertereports.dao.ReportOrderDAO.saveOrUpdate(reportOrder);
 
         ReportTemplate reportTemplate = reportOrder.getReport();
 
@@ -58,7 +58,7 @@ public class ReportOrderProcessor {
             reportOrder.setReportResult(ReportGeneratorUtils.encodeContent(reportData));
             reportOrder.setFinishDate(Calendar.getInstance());
             reportOrder.setReportStatus(ReportOrder.Status.SUCCEEDED);
-            org.apertereports.dao.ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+            org.apertereports.dao.ReportOrderDAO.saveOrUpdate(reportOrder);
         }        
         catch (Exception e) {
             ExceptionUtils.logSevereException(e);

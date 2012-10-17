@@ -253,7 +253,7 @@ public class ReportManagerComponent extends Panel {
                 //todots check behaviour when editing name of the existing report
                 return true;
             }
-            List<ReportTemplate> exists = ReportTemplateDAO.fetchReportsByName(reportTemplate.getReportname());
+            List<ReportTemplate> exists = ReportTemplateDAO.fetchByName(reportTemplate.getReportname());
             if (exists.size() > 0) {
                 nameField.focus();
                 getWindow().showNotification(VaadinUtil.getValue(DUPLICATE_REPORT_NAME_TITLE),

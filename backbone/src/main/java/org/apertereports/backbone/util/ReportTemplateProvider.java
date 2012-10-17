@@ -23,7 +23,7 @@ public class ReportTemplateProvider implements SubreportProvider {
 
 	@Override
 	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
-		List<ReportTemplate> list = ReportTemplateDAO.fetchReportsByNames(reportNames);
+		List<ReportTemplate> list = ReportTemplateDAO.fetchByNames(reportNames);
 		Map<String, Subreport> map = new HashMap<String, Subreport>(list.size());
 
 		for (ReportTemplate temp : list) {

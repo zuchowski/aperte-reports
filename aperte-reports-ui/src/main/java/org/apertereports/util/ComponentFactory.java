@@ -318,7 +318,7 @@ public abstract class ComponentFactory {
 
 	public static ComboBox createReportTemplateCombo(ReportTemplate selectedValue, String captionKey) {
 		
-		Collection<ReportTemplate> allReports = ReportTemplateDAO.fetchAllReports(true);
+		Collection<ReportTemplate> allReports = ReportTemplateDAO.fetchAllActive();
 		ComboBox reports = new ComboBox(VaadinUtil.getValue(captionKey),
 				new BeanItemContainer<ReportTemplate>(ReportTemplate.class, allReports));
 		reports.setItemCaptionPropertyId("reportname");

@@ -63,7 +63,7 @@ public class ReportOrderPusher {
         if (alreadyExists) {
             return null;
         }
-        Long id = ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+        Long id = ReportOrderDAO.saveOrUpdate(reportOrder);
         reportOrder.setId(id);
         return reportOrder;
     }

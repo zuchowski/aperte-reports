@@ -14,7 +14,10 @@ import org.apertereports.common.utils.ExceptionUtils;
  */
 public class SQLUtil {
 
-    protected static SessionFactory sessions;
+    /**
+     * Session factory
+     */
+    protected static SessionFactory sessionFactory;
 
     /**
      * Static initializer of the session factory.
@@ -28,8 +31,8 @@ public class SQLUtil {
             Configuration annotationConfiguration = new AnnotationConfiguration();
             Configuration cfg = annotationConfiguration.configure("hibernate.cfg.xml");
 
-            sessions = cfg.buildSessionFactory();
-            sessions.getStatistics().setStatisticsEnabled(true);
+            sessionFactory = cfg.buildSessionFactory();
+            sessionFactory.getStatistics().setStatisticsEnabled(true);
         } catch (Exception e) {
             ExceptionUtils.logSevereException(e);
             throw new AperteReportsRuntimeException(e);
@@ -42,10 +45,10 @@ public class SQLUtil {
      * @return A new DAO session
      */
     public static Session getSession() {
-        if (sessions == null) {
+        if (sessionFactory == null) {
             configureSessions();
         }
-        return sessions.openSession();
+        return sessionFactory.openSession();
     }
 
     /**
@@ -54,12 +57,15 @@ public class SQLUtil {
      * @return A session factory
      */
     public static SessionFactory getSessionFactory() {
-        if (sessions == null) {
+        if (sessionFactory == null) {
             configureSessions();
         }
-        return sessions;
+        return sessionFactory;
     }
 
+    /**
+     * Creates new instance
+     */
     protected SQLUtil() {
     }
 }

@@ -58,7 +58,7 @@ public class BackgroundOrderProcessor implements MessageListener {
 		ReportOrder reportOrder = null;
 		try {
 			Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-			reportOrder = ReportOrderDAO.fetchReport(id);
+			reportOrder = ReportOrderDAO.fetchById(id);
 			processReport(reportOrder);
 			if (reportOrder != null) {
 				forwardResults(reportOrder);
@@ -68,7 +68,7 @@ public class BackgroundOrderProcessor implements MessageListener {
 			if (reportOrder != null) {
 				reportOrder.setReportStatus(Status.FAILED);
 				reportOrder.setErrorDetails(e.getMessage());
-				ReportOrderDAO.saveOrUpdateReportOrder(reportOrder);
+				ReportOrderDAO.saveOrUpdate(reportOrder);
 			}
 //			throw new AperteReportsRuntimeException(e);
 		}

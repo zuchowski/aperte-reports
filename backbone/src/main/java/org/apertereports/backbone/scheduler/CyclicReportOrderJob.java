@@ -44,14 +44,14 @@ public class CyclicReportOrderJob implements Job {
     private ReportOrder processOrder(JobDetail details) {
         String instName = details.getName();
         Long reportId = Long.valueOf(instName);
-        CyclicReportOrder cRO = org.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportOrder(reportId);
+        CyclicReportOrder cRO = org.apertereports.dao.CyclicReportOrderDAO.fetchById(reportId);
         ReportOrder newOrder = null;
         if (cRO != null && cRO.getProcessedOrder() == null) {
             Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(cRO.getParametersXml());
             newOrder = ReportOrderPusher.buildNewOrder(cRO.getReport(), params, cRO.getOutputFormat(),
                     cRO.getRecipientEmail(), null, ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT);
             cRO.setProcessedOrder(newOrder);
-            org.apertereports.dao.CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cRO);
+            org.apertereports.dao.CyclicReportOrderDAO.saveOrUpdate(cRO);
             ReportOrderPusher.addToJMS(newOrder.getId());
         }
         return newOrder;

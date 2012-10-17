@@ -47,7 +47,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	public void onMessage(Message message) {
 		try {
 			Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-			ReportOrder reportOrder = ReportOrderDAO.fetchReport(id);
+			ReportOrder reportOrder = ReportOrderDAO.fetchById(id);
 			processReport(reportOrder);
 		} catch (JMSException e) {
 			ExceptionUtils.logSevereException(e);
@@ -74,6 +74,6 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 			cyclicReportOrder.setReportOrder(reportOrder);
 		}
 
-		CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(cyclicReportOrder);
+		CyclicReportOrderDAO.saveOrUpdate(cyclicReportOrder);
 	}
 }

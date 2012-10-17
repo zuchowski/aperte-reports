@@ -154,7 +154,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
         }
         if (drillConfig.getReportId() == null) {
-            List<ReportTemplate> reportTemplates = org.apertereports.dao.ReportTemplateDAO.fetchReportsByName(reportName);
+            List<ReportTemplate> reportTemplates = org.apertereports.dao.ReportTemplateDAO.fetchByName(reportName);
             if (reportTemplates.size() == 0) {
                 throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_REPORT_NOT_FOUND);
             }
@@ -209,7 +209,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     @Override
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
-            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchReport(config.getReportId());
+            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(config.getReportId());
             if (report != null) {
                 reportMap.put(config.getReportId(), report);
             }
@@ -295,7 +295,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     }
                 }
             }
-            List<CyclicReportOrder> cyclicReports = org.apertereports.dao.CyclicReportOrderDAO.fetchCyclicReportsByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
+            List<CyclicReportOrder> cyclicReports = org.apertereports.dao.CyclicReportOrderDAO.fetchByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
             for (CyclicReportOrder rep : cyclicReports) {
                 ReportConfig rc = cyclicConfigMap.get(rep.getId());
                 rc.setReportId(rep.getReport().getId());
@@ -303,7 +303,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 cyclicReportMap.put(rep.getId(), rep);
             }
 
-            List<ReportTemplate> reports = org.apertereports.dao.ReportTemplateDAO.fetchReports(reportIds.toArray(new Integer[configIds.size()]));
+            List<ReportTemplate> reports = org.apertereports.dao.ReportTemplateDAO.fetchByIds(reportIds.toArray(new Integer[configIds.size()]));
             for (ReportTemplate rep : reports) {
                 reportMap.put(rep.getId(), rep);
             }

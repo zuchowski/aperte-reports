@@ -8,8 +8,10 @@ import org.hibernate.Transaction;
  * This generic class handles the opening and closing Hibernate session. It can
  * also wrap an invocation into transaction. Designed to be used as an inner
  * anonymous class.
+ *
+ * @param <ResultType> Type of result
  */
-public abstract class WHS<resultType> {
+public abstract class WHS<ResultType> {
 
     /**
      * A Hibernate session retrieved from {@link SQLUtil}.
@@ -18,11 +20,20 @@ public abstract class WHS<resultType> {
     /**
      * Indicates whether to use a transaction or not.
      */
-    private boolean transaction = true;
+    private boolean transaction;
 
+    /**
+     * Creates transactional WHS object
+     */
     public WHS() {
+        this(true);
     }
 
+    /**
+     * Creates WHS object. It can be transactional or not
+     *
+     * @param transaction Determines if WHS instance is transactional or not
+     */
     public WHS(boolean transaction) {
         this.transaction = transaction;
     }
@@ -32,7 +43,7 @@ public abstract class WHS<resultType> {
      *
      * @return Returns a result of type specified by the generic parameter.
      */
-    public abstract resultType lambda();
+    public abstract ResultType lambda();
 
     /**
      * The main workhorse of this class. Retrieves the session from {@link SQLUtil}
@@ -41,7 +52,7 @@ public abstract class WHS<resultType> {
      *
      * @return The object returned by {@link #lambda()}
      */
-    public resultType p() {
+    public ResultType p() {
         sess = SQLUtil.getSession();
         Transaction tx = null;
         try {
@@ -49,7 +60,7 @@ public abstract class WHS<resultType> {
             if (transaction) {
                 tx = sess.beginTransaction();
             }
-            resultType res = lambda();
+            ResultType res = lambda();
             if (transaction) {
                 tx.commit();
             }

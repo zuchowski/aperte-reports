@@ -110,7 +110,7 @@ public class EmailProcessor implements ConfigurationConstants {
 	 * specified by {@link org.apertereports.common.ConfigurationConstants}.
 	 */
 	private EmailProcessor() {
-		Collection<ConfigurationEntry> entries = org.apertereports.dao.ConfigurationDAO.loadAll();
+		Collection<ConfigurationEntry> entries = org.apertereports.dao.ConfigurationDAO.fetchAll();
 		for (ConfigurationEntry entry : entries) {
 			if (entry.getKey().equals(MESSAGE_PROVIDER_RESOURCE)) {
 				messageProviderResource = entry.getValue();

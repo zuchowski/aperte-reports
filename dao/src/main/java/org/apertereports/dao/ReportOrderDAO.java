@@ -23,7 +23,7 @@ public class ReportOrderDAO {
      *
      * @return A collection of report orders
      */
-    public static Collection<ReportOrder> fetchAllReportOrders() {
+    public static Collection<ReportOrder> fetchAll() {
         return new org.apertereports.dao.utils.WHS<Collection<ReportOrder>>() {
 
             @Override
@@ -37,16 +37,16 @@ public class ReportOrderDAO {
      * Returns a unique report order representation from database by primary
      * key.
      *
-     * @param reportId The primary key value.
+     * @param id The primary key value.
      * @return A report order or
      * <code>null</code> if not found
      */
-    public static ReportOrder fetchReport(final Long reportId) {
+    public static ReportOrder fetchById(final Long id) {
         return new org.apertereports.dao.utils.WHS<ReportOrder>() {
 
             @Override
             public ReportOrder lambda() {
-                ReportOrder ro = (ReportOrder) sess.createCriteria(ReportOrder.class).add(Restrictions.eq("id", reportId)).uniqueResult();
+                ReportOrder ro = (ReportOrder) sess.createCriteria(ReportOrder.class).add(Restrictions.eq("id", id)).uniqueResult();
                 return ro;
             }
         }.p();
@@ -58,7 +58,7 @@ public class ReportOrderDAO {
      *
      * @param reports An array of report orders to delete.
      */
-    public static void removeReportOrder(final ReportOrder... reports) {
+    public static void remove(final ReportOrder... reports) {
         new org.apertereports.dao.utils.WHS<Void>() {
 
             @Override
@@ -79,7 +79,7 @@ public class ReportOrderDAO {
      * @param reportOrder A report order
      * @return The id
      */
-    public static Long saveOrUpdateReportOrder(final ReportOrder reportOrder) {
+    public static Long saveOrUpdate(final ReportOrder reportOrder) {
         return new org.apertereports.dao.utils.WHS<Long>() {
 
             @Override
@@ -90,6 +90,12 @@ public class ReportOrderDAO {
         }.p();
     }
 
+    /**
+     * Counts report orders matching given filter
+     *
+     * @param filter Filter
+     * @return Number of matching report orders
+     */
     public static Integer countMatching(final String filter) {
         return new WHS<Integer>() {
 
@@ -100,6 +106,15 @@ public class ReportOrderDAO {
         }.p();
     }
 
+    /**
+     * Fetches cyclic report orders matching given filter starting from
+     * firstResult position. No more than maxResults is returned.
+     *
+     * @param filter Filter
+     * @param firstResult Index of the first result
+     * @param maxResults Number of maximum results
+     * @return A collection of mathing report orders
+     */
     public static Collection<ReportOrder> fetch(final String filter, final int firstResult, final int maxResults) {
         return new WHS<Collection<ReportOrder>>() {
 

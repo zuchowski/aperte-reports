@@ -187,7 +187,7 @@ public class CyclicReportsComponent extends Panel {
                     CyclicReportPanel.this.order.setEnabled(enabled);
                     container.setEnabled(enabled);
                     enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
-                    CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(CyclicReportPanel.this.order);
+                    CyclicReportOrderDAO.saveOrUpdate(CyclicReportPanel.this.order);
                     try {
                         if (enabled) {
                             CyclicReportOrderScheduler.rescheduleCyclicReportOrder(CyclicReportPanel.this.order);
@@ -251,7 +251,7 @@ public class CyclicReportsComponent extends Panel {
         }
 
         protected void remove() {
-            CyclicReportOrderDAO.removeCyclicReportOrder(order);
+            CyclicReportOrderDAO.remove(order);
             list.removeComponent(this);
 
         }
@@ -292,7 +292,7 @@ public class CyclicReportsComponent extends Panel {
                     }
                     order.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(
                             paramsPanel.collectParametersValues()));
-                    CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(order);
+                    CyclicReportOrderDAO.saveOrUpdate(order);
                 }
             });
             ComponentFactory.createButton(PARAMS_FORM_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
@@ -365,7 +365,7 @@ public class CyclicReportsComponent extends Panel {
         protected void save() {
             try {
                 form.commit();
-                CyclicReportOrderDAO.saveOrUpdateCyclicReportOrder(order);
+                CyclicReportOrderDAO.saveOrUpdate(order);
                 list.replaceComponent(this, new CyclicReportPanel(order));
             } catch (InvalidValueException e) {
                 ExceptionUtils.logWarningException("Edit cyclic report: invalid user input", e);

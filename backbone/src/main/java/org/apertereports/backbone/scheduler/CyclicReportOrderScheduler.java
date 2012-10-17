@@ -120,7 +120,7 @@ public class CyclicReportOrderScheduler {
             for (String jobName : jobNames) {
                 sched.deleteJob(jobName, CyclicReportOrder.class.toString());
             }
-            Collection<CyclicReportOrder> cROs = org.apertereports.dao.CyclicReportOrderDAO.fetchAllCyclicReportOrders();
+            Collection<CyclicReportOrder> cROs = org.apertereports.dao.CyclicReportOrderDAO.fetchAll();
             for (CyclicReportOrder cRO : cROs) {
                 scheduleCyclicReportOrder(cRO);
             }

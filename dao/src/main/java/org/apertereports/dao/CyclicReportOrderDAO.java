@@ -18,11 +18,11 @@ import java.util.*;
 public class CyclicReportOrderDAO {
 
     /**
-     * Returns all cyclic reports from database.
+     * Returns all cyclic report orders from database.
      *
-     * @return A collection of cyclic reports
+     * @return A collection of cyclic report orders
      */
-    public static Collection<CyclicReportOrder> fetchAllCyclicReportOrders() {
+    public static Collection<CyclicReportOrder> fetchAll() {
         return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
 
             @Override
@@ -33,18 +33,33 @@ public class CyclicReportOrderDAO {
     }
 
     /**
+     * Returns all enabled cyclic report orders from database.
+     *
+     * @return A collection of enabled cyclic report orders
+     */
+    public static Collection<CyclicReportOrder> fetchAllEnabled() {
+        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
+
+            @Override
+            public Collection<CyclicReportOrder> lambda() {
+                return sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("enabled", true)).list();
+            }
+        }.p();
+    }
+
+    /**
      * Returns a unique cyclic report representation from database by primary
      * key.
      *
-     * @param reportId Primary key value.
-     * @return A cyclic report corresponding to the given id
+     * @param templateId Id of report template used in cyclic reports.
+     * @return A cyclic report corresponding to the template with given id.
      */
-    public static CyclicReportOrder fetchCyclicReportOrder(final Long reportId) {
+    public static CyclicReportOrder fetchByTemplateId(final Long templateId) {
         return new org.apertereports.dao.utils.WHS<CyclicReportOrder>() {
 
             @Override
             public CyclicReportOrder lambda() {
-                CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("id", reportId)).uniqueResult();
+                CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("id", templateId)).uniqueResult();
                 return cro;
             }
         }.p();
@@ -73,7 +88,7 @@ public class CyclicReportOrderDAO {
      *
      * @param reports An array of cyclic reports to remove
      */
-    public static void removeCyclicReportOrder(final CyclicReportOrder... reports) {
+    public static void remove(final CyclicReportOrder... reports) {
         new org.apertereports.dao.utils.WHS<Boolean>() {
 
             @Override
@@ -95,7 +110,7 @@ public class CyclicReportOrderDAO {
      * @param cyclicReportOrder A cyclic report to save.
      * @return id The cyclic report id
      */
-    public static Long saveOrUpdateCyclicReportOrder(final CyclicReportOrder cyclicReportOrder) {
+    public static Long saveOrUpdate(final CyclicReportOrder cyclicReportOrder) {
         return new org.apertereports.dao.utils.WHS<Long>() {
 
             @Override
@@ -107,16 +122,19 @@ public class CyclicReportOrderDAO {
     }
 
     /**
-     * Returns all enabled cyclic report orders from database.
+     * Returns a unique cyclic report representation from database by primary
+     * key.
      *
-     * @return A collection of enabled cyclic report orders.
+     * @param id Primary key value of {@link org.apertereports.model.CyclicReportOrder}
+     * @return A cyclic report corresponding to the given id
      */
-    public static Collection<CyclicReportOrder> fetchAllEnabledCyclicReports() {
-        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
+    public static CyclicReportOrder fetchById(final Long id) {
+        return new org.apertereports.dao.utils.WHS<CyclicReportOrder>() {
 
             @Override
-            public Collection<CyclicReportOrder> lambda() {
-                return sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("enabled", true)).list();
+            public CyclicReportOrder lambda() {
+                CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("id", id)).uniqueResult();
+                return cro;
             }
         }.p();
     }
@@ -124,19 +142,19 @@ public class CyclicReportOrderDAO {
     /**
      * Returns a list of cyclic report orders relevant to given ids.
      *
-     * @param reportIds An array of {@link org.apertereports.model.CyclicReportOrder}
+     * @param ids An array of {@link org.apertereports.model.CyclicReportOrder}
      * primary key values.
      * @return A list of cyclic report orders
      */
-    public static List<CyclicReportOrder> fetchCyclicReportsByIds(final Long... reportIds) {
+    public static List<CyclicReportOrder> fetchByIds(final Long... ids) {
         return new org.apertereports.dao.utils.WHS<List<CyclicReportOrder>>(false) {
 
             @Override
             public List<CyclicReportOrder> lambda() {
-                if (reportIds.length == 0) {
+                if (ids.length == 0) {
                     return new ArrayList<CyclicReportOrder>();
                 }
-                List<CyclicReportOrder> list = sess.createCriteria(CyclicReportOrder.class).add(Restrictions.in("id", reportIds)).list();
+                List<CyclicReportOrder> list = sess.createCriteria(CyclicReportOrder.class).add(Restrictions.in("id", ids)).list();
                 if (list == null || list.size() == 0) {
                     return new ArrayList<CyclicReportOrder>();
                 }
@@ -175,6 +193,12 @@ public class CyclicReportOrderDAO {
         }.p();
     }
 
+    /**
+     * Counts cyclic report orders matching given filter
+     *
+     * @param filter Filter
+     * @return Number of matching cyclic report orders
+     */
     public static Integer countMatching(final String filter) {
         return new WHS<Integer>() {
 
@@ -185,6 +209,15 @@ public class CyclicReportOrderDAO {
         }.p();
     }
 
+    /**
+     * Fetches cyclic report orders matching given filter starting from
+     * firstResult position. No more than maxResults is returned.
+     *
+     * @param filter Filter
+     * @param firstResult Index of the first result
+     * @param maxResults Number of maximum results
+     * @return A collection of mathing cyclic report orders
+     */
     public static Collection<CyclicReportOrder> fetch(final String filter, final int firstResult, final int maxResults) {
         return new WHS<Collection<CyclicReportOrder>>() {
 

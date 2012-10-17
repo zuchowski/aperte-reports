@@ -80,11 +80,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             reportConfig = getCurrentConfig();
 
-            ReportTemplate selectedReport = null;
-            List<ReportTemplate> reports = ReportTemplateDAO.fetchReports(reportConfig.getReportId());
-            if (reports != null && reports.size() == 1) {
-                selectedReport = reports.get(0);
-            }
+            ReportTemplate selectedReport = ReportTemplateDAO.fetchById(reportConfig.getReportId());
 
             layout = new GridLayout(2, 3);
             layout.setSpacing(true);
