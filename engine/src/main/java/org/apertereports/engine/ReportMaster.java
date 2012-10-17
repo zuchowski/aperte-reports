@@ -597,7 +597,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         Object locale = reportParameters.get(JRParameter.REPORT_LOCALE);
         if (locale != null) {
             if (locale instanceof String) {
-                locale = LocaleUtils.createLocale((String)locale);
+                locale = LocaleUtils.createLocale((String) locale);
             } else if (!(locale instanceof Locale)) {
                 locale = null;
             }

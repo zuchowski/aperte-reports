@@ -33,12 +33,14 @@ import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import static org.apertereports.common.ReportConstants.ReportType;
 
 /**
- * A helper class that manages the creation of the layouts containing generated report HTML data.
- * It transforms the tags from input HTML into <code>div</code> tags and a corresponding report data.
- * The resulting transformed HTML is then fed to a {@link CustomLayout} widget which is filled
+ * A helper class that manages the creation of the layouts containing generated
+ * report HTML data. It transforms the tags from input HTML into
+ * <code>div</code> tags and a corresponding report data. The resulting
+ * transformed HTML is then fed to a {@link CustomLayout} widget which is filled
  * with generated components.
  */
 public class HtmlReportBuilder {
+
     /**
      * Tags for identification.
      */
@@ -46,7 +48,6 @@ public class HtmlReportBuilder {
     private static final String REPORT_TAG = "report";
     private static final String DRILLDOWN_TAG = "drilldown";
     private static final String CHART_TAG = "chart";
-
     /**
      * Processed HTML buffer.
      */
@@ -59,7 +60,6 @@ public class HtmlReportBuilder {
      * Generated components for reports containing drilldowns.
      */
     private Map<String, Map<String, Component>> customComponentMap = new HashMap<String, Map<String, Component>>();
-
     /**
      * The bean that provides the data for the reports.
      */
@@ -68,7 +68,6 @@ public class HtmlReportBuilder {
      * Output custom layout
      */
     private CustomLayout layout;
-
     private Application application;
 
     public HtmlReportBuilder(Application application, ReportDataProvider provider) {
@@ -80,7 +79,8 @@ public class HtmlReportBuilder {
      * Creates a custom layout from the buffered HTML and generated components.
      *
      * @return A custom layout
-     * @throws IOException if the {@link CustomLayout} component initialization fails
+     * @throws IOException if the {@link CustomLayout} component initialization
+     * fails
      */
     public CustomLayout createLayout() throws IOException {
         layout = new CustomLayout(new ByteArrayInputStream(contentBuffer.toString().getBytes()));
@@ -104,9 +104,11 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Adds a report chunk based on passed report configs. At first, the method generates
-     * a new component for a given config and attaches it to the component map.
-     * <p/>The component map is later used to fill in the output {@link CustomLayout}.
+     * Adds a report chunk based on passed report configs. At first, the method
+     * generates a new component for a given config and attaches it to the
+     * component map.
+     * <p/>
+     * The component map is later used to fill in the output {@link CustomLayout}.
      *
      * @param config The main report config
      * @param xlsConfig An optional XLS config
@@ -135,19 +137,25 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Creates the on demand report generation buttons. These are displayed just above the displayed dashboard.
-     * <p/>A special handling procedure was introduced for XLS format. Each report tag can include
-     * an optional <code>xlsidx</code> parameter which is the id of the XLS config. When the XLS generation
-     * is pressed the other config is used rather than the config which stands for <code>idx</code> parameter.
+     * Creates the on demand report generation buttons. These are displayed just
+     * above the displayed dashboard.
+     * <p/>
+     * A special handling procedure was introduced for XLS format. Each report
+     * tag can include an optional
+     * <code>xlsidx</code> parameter which is the id of the XLS config. When the
+     * XLS generation is pressed the other config is used rather than the config
+     * which stands for
+     * <code>idx</code> parameter.
      *
      * @param config The main report config
-     * @param parentConfig The parent report config in case of a drilldowned report
+     * @param parentConfig The parent report config in case of a drilldowned
+     * report
      * @param xlsConfig An optional XLS report config
      * @param componentId The output component id
      * @return A horizontal layout with buttons
      */
     private HorizontalLayout createReportButtons(final ReportConfig config, final ReportConfig parentConfig,
-                                                 final ReportConfig xlsConfig, final String componentId) {
+            final ReportConfig xlsConfig, final String componentId) {
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setSpacing(true);
 
@@ -155,6 +163,7 @@ public class HtmlReportBuilder {
             Button b = new Button(VaadinUtil.getValue("dashboard.view.drill.up"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
+
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     returnFromDrill(config, parentConfig, componentId);
@@ -166,12 +175,12 @@ public class HtmlReportBuilder {
             Button b = new Button(format);
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
+
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     if ("XLS".equalsIgnoreCase(format) && xlsConfig != null) {
                         handleDownloadRequest(xlsConfig, format);
-                    }
-                    else {
+                    } else {
                         handleDownloadRequest(config, format);
                     }
                 }
@@ -181,6 +190,7 @@ public class HtmlReportBuilder {
             Button b = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
+
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     refreshReport(config);
@@ -189,7 +199,7 @@ public class HtmlReportBuilder {
         }
 
         boolean first = true;
-        for (Iterator<Component> it = buttons.getComponentIterator(); it.hasNext(); ) {
+        for (Iterator<Component> it = buttons.getComponentIterator(); it.hasNext();) {
             Component c = it.next();
             buttons.setComponentAlignment(c, Alignment.MIDDLE_RIGHT);
             if (first) {
@@ -204,9 +214,9 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Handles the download report request based on a given {@link ReportConfig} and the format.
-     * The data is fetched without caching which means the generated report saved provided by the download popup
-     * is up to date.
+     * Handles the download report request based on a given {@link ReportConfig}
+     * and the format. The data is fetched without caching which means the
+     * generated report saved provided by the download popup is up to date.
      *
      * @param config A report config
      * @param format Output format
@@ -247,11 +257,15 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Creates a {@link CustomLayout} widget based on the generated Jasper HTML report and the report config.
+     * Creates a {@link CustomLayout} widget based on the generated Jasper HTML
+     * report and the report config.
      *
      * @param config The report config
-     * @param cached <code>TRUE</code> if the data can be fetched from the cache. <code>FALSE</code> otherwise.
-     * @return A widget containing <code>div</code> anchors for the report and the drilldowns
+     * @param cached
+     * <code>TRUE</code> if the data can be fetched from the cache.
+     * <code>FALSE</code> otherwise.
+     * @return A widget containing
+     * <code>div</code> anchors for the report and the drilldowns
      */
     private CustomLayout createReportComponent(ReportConfig config, boolean cached) {
         Pair<JasperPrint, byte[]> reportData = provider.provideReportData(config, ReportType.HTML, cached);
@@ -269,8 +283,7 @@ public class HtmlReportBuilder {
             reportLayout = new CustomLayout(new ByteArrayInputStream(reportHtml.getBytes()));
             reportLayout.setSizeUndefined();
             reportLayout.setWidth(100, UNITS_PERCENTAGE);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.logSevereException(e);
             throw new RuntimeException(e);
         }
@@ -279,10 +292,13 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Analyzes the input report HTML source in search of report tags. Each tag is then replaced
-     * with a <code>div</code> anchor. The anchor is later substituted by an {@link Embedded} widget
-     * that displays the actual generated report.
-     * <p/>The resulting HTML (without report tags) is later fed to a {@link CustomLayout} component.
+     * Analyzes the input report HTML source in search of report tags. Each tag
+     * is then replaced with a
+     * <code>div</code> anchor. The anchor is later substituted by an {@link Embedded}
+     * widget that displays the actual generated report.
+     * <p/>
+     * The resulting HTML (without report tags) is later fed to a {@link CustomLayout}
+     * component.
      *
      * @param reportHtml Input report HTML source
      * @param jasperPrint The report data in form of a {@link JasperPrint}
@@ -293,6 +309,7 @@ public class HtmlReportBuilder {
         final StringBuilder builder = new StringBuilder();
         final int[] index = {0};
         DashboardUtil.executeTemplateMatcher(reportHtml, DashboardUtil.CHART_TAG_PATTERN, new DashboardUtil.MatchHandler() {
+
             @Override
             public void handleMatch(int start, int end, String match) {
                 builder.append(reportHtml.substring(index[0], start));
@@ -315,8 +332,7 @@ public class HtmlReportBuilder {
                             builder.append(createDivAnchor(componentId));
                             addReportComponent(img, componentId, config);
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
@@ -330,7 +346,8 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Adds a report component based on a given report config to generated components map.
+     * Adds a report component based on a given report config to generated
+     * components map.
      *
      * @param comp The generated component
      * @param componentId Component identifier
@@ -347,9 +364,11 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Analyzes the input report HTML source in search of drilldown tags. Each tag is then replaced
-     * with a <code>div</code> anchor. The anchor is later substituted by an active link component
-     * when the resulting HTML (without drilldown tags) is fed to a {@link CustomLayout} component.
+     * Analyzes the input report HTML source in search of drilldown tags. Each
+     * tag is then replaced with a
+     * <code>div</code> anchor. The anchor is later substituted by an active
+     * link component when the resulting HTML (without drilldown tags) is fed to
+     * a {@link CustomLayout} component.
      *
      * @param reportHtml The report HTML source
      * @param config A report config relevant to the HTML source
@@ -359,6 +378,7 @@ public class HtmlReportBuilder {
         final StringBuilder builder = new StringBuilder();
         final int[] index = {0}, drilldownId = {0};
         DashboardUtil.executeTemplateMatcher(reportHtml, DashboardUtil.DRILLDOWN_TAG_PATTERN, new DashboardUtil.MatchHandler() {
+
             @Override
             public void handleMatch(int start, int end, String match) {
                 builder.append(reportHtml.substring(index[0], start));
@@ -377,6 +397,7 @@ public class HtmlReportBuilder {
                                 link.addStyleName(params.get("style"));
                             }
                             link.addListener(new ActiveLink.LinkActivatedListener() {
+
                                 @Override
                                 public void linkActivated(ActiveLink.LinkActivatedEvent event) {
                                     openDrilldown(config, hyperlinkParams, componentId);
@@ -385,8 +406,7 @@ public class HtmlReportBuilder {
                             builder.append(createDivAnchor(componentId));
                             addReportComponent(link, componentId, config);
                         }
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         ExceptionUtils.logSevereException(e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
@@ -400,7 +420,8 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Replaces the navigated drilldown component with a previously rendered one.
+     * Replaces the navigated drilldown component with a previously rendered
+     * one.
      *
      * @param childConfig The config to return from
      * @param parentConfig The config to return to
@@ -423,8 +444,8 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Navigates to the drilldowned report. Replaces the report that contained the drilldown
-     * with a report generated from the drilldown.
+     * Navigates to the drilldowned report. Replaces the report that contained
+     * the drilldown with a report generated from the drilldown.
      *
      * @param parentConfig The report config that we are leaving
      * @param params Report generator parameters
@@ -455,8 +476,8 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Converts a {@link JasperPrint} to a {@link StreamResource} so that {@link Embedded} can use it and
-     * display in the dashboard component.
+     * Converts a {@link JasperPrint} to a {@link StreamResource} so that {@link Embedded}
+     * can use it and display in the dashboard component.
      *
      * @param imageId The identifier of the image
      * @param jasperPrint Input Jasper print
@@ -477,6 +498,7 @@ public class HtmlReportBuilder {
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(renderer.getImageData());
 
         StreamResource streamResource = new StreamResource(new StreamResource.StreamSource() {
+
             @Override
             public InputStream getStream() {
                 return inputStream;
@@ -488,9 +510,12 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Creates a <code>div</code> anchor string which can be attached to a {@link CustomLayout} component.
+     * Creates a
+     * <code>div</code> anchor string which can be attached to a {@link CustomLayout}
+     * component.
      *
-     * @param componentId Component id to be displayed within the <code>div</code>
+     * @param componentId Component id to be displayed within the
+     * <code>div</code>
      * @return Wrapped string
      */
     private String createDivAnchor(String componentId) {
