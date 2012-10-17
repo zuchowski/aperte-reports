@@ -2,6 +2,7 @@ package org.apertereports.dashboard.html;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import static org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.exception.AperteReportsRuntimeException;
 
 /**
  * A helper class that manages the creation of the layouts containing generated
@@ -268,7 +270,37 @@ public class HtmlReportBuilder {
      * <code>div</code> anchors for the report and the drilldowns
      */
     private CustomLayout createReportComponent(ReportConfig config, boolean cached) {
-        Pair<JasperPrint, byte[]> reportData = provider.provideReportData(config, ReportType.HTML, cached);
+        Pair<JasperPrint, byte[]> reportData;
+        try {
+            reportData = provider.provideReportData(config, ReportType.HTML, cached);
+        } catch (AperteReportsRuntimeException e) {
+            try {
+                String layout = "<div location=\"errorLabel\"></div>";
+                String msg = "<b><span style=\"color:red\">"
+                        + VaadinUtil.getValue("dashboard.report.creation.error") + "</span></b>";
+                msg += "<br>";
+
+                msg += VaadinUtil.getValue(e.getLocalizationPrefix() + ".title");
+                String description = "<br/>"
+                        + VaadinUtil.getValue(e.getLocalizationPrefix() + ".desc", e.getErrorDetails());
+                if (e.getCause() != null && e.getCause().getLocalizedMessage() != null) {
+                    description += "<br/>" + e.getCause().getLocalizedMessage();
+                }
+                msg += description;
+                Label l = new Label(msg, Label.CONTENT_RAW);
+
+                CustomLayout cl = new CustomLayout(new ByteArrayInputStream(layout.getBytes()));
+                cl.addComponent(l, "errorLabel");
+
+                cl.setSizeUndefined();
+                cl.setWidth(100, UNITS_PERCENTAGE);
+                return cl;
+            } catch (IOException ex) {
+                ExceptionUtils.logSevereException(ex);
+                throw new RuntimeException(ex);
+            }
+        }
+
         if (reportData == null) {
             return null;
         }

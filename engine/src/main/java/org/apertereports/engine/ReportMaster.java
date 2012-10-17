@@ -375,6 +375,8 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         try {
             JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration, dataSource);
             return jasperPrint;
+        } catch (JRFontNotFoundException e) {
+            throw new AperteReportsException(ErrorCodes.FONT_NOT_FOUND);
         } catch (Exception e) {
             throw new AperteReportsException(e);
         }
@@ -506,9 +508,6 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                             ErrorCodes.INVALID_DATASOURCE_TYPE);
                 }
             }
-
-        } catch (JRFontNotFoundException e) {
-            throw new AperteReportsRuntimeException(ErrorCodes.FONT_NOT_FOUND);
         } finally {
             if (connection != null) {
                 connection.close();

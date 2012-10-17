@@ -36,6 +36,7 @@ import org.apertereports.util.cache.MapCache;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Panel;
+import org.apertereports.common.exception.AperteReportsException;
 
 /**
  * This component is used to display the generated reports in the portlet. It
@@ -265,6 +266,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
             return new Pair<JasperPrint, byte[]>(jasperPrint, data);
 
+        } catch (AperteReportsException e) {
+            throw new AperteReportsRuntimeException(e);
         } catch (Exception e) {
             throw new AperteReportsRuntimeException(e);
         }

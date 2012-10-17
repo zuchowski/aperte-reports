@@ -53,7 +53,7 @@ public class NotificationUtil {
         String title = VaadinUtil.getValue(exception.getLocalizationPrefix() + ".title");
         String description = "<br/>"
                 + VaadinUtil.getValue(exception.getLocalizationPrefix() + ".desc", exception.getErrorDetails());
-        if (exception.getCause() != null) {
+        if (exception.getCause() != null && exception.getCause().getLocalizedMessage() != null) {
             description += "<br/>" + exception.getCause().getLocalizedMessage();
         }
         window.showNotification(title, description, TYPE_ERROR_MESSAGE);
