@@ -5,8 +5,10 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 /**
- * A persistent representation of a cyclic report generation order. The entries are held in the <code>public</code> schema
- * in a table named <code>ar_cyclic_report_order</code>.
+ * A persistent representation of a cyclic report generation order. The entries
+ * are held in the
+ * <code>public</code> schema in a table named
+ * <code>ar_cyclic_report_order</code>.
  */
 @Entity
 @Table(name = "ar_cyclic_report_order")
@@ -28,7 +30,6 @@ public class CyclicReportOrder {
         this.reportOrder = order.getReportOrder();
         this.componentId = order.getComponentId();
     }
-
     /**
      * An identifier used by GUI to mark the object.
      */
@@ -42,7 +43,6 @@ public class CyclicReportOrder {
     public void setComponentId(Integer componentId) {
         this.componentId = componentId;
     }
-
     /**
      * Primary key.
      */
@@ -50,19 +50,16 @@ public class CyclicReportOrder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, length = 10)
     private Long id;
-
     /**
      * Cron expression. Specifies the frequency of generation of the report.
      */
     @Column(name = "cron_spec")
     private String cronSpec;
-
     /**
      * Indicates whether a cyclic report is enabled or disabled.
      */
     @Column
     private Boolean enabled;
-
     /**
      * Report input parameters formatted as XML.
      */
@@ -70,19 +67,16 @@ public class CyclicReportOrder {
     @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "parameters_xml")
     private String parametersXml;
-
     /**
      * Output format.
      */
     @Column(name = "output_format")
     private String outputFormat;
-
     /**
      * Displayed description.
      */
     @Column(name = "description")
     private String description;
-
     /**
      * Template of a report that has been ordered.
      */
@@ -94,18 +88,15 @@ public class CyclicReportOrder {
     @ManyToOne
     @JoinColumn(name = "report_order_id")
     private ReportOrder reportOrder;
-
     /**
-     * Report due to be executed.
-     * Deleted after execution (successful or not).
+     * Report due to be executed. Deleted after execution (successful or not).
      */
     @ManyToOne
     @JoinColumn(name = "processed_order_id")
     private ReportOrder processedOrder;
-
     /**
-     * Email address of an user to receive report results or to be
-     * notified of execution failure.
+     * Email address of an user to receive report results or to be notified of
+     * execution failure.
      */
     @Column(name = "recipient_email")
     private String recipientEmail;
