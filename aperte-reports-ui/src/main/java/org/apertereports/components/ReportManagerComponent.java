@@ -36,6 +36,9 @@ import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.dao.CyclicReportOrderDAO;
+import org.apertereports.dao.ReportOrderDAO;
+import org.apertereports.model.CyclicReportOrder;
 
 /**
  * Component to manage reports.
@@ -76,6 +79,9 @@ public class ReportManagerComponent extends Panel {
     private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
     private static final String DUPLICATE_REPORT_NAME_DESC = "exception.duplicate_report_name.desc";
     private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
+    private static final String MSG_REMOVING_REPORT = "report.manager.removing.report";
+    private static final String MSG_REPORT_IS_USED = "report.manager.report.is.used";
+    private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
     private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
     private ReportReceiver newReportReceiver;
 
@@ -435,9 +441,40 @@ public class ReportManagerComponent extends Panel {
 
     }
 
-    private void remove(ReportItemPanel reportItemPanel) {
-        ReportTemplateDAO.remove(reportItemPanel.reportTemplate);
-        list.removeComponent(reportItemPanel);
+    private void removeReportAndDependants(ReportItemPanel panel, ReportTemplate reportTemplate, Collection<CyclicReportOrder> cyclic,
+            Collection<ReportOrder> orders) {
+
+        if (cyclic != null && !cyclic.isEmpty()) {
+            CyclicReportOrderDAO.remove(cyclic);
+        }
+        if (orders != null && !orders.isEmpty()) {
+            ReportOrderDAO.remove(orders);
+        }
+        ReportTemplateDAO.remove(reportTemplate);
+        list.removeComponent(panel);
+    }
+
+    private void remove(final ReportItemPanel reportItemPanel) {
+        final ReportTemplate rt = reportItemPanel.reportTemplate;
+        final Collection<CyclicReportOrder> cyclic = CyclicReportOrderDAO.fetchByTemplateId(rt.getId());
+        final Collection<ReportOrder> orders = ReportOrderDAO.fetchByTemplateId(rt.getId());
+        if (!cyclic.isEmpty()) {
+            NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue(MSG_REMOVING_REPORT, rt.getReportname()),
+                    VaadinUtil.getValue(MSG_REPORT_IS_USED)
+                    + "</br>" + VaadinUtil.getValue(MSG_DO_YOU_WANT_TO_CONTINUE), new NotificationUtil.ConfirmListener() {
+
+                @Override
+                public void onConfirm() {
+                    removeReportAndDependants(reportItemPanel, rt, cyclic, orders);
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+        } else {
+            removeReportAndDependants(reportItemPanel, rt, cyclic, orders);
+        }
     }
 
     /**

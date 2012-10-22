@@ -53,6 +53,32 @@ public class ReportOrderDAO {
     }
 
     /**
+     * Returns a unique cyclic report representation from database by primary
+     * key.
+     *
+     * @param templateId Id of report template used in cyclic reports.
+     * @return A cyclic report corresponding to the template with given id.
+     */
+    public static Collection<ReportOrder> fetchByTemplateId(final Integer templateId) {
+        return new org.apertereports.dao.utils.WHS<Collection<ReportOrder>>() {
+
+            @Override
+            public Collection<ReportOrder> lambda() {
+                return sess.createCriteria(ReportOrder.class).createCriteria("report").add(Restrictions.eq("id", templateId)).list();
+            }
+        }.p();
+    }
+
+    /**
+     * Removes all given cyclic report orders from database.
+     *
+     * @param reports A collection of cyclic reports to remove
+     */
+    public static void remove(Collection<ReportOrder> reports) {
+        remove(reports.toArray(new ReportOrder[0]));
+    }
+
+    /**
      * Removes all the report orders from the given report order array from
      * database.
      *

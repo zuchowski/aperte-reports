@@ -81,6 +81,7 @@ public class CyclicReportOrder {
      * Template of a report that has been ordered.
      */
     @ManyToOne
+    @JoinColumn(name = "report_id")
     private ReportTemplate report;
     /**
      * Last successful report.
