@@ -275,7 +275,7 @@ public class HtmlReportBuilder {
             reportData = provider.provideReportData(config, ReportType.HTML, cached);
         } catch (AperteReportsRuntimeException e) {
             try {
-                String layout = "<div location=\"errorLabel\"></div>";
+                String errorLayout = "<div location=\"errorLabel\"></div>";
                 String msg = "<b><span style=\"color:red\">"
                         + VaadinUtil.getValue("dashboard.report.creation.error") + "</span></b>";
                 msg += "<br>";
@@ -289,11 +289,14 @@ public class HtmlReportBuilder {
                 msg += description;
                 Label l = new Label(msg, Label.CONTENT_RAW);
 
-                CustomLayout cl = new CustomLayout(new ByteArrayInputStream(layout.getBytes()));
+                CustomLayout cl = new CustomLayout(new ByteArrayInputStream(errorLayout.getBytes()));
                 cl.addComponent(l, "errorLabel");
 
                 cl.setSizeUndefined();
                 cl.setWidth(100, UNITS_PERCENTAGE);
+
+                ExceptionUtils.logSevereException(e);
+
                 return cl;
             } catch (IOException ex) {
                 ExceptionUtils.logSevereException(ex);

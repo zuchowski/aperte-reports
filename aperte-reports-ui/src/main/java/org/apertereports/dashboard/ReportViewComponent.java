@@ -239,7 +239,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             if (jasperPrint == null) {
                 ReportTemplate report = provideReportTemplate(config);
                 if (report == null) {
-                    throw new IllegalStateException("Report template not found");
+                    throw new AperteReportsException(ErrorCodes.REPORT_TEMPLATE_NOT_FOUND);
                 }
                 ReportMaster reportMaster = new ReportMaster(report.getContent(), report.getId().toString(),
                         new ReportTemplateProvider());
