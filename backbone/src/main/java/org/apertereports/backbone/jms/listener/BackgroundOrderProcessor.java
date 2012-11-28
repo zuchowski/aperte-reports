@@ -18,6 +18,8 @@ import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportOrder.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Singleton {@link MessageListener} implementation that asynchronously receives
@@ -26,6 +28,7 @@ import org.apertereports.model.ReportOrder.Status;
  */
 public class BackgroundOrderProcessor implements MessageListener {
 
+    private static final Logger logger = LoggerFactory.getLogger(BackgroundOrderProcessor.class.getName());
     /**
      * Singleton
      */
@@ -52,11 +55,14 @@ public class BackgroundOrderProcessor implements MessageListener {
      */
     @Override
     public void onMessage(Message message) {
+        logger.info("Message incomming...");
         ReportOrder reportOrder = null;
         try {
             Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
+            logger.info("Order id: " + id + ", generating report...");
             reportOrder = ReportOrderDAO.fetchById(id);
             processReport(reportOrder);
+            logger.info("Order id: " + id + ", generation finished");
             if (reportOrder != null) {
                 forwardResults(reportOrder);
             }
@@ -88,8 +94,7 @@ public class BackgroundOrderProcessor implements MessageListener {
      */
     private void forwardResults(ReportOrder reportOrder) throws Exception {
         if (StringUtils.isNotEmpty(reportOrder.getRecipientEmail())) {
-            ExceptionUtils.logDebugMessage("ReportOrder id: " + reportOrder.getId() + " sending email to: "
-                    + reportOrder.getRecipientEmail());
+            logger.info("Forwarding order, id: " + reportOrder.getId() + ", to " + reportOrder.getRecipientEmail());
             try {
                 EmailProcessor.getInstance().processEmail(reportOrder);
             } catch (Exception e) {

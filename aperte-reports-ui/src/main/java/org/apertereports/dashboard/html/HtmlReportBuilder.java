@@ -295,8 +295,6 @@ public class HtmlReportBuilder {
                 cl.setSizeUndefined();
                 cl.setWidth(100, UNITS_PERCENTAGE);
 
-                ExceptionUtils.logSevereException(e);
-
                 return cl;
             } catch (IOException ex) {
                 ExceptionUtils.logSevereException(ex);

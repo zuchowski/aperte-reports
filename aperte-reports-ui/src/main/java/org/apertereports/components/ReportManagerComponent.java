@@ -39,6 +39,8 @@ import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.CyclicReportOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Component to manage reports.
@@ -49,6 +51,7 @@ import org.apertereports.model.CyclicReportOrder;
 @SuppressWarnings("serial")
 public class ReportManagerComponent extends Panel {
 
+    private static final Logger logger = LoggerFactory.getLogger(ReportManagerComponent.class.getName());
     private static final int PAGE_SIZE = 10;
     private static final String DESC_STYLE = "small";
     private static final String CHANGED_DATE_STYLE = "h3";
@@ -401,6 +404,7 @@ public class ReportManagerComponent extends Panel {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    logger.info("Generate in background action...");
                     Map<String, String> parameters = panel.collectParametersValues();
                     String email = UserUtil.getUserEmail();
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
@@ -410,7 +414,10 @@ public class ReportManagerComponent extends Panel {
                             panel.getOuptutFormat(), email, UserUtil.getUsername(), null);
                     Long id = reportOrder.getId();
                     if (id != null) {
+                        logger.info("Report order id: " + id);
                         ReportOrderPusher.addToJMS(id);
+                    } else {
+                        logger.warn("Report order id is null, no raport will be generated");
                     }
                 }
             });
