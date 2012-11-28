@@ -63,7 +63,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
         refresh();
     }
 
-    private void refresh() {
+    public void refresh() {
 
         Collection<O> list = fetch(filter, calculateFirstResult(), pageSize);
         removeAllComponents();

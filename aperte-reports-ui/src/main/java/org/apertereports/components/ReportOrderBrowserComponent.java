@@ -22,13 +22,9 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
 
 @SuppressWarnings("serial")
@@ -42,6 +38,7 @@ public class ReportOrderBrowserComponent extends Panel {
     private static final String REPORTNAME_STYLE = "h4";
     private static final String REPORTNAME = "reportname";
     private static final String REPORT_STATUS = "reportStatus";
+    private static final String BUTTON_REFRESH = "button.refresh";
     private PaginatedPanelList<ReportOrder, ReportOrderPanel> list;
 
     public ReportOrderBrowserComponent() {
@@ -54,14 +51,36 @@ public class ReportOrderBrowserComponent extends Panel {
     }
 
     private void init() {
+        HorizontalLayout hl = new HorizontalLayout();
 
-        ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField searchField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
-        }, this);
+        }, hl);
+        searchField.setWidth("150px");
+
+        Label gap = new Label();
+        gap.setWidth("10px");
+        hl.addComponent(gap);
+
+        Label expandedGap = new Label();
+        expandedGap.setWidth("100%");
+        hl.addComponent(expandedGap);
+        hl.setExpandRatio(expandedGap, 1.0f);
+
+        ComponentFactory.createButton(BUTTON_REFRESH, null, hl, new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                list.refresh();
+            }
+        });
+
+        hl.setWidth("100%");
+        addComponent(hl);
 
         list = new PaginatedPanelList<ReportOrder, ReportOrderBrowserComponent.ReportOrderPanel>(PAGE_SIZE) {
 
