@@ -26,99 +26,90 @@ import org.apertereports.model.ReportOrder.Status;
  */
 public class BackgroundOrderProcessor implements MessageListener {
 
-	
-	/**
-	 * Singleton
-	 */
-	private static BackgroundOrderProcessor instance;
-	
-	public static synchronized BackgroundOrderProcessor getInstance() {
-		if(instance == null)
-			instance = new BackgroundOrderProcessor();
-		return instance;
-	}
-	
-	private BackgroundOrderProcessor() {
-		
-	}
+    /**
+     * Singleton
+     */
+    private static BackgroundOrderProcessor instance;
 
-	/**
-	 * The method generates a new jasper report on message which contains the id
-	 * of the report order to process. On successful generation the id result is
-	 * pushed to JMS. If the recipient email address of the report order was set
-	 * the generated report is send via email.
-	 * 
-	 * @param message
-	 *            A JMS message
-	 * @see MessageListener#onMessage(javax.jms.Message)
-	 */
+    public static synchronized BackgroundOrderProcessor getInstance() {
+        if (instance == null) {
+            instance = new BackgroundOrderProcessor();
+        }
+        return instance;
+    }
 
-	@Override
-	public void onMessage(Message message) {
-		ReportOrder reportOrder = null;
-		try {
-			Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
-			reportOrder = ReportOrderDAO.fetchById(id);
-			processReport(reportOrder);
-			if (reportOrder != null) {
-				forwardResults(reportOrder);
-			}
-		} catch (Exception e) {
-			ExceptionUtils.logSevereException(e);
-			if (reportOrder != null) {
-				reportOrder.setReportStatus(Status.FAILED);
-				reportOrder.setErrorDetails(e.getMessage());
-				ReportOrderDAO.saveOrUpdate(reportOrder);
-			}
+    private BackgroundOrderProcessor() {
+    }
+
+    /**
+     * The method generates a new jasper report on message which contains the id
+     * of the report order to process. On successful generation the id result is
+     * pushed to JMS. If the recipient email address of the report order was set
+     * the generated report is send via email.
+     *
+     * @param message A JMS message
+     * @see MessageListener#onMessage(javax.jms.Message)
+     */
+    @Override
+    public void onMessage(Message message) {
+        ReportOrder reportOrder = null;
+        try {
+            Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
+            reportOrder = ReportOrderDAO.fetchById(id);
+            processReport(reportOrder);
+            if (reportOrder != null) {
+                forwardResults(reportOrder);
+            }
+        } catch (Exception e) {
+            ExceptionUtils.logSevereException(e);
+            if (reportOrder != null) {
+                reportOrder.setReportStatus(Status.FAILED);
+                reportOrder.setErrorDetails(e.getMessage());
+                ReportOrderDAO.saveOrUpdate(reportOrder);
+            }
 //			throw new AperteReportsRuntimeException(e);
-		}
-	}
+        }
+    }
 
-	/**
-	 * Adds a JMS message containing the id of the generated report order using
-	 * configured JMS connection factory.
-	 * 
-	 * @param reportOrder
-	 */
-	private void addToJMS(ReportOrder reportOrder) throws NamingException, JMSException {
-		AperteReportsJmsFacade.sendOrderToJms(reportOrder.getId(), reportOrder.getReplyToQ());
-	}
+    /**
+     * Adds a JMS message containing the id of the generated report order using
+     * configured JMS connection factory.
+     *
+     * @param reportOrder
+     */
+    private void addToJMS(ReportOrder reportOrder) throws NamingException, JMSException {
+        AperteReportsJmsFacade.sendOrderToJms(reportOrder.getId(), reportOrder.getReplyToQ());
+    }
 
-	/**
-	 * Forwards results to JMS and email address.
-	 * 
-	 * @param reportOrder
-	 *            Generated report order.
-	 */
-	private void forwardResults(ReportOrder reportOrder) throws Exception {
-		if (StringUtils.isNotEmpty(reportOrder.getRecipientEmail())) {
-			ExceptionUtils.logDebugMessage("ReportOrder id: " + reportOrder.getId() + " sending email to: "
-					+ reportOrder.getRecipientEmail());
-			try {
-				EmailProcessor.getInstance().processEmail(reportOrder);
-			} catch (Exception e) {
-				ExceptionUtils.logWarningException("Unable to send email to: " + reportOrder.getRecipientEmail(), e);
-				throw e;
-			}
-		}
-		if (StringUtils.isNotEmpty(reportOrder.getReplyToQ())) {
-			addToJMS(reportOrder);
-		}
-	}
+    /**
+     * Forwards results to JMS and email address.
+     *
+     * @param reportOrder Generated report order.
+     */
+    private void forwardResults(ReportOrder reportOrder) throws Exception {
+        if (StringUtils.isNotEmpty(reportOrder.getRecipientEmail())) {
+            ExceptionUtils.logDebugMessage("ReportOrder id: " + reportOrder.getId() + " sending email to: "
+                    + reportOrder.getRecipientEmail());
+            try {
+                EmailProcessor.getInstance().processEmail(reportOrder);
+            } catch (Exception e) {
+                ExceptionUtils.logWarningException("Unable to send email to: " + reportOrder.getRecipientEmail(), e);
+                throw e;
+            }
+        }
+        if (StringUtils.isNotEmpty(reportOrder.getReplyToQ())) {
+            addToJMS(reportOrder);
+        }
+    }
 
-	/**
-	 * Invokes the main workhorse of the listener - the
-	 * {@link ReportOrderProcessor}.
-	 * 
-	 * @param reportOrder
-	 *            Processed report order
-	 * @throws AperteReportsException
-	 *             on error while generating jasper report
-	 */
-	private void processReport(final ReportOrder reportOrder) throws AperteReportsException {
-		ReportOrderProcessor.getInstance().processReport(reportOrder);
-	}
-
-
-	
+    /**
+     * Invokes the main workhorse of the listener - the
+     * {@link ReportOrderProcessor}.
+     *
+     * @param reportOrder Processed report order
+     * @throws AperteReportsException on error while generating jasper report
+     */
+    private void processReport(final ReportOrder reportOrder) throws AperteReportsException {
+        ReportOrderProcessor.getInstance().processReport(reportOrder);
+    }
 }
