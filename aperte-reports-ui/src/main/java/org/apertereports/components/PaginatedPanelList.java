@@ -59,12 +59,17 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
     public void filter(String filter) {
         this.filter = filter;
         pageNumber = 0;
-        listSize = getListSize(filter);
-        refresh();
+        refresh(true);
     }
 
     public void refresh() {
+        refresh(true);
+    }
 
+    private void refresh(boolean getListSize) {
+        if (getListSize) {
+            listSize = getListSize(filter);
+        }
         Collection<O> list = fetch(filter, calculateFirstResult(), pageSize);
         removeAllComponents();
         for (O o : list) {
@@ -126,7 +131,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
     private void showPage(int pageNumber) {
         if (hasPage(pageNumber)) {
             this.pageNumber = pageNumber;
-            refresh();
+            refresh(false);
         }
     }
 
@@ -134,14 +139,14 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
         if (hasNext()) {
             pageNumber++;
         }
-        refresh();
+        refresh(false);
     }
 
     private void previousPage() {
         if (hasPrevious()) {
             pageNumber--;
         }
-        refresh();
+        refresh(false);
     }
 
     private int countPages() {
