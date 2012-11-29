@@ -9,6 +9,7 @@ import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -54,7 +55,16 @@ public class ReportOrderPusher {
 
             @Override
             public Boolean lambda() {
-                return !sess.createCriteria(ReportOrder.class).add(Restrictions.eq("report", report)).add(Restrictions.eq("parametersXml", reportOrder.getParametersXml())).add(Restrictions.eq("outputFormat", reportOrder.getOutputFormat())).add(Restrictions.eq("username", reportOrder.getUsername())).add(Restrictions.eq("recipientEmail", reportOrder.getRecipientEmail())).add(Restrictions.eq("replyToQ", reportOrder.getReplyToQ())).add(Restrictions.isNull("reportResult")).list().isEmpty();
+                Criteria c = sess.createCriteria(ReportOrder.class);
+                c.add(Restrictions.eq("report", report));
+                //oracle doesn't allow to compare LOBs columns
+                //c.add(Restrictions.eq("parametersXml", reportOrder.getParametersXml()));
+                c.add(Restrictions.eq("outputFormat", reportOrder.getOutputFormat()));
+                c.add(Restrictions.eq("username", reportOrder.getUsername()));
+                c.add(Restrictions.eq("recipientEmail", reportOrder.getRecipientEmail()));
+                c.add(Restrictions.eq("replyToQ", reportOrder.getReplyToQ()));
+                c.add(Restrictions.isNull("reportResult"));
+                return !c.list().isEmpty();
             }
         }.p();
         if (alreadyExists) {
