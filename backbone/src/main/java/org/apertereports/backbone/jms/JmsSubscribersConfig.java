@@ -51,8 +51,8 @@ public class JmsSubscribersConfig {
 		 * Default JNDI names
 		 */
 		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY, ReportConstants.JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME);
-		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT, ReportConstants.CYCLIC_REPORT_ORDER_RESPONSE_Q_DEFAULT_JNDI_NAME);
-		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT, ReportConstants.GENERATE_REPORT_Q_DEFAULT_JNDI_NAME);
+		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT, ReportConstants.CYCLIC_REPORT_ORDER_QUEUE_DEFAULT_JNDI_NAME);
+		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT, ReportConstants.GENERATE_REPORT_QUEUE_DEFAULT_JNDI_NAME);
 		
 		
 		initialized = true;

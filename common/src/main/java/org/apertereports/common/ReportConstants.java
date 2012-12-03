@@ -47,11 +47,11 @@ public interface ReportConstants {
     /**
      * Cyclic reports JMS default queue name.
      */
-    public static final String CYCLIC_REPORT_ORDER_RESPONSE_Q_DEFAULT_JNDI_NAME = "java:comp/env/jms/queue/CyclicOrderResponse";
+    public static final String CYCLIC_REPORT_ORDER_QUEUE_DEFAULT_JNDI_NAME = "java:comp/env/jms/CyclicReportOrderQueue";
     /**
      * Report generation JMS default queue name.
      */
-    public static final String GENERATE_REPORT_Q_DEFAULT_JNDI_NAME = "java:comp/env/jms/queue/GenerateReport";
+    public static final String GENERATE_REPORT_QUEUE_DEFAULT_JNDI_NAME = "java:comp/env/jms/GenerateReportQueue";
     /**
      * JMS connection factory default name.
      */
