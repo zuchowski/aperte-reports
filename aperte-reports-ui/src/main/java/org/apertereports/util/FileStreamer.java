@@ -1,18 +1,25 @@
 package org.apertereports.util;
 
 import com.vaadin.Application;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.ReportConstants.ReportMimeType;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class that handles opening of a new window with a report stream.
  */
 public class FileStreamer {
+
+    private static Logger logger = LoggerFactory.getLogger(FileStreamer.class);
 
     /**
      * Opens a new download window with provided content.
@@ -40,6 +47,23 @@ public class FileStreamer {
         resource.setMIMEType(mimeType);
         resource.setCacheTime(-1);
         app.getMainWindow().open(resource, windowName);
+    }
+
+    /**
+     * Opens a new download window with provided content.
+     *
+     * @param app The application
+     * @param file File to open
+     * @param newWindow Determines if open in new window
+     */
+    public static void openFile(Application app, File file, boolean newWindow) {
+        logger.debug("opening file: " + file.getAbsolutePath());
+        Resource res = new FileResource(file, app);
+        if (newWindow) {
+            app.getMainWindow().open(res, "_new");
+        } else {
+            app.getMainWindow().open(res);
+        }
     }
 
     /**

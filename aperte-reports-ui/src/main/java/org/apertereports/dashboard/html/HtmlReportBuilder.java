@@ -2,7 +2,6 @@ package org.apertereports.dashboard.html;
 
 import com.vaadin.Application;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
@@ -31,8 +30,11 @@ import java.util.*;
 import java.util.List;
 
 import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
+import java.io.File;
 import static org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A helper class that manages the creation of the layouts containing generated
@@ -43,6 +45,7 @@ import org.apertereports.common.exception.AperteReportsRuntimeException;
  */
 public class HtmlReportBuilder {
 
+    private static final Logger logger = LoggerFactory.getLogger(HtmlReportBuilder.class);
     /**
      * Tags for identification.
      */
@@ -116,7 +119,7 @@ public class HtmlReportBuilder {
      * @param xlsConfig An optional XLS config
      */
     public void addReportChunk(final ReportConfig config, final ReportConfig xlsConfig) {
-        HorizontalLayout buttons = createReportButtons(config, xlsConfig);
+        HorizontalLayout buttons = createReportButtons(config, null, xlsConfig, null);
 
         String componentKey = BUTTONS_TAG + config.getId();
         mainComponentMap.put(componentKey, buttons);
@@ -125,17 +128,6 @@ public class HtmlReportBuilder {
         Component reportComponent = createReportComponent(config, true);
         mainComponentMap.put(componentKey = REPORT_TAG + config.getId(), reportComponent != null ? reportComponent : new Label());
         contentBuffer.append(createDivAnchor(componentKey));
-    }
-
-    /**
-     * Creates a basic on demand report generation button panel.
-     *
-     * @param config The main report config
-     * @param xlsConfig An optional XLS report config
-     * @return A horizontal layout with buttons
-     */
-    private HorizontalLayout createReportButtons(ReportConfig config, ReportConfig xlsConfig) {
-        return createReportButtons(config, null, xlsConfig, null);
     }
 
     /**
@@ -181,9 +173,9 @@ public class HtmlReportBuilder {
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     if ("XLS".equalsIgnoreCase(format) && xlsConfig != null) {
-                        handleDownloadRequest(xlsConfig, format);
+                        handleExportRequest(xlsConfig, format);
                     } else {
-                        handleDownloadRequest(config, format);
+                        handleExportRequest(config, format);
                     }
                 }
             });
@@ -216,19 +208,26 @@ public class HtmlReportBuilder {
     }
 
     /**
-     * Handles the download report request based on a given {@link ReportConfig}
+     * Handles the export report request based on a given {@link ReportConfig}
      * and the format. The data is fetched without caching which means the
      * generated report saved provided by the download popup is up to date.
      *
      * @param config A report config
      * @param format Output format
      */
-    private void handleDownloadRequest(ReportConfig config, String format) {
+    private void handleExportRequest(ReportConfig config, String format) {
         ReportType reportType = ReportType.valueOf(format);
         ReportTemplate report = provider.provideReportTemplate(config);
-        Pair<JasperPrint, byte[]> reportData = provider.provideReportData(config, reportType, false);
-        if (reportData != null) {
-            FileStreamer.showFile(application, report.getReportname(), reportData.getEntry(), reportType.name());
+
+        if ("HTML".equals(format)) {
+            File f = provider.provideReportFileForHtmlExport(config, true);
+            boolean newWindow = f.getName().endsWith(".html");
+            FileStreamer.openFile(application, f, newWindow);
+        } else {
+            Pair<JasperPrint, byte[]> reportData = provider.provideReportData(config, reportType, false);
+            if (reportData != null) {
+                FileStreamer.showFile(application, report.getReportname(), reportData.getEntry(), reportType.name());
+            }
         }
     }
 

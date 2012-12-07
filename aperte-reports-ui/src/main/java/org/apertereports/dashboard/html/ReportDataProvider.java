@@ -1,5 +1,6 @@
 package org.apertereports.dashboard.html;
 
+import java.io.File;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.wrappers.Pair;
@@ -24,6 +25,17 @@ public interface ReportDataProvider {
      * @return A pair of {@link JasperPrint} and bytes of report data
      */
     Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, ReportConstants.ReportType format, boolean cached);
+
+    /**
+     * Provides a generated report out of a {@link ReportConfig}. The data is
+     * usually cached somewhere to boost the performance. As result HTML or ZIP
+     * file is returned.
+     *
+     * @param config Input config
+     * @param cached Should the data be taken from a cache or generated directly
+     * @return A pair of {@link JasperPrint} and bytes of report data
+     */
+    File provideReportFileForHtmlExport(ReportConfig config, boolean cached);
 
     /**
      * Provides a Jasper Reports template based on a given {@link ReportConfig}.

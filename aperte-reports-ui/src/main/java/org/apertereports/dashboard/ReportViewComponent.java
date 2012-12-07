@@ -7,11 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.backbone.util.ReportTemplateProvider;
@@ -36,7 +34,15 @@ import org.apertereports.util.cache.MapCache;
 
 import com.vaadin.Application;
 import com.vaadin.ui.Panel;
+import java.io.File;
+import java.io.FileOutputStream;
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import org.apertereports.common.ReportConstants;
 import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.util.files.TmpDirMgr;
+import org.apertereports.util.files.Zipper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This component is used to display the generated reports in the portlet. It
@@ -53,8 +59,12 @@ import org.apertereports.common.exception.AperteReportsException;
  */
 public class ReportViewComponent extends AbstractLazyLoaderComponent implements ReportDataProvider {
 
-    private static final Logger logger = Logger.getLogger(ReportViewComponent.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ReportViewComponent.class.getName());
     private static final String AR_DASHBOARD_REPORT_PANEL_STYLE_ID = "ar-dashboard-report-panel";
+    private static final String REPORT_DIR = "report";
+    private static final String IMAGES_DIR = "images";
+    private static final String REPORT_HTML_FILE = "report.html";
+    private static final String REPORT_ZIP_FILE = "report.zip";
     private Panel reportPanel = new Panel();
     /**
      * Internal caches of configs, templates and cyclic orders.
@@ -217,6 +227,41 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         return reportMap.get(config.getReportId());
     }
 
+    @Override
+    public File provideReportFileForHtmlExport(ReportConfig config, boolean cached) {
+        JasperPrint jp = getJasperPrint(config, cached);
+
+
+        TmpDirMgr tmp = new TmpDirMgr();
+
+        File tmpDir = tmp.createNewTmpDir(REPORT_DIR);
+        String reportDirPath = tmpDir.getAbsolutePath() + File.separator + REPORT_DIR;
+
+        byte[] data = getReportData(jp, ReportConstants.ReportType.HTML, reportDirPath);
+        File f = new File(reportDirPath + File.separator + REPORT_HTML_FILE);
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(data);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            throw new AperteReportsRuntimeException(e);
+        }
+
+        File imagesDir = new File(reportDirPath + File.separator + IMAGES_DIR);
+        if (!imagesDir.isDirectory()) {
+            return f;   //only hmtl file
+        }
+
+        try {
+            File zipF = new File(tmpDir.getAbsolutePath() + File.separator + REPORT_ZIP_FILE);
+            Zipper.zip(reportDirPath, zipF.getAbsolutePath());
+            return zipF;
+        } catch (Exception ex) {
+            throw new AperteReportsRuntimeException(ex);
+        }
+    }
+
     /**
      * Provides a report data from the cache or generates it and caches for
      * later use to boost performance.
@@ -230,48 +275,80 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
      */
     @Override
     public Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, ReportType format, boolean cached) {
+        JasperPrint jp = getJasperPrint(config, cached);
+        byte[] data = getReportData(jp, format, null);
+        return new Pair<JasperPrint, byte[]>(jp, data);
+    }
 
+    /**
+     * Gets JasperPrint object for given report config and fora
+     *
+     * @param config Report config
+     * @param cached Determines if the data should be taken from a cache or
+     * generated directly
+     * @return JasperPrint object
+     */
+    private JasperPrint getJasperPrint(ReportConfig config, boolean cached) {
         try {
-            JasperPrint jasperPrint = null;
             if (cached) {
-                jasperPrint = (JasperPrint) cache.provideData(config.getId().toString());
-            }
-            if (jasperPrint == null) {
-                ReportTemplate report = provideReportTemplate(config);
-                if (report == null) {
-                    throw new AperteReportsException(ErrorCodes.REPORT_TEMPLATE_NOT_FOUND);
+                JasperPrint jp = (JasperPrint) cache.provideData(config.getId().toString());
+                if (jp != null) {
+                    return jp;
                 }
-                ReportMaster reportMaster = new ReportMaster(report.getContent(), report.getId().toString(),
-                        new ReportTemplateProvider());
-                Map<String, Object> parameters;
-                if (config.getCyclicReportId() != null) {
-                    CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
-                    parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().xmlAsMap(
-                            cro.getParametersXml() != null ? cro.getParametersXml() : ""));
-                } else {
-                    parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().parameterListToMap(
-                            config.getParameters()));
-                }
-                jasperPrint = reportMaster.generateReport(parameters);
-                cache.cacheData(config.getId().toString(), TimeUtils.secondsToMilliseconds(config.getCacheTimeout()),
-                        jasperPrint);
             }
-            byte[] data = null;
-            Map<JRExporterParameter, Object> customParameters = null;
-            if (ReportType.HTML.equals(format)) {
-                customParameters = new HashMap<JRExporterParameter, Object>();
-                customParameters.put(JRHtmlExporterParameter.IMAGES_URI, DashboardUtil.CHART_SOURCE_PREFIX_TEXT);
-            }
-            data = ReportMaster.exportReport(jasperPrint, format.name(), customParameters,
-                    org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
-            return new Pair<JasperPrint, byte[]>(jasperPrint, data);
 
+            ReportTemplate report = provideReportTemplate(config);
+            if (report == null) {
+                throw new AperteReportsException(ErrorCodes.REPORT_TEMPLATE_NOT_FOUND);
+            }
+            ReportMaster reportMaster = new ReportMaster(report.getContent(), report.getId().toString(),
+                    new ReportTemplateProvider());
+            Map<String, Object> parameters;
+            if (config.getCyclicReportId() != null) {
+                CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
+                parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().xmlAsMap(
+                        cro.getParametersXml() != null ? cro.getParametersXml() : ""));
+            } else {
+                parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().parameterListToMap(
+                        config.getParameters()));
+            }
+            JasperPrint jp = reportMaster.generateReport(parameters);
+            cache.cacheData(config.getId().toString(), TimeUtils.secondsToMilliseconds(config.getCacheTimeout()), jp);
+            return jp;
         } catch (AperteReportsException e) {
             throw new AperteReportsRuntimeException(e);
-        } catch (Exception e) {
+        }
+    }
+
+    /**
+     * Gets report data
+     *
+     * @param jasperPrint JasperPrint object
+     * @param format Format of the report data
+     * @param htmlExportDirPath Path to images dir for html export, null for
+     * other formats
+     * @return
+     */
+    private byte[] getReportData(JasperPrint jasperPrint, ReportType format, String htmlExportDirPath) {
+        try {
+            Map<JRExporterParameter, Object> customParams = null;
+
+            if (ReportType.HTML.equals(format)) {
+                customParams = new HashMap<JRExporterParameter, Object>();
+                customParams.put(JRHtmlExporterParameter.IMAGES_URI, DashboardUtil.CHART_SOURCE_PREFIX_TEXT);
+
+                if (htmlExportDirPath != null) {
+                    customParams.put(JRHtmlExporterParameter.IS_OUTPUT_IMAGES_TO_DIR, Boolean.TRUE);
+                    customParams.put(JRHtmlExporterParameter.IMAGES_DIR_NAME,
+                            htmlExportDirPath + File.separator + IMAGES_DIR + File.separator);
+                    customParams.put(JRHtmlExporterParameter.IMAGES_URI, IMAGES_DIR + File.separator);
+                }
+            }
+            return ReportMaster.exportReport(jasperPrint, format.name(), customParams,
+                    org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+        } catch (AperteReportsException e) {
             throw new AperteReportsRuntimeException(e);
         }
-
     }
 
     /**

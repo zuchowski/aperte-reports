@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +53,8 @@ import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.SubreportProvider.Subreport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.net.bluesoft.util.lang.StringUtil;
 
@@ -68,7 +69,7 @@ import pl.net.bluesoft.util.lang.StringUtil;
  */
 public class ReportMaster implements ReportConstants, ConfigurationConstants {
 
-    private static final Logger logger = Logger.getLogger(ReportMaster.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ReportMaster.class.getName());
     private static Pattern subreportPattern = Pattern.compile("<subreportExpression class\\=\"java\\.lang\\.String\"\\>\\<\\!\\[CDATA\\[\\$P\\{[^}]*\\} [^\"]*\"([^\"]*)\\.jasper\"");
     private static Pattern jasperReportPattern = Pattern.compile("<jasperReport[^>]+>(\\s+<property[^>]+>)*",
             Pattern.MULTILINE);
@@ -148,21 +149,21 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      *
      * @param jasperPrint A {@link JasperPrint}
      * @param format Desired output format (i.e. PDF, HTML etc)
-     * @param exporterParameters Additional custom {@link JRExporterParameter}
+     * @param customExporterParams Additional custom {@link JRExporterParameter}
      * map
      * @param configuration Configuration parameters
      * @return Bytes of a generated report
      * @throws AperteReportsException on error
      */
     public static byte[] exportReport(JasperPrint jasperPrint, String format,
-            Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
+            Map<JRExporterParameter, Object> customExporterParams, Map<String, String> configuration)
             throws AperteReportsException {
 
         if (configuration == null) {
             configuration = new HashMap<String, String>();
         }
-        if (exporterParameters == null) {
-            exporterParameters = new HashMap<JRExporterParameter, Object>();
+        if (customExporterParams == null) {
+            customExporterParams = new HashMap<JRExporterParameter, Object>();
         }
 
         try {
@@ -198,8 +199,8 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                 throw new IllegalStateException("Invalid report type. Permitted types are: HTML, PDF, XLS, CSV");
             }
 
-            if (exporterParameters != null && !exporterParameters.isEmpty()) {
-                for (Iterator<Map.Entry<JRExporterParameter, Object>> it = exporterParameters.entrySet().iterator(); it.hasNext();) {
+            if (customExporterParams != null && !customExporterParams.isEmpty()) {
+                for (Iterator<Map.Entry<JRExporterParameter, Object>> it = customExporterParams.entrySet().iterator(); it.hasNext();) {
                     Map.Entry<JRExporterParameter, Object> entry = it.next();
                     exporter.setParameter(entry.getKey(), entry.getValue());
                 }
@@ -303,16 +304,10 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
     }
 
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-            Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration, Object dataSource)
-            throws AperteReportsException {
-        JasperPrint jasperPrint = generateReport(reportParameters, configuration, dataSource);
-        return exportReport(jasperPrint, format, exporterParameters, configuration);
-    }
-
-    public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
             Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
             throws AperteReportsException {
-        return generateAndExportReport(format, reportParameters, exporterParameters, configuration, null);
+        JasperPrint jasperPrint = generateReport(reportParameters, configuration);
+        return exportReport(jasperPrint, format, exporterParameters, configuration);
     }
 
     /**
@@ -329,7 +324,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      */
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
             Map<String, String> configuration) throws AperteReportsException {
-        return generateAndExportReport(format, reportParameters, null, configuration, null);
+        return generateAndExportReport(format, reportParameters, null, configuration);
     }
 
     private static String processSubreports(boolean hasParent, String source, Set<String> subreportNames) {
@@ -366,14 +361,13 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * instance.
      *
      * @param reportParameters Report parameters
-     * @param configuration Configuration
-     * @param dataSource Optional data source
+     * @param configuration Configuration, can be null
      * @return Output JasperPrint
      */
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration,
-            Object dataSource) throws AperteReportsException {
+    private JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration)
+            throws AperteReportsException {
         try {
-            JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration, dataSource);
+            JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration);
             return jasperPrint;
         } catch (JRFontNotFoundException e) {
             throw new AperteReportsException(ErrorCodes.FONT_NOT_FOUND, e);
@@ -382,18 +376,8 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
         }
     }
 
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration)
-            throws AperteReportsException {
-        return generateReport(reportParameters, configuration, null);
-    }
-
-    public JasperPrint generateReport(Map<String, Object> reportParameters, Object dataSource)
-            throws AperteReportsException {
-        return generateReport(reportParameters, new HashMap<String, String>(), dataSource);
-    }
-
     public JasperPrint generateReport(Map<String, Object> reportParameters) throws AperteReportsException {
-        return generateReport(reportParameters, new HashMap<String, String>(), null);
+        return generateReport(reportParameters, null);
     }
 
     /**
@@ -456,14 +440,17 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * parameters.
      *
      * @param reportParameters Input report parameters
-     * @param configuration Jasper configuration parameters
+     * @param configuration Jasper configuration parameters, can be null
      * @return A {@link JasperPrint}
      * @throws JRException on Jasper error
      * @throws NamingException on errors while accessing the initial context
      * @throws SQLException on errors while accessing a configured datasource
      */
-    private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration,
-            Object dataSource) throws JRException, NamingException, SQLException {
+    private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration)
+            throws JRException, NamingException, SQLException {
+
+        //previously data source was passed as a method argument, but it was not used nowhere
+        Object dataSource = null;
 
         if (configuration == null) {
             configuration = new HashMap<String, String>();
