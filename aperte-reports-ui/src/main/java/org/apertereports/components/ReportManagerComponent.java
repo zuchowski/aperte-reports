@@ -221,7 +221,6 @@ public class ReportManagerComponent extends Panel {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     saveChanges();
-
                 }
             });
             Button cancel = ComponentFactory.createButton(BUTTON_CANCEL, null, buttonsCell);
@@ -230,12 +229,10 @@ public class ReportManagerComponent extends Panel {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     discardChanges();
-
                 }
             });
 
             footerRow.setComponentAlignment(buttonsCell, Alignment.MIDDLE_RIGHT);
-
         }
 
         protected void discardChanges() {
@@ -254,7 +251,6 @@ public class ReportManagerComponent extends Panel {
             deepCopy(temporaryData, item.reportTemplate);
             ReportTemplateDAO.saveOrUpdate(item.reportTemplate);
             list.replaceComponent(this, this.item);
-
         }
 
         private boolean checkUnique(ReportTemplate reportTemplate) {
@@ -357,7 +353,6 @@ public class ReportManagerComponent extends Panel {
 
         protected void removeMe() {
             remove(this);
-
         }
 
         private void toggleParams() {
@@ -445,7 +440,6 @@ public class ReportManagerComponent extends Panel {
     protected void editReportData(ReportItemPanel reportItemPanel) {
         EditReportItemPanel edit = new EditReportItemPanel(reportItemPanel);
         list.replaceComponent(reportItemPanel, edit);
-
     }
 
     private void removeReportAndDependants(ReportItemPanel panel, ReportTemplate reportTemplate, Collection<CyclicReportOrder> cyclic,
@@ -498,7 +492,6 @@ public class ReportManagerComponent extends Panel {
 
         public ReportReceiver(ReportTemplate reportTemplate) {
             this.reportTemplate = reportTemplate;
-
         }
 
         @Override
@@ -527,7 +520,6 @@ public class ReportManagerComponent extends Panel {
             for (ReportReceivedListener l : listeners) {
                 l.reportReceived(reportTemplate);
             }
-
         }
 
         @Override

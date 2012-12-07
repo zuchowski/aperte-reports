@@ -5,7 +5,6 @@ import org.apertereports.common.ReportConstants;
 import org.apertereports.common.wrappers.Pair;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.model.ReportTemplate;
-import org.apertereports.model.ReportTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,10 @@ import java.util.Map;
  * Marks a class a controller of report templates and the generator data.
  */
 public interface ReportDataProvider {
+
     /**
-     * Provides a generated report out of a {@link ReportConfig}. The data is usually cached somewhere to boost the performance.
+     * Provides a generated report out of a {@link ReportConfig}. The data is
+     * usually cached somewhere to boost the performance.
      *
      * @param config Input config
      * @param format Output format
