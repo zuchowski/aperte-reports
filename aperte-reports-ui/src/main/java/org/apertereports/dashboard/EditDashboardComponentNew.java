@@ -13,25 +13,20 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
-import java.util.List;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
 
+/**
+ * Class defines panel for dashboard report configuration
+ */
 @SuppressWarnings("serial")
 public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
-    private static final String DASHBOARD_BUTTON_SAVE_CAPTION = "dashboard.button.save.caption";
+    private static final String BUTTON_OK = "button.ok";
+    private static final String BUTTON_CANCEL = "button.cancel";
     private static final String CACHE_TIMEOUT = "cacheTimeout";
     private static final String REPORT = "report";
     private static final String EXPORT_BUTTONS = "exportButtons";
@@ -48,19 +43,30 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private Form form;
     private Item datasource;
     private ReportConfig reportConfig;
+    private DisposeListener disposeListener = null;
 
+    /**
+     * Creates new edit component
+     */
     public EditDashboardComponentNew() {
     }
 
     @Override
     protected void initComponentData() {
         mainPanel = new Panel();
+        mainPanel.setCaption(VaadinUtil.getValue("form.config"));
         setCompositionRoot(mainPanel);
-        HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(mainPanel);
-        reportRow.addComponent(form = new EditDashboardForm());
-        mainPanel.addComponent(paramsPanel);
 
-        ComponentFactory.createButton(DASHBOARD_BUTTON_SAVE_CAPTION, "", mainPanel, new ClickListener() {
+        VerticalLayout vl = ComponentFactory.createVLayout(mainPanel, true, true);
+
+        HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(vl);
+        reportRow.addComponent(form = new EditDashboardForm());
+
+        vl.addComponent(paramsPanel);
+        paramsPanel.setCaption(VaadinUtil.getValue("form.params"));
+
+        HorizontalLayout hl = ComponentFactory.createHLayout(vl);
+        ComponentFactory.createButton(BUTTON_OK, "", hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -68,8 +74,30 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     return;
                 }
                 saveConfiguration();
+
+                if (disposeListener != null) {
+                    disposeListener.dispose();
+                }
             }
         });
+        ComponentFactory.createButton(BUTTON_CANCEL, "", hl, new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if (disposeListener != null) {
+                    disposeListener.dispose();
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets dispose listener
+     *
+     * @param disposeListener Dispose listener
+     */
+    public void setDisposeListener(DisposeListener disposeListener) {
+        this.disposeListener = disposeListener;
     }
 
     private class EditDashboardForm extends Form {
@@ -82,7 +110,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             ReportTemplate selectedReport = ReportTemplateDAO.fetchById(reportConfig.getReportId());
 
-            layout = new GridLayout(2, 3);
+            layout = new GridLayout(3, 3);
             layout.setSpacing(true);
             layout.setWidth("100%");
             setLayout(layout);
@@ -95,21 +123,20 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             datasource.addItemProperty(EXPORT_BUTTONS, new ObjectProperty<Boolean>(reportConfig.getAllowedFormats() != null));
             datasource.addItemProperty(REFRESH_BUTTON, new ObjectProperty<Boolean>(reportConfig.getAllowRefresh()));
             setItemDataSource(datasource);
-
         }
 
         @Override
         protected void attachField(Object propertyId, Field field) {
 
             if (propertyId.equals(REPORT)) {
-                layout.addComponent(field, 0, 0);
+                layout.addComponent(field, 0, 0, 1, 0);
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
-                layout.addComponent(field, 1, 0);
+                layout.addComponent(field, 2, 0);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
             } else if (propertyId.equals(EXPORT_BUTTONS)) {
-                layout.addComponent(field, 0, 1, 1, 1);
+                layout.addComponent(field, 0, 1, 2, 1);
             } else if (propertyId.equals(REFRESH_BUTTON)) {
-                layout.addComponent(field, 0, 2, 1, 2);
+                layout.addComponent(field, 0, 2, 2, 2);
             }
         }
 
@@ -128,7 +155,6 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     field.setRequired(true);
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID));
                     field.setInputPrompt(VaadinUtil.getValue(DASHBOARD_EDIT_INPUT_PROMPT_REPORT_ID));
-                    field.setWidth("100%");
                     field.setImmediate(true);
                     field.addListener(new ValueChangeListener() {
 
@@ -143,6 +169,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     field.setRequired(true);
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_CACHE_TIMEOUT));
                     field.setCaption(VaadinUtil.getValue(DASHBOARD_EDIT_CAPTION_CACHE_TIMEOUT));
+                    field.setWidth("80px");
                     return field;
                 } else if (propertyId.equals(EXPORT_BUTTONS)) {
                     return ComponentFactory.createCheckBox(DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS, item, portletId, null);
@@ -154,6 +181,11 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         }
     }
 
+    /**
+     * Reloads params panel for selected report
+     *
+     * @param template Report for which params should be shown
+     */
     protected void reloadParams(ReportTemplate template) {
         ReportParamPanel newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
         mainPanel.replaceComponent(paramsPanel, newParamsPanel);
@@ -202,5 +234,17 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             return new ReportConfig();
         }
         return reportConfigs.get(0);
+    }
+
+    /**
+     * Defines listener for this edit component for portlet application to allow
+     * switch to view mode
+     */
+    public interface DisposeListener {
+
+        /**
+         * Invoked when this component should be disposed
+         */
+        public void dispose();
     }
 }

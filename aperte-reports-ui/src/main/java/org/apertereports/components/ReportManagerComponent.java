@@ -58,7 +58,7 @@ public class ReportManagerComponent extends Panel {
     private static final String REPORT_NAME_STYLE = "h4";
     private static final String FILE_NAME_STYLE = "h3";
     private static final String EDIT_PANEL_STYLE = "bubble";
-    private static final String PANEL_STYLE = "borderless";
+    private static final String PANEL_STYLE = "borderless light";
     private static final String DESCRIPTION_PROPERTY = "description";
     private static final String FILENAME_PROPERTY = "filename";
     private static final String CREATED_PROPERTY = "created";
@@ -142,6 +142,7 @@ public class ReportManagerComponent extends Panel {
         addComponent(mainLayout);
         list.filter(null);
         setWidth("100%");
+        setStyleName(PANEL_STYLE);
     }
 
     private void addNewReport(ReportTemplate reportTemplate) {

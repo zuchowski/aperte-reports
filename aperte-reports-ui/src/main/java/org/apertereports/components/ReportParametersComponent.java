@@ -655,7 +655,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         if (includeLocale) {
-            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), "form.select_locale");
+            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), "form.locale");
             form.addField(JRParameter.REPORT_LOCALE, localeComboBox);
         } else {
             form.setDescription(readonly ? VaadinUtil.getValue("invoker.form.header.readonly") : VaadinUtil.getValue("invoker.form.header"));

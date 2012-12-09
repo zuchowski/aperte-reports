@@ -8,25 +8,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apertereports.common.ReportConstants;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
-import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.ClassResource;
-import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
@@ -34,11 +29,11 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Factory class providing components in frequently used form.
@@ -233,6 +228,24 @@ public abstract class ComponentFactory {
 		return hLayout;
 	}
 
+	/**
+	 * Creates vertical layout and add to parent container
+	 * 
+	 * @param parent Container to which layout should be add
+     * @param setSpacing Determines if layout should have set spacing
+     * @param fullWidth Determines if layout should have set width to 100% 
+	 * @return Created layout
+	 */
+	public static VerticalLayout createVLayout(ComponentContainer parent, boolean setSpacing, boolean fullWidth) {
+		VerticalLayout layout = new VerticalLayout();
+        parent.addComponent(layout);
+		layout.setSpacing(setSpacing);
+        if (fullWidth) {
+            layout.setWidth("100%");
+        }
+		return layout;
+	}
+
 	private static class CalendarProperty extends DateProperty {
 
 		public CalendarProperty(Property itemProperty) {
@@ -375,7 +388,6 @@ public abstract class ComponentFactory {
 		reportLocale.setStyleName("small");
 		reportLocale.setNullSelectionAllowed(false);
 		reportLocale.setTextInputAllowed(true);
-		reportLocale.setWidth("100%");
 		return reportLocale;
 	}
 }
