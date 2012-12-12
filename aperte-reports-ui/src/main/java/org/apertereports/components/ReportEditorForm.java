@@ -25,8 +25,8 @@
 //public abstract class ReportEditorForm extends Panel {
 //    private boolean valueChanged = false;
 //
-//    private final Button reportFetchButton = new Button(VaadinUtil.getValue("manager.form.fetch"));
-//    private final Button reportSaveButton = new Button(VaadinUtil.getValue("manager.form.save"));
+//    private final Button reportFetchButton = new Button(VaadinUtil.getValue("label.download"));
+//    private final Button reportSaveButton = new Button(VaadinUtil.getValue("label.save"));
 //    private final Form reportEditorForm = new Form();
 //
 //    private AperteInvokerComponent reportInvokerButton;

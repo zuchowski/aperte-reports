@@ -33,6 +33,7 @@ import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import java.io.File;
 import static org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.gui.UiIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,7 +182,7 @@ public class HtmlReportBuilder {
             });
         }
         if (config.getAllowRefresh() == Boolean.TRUE) {
-            Button b = new Button(VaadinUtil.getValue("dashboard.view.refresh"));
+            Button b = new Button(VaadinUtil.getValue(UiIds.LABEL_REFRESH));
             buttons.addComponent(b);
             b.addListener(new Button.ClickListener() {
 

@@ -38,6 +38,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
+import org.apertereports.gui.UiIds;
 import org.apertereports.model.CyclicReportOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,17 +67,10 @@ public class ReportManagerComponent extends Panel {
     private static final String ALLOW_BACKGROUND_PROCESSING_PROPERTY = "allowBackgroundProcessing";
     private static final String ALLOW_ONLINE_DISPLAY_PROPERTY = "allowOnlineDisplay";
     private static final String ACTIVE_PROPERTY = "active";
-    private static final String REPORT_MANAGER_NEW_REPORT_BUTTON = "report.manager.newReportButton";
-    private static final String REPORT_MANAGER_ITEM_DOWNLOAD = "report.manager.item.download";
-    private static final String REPORT_MANAGER_ITEM_EDIT = "report.manager.item.edit";
     private static final String REPORT_MANAGER_ITEM_UPLOAD_CHANGE = "report.manager.item.upload.change";
-    private static final String REPORT_MANAGER_ITEM_REMOVE = "report.manager.item.remove";
     private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
-    private static final String BUTTON_CANCEL = "button.cancel";
-    private static final String BUTTON_OK = "button.ok";
     private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
-    private static final String REPORT_MANAGER_ITEM_EDIT_ACTIVE = "report.manager.item.edit.active";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
     private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
@@ -106,7 +100,7 @@ public class ReportManagerComponent extends Panel {
         Upload newReportUpload = new Upload(null, newReportReceiver);
         newReportUpload.addListener((SucceededListener) newReportReceiver);
         newReportUpload.addListener((FailedListener) newReportReceiver);
-        newReportUpload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_NEW_REPORT_BUTTON));
+        newReportUpload.setButtonCaption(VaadinUtil.getValue(UiIds.LABEL_ADD_3DOTS));
         newReportUpload.setImmediate(true);
         HorizontalLayout hl = ComponentFactory.createHLayoutFull(mainLayout);
         list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
@@ -127,16 +121,16 @@ public class ReportManagerComponent extends Panel {
             }
         };
 
-        TextField search = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
         }, hl);
-        hl.setExpandRatio(search, 1.0f);
+        filterField.setWidth("150px");
+        
         hl.addComponent(newReportUpload);
-        hl.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
         addComponent(mainLayout);
@@ -206,7 +200,7 @@ public class ReportManagerComponent extends Panel {
 
             HorizontalLayout footerRow = ComponentFactory.createHLayoutFull(this);
             HorizontalLayout checkboxCell = ComponentFactory.createHLayout(footerRow);
-            ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
+            ComponentFactory.createCheckBox(UiIds.LABEL_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
             ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ONLINE, beanItem, ALLOW_ONLINE_DISPLAY_PROPERTY,
                     checkboxCell);
             ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_BACKGROUND, beanItem,
@@ -216,7 +210,7 @@ public class ReportManagerComponent extends Panel {
 
             HorizontalLayout buttonsCell = ComponentFactory.createHLayout(footerRow);
 
-            Button save = ComponentFactory.createButton(BUTTON_OK, null, buttonsCell);
+            Button save = ComponentFactory.createButton(UiIds.LABEL_OK, null, buttonsCell);
             save.addListener(new ClickListener() {
 
                 @Override
@@ -224,7 +218,7 @@ public class ReportManagerComponent extends Panel {
                     saveChanges();
                 }
             });
-            Button cancel = ComponentFactory.createButton(BUTTON_CANCEL, null, buttonsCell);
+            Button cancel = ComponentFactory.createButton(UiIds.LABEL_CANCEL, null, buttonsCell);
             cancel.addListener(new ClickListener() {
 
                 @Override
@@ -281,8 +275,9 @@ public class ReportManagerComponent extends Panel {
         private ReportTemplate reportTemplate;
         private BeanItem<ReportTemplate> beanItem;
         private ReportParamPanel paramsPanel = null;
-        private Button toggleParams;
-
+        private Panel permsPanel = null;
+        private Button toggleParamsButton;
+        
         public ReportItemPanel(ReportTemplate reportTemplate) {
             this.reportTemplate = reportTemplate;
             beanItem = new BeanItem<ReportTemplate>(this.reportTemplate);
@@ -312,18 +307,18 @@ public class ReportManagerComponent extends Panel {
             HorizontalLayout footerRow = new HorizontalLayout();
             addComponent(footerRow);
             footerRow.setSpacing(true);
-            toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
+            toggleParamsButton = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
                     footerRow);
-            toggleParams.addListener(new ClickListener() {
+            toggleParamsButton.addListener(new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    toggleParams();
+                    toggleParamsPanel();
                 }
             });
-            Button reportSettingsButton = ComponentFactory.createButton(REPORT_MANAGER_ITEM_EDIT,
+            Button editButton = ComponentFactory.createButton(UiIds.LABEL_EDIT,
                     BaseTheme.BUTTON_LINK, footerRow);
-            reportSettingsButton.addListener(new ClickListener() {
+            editButton.addListener(new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -331,7 +326,7 @@ public class ReportManagerComponent extends Panel {
                 }
             });
 
-            Button downloadButton = ComponentFactory.createButton(REPORT_MANAGER_ITEM_DOWNLOAD, BaseTheme.BUTTON_LINK,
+            Button downloadButton = ComponentFactory.createButton(UiIds.LABEL_DOWNLOAD, BaseTheme.BUTTON_LINK,
                     footerRow);
             downloadButton.addListener(new ClickListener() {
 
@@ -341,7 +336,7 @@ public class ReportManagerComponent extends Panel {
                 }
             });
 
-            Button removeButton = ComponentFactory.createButton(REPORT_MANAGER_ITEM_REMOVE, BaseTheme.BUTTON_LINK,
+            Button removeButton = ComponentFactory.createButton(UiIds.LABEL_REMOVE, BaseTheme.BUTTON_LINK,
                     footerRow);
             removeButton.addListener(new ClickListener() {
 
@@ -356,22 +351,23 @@ public class ReportManagerComponent extends Panel {
             remove(this);
         }
 
-        private void toggleParams() {
+        private void toggleParamsPanel() {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+                toggleParamsButton.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+                toggleParamsButton.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
             }
         }
 
         // TODO: could be better
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
+            panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             HorizontalLayout hl = ComponentFactory.createHLayout(panel);
-            ComponentFactory.createButton("params-form.generate", BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            ComponentFactory.createButton(UiIds.LABEL_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {

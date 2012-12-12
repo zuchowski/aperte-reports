@@ -30,7 +30,9 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.gui.UiIds;
 
 /**
  * Displays a component with a list of available report templates and lets
@@ -58,7 +60,6 @@ public class AperteInvokerComponent extends Panel {
     private class ReportPanel extends Panel {
 
         private static final String PARAMS_FORM_BACKGROUND_GENERATE = "params-form.background-generate";
-        private static final String PARAMS_FORM_GENERATE = "params-form.generate";
         private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
         private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
         private static final String REPORT_NAME_STYLE_NAME = "h4";
@@ -109,8 +110,9 @@ public class AperteInvokerComponent extends Panel {
 //		TODO: could be better
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
+            panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             HorizontalLayout hl = ComponentFactory.createHLayout(panel);
-            ComponentFactory.createButton(PARAMS_FORM_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            ComponentFactory.createButton(UiIds.LABEL_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -179,7 +181,7 @@ public class AperteInvokerComponent extends Panel {
         setScrollable(true);
         setStyleName(COMPONENT_STYLE_NAME);
 
-        ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
@@ -187,6 +189,8 @@ public class AperteInvokerComponent extends Panel {
 
             }
         }, this);
+        filterField.setWidth("150px");
+
         reportList = new PaginatedPanelList<ReportTemplate, AperteInvokerComponent.ReportPanel>(PAGE_SIZE) {
 
             @Override

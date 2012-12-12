@@ -74,19 +74,19 @@
 //	/**
 //	 * The cyclic report detail fields.
 //	 */
-//	private TextField descriptionField = new TextField(VaadinUtil.getValue("cyclic.report.table.desc"));
+//	private TextField descriptionField = new TextField(VaadinUtil.getValue("label.description"));
 //	private TextField statusField = new TextField(VaadinUtil.getValue("cyclic.report.table.status"));
 //	private TextField cronExpressionField = new TextField(VaadinUtil.getValue("cyclic.report.table.when"));
-//	private CheckBox enabledCheckBox = new CheckBox(VaadinUtil.getValue("cyclic.report.enabled"));
-//	private TextField emailField = new TextField(VaadinUtil.getValue("cyclic.report.email"));
+//	private CheckBox enabledCheckBox = new CheckBox(VaadinUtil.getValue("label.enabled"));
+//	private TextField emailField = new TextField(VaadinUtil.getValue("label.email"));
 //	private Select outputFormatSelect = new Select(VaadinUtil.getValue("cyclic.report.email.format"));
 //
 //	/**
 //	 * Buttons.
 //	 */
-//	private Button saveButton = new Button(VaadinUtil.getValue("cyclic.report.update"));
-//	private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
-//	private Button downloadButton = new Button(VaadinUtil.getValue("cyclic.report.download"));
+//	private Button saveButton = new Button(VaadinUtil.getValue("label.update"));
+//	private Button cancelButton = new Button(VaadinUtil.getValue("label.cancel"));
+//	private Button downloadButton = new Button(VaadinUtil.getValue("label.download"));
 //	private Select downloadFormatSelect = new Select();
 //
 //	public CyclicReportDetailsComponent(CyclicReportOrder cyclicReport) {
@@ -175,7 +175,7 @@
 //		mainPanel.addComponent(new Label(VaadinUtil.getValue("cyclic.report.name")
 //				+ ": "
 //				+ (cyclicReport.getComponentId() != null ? cyclicReport.getComponentId() : VaadinUtil
-//						.getValue("cyclic.report.new"))));
+//						.getValue("label.new"))));
 //		mainPanel.addComponent(reportDetailsPanel);
 //		mainPanel.addComponent(getButtonsPanel());
 //		mainPanel.setSpacing(true);

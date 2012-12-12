@@ -38,8 +38,8 @@
 //    /**
 //     * Buttons.
 //     */
-//    private Button saveButton = new Button(VaadinUtil.getValue("dashboard.edit.save"));
-//    private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
+//    private Button saveButton = new Button(VaadinUtil.getValue("label.save"));
+//    private Button cancelButton = new Button(VaadinUtil.getValue("label.cancel"));
 //    private Button showSourceButton = new Button(VaadinUtil.getValue("dashboard.edit.source"));
 //    private Button addReportButton = new Button(VaadinUtil.getValue("dashboard.edit.add.report"));
 //
@@ -80,7 +80,7 @@
 //        String idxId = VaadinUtil.getValue("dashboard.edit.table.idx");
 //        String detailsId = VaadinUtil.getValue("dashboard.edit.table.details");
 //        String deleteId = VaadinUtil.getValue("dashboard.edit.table.delete");
-//        String descriptionId = VaadinUtil.getValue("dashboard.edit.table.description");
+//        String descriptionId = VaadinUtil.getValue("label.description");
 //
 //        reportsTable.addContainerProperty(idxId, Integer.class, null);
 //        reportsTable.addContainerProperty(VaadinUtil.getValue("dashboard.edit.table.report"), String.class, null);

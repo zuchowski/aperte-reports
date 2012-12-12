@@ -38,8 +38,8 @@
 //    /**
 //     * Self-explanatory buttons.
 //     */
-//    private Button saveButton = new Button(VaadinUtil.getValue("dashboard.edit.save"));
-//    private Button cancelButton = new Button(VaadinUtil.getValue("dashboard.edit.cancel"));
+//    private Button saveButton = new Button(VaadinUtil.getValue("label.save"));
+//    private Button cancelButton = new Button(VaadinUtil.getValue("label.cancel"));
 //    private Button addButton = new Button(VaadinUtil.getValue("cyclic.report.add"));
 //
 //    private VerticalLayout detailsPanel = new VerticalLayout();

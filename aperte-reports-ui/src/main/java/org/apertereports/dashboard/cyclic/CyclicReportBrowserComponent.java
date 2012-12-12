@@ -46,8 +46,8 @@
 //        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.idx"), Integer.class, null);
 //        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.report"), String.class, null);
 //        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.when"), String.class, null);
-//        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.desc"), String.class, null);
-//        reportsTable.addContainerProperty(VaadinUtil.getValue("cyclic.report.table.delete"), Button.class, null);
+//        reportsTable.addContainerProperty(VaadinUtil.getValue("label.description"), String.class, null);
+//        reportsTable.addContainerProperty(VaadinUtil.getValue("label.remove"), Button.class, null);
 //        reportsTable.addGeneratedColumn(VaadinUtil.getValue("cyclic.report.table.status"), new Table.ColumnGenerator() {
 //            @Override
 //            public Component generateCell(Table source, Object itemId, Object columnId) {
@@ -79,7 +79,7 @@
 //    private void initData() {
 //        reportsTable.removeAllItems();
 //        for (final CyclicReportOrder reportOrder : reportOrderMap.values()) {
-//            Button button = new Button(VaadinUtil.getValue("cyclic.report.table.delete"));
+//            Button button = new Button(VaadinUtil.getValue("label.remove"));
 //            reportsTable.addItem(new Object[] {
 //                    reportOrder.getComponentId(),
 //                    reportOrder.getReport().getReportname(),
@@ -90,7 +90,7 @@
 //            button.addListener(new Button.ClickListener() {
 //                @Override
 //                public void buttonClick(Button.ClickEvent event) {
-//                    NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue("cyclic.report.table.delete"),
+//                    NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue("label.remove"),
 //                            VaadinUtil.getValue("cyclic.report.table.delete.areyousure"),
 //                            new ConfirmListener() {
 //                                @Override

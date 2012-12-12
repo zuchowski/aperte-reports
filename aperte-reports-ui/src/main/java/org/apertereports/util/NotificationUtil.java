@@ -13,6 +13,7 @@ import com.vaadin.ui.Window.Notification;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 
 import static com.vaadin.ui.Window.Notification.*;
+import org.apertereports.gui.UiIds;
 
 /**
  * @author MW
@@ -112,7 +113,7 @@ public class NotificationUtil {
             }
         });
 
-        Button cancelButton = new Button(VaadinUtil.getValue("report.table.notconfirm"));
+        Button cancelButton = new Button(VaadinUtil.getValue(UiIds.LABEL_NO));
         cancelButton.setImmediate(true);
         cancelButton.addListener(new ClickListener() {
 

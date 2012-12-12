@@ -26,19 +26,17 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.gui.UiIds;
 
 @SuppressWarnings("serial")
 public class ReportOrderBrowserComponent extends Panel {
 
     private static final int PAGE_SIZE = 10;
     private static final String COMPONENT_STYLE = "borderless light";
-    private static final String BACKGROUND_BUTTON_PARAMS = "background.button.params";
-    private static final String BACKGROUND_BUTTON_PREVIEW = "background.button.preview";
     private static final String CREATE_DATE = "createDate";
     private static final String REPORTNAME_STYLE = "h4";
     private static final String REPORTNAME = "reportname";
     private static final String REPORT_STATUS = "reportStatus";
-    private static final String BUTTON_REFRESH = "button.refresh";
     private PaginatedPanelList<ReportOrder, ReportOrderPanel> list;
 
     public ReportOrderBrowserComponent() {
@@ -51,27 +49,27 @@ public class ReportOrderBrowserComponent extends Panel {
     }
 
     private void init() {
-        HorizontalLayout hl = new HorizontalLayout();
+        HorizontalLayout header = new HorizontalLayout();
 
-        TextField searchField = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
-        }, hl);
-        searchField.setWidth("150px");
+        }, header);
+        filterField.setWidth("150px");
 
         Label gap = new Label();
         gap.setWidth("10px");
-        hl.addComponent(gap);
+        header.addComponent(gap);
 
         Label expandedGap = new Label();
         expandedGap.setWidth("100%");
-        hl.addComponent(expandedGap);
-        hl.setExpandRatio(expandedGap, 1.0f);
+        header.addComponent(expandedGap);
+        header.setExpandRatio(expandedGap, 1.0f);
 
-        ComponentFactory.createButton(BUTTON_REFRESH, null, hl, new ClickListener() {
+        ComponentFactory.createButton(UiIds.LABEL_REFRESH, null, header, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -79,8 +77,8 @@ public class ReportOrderBrowserComponent extends Panel {
             }
         });
 
-        hl.setWidth("100%");
-        addComponent(hl);
+        header.setWidth("100%");
+        addComponent(header);
 
         list = new PaginatedPanelList<ReportOrder, ReportOrderBrowserComponent.ReportOrderPanel>(PAGE_SIZE) {
 
@@ -136,14 +134,14 @@ public class ReportOrderBrowserComponent extends Panel {
             ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, REPORTNAME_STYLE, grid);
 
             ComponentFactory.createCalendarLabel(item, CREATE_DATE, "", grid);
-            Button previewButton = ComponentFactory.createButton(BACKGROUND_BUTTON_PREVIEW, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+            Button previewButton = ComponentFactory.createButton(UiIds.LABEL_PREVIEW, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     showReport();
                 }
             });
-            ComponentFactory.createButton(BACKGROUND_BUTTON_PARAMS, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+            ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {

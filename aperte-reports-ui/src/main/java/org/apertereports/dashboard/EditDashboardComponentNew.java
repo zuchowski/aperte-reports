@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.gui.UiIds;
 
 /**
  * Class defines panel for dashboard report configuration
@@ -25,8 +26,6 @@ import org.apertereports.dao.ReportTemplateDAO;
 @SuppressWarnings("serial")
 public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
-    private static final String BUTTON_OK = "button.ok";
-    private static final String BUTTON_CANCEL = "button.cancel";
     private static final String CACHE_TIMEOUT = "cacheTimeout";
     private static final String REPORT = "report";
     private static final String EXPORT_BUTTONS = "exportButtons";
@@ -54,7 +53,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     @Override
     protected void initComponentData() {
         mainPanel = new Panel();
-        mainPanel.setCaption(VaadinUtil.getValue("form.config"));
+        mainPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
         setCompositionRoot(mainPanel);
 
         VerticalLayout vl = ComponentFactory.createVLayout(mainPanel, true, true);
@@ -63,10 +62,10 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         reportRow.addComponent(form = new EditDashboardForm());
 
         vl.addComponent(paramsPanel);
-        paramsPanel.setCaption(VaadinUtil.getValue("form.params"));
+        paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
 
         HorizontalLayout hl = ComponentFactory.createHLayout(vl);
-        ComponentFactory.createButton(BUTTON_OK, "", hl, new ClickListener() {
+        ComponentFactory.createButton(UiIds.LABEL_OK, "", hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -80,7 +79,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                 }
             }
         });
-        ComponentFactory.createButton(BUTTON_CANCEL, "", hl, new ClickListener() {
+        ComponentFactory.createButton(UiIds.LABEL_CANCEL, "", hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {

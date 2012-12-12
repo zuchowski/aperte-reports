@@ -112,7 +112,7 @@
 //
 //            HorizontalLayout buttons = new HorizontalLayout();
 //            if (Boolean.TRUE.equals(report.getAllowOnlineDisplay())) {
-//                final Button submitGenerate = new Button(VaadinUtil.getValue("invoker.form.generate"));
+//                final Button submitGenerate = new Button(VaadinUtil.getValue("label.generate"));
 //                submitGenerate.addListener(new ClickListener() {
 //                    @Override
 //                    public void buttonClick(ClickEvent event) {

@@ -129,7 +129,7 @@
 //        root = new HorizontalLayout();
 //
 //        final Upload upload = new Upload(VaadinUtil.getValue("manager.form.upload.prompt"), this);
-//        upload.setButtonCaption(VaadinUtil.getValue("manager.form.upload.button"));
+//        upload.setButtonCaption(VaadinUtil.getValue("label.upload"));
 //        upload.setSizeFull();
 //        upload.addListener((Upload.SucceededListener) this);
 //        upload.addListener((Upload.FailedListener) this);

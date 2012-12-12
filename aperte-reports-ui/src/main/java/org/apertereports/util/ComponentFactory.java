@@ -34,6 +34,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import org.apertereports.gui.UiIds;
 
 /**
  * Factory class providing components in frequently used form.
@@ -43,7 +44,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public abstract class ComponentFactory {
 
-	private static final String SEARCH_FILTER_INPUT_PROMPT = "search-filter.input-prompt";
 	private static final String REPORT_MANAGER_DATE_FORMAT = "report.manager.date.format";
 	public static final String ICON_PATH = "/icons/16x16/";
 
@@ -306,7 +306,7 @@ public abstract class ComponentFactory {
 	 */
 	public static TextField createSearchBox(TextChangeListener listener, ComponentContainer parent) {
 		TextField search = new TextField();
-		search.setInputPrompt(VaadinUtil.getValue(SEARCH_FILTER_INPUT_PROMPT));
+		search.setInputPrompt(VaadinUtil.getValue(UiIds.LABEL_FILTER));
 		search.setWidth("100%");
 		search.setImmediate(true);
 		search.setTextChangeTimeout(500);

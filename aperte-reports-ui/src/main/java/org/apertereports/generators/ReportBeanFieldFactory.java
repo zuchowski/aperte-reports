@@ -82,7 +82,7 @@
 //        Field field = null;
 //        if (showField(propertyId)) {
 //            if ("active".equals(propertyId)) {
-//                field = new CheckBox(VaadinUtil.getValue("manager.form.active.label"));
+//                field = new CheckBox(VaadinUtil.getValue("label.active"));
 //            }
 //            else if ("allowOnlineDisplay".equals(propertyId)) {
 //                field = new CheckBox(VaadinUtil.getValue("manager.form.allowOnlineDisplay.label"));
@@ -137,7 +137,7 @@
 //                TextField descriptionField = new TextField("description");
 //                descriptionField.setRequiredError(VaadinUtil.getValue("manager.form.active.required_error"));
 //                descriptionField.setRequired(true);
-//                descriptionField.setCaption(VaadinUtil.getValue("manager.form.description.label"));
+//                descriptionField.setCaption(VaadinUtil.getValue("label.description"));
 //                descriptionField.setWidth("100%");
 //                field = descriptionField;
 //            }

@@ -63,6 +63,7 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import java.util.Locale;
 import org.apertereports.common.utils.LocaleUtils;
+import org.apertereports.gui.UiIds;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin
@@ -650,12 +651,13 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         // ADD FORMAT SELECTION
         if (includeReportFormat) {
-            format = ComponentFactory.createFormatCombo(ReportType.PDF, "invoker.form.select_format");
+            format = ComponentFactory.createFormatCombo(ReportType.PDF, UiIds.LABEL_FORMAT);
+            format.setSizeUndefined();
             form.addField("format", format);
         }
 
         if (includeLocale) {
-            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), "form.locale");
+            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), UiIds.LABEL_LOCALE);
             form.addField(JRParameter.REPORT_LOCALE, localeComboBox);
         } else {
             form.setDescription(readonly ? VaadinUtil.getValue("invoker.form.header.readonly") : VaadinUtil.getValue("invoker.form.header"));
