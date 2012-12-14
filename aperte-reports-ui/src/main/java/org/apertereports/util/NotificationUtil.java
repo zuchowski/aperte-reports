@@ -13,7 +13,7 @@ import com.vaadin.ui.Window.Notification;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 
 import static com.vaadin.ui.Window.Notification.*;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 /**
  * @author MW

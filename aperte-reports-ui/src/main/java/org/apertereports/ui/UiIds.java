@@ -1,4 +1,4 @@
-package org.apertereports.gui;
+package org.apertereports.ui;
 
 /**
  * Class defines ids for user interace messages taken from resources

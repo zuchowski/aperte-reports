@@ -18,7 +18,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 /**
  * Class defines panel for dashboard report configuration

@@ -7,7 +7,7 @@ import org.apertereports.util.VaadinUtil;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.BaseTheme;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 /**
  * Displays an icon button with help. Shows help contents in a new window.

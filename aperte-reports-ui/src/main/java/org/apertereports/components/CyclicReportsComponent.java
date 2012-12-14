@@ -47,7 +47,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import java.util.LinkedList;
 import java.util.List;
 import org.apertereports.common.xml.config.ReportConfigParameter;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 @SuppressWarnings("serial")
 public class CyclicReportsComponent extends Panel {

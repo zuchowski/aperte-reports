@@ -63,7 +63,7 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import java.util.Locale;
 import org.apertereports.common.utils.LocaleUtils;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin

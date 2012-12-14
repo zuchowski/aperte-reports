@@ -26,7 +26,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 @SuppressWarnings("serial")
 public class ReportOrderBrowserComponent extends Panel {

@@ -32,7 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 
 /**
  * Displays a component with a list of available report templates and lets

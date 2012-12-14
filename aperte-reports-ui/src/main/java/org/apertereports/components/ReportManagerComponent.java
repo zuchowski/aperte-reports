@@ -38,7 +38,7 @@ import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 import org.apertereports.model.CyclicReportOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

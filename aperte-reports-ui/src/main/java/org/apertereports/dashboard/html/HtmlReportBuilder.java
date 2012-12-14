@@ -33,7 +33,7 @@ import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import java.io.File;
 import static org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.gui.UiIds;
+import org.apertereports.ui.UiIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
