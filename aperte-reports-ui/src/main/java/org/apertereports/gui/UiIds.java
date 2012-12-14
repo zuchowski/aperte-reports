@@ -8,6 +8,8 @@ package org.apertereports.gui;
 public class UiIds {
 
     public static final String LABEL_ACTIVE = "label.active";
+    public static final String LABEL_ADD = "label.add";
+    public static final String LABEL_ADDING = "label.adding";
     public static final String LABEL_ADD_3DOTS = "label.add.3dots";
     public static final String LABEL_CANCEL = "label.cancel";
     public static final String LABEL_CONFIGURATION = "label.configuration";
@@ -17,6 +19,7 @@ public class UiIds {
     public static final String LABEL_DISABLE = "label.disable";
     public static final String LABEL_DOWNLOAD = "label.download";
     public static final String LABEL_EDIT = "label.edit";
+    public static final String LABEL_EDITION = "label.edition";
     public static final String LABEL_EMAIL = "label.email";
     public static final String LABEL_ENABLE = "label.enable";
     public static final String LABEL_ENABLED = "label.enabled";

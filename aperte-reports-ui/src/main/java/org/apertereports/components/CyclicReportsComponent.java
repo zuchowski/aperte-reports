@@ -29,7 +29,6 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.UserError;
-import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -74,6 +73,7 @@ public class CyclicReportsComponent extends Panel {
     private static final String CYCYLIC_EDIT_REQUIRED_ERROR_FORMAT = "cycylic.edit.required-error.format";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
     private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
+    private boolean addingNew = false;
 
     public CyclicReportsComponent() {
         init();
@@ -101,7 +101,7 @@ public class CyclicReportsComponent extends Panel {
         header.setExpandRatio(expandedGap, 1.0f);
 
         header.addComponent(new Label());
-        Button addButton = ComponentFactory.createButton(UiIds.LABEL_ADD_3DOTS, null, header);
+        Button addButton = ComponentFactory.createButton(UiIds.LABEL_ADD, null, header);
         addButton.addListener(new ClickListener() {
 
             @Override
@@ -141,6 +141,10 @@ public class CyclicReportsComponent extends Panel {
     }
 
     private void addNew() {
+        if (addingNew) {
+            return;
+        }
+        addingNew = true;
         CyclicReportOrder order = new CyclicReportOrder();
         EditCyclicReportPanel ecrp = new EditCyclicReportPanel(order, true);
         list.addComponent(ecrp, 0);
@@ -318,7 +322,7 @@ public class CyclicReportsComponent extends Panel {
             this.newItem = newItem;
             this.order = order;
 
-            setCaption(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
+            setCaption(VaadinUtil.getValue(newItem ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION));
 
             setWidth("100%");
             addComponent(form = new EditCyclicReportForm(order));
@@ -347,6 +351,7 @@ public class CyclicReportsComponent extends Panel {
             } else {
                 list.removeComponent(this);
             }
+            addingNew = false;
         }
 
         protected void save() {
@@ -354,6 +359,7 @@ public class CyclicReportsComponent extends Panel {
                 form.commit();
                 CyclicReportOrderDAO.saveOrUpdate(order);
                 list.replaceComponent(this, new CyclicReportPanel(order));
+                addingNew = false;
             } catch (InvalidValueException e) {
                 ExceptionUtils.logWarningException("Edit cyclic report: invalid user input", e);
             }
