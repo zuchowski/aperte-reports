@@ -11,15 +11,19 @@ import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Simple Quartz {@link org.quartz.Job} that adapter that picks a cyclic report id from the job
- * context and launches a report generation process.
+ * Simple Quartz {@link org.quartz.Job} that adapter that picks a cyclic report
+ * id from the job context and launches a report generation process.
  * <p/>
- * <p>If somehow the report is not found in the database or another job is being processed at the time of invocation,
- * the generation process is omitted.
+ * <p>If somehow the report is not found in the database or another job is being
+ * processed at the time of invocation, the generation process is omitted.
  */
 public class CyclicReportOrderJob implements Job {
+
+    private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderScheduler.class);
 
     /**
      * Invokes the report order processing.
@@ -29,15 +33,17 @@ public class CyclicReportOrderJob implements Job {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        logger.info("report order job, id: " + context.getJobDetail().getName() + ", executing...");
         processOrder(context.getJobDetail());
+        logger.info("report order job, id: " + context.getJobDetail().getName() + ", finished");
     }
 
     /**
-     * Executes a report generation process based on a cyclic report. The report is fetched from
-     * database by the id provided by the job details.
+     * Executes a report generation process based on a cyclic report. The report
+     * is fetched from database by the id provided by the job details.
      * <p/>
-     * <p>The newly created report order is linked with the cyclic report and pushed to JMS queue
-     * for later processing.
+     * <p>The newly created report order is linked with the cyclic report and
+     * pushed to JMS queue for later processing.
      *
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
