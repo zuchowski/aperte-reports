@@ -7,6 +7,9 @@ package org.apertereports.ui;
  */
 public class UiIds {
 
+    /**
+     * Labels
+     */
     public static final String LABEL_ACTIVE = "label.active";
     public static final String LABEL_ADD = "label.add";
     public static final String LABEL_ADDING = "label.adding";
@@ -45,4 +48,9 @@ public class UiIds {
     public static final String LABEL_UPDATE = "label.update";
     public static final String LABEL_UPLOAD = "label.upload";
     public static final String LABEL_YES = "label.yes";
+    /**
+     * Messages
+     */
+    public static final String MSG_HIDE_PARAMETERS = "msg.hide.parameters";
+    public static final String MSG_HIDE_PERMISSIONS = "msg.hide.permissions";
 }

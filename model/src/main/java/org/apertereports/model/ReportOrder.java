@@ -9,7 +9,9 @@ import javax.persistence.*;
 import java.util.Calendar;
 
 /**
- * Represents a persistent report generation order. The data should be kept in <code>ar_report_order</code> table in <code>public</code> schema.
+ * Represents a persistent report generation order. The data should be kept in
+ * <code>ar_report_order</code> table in
+ * <code>public</code> schema.
  */
 @Entity
 @Table(name = "ar_report_order")
@@ -23,32 +25,27 @@ public class ReportOrder {
     @PrimaryKeyJoinColumn
     @Column(name = "id", nullable = false, length = 10)
     private Long id;
-
     /**
      * Login of user who ordered a report.
      */
     @Column
     private String username;
-
     /**
      * Date of order.
      */
     @Column(name = "create_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar createDate = Calendar.getInstance();
-
     /**
      * Date processing started.
      */
     @Column(name = "start_date")
     private Calendar startDate;
-
     /**
      * Date processing finished.
      */
     @Column(name = "finish_date")
     private Calendar finishDate;
-
     /**
      * Input parameters formatted as XML.
      */
@@ -57,7 +54,6 @@ public class ReportOrder {
     @Column(name = "parameters_xml")
     @Basic(fetch = FetchType.LAZY)
     private String parametersXml;
-
     /**
      * Report result formatted as BASE64.
      */
@@ -66,41 +62,36 @@ public class ReportOrder {
     @Column(name = "report_result")
     @Basic(fetch = FetchType.LAZY)
     private String reportResult;
-
     /**
      * Output format, e.g. CSV, HTML, PDF, XLS.
      */
     @Column(name = "output_format")
     private String outputFormat;
-
     /**
      * Details of an error should processing failed.
      */
     @Column(name = "error_details")
     private String errorDetails;
-
     /**
-     * Email address of an user to receive report results or to be
-     * notified of execution failure.
+     * Email address of an user to receive report results or to be notified of
+     * execution failure.
      */
     @Column(name = "recipient_email")
     private String recipientEmail;
-
     /**
      * JMS queue the order should reply to.
      */
     @Column(name = "reply_to_q")
     private String replyToQ;
-
     /**
      * Report template used.
      */
     @ManyToOne
     @JoinColumn(name = "report_id")
     private ReportTemplate report;
-
     /**
-     * Report status as defined in enum org.apertereports.model.ReportOrder.Status
+     * Report status as defined in enum
+     * org.apertereports.model.ReportOrder.Status
      * <dl>
      * <dt>0</dt>
      * <dd>new</dd>
@@ -221,6 +212,7 @@ public class ReportOrder {
     }
 
     public enum Status {
+
         NEW, PROCESSING, SUCCEEDED, FAILED
     }
 

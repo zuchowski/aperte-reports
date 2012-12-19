@@ -71,8 +71,6 @@ public class CyclicReportsComponent extends Panel {
     private static final String CYCYLIC_EDIT_REQUIRED_ERROR_REPORTNAME = "cycylic.edit.required-error.reportname";
     private static final String CYCLIC_EDIT_INPUT_PROMPT_FORMAT = "cyclic.edit.input-prompt.format";
     private static final String CYCYLIC_EDIT_REQUIRED_ERROR_FORMAT = "cycylic.edit.required-error.format";
-    private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
-    private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
     private boolean addingNew = false;
 
     public CyclicReportsComponent() {
@@ -215,7 +213,7 @@ public class CyclicReportsComponent extends Panel {
 
             HorizontalLayout row3 = ComponentFactory.createHLayout(this);
 
-            toggleParams = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
+            toggleParams = ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK,
                     row3, new ClickListener() {
 
                 @Override
@@ -257,11 +255,11 @@ public class CyclicReportsComponent extends Panel {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
 
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+                toggleParams.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+                toggleParams.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             }
         }
 

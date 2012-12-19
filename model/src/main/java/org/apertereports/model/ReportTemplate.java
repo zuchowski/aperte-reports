@@ -80,6 +80,23 @@ public class ReportTemplate implements Serializable {
      */
     @Column(unique = true, nullable = false)
     private String reportname;
+    /**
+     * Contains list of user roles with access to the report. This variable can
+     * be set to one of the values: <p> <b>all</b> - every user has access<br>
+     * <b>none</b> - no user has access (but user with Administrator role
+     * does)<br> <b>role1_id,role2id,...</b> - list of roles which have access
+     * (plus extra Administrator access)
+     */
+    @Column(name = "roles_with_access")
+    private String rolesWithAccess;
+
+    public String getRolesWithAccess() {
+        return rolesWithAccess;
+    }
+
+    public void setRolesWithAccess(String rolesWithAccess) {
+        this.rolesWithAccess = rolesWithAccess;
+    }
 
     public boolean getActive() {
         return active != null && active;

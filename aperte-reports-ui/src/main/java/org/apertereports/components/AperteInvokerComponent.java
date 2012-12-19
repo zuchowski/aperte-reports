@@ -60,8 +60,6 @@ public class AperteInvokerComponent extends Panel {
     private class ReportPanel extends Panel {
 
         private static final String PARAMS_FORM_BACKGROUND_GENERATE = "params-form.background-generate";
-        private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
-        private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
         private static final String REPORT_NAME_STYLE_NAME = "h4";
         private static final String REPORT_DESC_STYLE_NAME = "tiny";
         private static final String PANEL_STYLE_NAME = "borderless light";
@@ -78,7 +76,7 @@ public class AperteInvokerComponent extends Panel {
 
             Label spacer = new Label();
             row.addComponent(spacer);
-            toggleParams = ComponentFactory.createButton(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE),
+            toggleParams = ComponentFactory.createButton(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS),
                     BaseTheme.BUTTON_LINK, row);
             toggleParams.addListener(new ClickListener() {
 
@@ -99,11 +97,11 @@ public class AperteInvokerComponent extends Panel {
         private void toggleParams() {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+                toggleParams.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
-                toggleParams.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+                toggleParams.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             }
         }
 

@@ -1,5 +1,7 @@
 package org.apertereports.components;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -71,8 +73,6 @@ public class ReportManagerComponent extends Panel {
     private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
     private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
-    private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE = "report-params.toggle-visibility.true";
-    private static final String REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE = "report-params.toggle-visibility.false";
     private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
     private static final String DUPLICATE_REPORT_NAME_DESC = "exception.duplicate_report_name.desc";
     private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
@@ -129,7 +129,7 @@ public class ReportManagerComponent extends Panel {
             }
         }, hl);
         filterField.setWidth("150px");
-        
+
         hl.addComponent(newReportUpload);
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
@@ -162,6 +162,7 @@ public class ReportManagerComponent extends Panel {
         public EditReportItemPanel(ReportItemPanel item) {
             this.item = item;
             setStyleName(EDIT_PANEL_STYLE);
+            setCaption(VaadinUtil.getValue(UiIds.LABEL_EDITION) + " - " + item.reportTemplate.getReportname());
             deepCopy(item.reportTemplate, temporaryData = new ReportTemplate());
             beanItem = new BeanItem<ReportTemplate>(temporaryData);
 
@@ -277,7 +278,8 @@ public class ReportManagerComponent extends Panel {
         private ReportParamPanel paramsPanel = null;
         private Panel permsPanel = null;
         private Button toggleParamsButton;
-        
+        private Button togglePermsButton;
+
         public ReportItemPanel(ReportTemplate reportTemplate) {
             this.reportTemplate = reportTemplate;
             beanItem = new BeanItem<ReportTemplate>(this.reportTemplate);
@@ -307,13 +309,22 @@ public class ReportManagerComponent extends Panel {
             HorizontalLayout footerRow = new HorizontalLayout();
             addComponent(footerRow);
             footerRow.setSpacing(true);
-            toggleParamsButton = ComponentFactory.createButton(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE, BaseTheme.BUTTON_LINK,
+            toggleParamsButton = ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK,
                     footerRow);
             toggleParamsButton.addListener(new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     toggleParamsPanel();
+                }
+            });
+            togglePermsButton = ComponentFactory.createButton(UiIds.LABEL_PERMISSIONS, BaseTheme.BUTTON_LINK,
+                    footerRow);
+            togglePermsButton.addListener(new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    togglePermsPanel();
                 }
             });
             Button editButton = ComponentFactory.createButton(UiIds.LABEL_EDIT,
@@ -354,12 +365,56 @@ public class ReportManagerComponent extends Panel {
         private void toggleParamsPanel() {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
-                toggleParamsButton.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_FALSE));
+                toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
-                toggleParamsButton.setCaption(VaadinUtil.getValue(REPORT_PARAMS_TOGGLE_VISIBILITY_TRUE));
+                toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             }
+        }
+
+        private void togglePermsPanel() {
+            if (permsPanel == null) {
+                addComponent(permsPanel = createPermsPanel());
+                togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PERMISSIONS));
+            } else {
+                removeComponent(permsPanel);
+                permsPanel = null;
+                togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
+            }
+        }
+
+        private Panel createPermsPanel() {
+            Panel p = new Panel(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
+            final GridLayout l = new GridLayout(2, 2);
+            ((AbstractLayout) l).setMargin(true, true, true, true);
+            l.setSpacing(true);
+            p.setContent(l);
+
+            CheckBox allCheckBox = new CheckBox("All roles", true);
+            allCheckBox.setImmediate(true);
+            logger.info("adding listener");
+            System.out.println("al");
+            allCheckBox.addListener(new Property.ValueChangeListener() {
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    boolean v = (Boolean) event.getProperty().getValue();
+                    if (!v) {
+                        Panel p = new Panel("roles with access");
+                        l.addComponent(p, 1, 1);
+                    } else {
+                        l.removeComponent(1, 1);
+                    }
+                    System.out.println("vc: " + event.getProperty().getValue());
+                    System.out.println("vc: " + event.getProperty());
+                    logger.info("value changed: " + event.getProperty().getValue());
+                }
+            });
+
+            l.addComponent(allCheckBox, 0, 0);
+
+            return p;
         }
 
         // TODO: could be better
