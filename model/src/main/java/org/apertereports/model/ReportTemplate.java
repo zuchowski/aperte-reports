@@ -24,14 +24,13 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "ar_report_template")
 public class ReportTemplate implements Serializable {
-    private static final long serialVersionUID = -7196776812526154078L;
 
+    private static final long serialVersionUID = -7196776812526154078L;
     /**
      * Indicates this report is active or not.
      */
     @Column
     private Boolean active = true;
-
     /**
      * JRXML data formatted in Base64 manner.
      */
@@ -40,38 +39,32 @@ public class ReportTemplate implements Serializable {
     @Column
     @Basic(fetch = FetchType.LAZY)
     private String content;
-
     /**
      * Date of creation.
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
     private Date created = new Date();
-
     /**
      * Description of the report template.
      */
     @Column
     private String description;
-
     /**
      * Filename it was uploaded from.
      */
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String filename;
-
     /**
      * Should report engine allow online display.
      */
     @Column(name = "allow_online_display")
     private Boolean allowOnlineDisplay = true;
-
     /**
      * Should report engine allow background order generation.
      */
     @Column(name = "allow_background_order")
     private Boolean allowBackgroundOrder = true;
-
     /**
      * Primary key.
      */
@@ -80,11 +73,12 @@ public class ReportTemplate implements Serializable {
     @PrimaryKeyJoinColumn
     @Column(name = "id", nullable = false, length = 10)
     private Integer id;
-
     /**
-     * Report name taken from JRXML it was uploaded from (the <code>name</code> attribute of <code>jasperReport</code> tag).
+     * Report name taken from JRXML it was uploaded from (the
+     * <code>name</code> attribute of
+     * <code>jasperReport</code> tag).
      */
-    @Column(unique = true, nullable=false)
+    @Column(unique = true, nullable = false)
     private String reportname;
 
     public boolean getActive() {
@@ -163,31 +157,37 @@ public class ReportTemplate implements Serializable {
      * Field identifiers for Vaadin tables.
      */
     public enum Fields {
+
         ACTIVE, CONTENT, CREATED, DESCRIPTION, FILENAME, ALLOW_ONLINE_DISPLAY, ALLOW_BACKGROUND_ORDER, REPORTNAME, ID
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((reportname == null) ? 0 : reportname.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ReportTemplate other = (ReportTemplate) obj;
-		if (reportname == null) {
-			if (other.reportname != null)
-				return false;
-		} else if (!reportname.equals(other.reportname))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ReportTemplate other = (ReportTemplate) obj;
+        if (reportname == null) {
+            if (other.reportname != null) {
+                return false;
+            }
+        } else if (!reportname.equals(other.reportname)) {
+            return false;
+        }
+        return true;
+    }
 }

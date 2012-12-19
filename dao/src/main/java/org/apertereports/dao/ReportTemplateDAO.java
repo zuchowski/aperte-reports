@@ -64,7 +64,6 @@ public class ReportTemplateDAO {
         }.p();
     }
 
-
     /**
      * Returns a list of report templates with given names
      *
@@ -186,8 +185,8 @@ public class ReportTemplateDAO {
     }
 
     /**
-     * Fetches report templates matching given filter starting from
-     * firstResult position. No more than maxResults is returned.
+     * Fetches report templates matching given filter starting from firstResult
+     * position. No more than maxResults is returned.
      *
      * @param filter Filter
      * @param firstResult Index of the first result
