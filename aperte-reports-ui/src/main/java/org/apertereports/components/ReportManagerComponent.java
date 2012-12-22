@@ -1,7 +1,5 @@
 package org.apertereports.components;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -117,6 +115,7 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
+                System.out.println("fetching...");
                 return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
             }
         };
@@ -365,7 +364,7 @@ public class ReportManagerComponent extends Panel {
         private void toggleParamsPanel() {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
-                toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PARAMETERS));
+                toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
@@ -375,46 +374,13 @@ public class ReportManagerComponent extends Panel {
 
         private void togglePermsPanel() {
             if (permsPanel == null) {
-                addComponent(permsPanel = createPermsPanel());
-                togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PERMISSIONS));
+                addComponent(permsPanel = new RolePermissionsPanel(this, reportTemplate));
+                togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PERMISSIONS));
             } else {
                 removeComponent(permsPanel);
                 permsPanel = null;
                 togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
             }
-        }
-
-        private Panel createPermsPanel() {
-            Panel p = new Panel(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
-            final GridLayout l = new GridLayout(2, 2);
-            ((AbstractLayout) l).setMargin(true, true, true, true);
-            l.setSpacing(true);
-            p.setContent(l);
-
-            CheckBox allCheckBox = new CheckBox("All roles", true);
-            allCheckBox.setImmediate(true);
-            logger.info("adding listener");
-            System.out.println("al");
-            allCheckBox.addListener(new Property.ValueChangeListener() {
-
-                @Override
-                public void valueChange(ValueChangeEvent event) {
-                    boolean v = (Boolean) event.getProperty().getValue();
-                    if (!v) {
-                        Panel p = new Panel("roles with access");
-                        l.addComponent(p, 1, 1);
-                    } else {
-                        l.removeComponent(1, 1);
-                    }
-                    System.out.println("vc: " + event.getProperty().getValue());
-                    System.out.println("vc: " + event.getProperty());
-                    logger.info("value changed: " + event.getProperty().getValue());
-                }
-            });
-
-            l.addComponent(allCheckBox, 0, 0);
-
-            return p;
         }
 
         // TODO: could be better
@@ -599,5 +565,6 @@ public class ReportManagerComponent extends Panel {
         target.setFilename(source.getFilename());
         target.setId(source.getId());
         target.setReportname(source.getReportname());
+        target.setRolesWithAccessS(source.getRolesWithAccessS());
     }
 }

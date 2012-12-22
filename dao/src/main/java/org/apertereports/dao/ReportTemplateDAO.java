@@ -202,7 +202,11 @@ public class ReportTemplateDAO {
                 c.setFirstResult(firstResult);
                 c.setMaxResults(maxResults);
                 c.addOrder(Order.asc("id"));
-                return c.list();
+                List<ReportTemplate> l = c.list();
+                for (ReportTemplate rt : l) {
+                    System.out.println("RT RWA: " + rt.getRolesWithAccessS() + ", " + rt.getRolesWithAccess().size());
+                }
+                return l;
             }
         }.p();
     }

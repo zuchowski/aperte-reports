@@ -17,9 +17,7 @@ import org.apertereports.util.NotificationUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
-import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
@@ -27,7 +25,6 @@ import com.vaadin.ui.Window;
 
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
-import java.util.List;
 
 /**
  * This is a stub abstract class for all application portlets. Extending classes
@@ -136,31 +133,6 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
             } catch (SystemException e) {
                 ExceptionUtils.logSevereException(e);
                 throw new RuntimeException(e);
-            }
-
-            try {
-                System.out.println("USER  : " + user.getFullName());
-                System.out.println("USER  : " + user.getLogin());
-                System.out.println("USER G: " + user.getGroup().getName());
-                System.out.println("ROLES:");
-                for (Role r : user.getRoles()) {
-                    System.out.println("R n: " + r.getName());
-                    System.out.println("R t: " + r.getTypeLabel());
-                    System.out.println("R  : " + r.getRoleId());
-                }
-
-                System.out.println("ROLES:");
-                List<Role> roles = RoleLocalServiceUtil.getRoles(0, RoleLocalServiceUtil.getRolesCount());
-                long last = 0;
-                for (Role r : roles) {
-                    System.out.println("R: " + r.getName() + ", " + r.getTypeLabel() + ", " + r.getRoleId());
-                    last = r.getRoleId();
-                }
-                Role r = RoleLocalServiceUtil.getRole(last);
-                System.out.println("LAST: " + r.getName() + ", " + r.getTypeLabel() + ", " + r.getRoleId());
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

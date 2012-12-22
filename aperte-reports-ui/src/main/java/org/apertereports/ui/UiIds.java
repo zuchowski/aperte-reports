@@ -14,6 +14,7 @@ public class UiIds {
     public static final String LABEL_ADD = "label.add";
     public static final String LABEL_ADDING = "label.adding";
     public static final String LABEL_ADD_3DOTS = "label.add.3dots";
+    public static final String LABEL_ALL = "label.all";
     public static final String LABEL_CANCEL = "label.cancel";
     public static final String LABEL_CONFIGURATION = "label.configuration";
     public static final String LABEL_DELETE = "label.delete";
@@ -35,6 +36,7 @@ public class UiIds {
     public static final String LABEL_NEW = "label.new";
     public static final String LABEL_NEXT = "label.next";
     public static final String LABEL_NO = "label.no";
+    public static final String LABEL_NONE = "label.none";
     public static final String LABEL_OK = "label.ok";
     public static final String LABEL_PARAMETERS = "label.parameters";
     public static final String LABEL_PERMISSIONS = "label.permissions";
@@ -51,6 +53,6 @@ public class UiIds {
     /**
      * Messages
      */
-    public static final String MSG_HIDE_PARAMETERS = "msg.hide.parameters";
-    public static final String MSG_HIDE_PERMISSIONS = "msg.hide.permissions";
+    public static final String AR_MSG_HIDE_PARAMETERS = "ar.msg.hide.parameters";
+    public static final String AR_MSG_HIDE_PERMISSIONS = "ar.msg.hide.permissions";
 }

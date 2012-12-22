@@ -97,7 +97,7 @@ public class AperteInvokerComponent extends Panel {
         private void toggleParams() {
             if (paramsPanel == null) {
                 addComponent(paramsPanel = createParamsPanel());
-                toggleParams.setCaption(VaadinUtil.getValue(UiIds.MSG_HIDE_PARAMETERS));
+                toggleParams.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
                 paramsPanel = null;
