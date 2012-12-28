@@ -10,6 +10,7 @@ import org.apertereports.backbone.users.UserRole;
 import org.apertereports.backbone.users.UserRoleProvider;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
+import org.apertereports.ui.CloseListener;
 import org.apertereports.ui.UiIds;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.VaadinUtil;
@@ -25,14 +26,10 @@ public class RolePermissionsPanel extends Panel {
 
     private static final Logger logger = LoggerFactory.getLogger(RolePermissionsPanel.class.getName());
     private LinkedList<UserRoleWrapper> wrappers = new LinkedList<UserRoleWrapper>();
-    private Panel parent = null;
+    private CloseListener closeListener = null;
 
-    private RolePermissionsPanel() {
-    }
+    public RolePermissionsPanel(final ReportTemplate rt) {
 
-    public RolePermissionsPanel(final Panel parent, final ReportTemplate rt) {
-
-        this.parent = parent;
         rt.isAccessibleForAllRoles();
 
         setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
@@ -110,10 +107,9 @@ public class RolePermissionsPanel extends Panel {
                 } else {
                     rt.setRolesWithAccess(rolesWithAccess);
                 }
-                System.out.println("RWA: " + rt.getRolesWithAccessS());
                 ReportTemplateDAO.saveOrUpdate(rt);
 
-                removePanelFromParent();
+                fireCloseListener();
             }
         });
         Button cancelButton = ComponentFactory.createButton(UiIds.LABEL_CANCEL, null, buttonsLayout);
@@ -121,7 +117,7 @@ public class RolePermissionsPanel extends Panel {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                removePanelFromParent();
+                fireCloseListener();
             }
         });
 
@@ -132,12 +128,19 @@ public class RolePermissionsPanel extends Panel {
         mainLayout.addComponent(buttonsLayout);
     }
 
-    private void removePanelFromParent() {
-        //todo it has to be done with a kind of close listener to change the view and behaviour of hide permissions button
-        if (parent == null) {
-            return;
+    /**
+     * Sets close listener used when OK or CANCEL button is used
+     *
+     * @param closeListener Close listener
+     */
+    public void setCloseListener(CloseListener closeListener) {
+        this.closeListener = closeListener;
+    }
+
+    private void fireCloseListener() {
+        if (closeListener != null) {
+            closeListener.closed();
         }
-        parent.removeComponent(this);
     }
 
     private void setWrappersSelected(boolean b) {

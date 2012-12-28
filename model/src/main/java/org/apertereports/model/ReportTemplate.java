@@ -3,22 +3,9 @@ package org.apertereports.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Type;
 
@@ -33,10 +20,12 @@ public class ReportTemplate implements Serializable {
     /**
      * Id indicating access for all roles to the report
      */
-    public static String ACCESS_ALL_ROLES_ID = "all";
-    transient private String rolesWithAccessS_used = null;
-    transient private boolean accessibleForAllRoles = false;
-    transient private Set<Long> rolesWithAccessSet = new HashSet<Long>();
+    public static long ACCESS_ALL_ROLES_ID = -1;
+    @ElementCollection
+    @CollectionTable(name = "ar_roles_with_access", joinColumns =
+    @JoinColumn(name = "report_id"))
+    @Column(name = "role_id")
+    private Set<Long> rolesWithAccess = new HashSet<Long>();
     /**
      * Indicates this report is active or not.
      */
@@ -91,40 +80,6 @@ public class ReportTemplate implements Serializable {
      */
     @Column(unique = true, nullable = false)
     private String reportname;
-    /**
-     * Contains list of user roles with access to the report. This variable can
-     * be set to one of the values: <p> <b>all</b> - every user has access<br>
-     * <b>role1_id,role2id,...</b> - list of roles which have access
-     */
-    @Column(name = "roles_with_access")
-    private String rolesWithAccessS;
-
-    public ReportTemplate() {
-        System.out.println("   REATING RT ---------------------------------");
-    }
-
-    /**
-     * For use in application see {@link #getRolesWithAccess()}
-     *
-     * @return Built-in format of roles with access string
-     * @see #isAccessibleForAllRoles()
-     * @see #getRolesWithAccess()
-     */
-    public String getRolesWithAccessS() {
-        return rolesWithAccessS;
-    }
-
-    /**
-     * For use in application see {@link #setRolesWithAccess(java.util.List)}
-     *
-     * @param Built-in format of roles with access string
-     * @see #setAccessibleForAllRoles()
-     * @see #setRolesWithAccess(java.util.List)
-     */
-    public void setRolesWithAccessS(String rolesWithAccessS) {
-        System.out.println("set roles with access: " + rolesWithAccessS);
-        this.rolesWithAccessS = rolesWithAccessS;
-    }
 
     public boolean getActive() {
         return active != null && active;
@@ -204,8 +159,7 @@ public class ReportTemplate implements Serializable {
      * @return true if the report is accessible for all roles, false otherwise
      */
     public boolean isAccessibleForAllRoles() {
-        refresh();
-        return accessibleForAllRoles;
+        return rolesWithAccess.size() == 1 && rolesWithAccess.contains(ACCESS_ALL_ROLES_ID);
     }
 
     /**
@@ -218,15 +172,15 @@ public class ReportTemplate implements Serializable {
      * @see #isAccessibleForAllRoles()
      */
     public Set<Long> getRolesWithAccess() {
-        refresh();
-        return rolesWithAccessSet;
+        return rolesWithAccess;
     }
 
     /**
      * Sets the report accessible for all roles in the application
      */
     public void setAccessibleForAllRoles() {
-        setRolesWithAccessS(ACCESS_ALL_ROLES_ID);
+        rolesWithAccess.clear();
+        rolesWithAccess.add(ACCESS_ALL_ROLES_ID);
     }
 
     /**
@@ -238,19 +192,8 @@ public class ReportTemplate implements Serializable {
      * passed, none role will have the access
      * @see #setAccessibleForAllRoles()
      */
-    public void setRolesWithAccess(Set<Long> ids) {
-        if (ids == null || ids.isEmpty()) {
-            setRolesWithAccessS(ACCESS_ALL_ROLES_ID);
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        Iterator<Long> it = ids.iterator();
-        sb.append(it.next());
-        while (it.hasNext()) {
-            sb.append(",");
-            sb.append(it.next());
-        }
-        setRolesWithAccessS(sb.toString());
+    public void setRolesWithAccess(Set<Long> rolesWithAccess) {
+        this.rolesWithAccess = rolesWithAccess;
     }
 
     /**
@@ -260,33 +203,7 @@ public class ReportTemplate implements Serializable {
      * @return true if the role has access, false otherwise
      */
     public boolean hasRoleAccess(Long roleId) {
-        refresh();
-        return accessibleForAllRoles || rolesWithAccessSet.contains(roleId);
-    }
-
-    private void refresh() {
-
-        if (rolesWithAccessS_used != null && rolesWithAccessS_used.equals(rolesWithAccessS)) {
-            return;
-        }
-        rolesWithAccessS_used = rolesWithAccessS;
-
-        accessibleForAllRoles = ACCESS_ALL_ROLES_ID.equals(rolesWithAccessS);
-
-        rolesWithAccessSet.clear();
-        if (accessibleForAllRoles) {
-            return;
-        }
-
-        String[] t = rolesWithAccessS.split(",");
-        for (String s : t) {
-            try {
-                Long id = Long.parseLong(s);
-                rolesWithAccessSet.add(id);
-            } catch (Exception e) {
-            }
-        }
-        System.out.println("refresh s: " + rolesWithAccessSet.size());
+        return rolesWithAccess.contains(ACCESS_ALL_ROLES_ID) || rolesWithAccess.contains(roleId);
     }
 
     /**

@@ -36,10 +36,12 @@ import com.vaadin.ui.Upload.FailedListener;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
+import java.util.*;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.ui.UiIds;
 import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.ui.CloseListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +117,6 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
-                System.out.println("fetching...");
                 return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
             }
         };
@@ -275,7 +276,7 @@ public class ReportManagerComponent extends Panel {
         private ReportTemplate reportTemplate;
         private BeanItem<ReportTemplate> beanItem;
         private ReportParamPanel paramsPanel = null;
-        private Panel permsPanel = null;
+        private RolePermissionsPanel permsPanel = null;
         private Button toggleParamsButton;
         private Button togglePermsButton;
 
@@ -374,8 +375,17 @@ public class ReportManagerComponent extends Panel {
 
         private void togglePermsPanel() {
             if (permsPanel == null) {
-                addComponent(permsPanel = new RolePermissionsPanel(this, reportTemplate));
+                permsPanel = new RolePermissionsPanel(reportTemplate);
+                addComponent(permsPanel);
                 togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PERMISSIONS));
+
+                permsPanel.setCloseListener(new CloseListener() {
+
+                    @Override
+                    public void closed() {
+                        togglePermsPanel();
+                    }
+                });
             } else {
                 removeComponent(permsPanel);
                 permsPanel = null;
@@ -565,6 +575,6 @@ public class ReportManagerComponent extends Panel {
         target.setFilename(source.getFilename());
         target.setId(source.getId());
         target.setReportname(source.getReportname());
-        target.setRolesWithAccessS(source.getRolesWithAccessS());
+        target.setRolesWithAccess(new HashSet(source.getRolesWithAccess()));
     }
 }
