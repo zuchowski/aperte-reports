@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +22,8 @@ public class ReportTemplateProvider implements SubreportProvider {
 
 	@Override
 	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
-		List<ReportTemplate> list = ReportTemplateDAO.fetchByNames(reportNames);
+        //todouser
+		Collection<ReportTemplate> list = ReportTemplateDAO.fetchByNames(null, reportNames);
 		Map<String, Subreport> map = new HashMap<String, Subreport>(list.size());
 
 		for (ReportTemplate temp : list) {

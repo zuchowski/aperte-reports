@@ -14,6 +14,7 @@ import com.vaadin.ui.Window;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.portlet.PortletMode;
+import org.apertereports.common.users.User;
 import org.apertereports.dashboard.EditDashboardComponentNew.DisposeListener;
 
 /**
@@ -56,8 +57,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
-        final Window mainWindow = new Window(VaadinUtil.getValue("dashboard.window.title"), viewMode);
-        setMainWindow(mainWindow);
+        mainWindow = new Window(VaadinUtil.getValue("dashboard.window.title"), viewMode);
 
         if (getContext() instanceof PortletApplicationContext2) {
             PortletApplicationContext2 ctx = (PortletApplicationContext2) getContext();
@@ -88,6 +88,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
                 }
             }));
 
+            //todots disposelistener, closelistener
             editMode.setDisposeListener(new DisposeListener() {
 
                 @Override
@@ -123,5 +124,10 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
         if (init) {
             component.initData();
         }
+    }
+
+    @Override
+    protected void initUserData(User user) {
+        System.out.println("TODO");
     }
 }

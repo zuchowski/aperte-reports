@@ -34,6 +34,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import org.apertereports.common.users.User;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -306,9 +307,9 @@ public abstract class ComponentFactory {
         return format;
     }
 
-    public static ComboBox createReportTemplateCombo(ReportTemplate selectedValue, String captionKey) {
+    public static ComboBox createReportTemplateCombo(User user, ReportTemplate selectedValue, String captionKey) {
 
-        Collection<ReportTemplate> allReports = ReportTemplateDAO.fetchAllActive();
+        Collection<ReportTemplate> allReports = ReportTemplateDAO.fetchAllActive(user);
         ComboBox reports = new ComboBox(VaadinUtil.getValue(captionKey),
                 new BeanItemContainer<ReportTemplate>(ReportTemplate.class, allReports));
         reports.setItemCaptionPropertyId("reportname");

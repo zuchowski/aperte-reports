@@ -1,99 +1,92 @@
 package org.apertereports.dao;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import org.apertereports.common.users.User;
+import org.apertereports.common.users.UserRole;
 
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportTemplate;
-import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author MW
  */
 public class ReportTemplateDAO {
 
-    /**
-     * Returns all report templates from database.
-     *
-     * @return A collection of report templates
-     */
-    public static Collection<ReportTemplate> fetchAll() {
-        return new WHS<Collection<ReportTemplate>>() {
-
-            @Override
-            public Collection<ReportTemplate> lambda() {
-                return sess.createCriteria(ReportTemplate.class).list();
-            }
-        }.p();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
 
     /**
-     * Returns all active report templates
+     * Returns all active report templates for given user
      *
+     * @param user User
      * @return A collection active report templates
      */
-    public static Collection<ReportTemplate> fetchAllActive() {
-        return new WHS<Collection<ReportTemplate>>() {
-
-            @Override
-            public Collection<ReportTemplate> lambda() {
-                return sess.createCriteria(ReportTemplate.class).add(Restrictions.eq("active", true)).list();
-            }
-        }.p();
+    public static Collection<ReportTemplate> fetchAllActive(User user) {
+        return fetch(user, null, "active = true");
     }
 
     /**
-     * Returns a list of report templates with given name
+     * Returns a list of report templates with given name for given user
      *
+     * @param user User
      * @param name Name of report template to find
      * @return A list of report templates
      */
-    public static List<ReportTemplate> fetchByName(final String name) {
-        return new WHS<List<ReportTemplate>>(false) {
-
-            @Override
-            public List<ReportTemplate> lambda() {
-                List<ReportTemplate> list = sess.createCriteria(ReportTemplate.class).add(Restrictions.eq("reportname", name)).addOrder(org.hibernate.criterion.Order.desc("id")).list();
-                return list != null ? list : new ArrayList<ReportTemplate>();
-            }
-        }.p();
+    public static Collection<ReportTemplate> fetchByName(User user, String name) {
+        return fetch(user, null, "reportname = ?", "order by id", name);
     }
 
     /**
-     * Returns a list of report templates with given names
+     * Returns a list of report templates with given names with access for given
+     * user
      *
+     * @param user User
      * @param names Names of report templates to find
      * @return A list of report templates
      */
-    public static List<ReportTemplate> fetchByNames(final String... names) {
-        return new WHS<List<ReportTemplate>>(false) {
-
-            @Override
-            public List<ReportTemplate> lambda() {
-                List<ReportTemplate> list = sess.createCriteria(ReportTemplate.class).add(Restrictions.in("reportname", names)).list();
-                return list != null ? list : new ArrayList<ReportTemplate>();
-            }
-        }.p();
+    public static Collection<ReportTemplate> fetchByNames(User user, String... names) {
+        if (names.length == 0) {
+            return new LinkedList<ReportTemplate>();
+        }
+        Collection<ReportTemplate> c = fetch(user, null, "reportname IN (?)", null, (Object[]) names);
+        return c != null ? c : new LinkedList<ReportTemplate>();
     }
 
     /**
-     * Returns a unique report template from database by primary key.
+     * Returns a unique report template from database by primary key with access
+     * for given user
      *
+     * @param user User
      * @param id Primary key value of {@link org.apertereports.model.ReportTemplate}
-     * @return A report template corresponding to the given id
+     * @return A report template corresponding to the given id or null if not
+     * found
      */
-    public static ReportTemplate fetchById(final Integer id) {
-        return new WHS<ReportTemplate>() {
+    public static ReportTemplate fetchById(User user, Integer id) {
+        Collection<ReportTemplate> c = fetch(user, null, "active = true AND id = ?", null, id);
+        if (c.size() == 1) {
+            return c.iterator().next();
+        }
+        return null;
+    }
+
+    private static Collection<ReportTemplate> fetch(User user, String nameFilter, String hqlRestriction) {
+        return fetch(user, nameFilter, hqlRestriction, null, new Object[]{});
+    }
+
+    private static Collection<ReportTemplate> fetch(User user, String nameFilter, String hqlRestriction, String hqlOther) {
+        return fetch(user, nameFilter, hqlRestriction, hqlOther, new Object[]{});
+    }
+
+    private static Collection<ReportTemplate> fetch(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
+        return new WHS<Collection<ReportTemplate>>() {
 
             @Override
-            public ReportTemplate lambda() {
-                ReportTemplate rt = (ReportTemplate) sess.createCriteria(ReportTemplate.class).add(Restrictions.eq("id", id)).add(Restrictions.eq("active", true)).uniqueResult();
-                return rt;
+            public Collection<ReportTemplate> lambda() {
+                Query query = createQuery(false, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
+                return query.list();
             }
         }.p();
     }
@@ -105,33 +98,12 @@ public class ReportTemplateDAO {
      * primary key values.
      * @return A list of cyclic report orders
      */
-    public static List<ReportTemplate> fetchByIds(final Integer... ids) {
-        return new WHS<List<ReportTemplate>>() {
-
-            @Override
-            public List<ReportTemplate> lambda() {
-                if (ids.length == 0) {
-                    return new ArrayList<ReportTemplate>();
-                }
-                List<ReportTemplate> list = sess.createCriteria(ReportTemplate.class).add(Restrictions.in("id", ids)).add(Restrictions.eq("active", true)).list();
-                if (list == null || list.size() == 0) {
-                    return new ArrayList<ReportTemplate>();
-                }
-                return list;
-            }
-        }.p();
-    }
-
-    /**
-     * Removes report template with given id
-     *
-     * @param id Id of report template to remove
-     */
-    public static void remove(Integer id) {
-        final ReportTemplate report = fetchById(id);
-        if (report != null) {
-            remove(report);
+    public static Collection<ReportTemplate> fetchByIds(Integer... ids) {
+        if (ids.length == 0) {
+            return new LinkedList<ReportTemplate>();
         }
+        Collection<ReportTemplate> c = fetch(null, null, "id IN (?)", null, (Object[]) ids);
+        return c != null ? c : new LinkedList<ReportTemplate>();
     }
 
     /**
@@ -169,50 +141,115 @@ public class ReportTemplateDAO {
     }
 
     /**
-     * Counts report templates matching given filter
+     * Counts report templates matching given filter for given user
      *
+     * @param user User
      * @param filter Filter
      * @return Number of matching report templates
      */
-    public static Integer countMatching(final String filter) {
-        return new WHS<Integer>() {
+    public static Integer countMatching(final User user, final String filter) {
+        return new WHS<Long>() {
 
             @Override
-            public Integer lambda() {
-                return ((Long) createFilterCriteria(sess, filter).setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            public Long lambda() {
+                Query query = createQuery(true, sess, user, filter, "active = true", null, (Object[]) null);
+                return (Long) query.uniqueResult();
             }
-        }.p();
+        }.p().intValue();
     }
 
     /**
-     * Fetches report templates matching given filter starting from firstResult
-     * position. No more than maxResults is returned.
+     * Returns active report templates matching given filter starting from
+     * firstResult position. No more than maxResults is returned. Only reports
+     * with access for given user are available.
      *
+     * @param user User
      * @param filter Filter
      * @param firstResult Index of the first result
      * @param maxResults Number of maximum results
      * @return A collection of mathing report templates
      */
-    public static Collection<ReportTemplate> fetch(final String filter, final int firstResult, final int maxResults) {
+    public static Collection<ReportTemplate> fetchActive(final User user, final String filter, final int firstResult, final int maxResults) {
         return new WHS<Collection<ReportTemplate>>() {
 
             @Override
             public Collection<ReportTemplate> lambda() {
-                Criteria c = createFilterCriteria(sess, filter);
-                c.setFirstResult(firstResult);
-                c.setMaxResults(maxResults);
-                c.addOrder(Order.asc("id"));
-                return c.list();
+                Query query = createQuery(false, sess, user, filter, "active = true", "order by id");
+                query.setFirstResult(firstResult);
+                query.setMaxResults(maxResults);
+                return query.list();
             }
         }.p();
     }
 
-    private static Criteria createFilterCriteria(Session session, String filter) {
-        String extendedFilter = "%";
-        if (filter != null && !filter.isEmpty()) {
-            extendedFilter += filter + "%";
+    private static Query createQuery(boolean countOnly, Session session, User user, String nameFilter, String hqlRestriction, String hqlOther, Object... parameters) {
+        if (nameFilter == null) {
+            nameFilter = "";
         }
-        return session.createCriteria(ReportTemplate.class).add(Restrictions.or(Restrictions.ilike("reportname", extendedFilter),
-                Restrictions.ilike("description", extendedFilter))).add(Restrictions.eq("active", true));
+        nameFilter = nameFilter.trim();
+        LinkedList<String> where = new LinkedList<String>();
+        LinkedList params = new LinkedList();
+
+        String queryS = "SELECT " + (countOnly ? "count(rt)" : "rt") + " FROM ReportTemplate rt";
+        if (!nameFilter.isEmpty()) {
+            where.add("rt.reportname LIKE ? ");
+            params.add('%' + nameFilter.toLowerCase() + '%');
+        }
+        if (hqlRestriction != null && !hqlRestriction.isEmpty()) {
+            where.add(hqlRestriction);
+        }
+        if (parameters != null) {
+            params.addAll(Arrays.asList(parameters));
+        }
+
+        if (user == null) {
+            //only when report has access for all users
+            where.add("? IN elements(rt.rolesWithAccess)");
+            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
+        } else if (!user.isAdministrator()) {
+            String part = "( ? IN elements(rt.rolesWithAccess)";
+            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
+            for (UserRole r : user.getRoles()) {
+                part += " OR ? IN elements(rt.rolesWithAccess)";
+                params.add(r.getId());
+            }
+            part += " )";
+
+            where.add(part);
+        }   //when the user is administrator then all reports are available for him
+
+        if (!where.isEmpty()) {
+            Iterator it = where.iterator();
+            queryS += " WHERE " + it.next();
+            while (it.hasNext()) {
+                queryS += " AND " + it.next();
+            }
+        }
+
+        if (hqlOther != null && !hqlOther.isEmpty()) {
+            queryS += " " + hqlOther;
+        }
+
+        Query q = session.createQuery(queryS);
+        for (int i = 0; i < params.size(); i++) {
+            q.setParameter(i, params.get(i));
+        }
+
+        logger.info("user: " + (user == null ? "null" : user.getLogin()));
+        logger.info("query: " + queryS);
+        if (logger.isInfoEnabled() && !params.isEmpty()) {
+            String paramsS = "[";
+            if (!params.isEmpty()) {
+                Iterator it = params.iterator();
+                paramsS += it.next();
+                while (it.hasNext()) {
+                    paramsS += "," + it.next();
+                }
+            }
+            paramsS += "]";
+            logger.info("params: " + paramsS);
+        }
+
+        return q;
     }
 }

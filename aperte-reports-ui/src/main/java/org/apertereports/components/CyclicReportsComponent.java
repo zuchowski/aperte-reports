@@ -420,8 +420,9 @@ public class CyclicReportsComponent extends Panel {
                 //format.setWidth("100%");
                 return format;
             } else if (propertyId.equals(ORDER_REPORT)) {
+                //todouser
                 ComboBox reportname = ComponentFactory.createReportTemplateCombo(
-                        (ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), CYCLIC_EDIT_CAPTION + propertyId);
+                        null, (ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), CYCLIC_EDIT_CAPTION + propertyId);
                 reportname.setRequired(true);
                 reportname.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR_REPORTNAME));
                 reportname.setInputPrompt(VaadinUtil.getValue(CYCLIC_EDIT_INPUT_PROMPT_REPORTNAME));

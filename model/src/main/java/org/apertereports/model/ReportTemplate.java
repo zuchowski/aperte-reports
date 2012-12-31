@@ -21,7 +21,7 @@ public class ReportTemplate implements Serializable {
      * Id indicating access for all roles to the report
      */
     public static long ACCESS_ALL_ROLES_ID = -1;
-    @ElementCollection
+    @ElementCollection(fetch= FetchType.EAGER)
     @CollectionTable(name = "ar_roles_with_access", joinColumns =
     @JoinColumn(name = "report_id"))
     @Column(name = "role_id")

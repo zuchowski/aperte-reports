@@ -1,25 +1,32 @@
 package org.apertereports;
 
 import org.apertereports.components.ReportOrderBrowserComponent;
-import org.apertereports.components.ReportOrderBrowserComponent;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.ui.Window;
+import org.apertereports.common.users.User;
 
 /**
  * This portlet displays a table containing all report orders.
- * <p/>A user can browse executed and processing report orders from here. Each row
- * of the table contains the report name, its status, the XML with parameters used to generate and date of issue.
- * Additionally, for finished report orders, a couple of options for generating the report again are available.
+ * <p/>
+ * A user can browse executed and processing report orders from here. Each row
+ * of the table contains the report name, its status, the XML with parameters
+ * used to generate and date of issue. Additionally, for finished report orders,
+ * a couple of options for generating the report again are available.
  */
-public class ReportOrderApplication extends AbstractReportingApplication {
+public class ReportOrderApplication extends AbstractReportingApplication<ReportOrderBrowserComponent> {
 
     /**
      * Initializes the portlet GUI.
      */
     @Override
     public void portletInit() {
-        Window mainWindow = new Window(VaadinUtil.getValue("report_order.window.title"), new ReportOrderBrowserComponent());
-        setMainWindow(mainWindow);
+        mainPanel = new ReportOrderBrowserComponent();
+        mainWindow = new Window(VaadinUtil.getValue("report_order.window.title"), mainPanel);
+    }
+
+    @Override
+    protected void initUserData(User user) {
+        System.out.println("TODO");
     }
 }

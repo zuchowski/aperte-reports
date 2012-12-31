@@ -37,6 +37,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
 import java.util.*;
+import org.apertereports.common.users.User;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.ui.UiIds;
@@ -81,6 +82,7 @@ public class ReportManagerComponent extends Panel {
     private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
     private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
     private ReportReceiver newReportReceiver;
+    private User user;
 
     public ReportManagerComponent() {
 
@@ -112,12 +114,12 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countMatching(filter);
+                return ReportTemplateDAO.countMatching(user, filter);
             }
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
-                return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
+                return ReportTemplateDAO.fetchActive(user, filter, firstResult, maxResults);
             }
         };
 
@@ -134,7 +136,6 @@ public class ReportManagerComponent extends Panel {
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
         addComponent(mainLayout);
-        list.filter(null);
         setWidth("100%");
         setStyleName(PANEL_STYLE);
     }
@@ -144,6 +145,11 @@ public class ReportManagerComponent extends Panel {
         list.addComponent(reportItem, 0);
         editReportData(reportItem);
         newReportReceiver.reportTemplate = new ReportTemplate();
+    }
+
+    public void initData(User user) {
+        this.user = user;
+        list.filter(null);
     }
 
     /**
@@ -254,7 +260,8 @@ public class ReportManagerComponent extends Panel {
                 //todots check behaviour when editing name of the existing report
                 return true;
             }
-            List<ReportTemplate> exists = ReportTemplateDAO.fetchByName(reportTemplate.getReportname());
+            
+            Collection<ReportTemplate> exists = ReportTemplateDAO.fetchByName(user, reportTemplate.getReportname());
             if (exists.size() > 0) {
                 nameField.focus();
                 getWindow().showNotification(VaadinUtil.getValue(DUPLICATE_REPORT_NAME_TITLE),

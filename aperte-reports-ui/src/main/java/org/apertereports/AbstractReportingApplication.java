@@ -1,5 +1,6 @@
 package org.apertereports;
 
+import com.liferay.portal.model.Role;
 import java.util.Locale;
 
 import javax.portlet.ActionRequest;
@@ -15,24 +16,36 @@ import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.util.NotificationUtil;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.User;
 import com.liferay.portal.util.PortalUtil;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.Window;
 
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
+import java.util.HashSet;
+import java.util.Set;
+import org.apertereports.common.users.User;
+import org.apertereports.common.users.UserRole;
 
 /**
  * This is a stub abstract class for all application portlets. Extending classes
  * should initialize themselves by overriding {@link #portletInit()}.
+ *
+ * @param <T> Type of main panel
  */
-public abstract class AbstractReportingApplication extends TPTApplication implements
+public abstract class AbstractReportingApplication<T extends Panel> extends TPTApplication implements
         PortletApplicationContext2.PortletListener {
 
+    /**
+     * Main window object
+     */
+    protected Window mainWindow;
+    /**
+     * Main panel
+     */
+    protected T mainPanel;
     /**
      * Liferay user.
      */
@@ -55,12 +68,21 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
         TM.getDictionary().setDefaultLanguage(getLocale().getLanguage());
         reloadDictionary();
         portletInit();
+
+        setMainWindow(mainWindow);
     }
 
     /**
      * Initializes the portlet GUI.
      */
     protected abstract void portletInit();
+
+    /**
+     * Initializes user data when the first request of the user occurs
+     *
+     * @param user User
+     */
+    protected abstract void initUserData(User user);
 
     /**
      * This method should be overriden to implement a custom behavior on a first
@@ -125,12 +147,27 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
     public void handleRenderRequest(RenderRequest request, RenderResponse response, Window window) {
         if (getContext() instanceof PortletApplicationContext2) {
             try {
-                user = PortalUtil.getUser(request);
+                com.liferay.portal.model.User liferayUser = PortalUtil.getUser(request);
+
+                //liferay user can be null because he can be not logged in 
+                if (liferayUser != null) {
+                    String login = liferayUser.getLogin();
+                    Set<UserRole> roles = new HashSet<UserRole>();
+                    boolean admin = false;
+
+                    for (Role r : liferayUser.getRoles()) {
+                        boolean adminRole = "administrator".equalsIgnoreCase(r.getName());
+                        UserRole ur = new UserRole(r.getName(), r.getRoleId(), adminRole);
+                        roles.add(ur);
+                        admin |= adminRole;
+                    }
+
+                    user = new User(login, roles, admin);
+                    initUserData(user);
+                }
+
                 locale = PortalUtil.getLocale(request);
-            } catch (PortalException e) {
-                ExceptionUtils.logSevereException(e);
-                throw new RuntimeException(e);
-            } catch (SystemException e) {
+            } catch (Exception e) {
                 ExceptionUtils.logSevereException(e);
                 throw new RuntimeException(e);
             }
@@ -174,11 +211,11 @@ public abstract class AbstractReportingApplication extends TPTApplication implem
     }
 
     /**
-     * Returns a liferay user of the last request.
+     * Returns the user of the last request
      *
-     * @return a user
+     * @return The user
      */
-    public User getLiferayUser() {
+    public User getArUser() {
         return user;
     }
 }

@@ -16,7 +16,9 @@ import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.users.User;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.ui.UiIds;
 
@@ -43,18 +45,14 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private Item datasource;
     private ReportConfig reportConfig;
     private DisposeListener disposeListener = null;
-
-    /**
-     * Creates new edit component
-     */
-    public EditDashboardComponentNew() {
-    }
+    private AbstractReportingApplication app;
 
     @Override
     protected void initComponentData() {
-        mainPanel = new Panel();
-        mainPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
+        mainPanel = new Panel(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
         setCompositionRoot(mainPanel);
+
+        app = (AbstractReportingApplication) getApplication();
 
         VerticalLayout vl = ComponentFactory.createVLayout(mainPanel, true, true);
 
@@ -107,7 +105,10 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             reportConfig = getCurrentConfig();
 
-            ReportTemplate selectedReport = ReportTemplateDAO.fetchById(reportConfig.getReportId());
+            ReportTemplate selectedReport = null;
+            if (reportConfig.getReportId() != null) {
+                selectedReport = ReportTemplateDAO.fetchById(app.getArUser(), reportConfig.getReportId());
+            }
 
             layout = new GridLayout(3, 3);
             layout.setSpacing(true);
@@ -150,7 +151,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     //xxx it could be better to manage only list of names and above set only selected report name
                     //or maybe it is possible to manage ids
                     //some functionality could be developed in AbstractDashboardComponent
-                    ComboBox field = ComponentFactory.createReportTemplateCombo(null, DASHBOARD_EDIT_CAPTION_REPORT_ID);
+                    ComboBox field = ComponentFactory.createReportTemplateCombo(app.getArUser(), null, DASHBOARD_EDIT_CAPTION_REPORT_ID);
                     field.setRequired(true);
                     field.setRequiredError(VaadinUtil.getValue(DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID));
                     field.setInputPrompt(VaadinUtil.getValue(DASHBOARD_EDIT_INPUT_PROMPT_REPORT_ID));

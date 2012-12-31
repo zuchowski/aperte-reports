@@ -36,9 +36,12 @@ import com.vaadin.Application;
 import com.vaadin.ui.Panel;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Collection;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.util.files.TmpDirMgr;
 import org.apertereports.util.files.Zipper;
 import org.slf4j.Logger;
@@ -153,7 +156,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         ReportConfig drillConfig = new ReportConfig();
 
         List<String> reportNames = params.get("reportName");
-        if (reportNames == null || reportNames.size() == 0) {
+        if (reportNames == null || reportNames.isEmpty()) {
             throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_NOT_FOUND);
         }
         String reportName = reportNames.get(0); // bierzemy pierwszy z brzegu
@@ -164,13 +167,12 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
         }
         if (drillConfig.getReportId() == null) {
-            List<ReportTemplate> reportTemplates = org.apertereports.dao.ReportTemplateDAO.fetchByName(reportName);
-            if (reportTemplates.size() == 0) {
+            AbstractReportingApplication app = (AbstractReportingApplication) getApplication();
+            Collection<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchByName(app.getArUser(), reportName);
+            if (reportTemplates.isEmpty()) {
                 throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_REPORT_NOT_FOUND);
             }
-            ReportTemplate template = reportTemplates.get(0); // bierzemy
-            // pierwszy z
-            // brzegu
+            ReportTemplate template = reportTemplates.iterator().next(); // bierzemy pierwszy z brzegu
             drillConfig.setReportId(template.getId());
         }
 
@@ -219,7 +221,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     @Override
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
-            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(config.getReportId());
+            AbstractReportingApplication app = (AbstractReportingApplication) getApplication();
+            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(app.getArUser(), config.getReportId());
             if (report != null) {
                 reportMap.put(config.getReportId(), report);
             }
@@ -380,7 +383,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 cyclicReportMap.put(rep.getId(), rep);
             }
 
-            List<ReportTemplate> reports = org.apertereports.dao.ReportTemplateDAO.fetchByIds(reportIds.toArray(new Integer[configIds.size()]));
+            Collection<ReportTemplate> reports = org.apertereports.dao.ReportTemplateDAO.fetchByIds(reportIds.toArray(new Integer[configIds.size()]));
             for (ReportTemplate rep : reports) {
                 reportMap.put(rep.getId(), rep);
             }

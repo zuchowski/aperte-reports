@@ -32,6 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.common.users.User;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -45,10 +46,16 @@ public class AperteInvokerComponent extends Panel {
     private static final String COMPONENT_STYLE_NAME = "borderless light";
     private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
     private PaginatedPanelList<ReportTemplate, ReportPanel> reportList;
+    private User user;
 
     public AperteInvokerComponent() {
 
         init();
+    }
+
+    public void initData(User user) {
+        this.user = user;
+        reportList.filter(null);
     }
 
     /**
@@ -198,17 +205,15 @@ public class AperteInvokerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countMatching(filter);
+                return ReportTemplateDAO.countMatching(user, filter);
             }
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
-                return ReportTemplateDAO.fetch(filter, firstResult, maxResults);
+                return ReportTemplateDAO.fetchActive(user, filter, firstResult, maxResults);
             }
         };
 
         addComponent(reportList);
-        reportList.filter(null);
-
     }
 }
