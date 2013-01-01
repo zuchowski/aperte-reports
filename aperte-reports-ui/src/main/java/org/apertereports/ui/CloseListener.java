@@ -8,7 +8,7 @@ package org.apertereports.ui;
 public interface CloseListener {
 
     /**
-     * Invoked when a kind of resource is closed
+     * Invoked when a kind of user interface component is or should be closed
      */
-    public void closed();
+    public void close();
 }

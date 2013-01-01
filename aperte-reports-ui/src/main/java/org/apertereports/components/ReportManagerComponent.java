@@ -22,7 +22,6 @@ import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.NotificationUtil;
-import org.apertereports.util.UserUtil;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.data.util.BeanItem;
@@ -260,7 +259,7 @@ public class ReportManagerComponent extends Panel {
                 //todots check behaviour when editing name of the existing report
                 return true;
             }
-            
+
             Collection<ReportTemplate> exists = ReportTemplateDAO.fetchByName(user, reportTemplate.getReportname());
             if (exists.size() > 0) {
                 nameField.focus();
@@ -389,7 +388,7 @@ public class ReportManagerComponent extends Panel {
                 permsPanel.setCloseListener(new CloseListener() {
 
                     @Override
-                    public void closed() {
+                    public void close() {
                         togglePermsPanel();
                     }
                 });
@@ -436,12 +435,12 @@ public class ReportManagerComponent extends Panel {
                 public void buttonClick(ClickEvent event) {
                     logger.info("Generate in background action...");
                     Map<String, String> parameters = panel.collectParametersValues();
-                    String email = UserUtil.getUserEmail();
+                    String email = user.getEmail();
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
                         email = null;
                     }
                     ReportOrder reportOrder = ReportOrderPusher.buildNewOrder(reportTemplate, parameters,
-                            panel.getOuptutFormat(), email, UserUtil.getUsername(), null);
+                            panel.getOuptutFormat(), email, user.getLogin(), null);
                     Long id = reportOrder.getId();
                     if (id != null) {
                         logger.info("Report order id: " + id);

@@ -32,7 +32,6 @@ import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 import org.apertereports.util.cache.MapCache;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Panel;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,9 +76,9 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     private Map<Long, CyclicReportOrder> cyclicReportMap = new HashMap<Long, CyclicReportOrder>();
     private String template;
     private MapCache cache;
-    private Application application;
+    private AbstractReportingApplication application;
 
-    public ReportViewComponent(Application application, MapCache cache, String template, List<ReportConfig> configs,
+    public ReportViewComponent(AbstractReportingApplication application, MapCache cache, String template, List<ReportConfig> configs,
             boolean lazyLoad) {
         this.application = application;
         this.cache = cache;
@@ -167,8 +166,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
         }
         if (drillConfig.getReportId() == null) {
-            AbstractReportingApplication app = (AbstractReportingApplication) getApplication();
-            Collection<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchByName(app.getArUser(), reportName);
+            Collection<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchByName(application.getArUser(), reportName);
             if (reportTemplates.isEmpty()) {
                 throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_REPORT_NOT_FOUND);
             }
@@ -221,8 +219,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     @Override
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
-            AbstractReportingApplication app = (AbstractReportingApplication) getApplication();
-            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(app.getArUser(), config.getReportId());
+            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(application.getArUser(), config.getReportId());
             if (report != null) {
                 reportMap.put(config.getReportId(), report);
             }

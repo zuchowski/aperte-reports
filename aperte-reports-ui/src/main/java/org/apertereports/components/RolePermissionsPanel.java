@@ -139,7 +139,7 @@ public class RolePermissionsPanel extends Panel {
 
     private void fireCloseListener() {
         if (closeListener != null) {
-            closeListener.closed();
+            closeListener.close();
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.portlet.PortletMode;
 import org.apertereports.common.users.User;
-import org.apertereports.dashboard.EditDashboardComponentNew.DisposeListener;
+import org.apertereports.ui.CloseListener;
 
 /**
  * This portlet displays a dashboard based on an existing report from the
@@ -88,11 +88,10 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
                 }
             }));
 
-            //todots disposelistener, closelistener
-            editMode.setDisposeListener(new DisposeListener() {
+            editMode.setCloseListener(new CloseListener() {
 
                 @Override
-                public void dispose() {
+                public void close() {
                     PortletApplicationContext2 ctx = (PortletApplicationContext2) getContext();
                     try {
                         ctx.setPortletMode(mainWindow, PortletMode.VIEW);

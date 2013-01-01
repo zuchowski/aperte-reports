@@ -21,7 +21,7 @@ public class ReportTemplate implements Serializable {
      * Id indicating access for all roles to the report
      */
     public static long ACCESS_ALL_ROLES_ID = -1;
-    @ElementCollection(fetch= FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ar_roles_with_access", joinColumns =
     @JoinColumn(name = "report_id"))
     @Column(name = "role_id")
@@ -204,15 +204,6 @@ public class ReportTemplate implements Serializable {
      */
     public boolean hasRoleAccess(Long roleId) {
         return rolesWithAccess.contains(ACCESS_ALL_ROLES_ID) || rolesWithAccess.contains(roleId);
-    }
-
-    /**
-     * Field identifiers for Vaadin tables.
-     */
-    public enum Fields {
-        //todots is it used?
-
-        ACTIVE, CONTENT, CREATED, DESCRIPTION, FILENAME, ALLOW_ONLINE_DISPLAY, ALLOW_BACKGROUND_ORDER, REPORTNAME, ID
     }
 
     @Override

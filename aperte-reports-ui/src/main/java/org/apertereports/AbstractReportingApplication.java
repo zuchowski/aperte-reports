@@ -152,6 +152,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                 //liferay user can be null because he can be not logged in 
                 if (liferayUser != null) {
                     String login = liferayUser.getLogin();
+                    String email = liferayUser.getEmailAddress();
                     Set<UserRole> roles = new HashSet<UserRole>();
                     boolean admin = false;
 
@@ -162,7 +163,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                         admin |= adminRole;
                     }
 
-                    user = new User(login, roles, admin);
+                    user = new User(login, roles, admin, email);
                     initUserData(user);
                 }
 

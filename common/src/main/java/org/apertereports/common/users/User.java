@@ -14,11 +14,13 @@ public class User {
     private final String login;
     private Set<UserRole> roles = new HashSet<UserRole>();
     private final boolean administrator;
+    private final String email;
 
-    public User(String login, Set<UserRole> roles, boolean administrator) {
+    public User(String login, Set<UserRole> roles, boolean administrator, String email) {
         this.login = login;
         this.roles = roles;
         this.administrator = administrator;
+        this.email = email;
     }
 
     /**
@@ -46,5 +48,13 @@ public class User {
      */
     public boolean isAdministrator() {
         return administrator;
+    }
+
+    /**
+     * Returns email address
+     * @return Email address
+     */
+    public String getEmail() {
+        return email;
     }
 }

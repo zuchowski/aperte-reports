@@ -5,7 +5,6 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;

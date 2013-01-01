@@ -3,14 +3,15 @@ package org.apertereports.dashboard;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
+import org.apertereports.AbstractReportingApplication;
 
 /**
- * Displays the portlet view of a configured dashboard. The view may contain a custom HTML and a number of
- * generated reports.
+ * Displays the portlet view of a configured dashboard. The view may contain a
+ * custom HTML and a number of generated reports.
  */
 public class ViewDashboardComponent extends AbstractDashboardComponent {
-    private VerticalLayout mainPanel = new VerticalLayout();
 
+    private VerticalLayout mainPanel = new VerticalLayout();
     private Panel contentPanel = new Panel();
 
     public ViewDashboardComponent() {
@@ -23,12 +24,12 @@ public class ViewDashboardComponent extends AbstractDashboardComponent {
     }
 
     /**
-     * Initiates a lazy loading component on top of a {@link ReportViewComponent} which is the main workhorse that displays
-     * the dashboard.
+     * Initiates a lazy loading component on top of a {@link ReportViewComponent}
+     * which is the main workhorse that displays the dashboard.
      */
     @Override
     protected void initComponentData() {
         contentPanel.removeAllComponents();
-        contentPanel.addComponent(new TPTLazyLoadingLayout(new ReportViewComponent(getApplication(), cache, template, reportConfigs, true), true));
+        contentPanel.addComponent(new TPTLazyLoadingLayout(new ReportViewComponent((AbstractReportingApplication) getApplication(), cache, template, reportConfigs, true), true));
     }
 }

@@ -235,7 +235,7 @@ public class ReportTemplateDAO {
             q.setParameter(i, params.get(i));
         }
 
-        logger.info("user: " + (user == null ? "null" : user.getLogin()));
+        logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
             String paramsS = "[";

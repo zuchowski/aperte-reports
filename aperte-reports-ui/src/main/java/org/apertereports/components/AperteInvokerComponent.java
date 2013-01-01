@@ -16,7 +16,6 @@ import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
-import org.apertereports.util.UserUtil;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
@@ -151,12 +150,12 @@ public class AperteInvokerComponent extends Panel {
                         return;
                     }
                     Map<String, String> parameters = panel.collectParametersValues();
-                    String email = UserUtil.getUserEmail();
+                    String email = user.getEmail();
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
                         email = null;
                     }
                     ReportOrder reportOrder = ReportOrderPusher.buildNewOrder(reportTemplate, parameters,
-                            panel.getOuptutFormat(), email, UserUtil.getUsername(), null);
+                            panel.getOuptutFormat(), email, user.getLogin(), null);
                     Long id = reportOrder.getId();
                     if (id != null) {
                         ReportOrderPusher.addToJMS(id);

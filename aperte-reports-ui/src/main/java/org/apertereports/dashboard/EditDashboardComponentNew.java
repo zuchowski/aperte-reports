@@ -18,8 +18,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.users.User;
 import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.ui.CloseListener;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -44,7 +44,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private Form form;
     private Item datasource;
     private ReportConfig reportConfig;
-    private DisposeListener disposeListener = null;
+    private CloseListener closeListener = null;
     private AbstractReportingApplication app;
 
     @Override
@@ -72,8 +72,8 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                 }
                 saveConfiguration();
 
-                if (disposeListener != null) {
-                    disposeListener.dispose();
+                if (closeListener != null) {
+                    closeListener.close();
                 }
             }
         });
@@ -81,20 +81,20 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (disposeListener != null) {
-                    disposeListener.dispose();
+                if (closeListener != null) {
+                    closeListener.close();
                 }
             }
         });
     }
 
     /**
-     * Sets dispose listener
+     * Sets close listener
      *
-     * @param disposeListener Dispose listener
+     * @param closeListener Close listener
      */
-    public void setDisposeListener(DisposeListener disposeListener) {
-        this.disposeListener = disposeListener;
+    public void setCloseListener(CloseListener closeListener) {
+        this.closeListener = closeListener;
     }
 
     private class EditDashboardForm extends Form {
@@ -234,17 +234,5 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             return new ReportConfig();
         }
         return reportConfigs.get(0);
-    }
-
-    /**
-     * Defines listener for this edit component for portlet application to allow
-     * switch to view mode
-     */
-    public interface DisposeListener {
-
-        /**
-         * Invoked when this component should be disposed
-         */
-        public void dispose();
     }
 }
