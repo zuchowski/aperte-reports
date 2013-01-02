@@ -71,6 +71,7 @@ public class ReportManagerComponent extends Panel {
     private static final String ACTIVE_PROPERTY = "active";
     private static final String REPORT_MANAGER_ITEM_UPLOAD_CHANGE = "report.manager.item.upload.change";
     private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
+    private static final String REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT = "report.manager.item.edit.name.prompt";
     private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
     private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
@@ -113,7 +114,7 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countMatching(user, filter);
+                return ReportTemplateDAO.countActiveMatching(user, filter);
             }
 
             @Override
@@ -174,6 +175,7 @@ public class ReportManagerComponent extends Panel {
             HorizontalLayout headerRow = ComponentFactory.createHLayoutFull(this);
 
             nameField = new TextField(beanItem.getItemProperty(REPORTNAME_PROPERTY));
+            nameField.setInputPrompt(VaadinUtil.getValue(REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT));
             headerRow.addComponent(nameField);
             headerRow.setComponentAlignment(nameField, Alignment.MIDDLE_LEFT);
 
@@ -202,7 +204,7 @@ public class ReportManagerComponent extends Panel {
             headerRow.addComponent(uploadCell);
             headerRow.setComponentAlignment(uploadCell, Alignment.MIDDLE_RIGHT);
 
-            ComponentFactory.createTextArea(beanItem, DESCRIPTION_PROPERTY, REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT, this);
+            ComponentFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT, this);
 
             HorizontalLayout footerRow = ComponentFactory.createHLayoutFull(this);
             HorizontalLayout checkboxCell = ComponentFactory.createHLayout(footerRow);

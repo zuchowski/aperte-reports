@@ -204,7 +204,7 @@ public class AperteInvokerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countMatching(user, filter);
+                return ReportTemplateDAO.countActiveMatching(user, filter);
             }
 
             @Override

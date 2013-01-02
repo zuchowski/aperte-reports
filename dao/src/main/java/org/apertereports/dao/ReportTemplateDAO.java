@@ -1,6 +1,8 @@
 package org.apertereports.dao;
 
 import java.util.*;
+import org.apertereports.common.ReportConstants.ErrorCodes;
+import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.users.User;
 import org.apertereports.common.users.UserRole;
 
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public class ReportTemplateDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
+    private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
      * Returns all active report templates for given user
@@ -51,8 +54,7 @@ public class ReportTemplateDAO {
         if (names.length == 0) {
             return new LinkedList<ReportTemplate>();
         }
-        Collection<ReportTemplate> c = fetch(user, null, "reportname IN (?)", null, (Object[]) names);
-        return c != null ? c : new LinkedList<ReportTemplate>();
+        return fetch(user, null, "reportname IN (?)", null, (Object[]) names);
     }
 
     /**
@@ -62,13 +64,20 @@ public class ReportTemplateDAO {
      * @param user User
      * @param id Primary key value of {@link org.apertereports.model.ReportTemplate}
      * @return A report template corresponding to the given id or null if not
-     * found
+     * @throws AperteReportsException With {@link ErrorCodes#REPORT_ACCESS_DENIED}
+     * code when user has no permissions
      */
-    public static ReportTemplate fetchById(User user, Integer id) {
+    public static ReportTemplate fetchById(User user, Integer id) throws AperteReportsException {
         Collection<ReportTemplate> c = fetch(user, null, "active = true AND id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
         }
+        //check if exists...
+        Integer count = countMatching(ADMIN_USER, null, "active = true AND id = ?", null, id);
+        if (count > 0) {
+            throw new AperteReportsException(ErrorCodes.REPORT_ACCESS_DENIED);
+        }
+        //not exists
         return null;
     }
 
@@ -86,7 +95,12 @@ public class ReportTemplateDAO {
             @Override
             public Collection<ReportTemplate> lambda() {
                 Query query = createQuery(false, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
-                return query.list();
+                Collection c = query.list();
+                if (c == null) {
+                    c = new LinkedList();
+                }
+                logger.info("found: " + c.size());
+                return c;
             }
         }.p();
     }
@@ -102,8 +116,7 @@ public class ReportTemplateDAO {
         if (ids.length == 0) {
             return new LinkedList<ReportTemplate>();
         }
-        Collection<ReportTemplate> c = fetch(null, null, "id IN (?)", null, (Object[]) ids);
-        return c != null ? c : new LinkedList<ReportTemplate>();
+        return fetch(null, null, "id IN (?)", null, (Object[]) ids);
     }
 
     /**
@@ -147,13 +160,27 @@ public class ReportTemplateDAO {
      * @param filter Filter
      * @return Number of matching report templates
      */
-    public static Integer countMatching(final User user, final String filter) {
+    public static Integer countActiveMatching(final User user, final String nameFilter) {
+        return countMatching(user, nameFilter, "active = true", null, (Object[]) null);
+
+    }
+
+    /**
+     * Counts report templates matching given filter for given user
+     *
+     * @param user User
+     * @param filter Filter
+     * @return Number of matching report templates
+     */
+    private static Integer countMatching(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
         return new WHS<Long>() {
 
             @Override
             public Long lambda() {
-                Query query = createQuery(true, sess, user, filter, "active = true", null, (Object[]) null);
-                return (Long) query.uniqueResult();
+                Query query = createQuery(true, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
+                Long count = (Long) query.uniqueResult();
+                logger.info("count: " + count);
+                return count;
             }
         }.p().intValue();
     }
@@ -177,12 +204,19 @@ public class ReportTemplateDAO {
                 Query query = createQuery(false, sess, user, filter, "active = true", "order by id");
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
-                return query.list();
+                Collection c = query.list();
+                if (c == null) {
+                    c = new LinkedList();
+                }
+                logger.info("found: " + c.size());
+                return c;
             }
         }.p();
     }
 
-    private static Query createQuery(boolean countOnly, Session session, User user, String nameFilter, String hqlRestriction, String hqlOther, Object... parameters) {
+    private static Query createQuery(boolean countOnly, Session session, User user, String nameFilter,
+            String hqlRestriction, String hqlOther, Object... parameters) {
+
         if (nameFilter == null) {
             nameFilter = "";
         }

@@ -182,6 +182,25 @@ public abstract class ComponentFactory {
     }
 
     /**
+     * Creates text field bound to item.
+     *
+     * @param item bound object
+     * @param propertyId object's property name
+     * @param promptKey input prompt's localization code
+     * @param parent container of the component
+     * @return Text field
+     */
+    public static TextField createTextField(Item item, String propertyId, String promptKey, ComponentContainer parent) {
+        TextField field = new TextField(item.getItemProperty(propertyId));
+        field.setInputPrompt(VaadinUtil.getValue(promptKey));
+        field.setWidth("100%");
+        if (parent != null) {
+            parent.addComponent(field);
+        }
+        return field;
+    }
+
+    /**
      * Creates horizontal layout with width set to 100%.
      *
      * @param parent container of the component

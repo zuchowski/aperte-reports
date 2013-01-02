@@ -36,6 +36,7 @@ import com.vaadin.ui.Panel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.logging.Level;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants;
@@ -219,9 +220,13 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     @Override
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
-            ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(application.getArUser(), config.getReportId());
-            if (report != null) {
-                reportMap.put(config.getReportId(), report);
+            try {
+                ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(application.getArUser(), config.getReportId());
+                if (report != null) {
+                    reportMap.put(config.getReportId(), report);
+                }
+            } catch (AperteReportsException ex) {
+                throw new AperteReportsRuntimeException(ex);
             }
         }
         return reportMap.get(config.getReportId());

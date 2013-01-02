@@ -13,6 +13,7 @@ import org.apertereports.util.ComponentFactory;
 
 import java.util.List;
 import org.apertereports.common.xml.config.ReportConfigParameter;
+import org.apertereports.ui.UiIds;
 import org.apertereports.util.VaadinUtil;
 
 @SuppressWarnings("serial")

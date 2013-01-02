@@ -18,6 +18,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.ui.CloseListener;
 import org.apertereports.ui.UiIds;
@@ -39,7 +40,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_EDIT_CAPTION_REPORT_ID = "dashboard.edit.caption.reportId";
     private static final String DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS = "dashboard.edit.caption.showExportButtons";
     private static final String DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON = "dashboard.edit.caption.showRefreshButton";
-    private Panel mainPanel;
+    private VerticalLayout paramsParentComponent;
     private ReportParamPanel paramsPanel = new ReportParamPanel();
     private Form form;
     private Item datasource;
@@ -49,20 +50,20 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
     @Override
     protected void initComponentData() {
-        mainPanel = new Panel(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
+        Panel mainPanel = new Panel(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
         setCompositionRoot(mainPanel);
 
         app = (AbstractReportingApplication) getApplication();
 
-        VerticalLayout vl = ComponentFactory.createVLayout(mainPanel, true, true);
+        paramsParentComponent = ComponentFactory.createVLayout(mainPanel, true, true);
 
-        HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(vl);
+        HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(paramsParentComponent);
         reportRow.addComponent(form = new EditDashboardForm());
 
-        vl.addComponent(paramsPanel);
+        paramsParentComponent.addComponent(paramsPanel);
         paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
 
-        HorizontalLayout hl = ComponentFactory.createHLayout(vl);
+        HorizontalLayout hl = ComponentFactory.createHLayout(paramsParentComponent);
         ComponentFactory.createButton(UiIds.LABEL_OK, "", hl, new ClickListener() {
 
             @Override
@@ -107,8 +108,13 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
             ReportTemplate selectedReport = null;
             if (reportConfig.getReportId() != null) {
-                selectedReport = ReportTemplateDAO.fetchById(app.getArUser(), reportConfig.getReportId());
+                try {
+                    selectedReport = ReportTemplateDAO.fetchById(app.getArUser(), reportConfig.getReportId());
+                } catch (AperteReportsException ex) {
+                    //nothing to do
+                }
             }
+            reloadParams(selectedReport);
 
             layout = new GridLayout(3, 3);
             layout.setSpacing(true);
@@ -145,8 +151,6 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             @Override
             public Field createField(Item item, Object propertyId, Component uiContext) {
                 if (propertyId.equals(REPORT)) {
-
-                    paramsPanel = new ReportParamPanel();
 
                     //xxx it could be better to manage only list of names and above set only selected report name
                     //or maybe it is possible to manage ids
@@ -186,9 +190,17 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
      *
      * @param template Report for which params should be shown
      */
-    protected void reloadParams(ReportTemplate template) {
-        ReportParamPanel newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
-        mainPanel.replaceComponent(paramsPanel, newParamsPanel);
+    private void reloadParams(ReportTemplate template) {
+        ReportParamPanel newParamsPanel;
+        if (template == null) {
+            newParamsPanel = new ReportParamPanel();
+            newParamsPanel.setVisible(false);
+        } else {
+            newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
+        };
+
+        newParamsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
+        paramsParentComponent.replaceComponent(paramsPanel, newParamsPanel);
         paramsPanel = newParamsPanel;
     }
 
