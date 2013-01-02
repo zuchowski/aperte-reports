@@ -43,6 +43,6 @@ public class CyclicReportsApplication extends AbstractReportingApplication<Cycli
 
     @Override
     protected void initUserData(User user) {
-        System.out.println("TODO");
+        mainPanel.setUser(user);
     }
 }

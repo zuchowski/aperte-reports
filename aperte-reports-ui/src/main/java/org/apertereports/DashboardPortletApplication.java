@@ -127,6 +127,6 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
 
     @Override
     protected void initUserData(User user) {
-        System.out.println("TODO");
+        //nothing to do
     }
 }

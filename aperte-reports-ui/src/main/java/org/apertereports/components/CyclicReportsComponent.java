@@ -46,6 +46,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 import java.util.LinkedList;
 import java.util.List;
+import org.apertereports.common.users.User;
 import org.apertereports.common.xml.config.ReportConfigParameter;
 import org.apertereports.ui.UiIds;
 
@@ -72,9 +73,16 @@ public class CyclicReportsComponent extends Panel {
     private static final String CYCLIC_EDIT_INPUT_PROMPT_FORMAT = "cyclic.edit.input-prompt.format";
     private static final String CYCYLIC_EDIT_REQUIRED_ERROR_FORMAT = "cycylic.edit.required-error.format";
     private boolean addingNew = false;
+    private User user = null;
+    private Button addButton;
 
     public CyclicReportsComponent() {
         init();
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
+        addButton.setVisible(user != null);
     }
 
     private void init() {
@@ -99,7 +107,7 @@ public class CyclicReportsComponent extends Panel {
         header.setExpandRatio(expandedGap, 1.0f);
 
         header.addComponent(new Label());
-        Button addButton = ComponentFactory.createButton(UiIds.LABEL_ADD, null, header);
+        addButton = ComponentFactory.createButton(UiIds.LABEL_ADD, null, header);
         addButton.addListener(new ClickListener() {
 
             @Override
@@ -107,6 +115,7 @@ public class CyclicReportsComponent extends Panel {
                 addNew();
             }
         });
+        addButton.setVisible(false);
 
         list = new PaginatedPanelList<CyclicReportOrder, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
 
@@ -420,9 +429,8 @@ public class CyclicReportsComponent extends Panel {
                 //format.setWidth("100%");
                 return format;
             } else if (propertyId.equals(ORDER_REPORT)) {
-                //todouser
                 ComboBox reportname = ComponentFactory.createReportTemplateCombo(
-                        null, (ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), CYCLIC_EDIT_CAPTION + propertyId);
+                        user, (ReportTemplate) item.getItemProperty(ORDER_REPORT).getValue(), CYCLIC_EDIT_CAPTION + propertyId);
                 reportname.setRequired(true);
                 reportname.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR_REPORTNAME));
                 reportname.setInputPrompt(VaadinUtil.getValue(CYCLIC_EDIT_INPUT_PROMPT_REPORTNAME));
