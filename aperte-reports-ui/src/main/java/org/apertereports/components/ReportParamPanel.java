@@ -9,11 +9,10 @@ import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportTemplate;
-import org.apertereports.util.ComponentFactory;
 
 import java.util.List;
 import org.apertereports.common.xml.config.ReportConfigParameter;
-import org.apertereports.ui.UiIds;
+import org.apertereports.ui.UiFactory;
 import org.apertereports.util.VaadinUtil;
 
 @SuppressWarnings("serial")
@@ -31,10 +30,9 @@ public class ReportParamPanel extends Panel {
             ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(),
                     new ReportTemplateProvider());
             this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, params);
-            VerticalLayout vl = new VerticalLayout();
+            VerticalLayout vl = UiFactory.createVLayout(this);
             vl.addComponent(reportParametersComponent);
-            buttons = ComponentFactory.createHLayout(vl);
-            addComponent(vl);
+            buttons = UiFactory.createHLayout(vl);
         } catch (AperteReportsException e) {
             throw new AperteReportsRuntimeException(e);
         }

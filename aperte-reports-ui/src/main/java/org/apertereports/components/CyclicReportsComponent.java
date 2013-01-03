@@ -48,6 +48,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apertereports.common.users.User;
 import org.apertereports.common.xml.config.ReportConfigParameter;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 @SuppressWarnings("serial")
@@ -79,7 +81,7 @@ public class CyclicReportsComponent extends Panel {
     public CyclicReportsComponent() {
         init();
     }
-    
+
     public void setUser(User user) {
         this.user = user;
         addButton.setVisible(user != null);
@@ -87,7 +89,7 @@ public class CyclicReportsComponent extends Panel {
 
     private void init() {
 
-        HorizontalLayout header = ComponentFactory.createHLayoutFull(this);
+        HorizontalLayout header = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
         TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
             @Override
@@ -97,18 +99,16 @@ public class CyclicReportsComponent extends Panel {
         }, header);
         filterField.setWidth("150px");
 
-        Label gap = new Label();
-        gap.setWidth("10px");
-        header.addComponent(gap);
+        Label spacerLabel = UiFactory.createSpacer(header);
+        spacerLabel.setWidth("10px");
 
         Label expandedGap = new Label();
         expandedGap.setWidth("100%");
         header.addComponent(expandedGap);
         header.setExpandRatio(expandedGap, 1.0f);
 
-        header.addComponent(new Label());
-        addButton = ComponentFactory.createButton(UiIds.LABEL_ADD, null, header);
-        addButton.addListener(new ClickListener() {
+        UiFactory.createSpacer(header);
+        addButton = UiFactory.createButton(UiIds.LABEL_ADD, header, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -140,7 +140,7 @@ public class CyclicReportsComponent extends Panel {
         list.filter(null);
 
         if (!AperteReportsJmsFacade.isJmsAvailable()) {
-            HorizontalLayout validator = ComponentFactory.createHLayoutFull(this);
+            HorizontalLayout validator = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
             Form form = new Form();
             form.setComponentError(new UserError("JMS unavailable, cyclic reports execution is disabled!"));
             validator.addComponent(form);
@@ -170,18 +170,17 @@ public class CyclicReportsComponent extends Panel {
             this.order = order;
             setStyleName(REPORT_PANEL_STYLE);
             BeanItem<CyclicReportOrder> item = new BeanItem<CyclicReportOrder>(order);
-            HorizontalLayout row1 = ComponentFactory.createHLayoutFull(this);
-            HorizontalLayout row2 = ComponentFactory.createHLayoutFull(this);
+            HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
+            HorizontalLayout row2 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            container = ComponentFactory.createHLayout(row1);
+            container = UiFactory.createHLayout(row1);
             container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
-            Label name = ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
-                    ORDER_REPORT_REPORTNAME, FORMAT_STYLE, container);
+            Label name = UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
+                    ORDER_REPORT_REPORTNAME, container, FORMAT_STYLE);
 
-            Label format = ComponentFactory.createLabel(item, ORDER_OUTPUT_FORMAT, "", container);
-            Label spacer = new Label();
-            row1.addComponent(spacer);
-            enabledButton = ComponentFactory.createButton(getStateLabelCaption(), BaseTheme.BUTTON_LINK, row1, new ClickListener() {
+            Label formatLabel = UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, container);
+            Label spacerLabel = UiFactory.createSpacer(row1);
+            enabledButton = UiFactory.createButton(getStateLabelCaption(), row1, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -208,36 +207,33 @@ public class CyclicReportsComponent extends Panel {
             row1.setComponentAlignment(container, Alignment.MIDDLE_LEFT);
             row1.setComponentAlignment(enabledButton, Alignment.MIDDLE_RIGHT);
             container.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
-            container.setComponentAlignment(format, Alignment.MIDDLE_LEFT);
-            row1.setExpandRatio(spacer, 1.0f);
+            container.setComponentAlignment(formatLabel, Alignment.MIDDLE_LEFT);
+            row1.setExpandRatio(spacerLabel, 1.0f);
 
-            Label spacer2 = new Label("");
-            ComponentFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, null, row2);
-            row2.addComponent(spacer2);
-            Label when = ComponentFactory.createLabel(item, ORDER_CRON_SPEC, null, row2);
-            row2.setComponentAlignment(when, Alignment.MIDDLE_RIGHT);
+            UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, row2);
+            UiFactory.createSpacer(row2);
+            Label whenLabel = UiFactory.createLabel(item, ORDER_CRON_SPEC, row2);
+            row2.setComponentAlignment(whenLabel, Alignment.MIDDLE_RIGHT);
 
-            Label desc = ComponentFactory.createLabel(item, ORDER_DESCRIPTION, DESCRIPTION_STYLE, this);
-            desc.setWidth("100%");
+            UiFactory.createLabel(item, ORDER_DESCRIPTION, this, DESCRIPTION_STYLE, FAction.SET_FULL_WIDTH);
 
-            HorizontalLayout row3 = ComponentFactory.createHLayout(this);
+            HorizontalLayout row3 = UiFactory.createHLayout(this);
 
-            toggleParams = ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK,
-                    row3, new ClickListener() {
+            toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     showParams();
                 }
             });
-            ComponentFactory.createButton(UiIds.LABEL_EDIT, BaseTheme.BUTTON_LINK, row3, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_EDIT, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     edit();
                 }
             });
-            ComponentFactory.createButton(UiIds.LABEL_DELETE, BaseTheme.BUTTON_LINK, row3, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_DELETE, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -281,9 +277,9 @@ public class CyclicReportsComponent extends Panel {
 
             final ReportParamPanel panel = new ReportParamPanel(order.getReport(), false, params);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = ComponentFactory.createHLayout(panel);
+            HorizontalLayout hl = UiFactory.createHLayout(panel);
 
-            ComponentFactory.createButton(UiIds.LABEL_SAVE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_SAVE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -295,7 +291,7 @@ public class CyclicReportsComponent extends Panel {
                     CyclicReportOrderDAO.saveOrUpdate(order);
                 }
             });
-            ComponentFactory.createButton(UiIds.LABEL_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -333,22 +329,21 @@ public class CyclicReportsComponent extends Panel {
 
             setWidth("100%");
             addComponent(form = new EditCyclicReportForm(order));
-            HorizontalLayout buttons = ComponentFactory.createHLayout(this);
-            ComponentFactory.createButton(UiIds.LABEL_SAVE, null, buttons, new ClickListener() {
+            HorizontalLayout buttons = UiFactory.createHLayout(this);
+            UiFactory.createButton(UiIds.LABEL_SAVE, buttons, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     save();
                 }
             });
-            ComponentFactory.createButton(UiIds.LABEL_CANCEL, null, buttons,
-                    new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_CANCEL, buttons, new ClickListener() {
 
-                        @Override
-                        public void buttonClick(ClickEvent event) {
-                            cancel();
-                        }
-                    });
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    cancel();
+                }
+            });
         }
 
         protected void cancel() {

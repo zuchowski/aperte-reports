@@ -6,6 +6,8 @@ import org.apertereports.common.ReportConstants;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 
 import org.apertereports.util.VaadinUtil;
 
@@ -63,7 +65,7 @@ public class HelpWindow extends TPTWindow {
      * @return A component to render
      */
     private Component getReportParametersTab() {
-        VerticalLayout vl = new VerticalLayout();
+        VerticalLayout vl = UiFactory.createVLayout(null);
         vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".intro"), Label.CONTENT_XHTML));
         Accordion accordion = new Accordion();
         for (ReportConstants.Keys param : ReportConstants.Keys.values()) {
@@ -126,8 +128,7 @@ public class HelpWindow extends TPTWindow {
      * @return A component to render
      */
     private Component getSimpleHelpTab(String infix) {
-        VerticalLayout vl = new VerticalLayout();
-        vl.setSpacing(true);
+        VerticalLayout vl = UiFactory.createVLayout(null, FAction.SET_SPACING);
         vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + infix + ".intro"), Label.CONTENT_XHTML));
         vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + infix + ".content"), Label.CONTENT_XHTML));
         return vl;

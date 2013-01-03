@@ -1,6 +1,7 @@
 package org.apertereports.components;
 
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,8 +12,9 @@ import org.apertereports.common.users.UserRoleProvider;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.ui.CloseListener;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
-import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.VaadinUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,7 @@ public class RolePermissionsPanel extends Panel {
         rt.isAccessibleForAllRoles();
 
         setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
-        VerticalLayout mainLayout = new VerticalLayout();
+        VerticalLayout mainLayout = UiFactory.createVLayout(null);
         ((AbstractLayout) mainLayout).setMargin(true, true, false, true);
 
         setContent(mainLayout);
@@ -59,21 +61,17 @@ public class RolePermissionsPanel extends Panel {
         }
 
         //initializing roles panel (layout)
-        final VerticalLayout rolesLayout = new VerticalLayout();
-        rolesLayout.setSpacing(true);
+        final VerticalLayout rolesLayout = UiFactory.createVLayout(mainLayout, FAction.SET_SPACING);
 
-        HorizontalLayout allNoneButtons = new HorizontalLayout();
-        allNoneButtons.setSpacing(true);
-        Button allButton = ComponentFactory.createButton(UiIds.LABEL_ALL, BaseTheme.BUTTON_LINK, allNoneButtons);
-        allButton.addListener(new Button.ClickListener() {
+        HorizontalLayout allNoneButtons = UiFactory.createHLayout(rolesLayout, FAction.SET_SPACING);
+        UiFactory.createButton(UiIds.LABEL_ALL, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 setWrappersSelected(true);
             }
         });
-        Button noneButton = ComponentFactory.createButton(UiIds.LABEL_NONE, BaseTheme.BUTTON_LINK, allNoneButtons);
-        noneButton.addListener(new Button.ClickListener() {
+        UiFactory.createButton(UiIds.LABEL_NONE, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -81,16 +79,15 @@ public class RolePermissionsPanel extends Panel {
             }
         });
 
-        rolesLayout.addComponent(allNoneButtons);
-
         for (UserRoleWrapper w : wrappers) {
             rolesLayout.addComponent(w.checkBox);
         }
 
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setSpacing(true);
-        Button okButton = ComponentFactory.createButton(UiIds.LABEL_OK, null, buttonsLayout);
-        okButton.addListener(new Button.ClickListener() {
+        Label spacerLabel = UiFactory.createSpacer(mainLayout);
+        spacerLabel.setHeight("5px");
+
+        HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING);
+        UiFactory.createButton(UiIds.LABEL_OK, buttonsLayout, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -112,20 +109,13 @@ public class RolePermissionsPanel extends Panel {
                 fireCloseListener();
             }
         });
-        Button cancelButton = ComponentFactory.createButton(UiIds.LABEL_CANCEL, null, buttonsLayout);
-        cancelButton.addListener(new Button.ClickListener() {
+        UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsLayout, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 fireCloseListener();
             }
         });
-
-        mainLayout.addComponent(rolesLayout);
-        Label spaceLabel = new Label();
-        spaceLabel.setHeight("5px");
-        mainLayout.addComponent(spaceLabel);
-        mainLayout.addComponent(buttonsLayout);
     }
 
     /**

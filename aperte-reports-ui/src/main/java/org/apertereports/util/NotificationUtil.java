@@ -13,6 +13,8 @@ import com.vaadin.ui.Window.Notification;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
 
 import static com.vaadin.ui.Window.Notification.*;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -124,8 +126,7 @@ public class NotificationUtil {
             }
         });
 
-        VerticalLayout mainLayout = new VerticalLayout();
-        mainLayout.setSpacing(true);
+        VerticalLayout mainLayout = UiFactory.createVLayout(null, FAction.SET_SPACING);
         mainLayout.addComponent(new Label(message, Label.CONTENT_XHTML));
         mainLayout.addComponent(new SimpleHorizontalLayout(confirmButton, cancelButton));
 

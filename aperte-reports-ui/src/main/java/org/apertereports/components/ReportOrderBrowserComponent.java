@@ -26,6 +26,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 @SuppressWarnings("serial")
@@ -49,7 +51,7 @@ public class ReportOrderBrowserComponent extends Panel {
     }
 
     private void init() {
-        HorizontalLayout header = new HorizontalLayout();
+        HorizontalLayout header = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
         TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
 
@@ -60,25 +62,21 @@ public class ReportOrderBrowserComponent extends Panel {
         }, header);
         filterField.setWidth("150px");
 
-        Label gap = new Label();
-        gap.setWidth("10px");
-        header.addComponent(gap);
+        Label spacerLabel = UiFactory.createSpacer(header);
+        spacerLabel.setWidth("10px");
 
         Label expandedGap = new Label();
         expandedGap.setWidth("100%");
         header.addComponent(expandedGap);
         header.setExpandRatio(expandedGap, 1.0f);
 
-        ComponentFactory.createButton(UiIds.LABEL_REFRESH, null, header, new ClickListener() {
+        UiFactory.createButton(UiIds.LABEL_REFRESH, header, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
                 list.refresh();
             }
         });
-
-        header.setWidth("100%");
-        addComponent(header);
 
         list = new PaginatedPanelList<ReportOrder, ReportOrderBrowserComponent.ReportOrderPanel>(PAGE_SIZE) {
 
@@ -131,17 +129,17 @@ public class ReportOrderBrowserComponent extends Panel {
             grid.setColumnExpandRatio(1, 1);
             addComponent(grid);
             ComponentFactory.createIcon(item, REPORT_STATUS, grid);
-            ComponentFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, REPORTNAME_STYLE, grid);
+            UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, grid, REPORTNAME_STYLE);
 
             ComponentFactory.createCalendarLabel(item, CREATE_DATE, "", grid);
-            Button previewButton = ComponentFactory.createButton(UiIds.LABEL_PREVIEW, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+            Button previewButton = UiFactory.createButton(UiIds.LABEL_PREVIEW, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     showReport();
                 }
             });
-            ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK, grid, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_PARAMETERS, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {

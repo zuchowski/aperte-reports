@@ -4,6 +4,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
 import org.apertereports.AbstractReportingApplication;
+import org.apertereports.ui.UiFactory;
 
 /**
  * Displays the portlet view of a configured dashboard. The view may contain a
@@ -11,7 +12,7 @@ import org.apertereports.AbstractReportingApplication;
  */
 public class ViewDashboardComponent extends AbstractDashboardComponent {
 
-    private VerticalLayout mainPanel = new VerticalLayout();
+    private VerticalLayout mainPanel = UiFactory.createVLayout(null);
     private Panel contentPanel = new Panel();
 
     public ViewDashboardComponent() {

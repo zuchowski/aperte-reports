@@ -23,15 +23,11 @@ import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import org.apertereports.common.users.User;
@@ -45,40 +41,8 @@ import org.apertereports.ui.UiIds;
  */
 public abstract class ComponentFactory {
 
-    private static final String REPORT_MANAGER_DATE_FORMAT = "report.manager.date.format";
+    public static final String REPORT_MANAGER_DATE_FORMAT = "report.manager.date.format";
     public static final String ICON_PATH = "/icons/16x16/";
-
-    /**
-     * Creates label bound to property,
-     *
-     * @param item bound object
-     * @param propertyId object's property
-     * @param style style name to apply
-     * @param parent container of the component
-     * @return
-     */
-    public static Label createLabel(Item item, String propertyId, String style, ComponentContainer parent) {
-        Property property = item.getItemProperty(propertyId);
-        return createLabelByProperty(style, parent, property);
-    }
-
-    /**
-     * Label displaying not bound value.
-     *
-     * @param valueKey text to display
-     * @param style style name to apply
-     * @param parent container of the component
-     * @return
-     */
-    public static Label createSimpleLabel(String valueKey, String style, ComponentContainer parent) {
-        Label label = new Label(VaadinUtil.getValue(valueKey));
-        label.setStyleName(style);
-        if (parent != null) {
-            parent.addComponent(label);
-        }
-        label.setWidth(null);
-        return label;
-    }
 
     private static Label createLabelByProperty(String style, ComponentContainer parent, Property property) {
         Label label = new Label(property);
@@ -88,41 +52,6 @@ public abstract class ComponentFactory {
         }
         label.setWidth(null);
         return label;
-    }
-
-    /**
-     * Creates button with caption code (for localization) and adds it to
-     * parent.
-     *
-     * @param captionCode localization code of button's caption
-     * @param style style name to apply
-     * @param container container of the component
-     * @return
-     */
-    public static Button createButton(String captionCode, String style, ComponentContainer parent) {
-        Button button = new Button(VaadinUtil.getValue(captionCode));
-        button.setStyleName(style);
-        if (parent != null) {
-            parent.addComponent(button);
-        }
-        return button;
-    }
-
-    /**
-     * Creates button with caption code (for localization), registers listener
-     * and adds it to parent.
-     *
-     * @param captionCode localization code of button's caption
-     * @param style style name to apply
-     * @param container container of the component
-     * @param listener listener to register on click
-     * @return
-     */
-    public static Button createButton(String captionCode, String style, ComponentContainer container,
-            ClickListener listener) {
-        Button button = createButton(captionCode, style, container);
-        button.addListener(listener);
-        return button;
     }
 
     /**
@@ -163,25 +92,6 @@ public abstract class ComponentFactory {
     }
 
     /**
-     * Creates text area bound to item.
-     *
-     * @param item bound object
-     * @param propertyId object's property name
-     * @param promptKey input prompt's localization code
-     * @param parent container of the component
-     * @return
-     */
-    public static TextArea createTextArea(Item item, String propertyId, String promptKey, ComponentContainer parent) {
-        TextArea area = new TextArea(item.getItemProperty(propertyId));
-        area.setInputPrompt(VaadinUtil.getValue(promptKey));
-        area.setWidth("100%");
-        if (parent != null) {
-            parent.addComponent(area);
-        }
-        return area;
-    }
-
-    /**
      * Creates text field bound to item.
      *
      * @param item bound object
@@ -198,51 +108,6 @@ public abstract class ComponentFactory {
             parent.addComponent(field);
         }
         return field;
-    }
-
-    /**
-     * Creates horizontal layout with width set to 100%.
-     *
-     * @param parent container of the component
-     * @return
-     */
-    public static HorizontalLayout createHLayoutFull(ComponentContainer parent) {
-        HorizontalLayout hLayout = createHLayout(parent);
-        hLayout.setWidth("100%");
-        return hLayout;
-    }
-
-    /**
-     * Creates horizontal layout with spacing.
-     *
-     * @param parent
-     * @return
-     */
-    public static HorizontalLayout createHLayout(ComponentContainer parent) {
-        HorizontalLayout hLayout = new HorizontalLayout();
-        if (parent != null) {
-            parent.addComponent(hLayout);
-        }
-        hLayout.setSpacing(true);
-        return hLayout;
-    }
-
-    /**
-     * Creates vertical layout and add to parent container
-     *
-     * @param parent Container to which layout should be add
-     * @param setSpacing Determines if layout should have set spacing
-     * @param fullWidth Determines if layout should have set width to 100%
-     * @return Created layout
-     */
-    public static VerticalLayout createVLayout(ComponentContainer parent, boolean setSpacing, boolean fullWidth) {
-        VerticalLayout layout = new VerticalLayout();
-        parent.addComponent(layout);
-        layout.setSpacing(setSpacing);
-        if (fullWidth) {
-            layout.setWidth("100%");
-        }
-        return layout;
     }
 
     private static class CalendarProperty extends DateProperty {

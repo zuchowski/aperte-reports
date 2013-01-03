@@ -34,6 +34,8 @@ import java.io.File;
 import org.apertereports.common.ReportConstants.ErrorCodes;
 import static org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,7 +154,7 @@ public class HtmlReportBuilder {
      */
     private HorizontalLayout createReportButtons(final ReportConfig config, final ReportConfig parentConfig,
             final ReportConfig xlsConfig, final String componentId) {
-        HorizontalLayout buttons = new HorizontalLayout();
+        HorizontalLayout buttons = UiFactory.createHLayout(null, FAction.SET_SPACING);
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {

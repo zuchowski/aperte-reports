@@ -42,6 +42,8 @@ import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.ui.UiIds;
 import org.apertereports.model.CyclicReportOrder;
 import org.apertereports.ui.CloseListener;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +78,6 @@ public class ReportManagerComponent extends Panel {
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
     private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
     private static final String DUPLICATE_REPORT_NAME_DESC = "exception.duplicate_report_name.desc";
-    private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
     private static final String MSG_REMOVING_REPORT = "report.manager.removing.report";
     private static final String MSG_REPORT_IS_USED = "report.manager.report.is.used";
     private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
@@ -90,7 +91,7 @@ public class ReportManagerComponent extends Panel {
     }
 
     private void init() {
-        VerticalLayout mainLayout = new VerticalLayout();
+        VerticalLayout mainLayout = UiFactory.createVLayout(this);
         newReportReceiver = new ReportReceiver(new ReportTemplate());
         newReportReceiver.addListener(new ReportReceivedListener() {
 
@@ -104,7 +105,7 @@ public class ReportManagerComponent extends Panel {
         newReportUpload.addListener((FailedListener) newReportReceiver);
         newReportUpload.setButtonCaption(VaadinUtil.getValue(UiIds.LABEL_ADD_3DOTS));
         newReportUpload.setImmediate(true);
-        HorizontalLayout hl = ComponentFactory.createHLayoutFull(mainLayout);
+        HorizontalLayout hl = UiFactory.createHLayout(mainLayout, FAction.SET_FULL_WIDTH);
         list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
 
             @Override
@@ -135,7 +136,6 @@ public class ReportManagerComponent extends Panel {
         hl.addComponent(newReportUpload);
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
-        addComponent(mainLayout);
         setWidth("100%");
         setStyleName(PANEL_STYLE);
     }
@@ -172,18 +172,17 @@ public class ReportManagerComponent extends Panel {
             deepCopy(item.reportTemplate, temporaryData = new ReportTemplate());
             beanItem = new BeanItem<ReportTemplate>(temporaryData);
 
-            HorizontalLayout headerRow = ComponentFactory.createHLayoutFull(this);
+            HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
             nameField = new TextField(beanItem.getItemProperty(REPORTNAME_PROPERTY));
             nameField.setInputPrompt(VaadinUtil.getValue(REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT));
             headerRow.addComponent(nameField);
             headerRow.setComponentAlignment(nameField, Alignment.MIDDLE_LEFT);
 
-            headerRow.addComponent(new Label());
+            UiFactory.createSpacer(headerRow);
 
-            HorizontalLayout uploadCell = ComponentFactory.createHLayout(headerRow);
-
-            ComponentFactory.createLabel(beanItem, FILENAME_PROPERTY, FILE_NAME_STYLE, uploadCell);
+            HorizontalLayout uploadCell = UiFactory.createHLayout(headerRow, FAction.SET_SPACING);
+            Label fileLabel = UiFactory.createLabel(beanItem, FILENAME_PROPERTY, uploadCell, FILE_NAME_STYLE);
 
             ReportReceiver uploadReceiver = new ReportReceiver(temporaryData);
             uploadReceiver.addListener(new ReportReceivedListener() {
@@ -193,6 +192,7 @@ public class ReportManagerComponent extends Panel {
                     requestRepaintAll();
                 }
             });
+            uploadCell.setComponentAlignment(fileLabel, Alignment.MIDDLE_LEFT);
 
             Upload changeReportupload = new Upload(null, uploadReceiver);
             changeReportupload.setWidth(null);
@@ -201,33 +201,32 @@ public class ReportManagerComponent extends Panel {
             changeReportupload.setImmediate(true);
             changeReportupload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_ITEM_UPLOAD_CHANGE));
             uploadCell.addComponent(changeReportupload);
-            headerRow.addComponent(uploadCell);
             headerRow.setComponentAlignment(uploadCell, Alignment.MIDDLE_RIGHT);
 
             ComponentFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT, this);
 
-            HorizontalLayout footerRow = ComponentFactory.createHLayoutFull(this);
-            HorizontalLayout checkboxCell = ComponentFactory.createHLayout(footerRow);
+            Label spacerLabel = UiFactory.createSpacer(this);
+            spacerLabel.setHeight("10px");
+            
+            HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
+            
+            HorizontalLayout checkboxCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
             ComponentFactory.createCheckBox(UiIds.LABEL_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
             ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ONLINE, beanItem, ALLOW_ONLINE_DISPLAY_PROPERTY,
                     checkboxCell);
             ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_BACKGROUND, beanItem,
                     ALLOW_BACKGROUND_PROCESSING_PROPERTY, checkboxCell);
 
-            footerRow.addComponent(new Label());
 
-            HorizontalLayout buttonsCell = ComponentFactory.createHLayout(footerRow);
-
-            Button save = ComponentFactory.createButton(UiIds.LABEL_OK, null, buttonsCell);
-            save.addListener(new ClickListener() {
+            HorizontalLayout buttonsCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
+            UiFactory.createButton(UiIds.LABEL_OK, buttonsCell, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     saveChanges();
                 }
             });
-            Button cancel = ComponentFactory.createButton(UiIds.LABEL_CANCEL, null, buttonsCell);
-            cancel.addListener(new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsCell, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -292,15 +291,12 @@ public class ReportManagerComponent extends Panel {
             this.reportTemplate = reportTemplate;
             beanItem = new BeanItem<ReportTemplate>(this.reportTemplate);
             setStyleName(PANEL_STYLE);
-            HorizontalLayout headerRow = new HorizontalLayout();
-            headerRow.setWidth("100%");
-            addComponent(headerRow);
+            HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            Label reportNameLabel = ComponentFactory.createLabel(beanItem, REPORTNAME_PROPERTY, REPORT_NAME_STYLE,
-                    headerRow);
+            Label reportNameLabel = UiFactory.createLabel(beanItem, REPORTNAME_PROPERTY, headerRow,
+                    REPORT_NAME_STYLE);
 
-            Label spacer = new Label();
-            headerRow.addComponent(spacer);
+            UiFactory.createSpacer(headerRow);
 
             Label changedDateLabel = ComponentFactory.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
                     headerRow);
@@ -308,36 +304,27 @@ public class ReportManagerComponent extends Panel {
             headerRow.setComponentAlignment(reportNameLabel, Alignment.MIDDLE_LEFT);
             headerRow.setComponentAlignment(changedDateLabel, Alignment.MIDDLE_RIGHT);
 
-            HorizontalLayout uploadRow = new HorizontalLayout();
-            addComponent(uploadRow);
+            //todots what is it for?
+            HorizontalLayout uploadRow = UiFactory.createHLayout(this);
 
-            Label desc = ComponentFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, DESC_STYLE, this);
-            desc.setWidth("100%");
+            UiFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, this, DESC_STYLE, FAction.SET_FULL_WIDTH);
 
-            HorizontalLayout footerRow = new HorizontalLayout();
-            addComponent(footerRow);
-            footerRow.setSpacing(true);
-            toggleParamsButton = ComponentFactory.createButton(UiIds.LABEL_PARAMETERS, BaseTheme.BUTTON_LINK,
-                    footerRow);
-            toggleParamsButton.addListener(new ClickListener() {
+            HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_SPACING);
+            toggleParamsButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     toggleParamsPanel();
                 }
             });
-            togglePermsButton = ComponentFactory.createButton(UiIds.LABEL_PERMISSIONS, BaseTheme.BUTTON_LINK,
-                    footerRow);
-            togglePermsButton.addListener(new ClickListener() {
+            togglePermsButton = UiFactory.createButton(UiIds.LABEL_PERMISSIONS, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     togglePermsPanel();
                 }
             });
-            Button editButton = ComponentFactory.createButton(UiIds.LABEL_EDIT,
-                    BaseTheme.BUTTON_LINK, footerRow);
-            editButton.addListener(new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_EDIT, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -345,9 +332,7 @@ public class ReportManagerComponent extends Panel {
                 }
             });
 
-            Button downloadButton = ComponentFactory.createButton(UiIds.LABEL_DOWNLOAD, BaseTheme.BUTTON_LINK,
-                    footerRow);
-            downloadButton.addListener(new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_DOWNLOAD, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -355,9 +340,7 @@ public class ReportManagerComponent extends Panel {
                 }
             });
 
-            Button removeButton = ComponentFactory.createButton(UiIds.LABEL_REMOVE, BaseTheme.BUTTON_LINK,
-                    footerRow);
-            removeButton.addListener(new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_REMOVE, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -405,8 +388,8 @@ public class ReportManagerComponent extends Panel {
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = ComponentFactory.createHLayout(panel);
-            ComponentFactory.createButton(UiIds.LABEL_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING);
+            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -427,9 +410,8 @@ public class ReportManagerComponent extends Panel {
                 }
             });
 
-            Button backgroundGenerate = ComponentFactory.createButton("params-form.background-generate",
-                    BaseTheme.BUTTON_LINK, hl);
-            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(PARAMS_FORM_SEND_EMAIL));
+            Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND, hl, BaseTheme.BUTTON_LINK);
+            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(UiIds.AR_MSG_SEND_EMAIL));
             hl.addComponent(sendEmailCheckbox);
             backgroundGenerate.addListener(new ClickListener() {
 
@@ -457,7 +439,6 @@ public class ReportManagerComponent extends Panel {
                 sendEmailCheckbox.setEnabled(false);
             }
 
-            panel.addComponent(hl);
             return panel;
         }
 

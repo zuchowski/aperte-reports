@@ -10,6 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -84,27 +85,26 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
     }
 
     private void addFooter() {
-        HorizontalLayout hl = ComponentFactory.createHLayout(this);
+        HorizontalLayout hl = UiFactory.createHLayout(this);
         hl.setMargin(true, false, false, false);
         if (hasPrevious()) {
-            ComponentFactory.createButton(UiIds.LABEL_PREVIOUS, BaseTheme.BUTTON_LINK, hl,
-                    new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_PREVIOUS, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
-                        @Override
-                        public void buttonClick(ClickEvent event) {
-                            previousPage();
-                        }
-                    });
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    previousPage();
+                }
+            });
         } else {
-            ComponentFactory.createSimpleLabel(UiIds.LABEL_PREVIOUS, "", hl);
+            UiFactory.createLabel(UiIds.LABEL_PREVIOUS, hl);
         }
         for (int i = 0; i < countPages(); i++) {
             final int pageIndex = i;
             String caption = "" + (pageIndex + 1);
             if (pageIndex == pageNumber) {
-                ComponentFactory.createSimpleLabel(caption, "", hl);
+                UiFactory.createLabel(caption, hl);
             } else {
-                ComponentFactory.createButton(caption, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+                UiFactory.createButton(caption, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                     @Override
                     public void buttonClick(ClickEvent event) {
@@ -114,7 +114,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
             }
         }
         if (hasNext()) {
-            ComponentFactory.createButton(UiIds.LABEL_NEXT, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_NEXT, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -122,9 +122,8 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
                 }
             });
         } else {
-            ComponentFactory.createSimpleLabel(UiIds.LABEL_NEXT, "", hl);
+            UiFactory.createLabel(UiIds.LABEL_NEXT, hl);
         }
-
     }
 
     private void showPage(int pageNumber) {

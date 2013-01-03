@@ -21,6 +21,8 @@ import org.apertereports.common.ReportConstants.ReportType;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.ui.CloseListener;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -55,16 +57,16 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
         app = (AbstractReportingApplication) getApplication();
 
-        paramsParentComponent = ComponentFactory.createVLayout(mainPanel, true, true);
+        paramsParentComponent = UiFactory.createVLayout(mainPanel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
 
-        HorizontalLayout reportRow = ComponentFactory.createHLayoutFull(paramsParentComponent);
+        HorizontalLayout reportRow = UiFactory.createHLayout(paramsParentComponent, FAction.SET_FULL_WIDTH);
         reportRow.addComponent(form = new EditDashboardForm());
 
         paramsParentComponent.addComponent(paramsPanel);
         paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
 
-        HorizontalLayout hl = ComponentFactory.createHLayout(paramsParentComponent);
-        ComponentFactory.createButton(UiIds.LABEL_OK, "", hl, new ClickListener() {
+        HorizontalLayout hl = UiFactory.createHLayout(paramsParentComponent);
+        UiFactory.createButton(UiIds.LABEL_OK, hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -78,7 +80,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                 }
             }
         });
-        ComponentFactory.createButton(UiIds.LABEL_CANCEL, "", hl, new ClickListener() {
+        UiFactory.createButton(UiIds.LABEL_CANCEL, hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {

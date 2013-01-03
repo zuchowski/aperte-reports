@@ -32,6 +32,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.common.users.User;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -43,7 +45,6 @@ public class AperteInvokerComponent extends Panel {
 
     private static final int PAGE_SIZE = 10;
     private static final String COMPONENT_STYLE_NAME = "borderless light";
-    private static final String PARAMS_FORM_SEND_EMAIL = "params-form.send-email";
     private PaginatedPanelList<ReportTemplate, ReportPanel> reportList;
     private User user;
 
@@ -65,9 +66,8 @@ public class AperteInvokerComponent extends Panel {
      */
     private class ReportPanel extends Panel {
 
-        private static final String PARAMS_FORM_BACKGROUND_GENERATE = "params-form.background-generate";
-        private static final String REPORT_NAME_STYLE_NAME = "h4";
-        private static final String REPORT_DESC_STYLE_NAME = "tiny";
+        private static final String REPORT_NAME_STYLE = "h4";
+        private static final String REPORT_DESCR_STYLE = "tiny";
         private static final String PANEL_STYLE_NAME = "borderless light";
         private ReportParamPanel paramsPanel = null;
         private Button toggleParams;
@@ -77,14 +77,11 @@ public class AperteInvokerComponent extends Panel {
             this.reportTemplate = report;
             setStyleName(PANEL_STYLE_NAME);
             ((AbstractLayout) getContent()).setMargin(true, false, false, false);
-            HorizontalLayout row = ComponentFactory.createHLayoutFull(this);
-            Label name = ComponentFactory.createSimpleLabel(report.getReportname(), REPORT_NAME_STYLE_NAME, row);
+            HorizontalLayout row = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
+            Label nameLabel = UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE);
 
-            Label spacer = new Label();
-            row.addComponent(spacer);
-            toggleParams = ComponentFactory.createButton(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS),
-                    BaseTheme.BUTTON_LINK, row);
-            toggleParams.addListener(new ClickListener() {
+            Label spacerLabel = UiFactory.createSpacer(row);
+            toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -92,11 +89,10 @@ public class AperteInvokerComponent extends Panel {
 
                 }
             });
-            Label desc = ComponentFactory.createSimpleLabel(report.getDescription(), REPORT_DESC_STYLE_NAME, this);
-            desc.setWidth("100%");
-            row.setExpandRatio(spacer, 1.0f);
-            row.setComponentAlignment(name, Alignment.MIDDLE_RIGHT);
-            row.setSpacing(true);
+            UiFactory.createLabel(report.getDescription(), this, REPORT_DESCR_STYLE, FAction.SET_FULL_WIDTH);
+
+            row.setExpandRatio(spacerLabel, 1.0f);
+            row.setComponentAlignment(nameLabel, Alignment.MIDDLE_RIGHT);
             setWidth("100%");
         }
 
@@ -115,8 +111,8 @@ public class AperteInvokerComponent extends Panel {
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = ComponentFactory.createHLayout(panel);
-            ComponentFactory.createButton(UiIds.LABEL_GENERATE, BaseTheme.BUTTON_LINK, hl, new ClickListener() {
+            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING);
+            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -138,9 +134,9 @@ public class AperteInvokerComponent extends Panel {
                 }
             });
 
-            Button backgroundGenerate = ComponentFactory.createButton(PARAMS_FORM_BACKGROUND_GENERATE,
-                    BaseTheme.BUTTON_LINK, hl);
-            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(PARAMS_FORM_SEND_EMAIL));
+            Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND,
+                    hl, BaseTheme.BUTTON_LINK);
+            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(UiIds.AR_MSG_SEND_EMAIL));
             hl.addComponent(sendEmailCheckbox);
             backgroundGenerate.addListener(new ClickListener() {
 
@@ -167,7 +163,6 @@ public class AperteInvokerComponent extends Panel {
                 sendEmailCheckbox.setEnabled(false);
             }
 
-            panel.addComponent(hl);
             return panel;
         }
 

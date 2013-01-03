@@ -53,6 +53,8 @@ public class UiIds {
     /**
      * Messages
      */
+    public static final String AR_MSG_GENERATE_IN_BACKGROUND = "ar.msg.generate.in.background";
     public static final String AR_MSG_HIDE_PARAMETERS = "ar.msg.hide.parameters";
     public static final String AR_MSG_HIDE_PERMISSIONS = "ar.msg.hide.permissions";
+    public static final String AR_MSG_SEND_EMAIL = "ar.msg.send.email";
 }
