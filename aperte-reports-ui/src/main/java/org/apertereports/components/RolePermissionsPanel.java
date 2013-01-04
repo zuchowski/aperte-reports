@@ -83,8 +83,7 @@ public class RolePermissionsPanel extends Panel {
             rolesLayout.addComponent(w.checkBox);
         }
 
-        Label spacerLabel = UiFactory.createSpacer(mainLayout);
-        spacerLabel.setHeight("5px");
+        UiFactory.createSpacer(mainLayout, null, "5px");
 
         HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING);
         UiFactory.createButton(UiIds.LABEL_OK, buttonsLayout, new Button.ClickListener() {

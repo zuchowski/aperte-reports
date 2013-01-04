@@ -40,8 +40,6 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_EDIT_INPUT_PROMPT_REPORT_ID = "dashboard.edit.input-prompt.reportId";
     private static final String DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID = "dashboard.edit.required-error.reportId";
     private static final String DASHBOARD_EDIT_CAPTION_REPORT_ID = "dashboard.edit.caption.reportId";
-    private static final String DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS = "dashboard.edit.caption.showExportButtons";
-    private static final String DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON = "dashboard.edit.caption.showRefreshButton";
     private VerticalLayout paramsParentComponent;
     private ReportParamPanel paramsPanel = new ReportParamPanel();
     private Form form;
@@ -52,7 +50,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
     @Override
     protected void initComponentData() {
-        Panel mainPanel = new Panel(VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION));
+        Panel mainPanel = UiFactory.createPanel(UiIds.LABEL_CONFIGURATION);
         setCompositionRoot(mainPanel);
 
         app = (AbstractReportingApplication) getApplication();
@@ -178,9 +176,9 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                     field.setWidth("80px");
                     return field;
                 } else if (propertyId.equals(EXPORT_BUTTONS)) {
-                    return ComponentFactory.createCheckBox(DASHBOARD_EDIT_CAPTION_SHOW_EXPORT_BUTTONS, item, portletId, null);
+                    return UiFactory.createCheckBox(UiIds.AR_DASHBOARD_SHOW_EXPORT_BUTTONS, item, portletId, null);
                 } else if (propertyId.equals(REFRESH_BUTTON)) {
-                    return ComponentFactory.createCheckBox(DASHBOARD_EDIT_CAPTION_SHOW_REFRESH_BUTTON, item, portletId, null);
+                    return UiFactory.createCheckBox(UiIds.AR_DASHBOARD_SHOW_REFRESH_BUTTON, item, portletId, null);
                 }
                 return null;
             }

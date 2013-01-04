@@ -78,7 +78,7 @@ public class AperteInvokerComponent extends Panel {
             setStyleName(PANEL_STYLE_NAME);
             ((AbstractLayout) getContent()).setMargin(true, false, false, false);
             HorizontalLayout row = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
-            Label nameLabel = UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE);
+            Label nameLabel = UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE, FAction.ALIGN_RIGTH);
 
             Label spacerLabel = UiFactory.createSpacer(row);
             toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row, BaseTheme.BUTTON_LINK, new ClickListener() {
@@ -92,7 +92,6 @@ public class AperteInvokerComponent extends Panel {
             UiFactory.createLabel(report.getDescription(), this, REPORT_DESCR_STYLE, FAction.SET_FULL_WIDTH);
 
             row.setExpandRatio(spacerLabel, 1.0f);
-            row.setComponentAlignment(nameLabel, Alignment.MIDDLE_RIGHT);
             setWidth("100%");
         }
 
@@ -136,8 +135,7 @@ public class AperteInvokerComponent extends Panel {
 
             Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND,
                     hl, BaseTheme.BUTTON_LINK);
-            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(UiIds.AR_MSG_SEND_EMAIL));
-            hl.addComponent(sendEmailCheckbox);
+            final CheckBox sendEmailCheckbox = UiFactory.createCheckBox(UiIds.AR_MSG_SEND_EMAIL, hl);
             backgroundGenerate.addListener(new ClickListener() {
 
                 @Override
@@ -180,14 +178,14 @@ public class AperteInvokerComponent extends Panel {
         setScrollable(true);
         setStyleName(COMPONENT_STYLE_NAME);
 
-        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = UiFactory.createSearchBox(UiIds.LABEL_FILTER, this, new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 reportList.filter(event.getText());
 
             }
-        }, this);
+        });
         filterField.setWidth("150px");
 
         reportList = new PaginatedPanelList<ReportTemplate, AperteInvokerComponent.ReportPanel>(PAGE_SIZE) {

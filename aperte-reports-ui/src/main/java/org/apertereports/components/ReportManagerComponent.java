@@ -72,7 +72,6 @@ public class ReportManagerComponent extends Panel {
     private static final String ALLOW_ONLINE_DISPLAY_PROPERTY = "allowOnlineDisplay";
     private static final String ACTIVE_PROPERTY = "active";
     private static final String REPORT_MANAGER_ITEM_UPLOAD_CHANGE = "report.manager.item.upload.change";
-    private static final String REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT = "report.manager.item.edit.desc.prompt";
     private static final String REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT = "report.manager.item.edit.name.prompt";
     private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
@@ -124,13 +123,13 @@ public class ReportManagerComponent extends Panel {
             }
         };
 
-        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = UiFactory.createSearchBox(UiIds.LABEL_FILTER, hl, new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
-        }, hl);
+        });
         filterField.setWidth("150px");
 
         hl.addComponent(newReportUpload);
@@ -174,15 +173,14 @@ public class ReportManagerComponent extends Panel {
 
             HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            nameField = new TextField(beanItem.getItemProperty(REPORTNAME_PROPERTY));
-            nameField.setInputPrompt(VaadinUtil.getValue(REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT));
-            headerRow.addComponent(nameField);
-            headerRow.setComponentAlignment(nameField, Alignment.MIDDLE_LEFT);
+            nameField = UiFactory.createTextField(beanItem, REPORTNAME_PROPERTY, headerRow,
+                    REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT, FAction.ALIGN_LEFT);
 
             UiFactory.createSpacer(headerRow);
 
-            HorizontalLayout uploadCell = UiFactory.createHLayout(headerRow, FAction.SET_SPACING);
-            Label fileLabel = UiFactory.createLabel(beanItem, FILENAME_PROPERTY, uploadCell, FILE_NAME_STYLE);
+            HorizontalLayout uploadCell = UiFactory.createHLayout(headerRow, FAction.SET_SPACING, FAction.ALIGN_RIGTH);
+            UiFactory.createLabel(beanItem, FILENAME_PROPERTY, uploadCell,
+                    FILE_NAME_STYLE, FAction.ALIGN_LEFT);
 
             ReportReceiver uploadReceiver = new ReportReceiver(temporaryData);
             uploadReceiver.addListener(new ReportReceivedListener() {
@@ -192,7 +190,6 @@ public class ReportManagerComponent extends Panel {
                     requestRepaintAll();
                 }
             });
-            uploadCell.setComponentAlignment(fileLabel, Alignment.MIDDLE_LEFT);
 
             Upload changeReportupload = new Upload(null, uploadReceiver);
             changeReportupload.setWidth(null);
@@ -201,24 +198,21 @@ public class ReportManagerComponent extends Panel {
             changeReportupload.setImmediate(true);
             changeReportupload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_ITEM_UPLOAD_CHANGE));
             uploadCell.addComponent(changeReportupload);
-            headerRow.setComponentAlignment(uploadCell, Alignment.MIDDLE_RIGHT);
 
-            ComponentFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, REPORT_MANAGER_ITEM_EDIT_DESC_PROMPT, this);
+            UiFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, this, UiIds.AR_MANAGER_REPORT_DESCRIPTION, FAction.SET_FULL_WIDTH);
 
-            Label spacerLabel = UiFactory.createSpacer(this);
-            spacerLabel.setHeight("10px");
-            
+            UiFactory.createSpacer(this, null, "10px");
+
             HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-            
+
             HorizontalLayout checkboxCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
-            ComponentFactory.createCheckBox(UiIds.LABEL_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
-            ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ONLINE, beanItem, ALLOW_ONLINE_DISPLAY_PROPERTY,
+            UiFactory.createCheckBox(UiIds.LABEL_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
+            UiFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ONLINE, beanItem, ALLOW_ONLINE_DISPLAY_PROPERTY,
                     checkboxCell);
-            ComponentFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_BACKGROUND, beanItem,
+            UiFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_BACKGROUND, beanItem,
                     ALLOW_BACKGROUND_PROCESSING_PROPERTY, checkboxCell);
 
-
-            HorizontalLayout buttonsCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
+            HorizontalLayout buttonsCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING, FAction.ALIGN_RIGTH);
             UiFactory.createButton(UiIds.LABEL_OK, buttonsCell, new ClickListener() {
 
                 @Override
@@ -233,8 +227,6 @@ public class ReportManagerComponent extends Panel {
                     discardChanges();
                 }
             });
-
-            footerRow.setComponentAlignment(buttonsCell, Alignment.MIDDLE_RIGHT);
         }
 
         protected void discardChanges() {
@@ -293,15 +285,15 @@ public class ReportManagerComponent extends Panel {
             setStyleName(PANEL_STYLE);
             HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            Label reportNameLabel = UiFactory.createLabel(beanItem, REPORTNAME_PROPERTY, headerRow,
-                    REPORT_NAME_STYLE);
+            UiFactory.createLabel(beanItem, REPORTNAME_PROPERTY, headerRow,
+                    REPORT_NAME_STYLE, FAction.ALIGN_LEFT);
 
             UiFactory.createSpacer(headerRow);
 
+            //todots FAction...
             Label changedDateLabel = ComponentFactory.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
                     headerRow);
-
-            headerRow.setComponentAlignment(reportNameLabel, Alignment.MIDDLE_LEFT);
+            //todots
             headerRow.setComponentAlignment(changedDateLabel, Alignment.MIDDLE_RIGHT);
 
             //todots what is it for?
@@ -411,8 +403,7 @@ public class ReportManagerComponent extends Panel {
             });
 
             Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND, hl, BaseTheme.BUTTON_LINK);
-            final CheckBox sendEmailCheckbox = new CheckBox(VaadinUtil.getValue(UiIds.AR_MSG_SEND_EMAIL));
-            hl.addComponent(sendEmailCheckbox);
+            final CheckBox sendEmailCheckbox = UiFactory.createCheckBox(UiIds.AR_MSG_SEND_EMAIL, hl);
             backgroundGenerate.addListener(new ClickListener() {
 
                 @Override

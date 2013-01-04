@@ -59,6 +59,7 @@ import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Select;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import java.util.Locale;
 import org.apertereports.common.users.User;
@@ -401,7 +402,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 field = dateField;
                 break;
             case TEXTAREA:
-                TextField text = new TextField(fieldProperties.getCaption());
+                TextArea text = new TextArea(fieldProperties.getCaption());
                 text.setRows(3);
                 field = text;
                 break;

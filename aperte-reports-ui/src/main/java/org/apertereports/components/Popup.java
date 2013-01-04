@@ -34,18 +34,17 @@ public class Popup extends Window {
 
         // The cancel / apply buttons
         HorizontalLayout buttons = UiFactory.createHLayout(this, FAction.SET_SPACING);
-        Button discardChanges = new Button(VaadinUtil.getValue(POPUP_DISCARD),
-                new Button.ClickListener() {
+        UiFactory.createButton(POPUP_DISCARD, buttons, null, new Button.ClickListener() {
 
-                    public void buttonClick(ClickEvent event) {
-                        close();
-                    }
-                });
-        buttons.addComponent(discardChanges);
-        buttons.setComponentAlignment(discardChanges, Alignment.MIDDLE_LEFT);
+            @Override
+            public void buttonClick(ClickEvent event) {
+                close();
+            }
+        }, FAction.ALIGN_LEFT);
 
-        Button apply = new Button(VaadinUtil.getValue(POPUP_APPLY), new Button.ClickListener() {
+        Button apply = UiFactory.createButton(POPUP_APPLY, buttons, new Button.ClickListener() {
 
+            @Override
             public void buttonClick(ClickEvent event) {
                 try {
                     if (Popup.this.form != null) {
@@ -59,6 +58,5 @@ public class Popup extends Window {
                 }
             }
         });
-        buttons.addComponent(apply);
     }
 }

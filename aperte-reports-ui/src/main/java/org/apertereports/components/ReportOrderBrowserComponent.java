@@ -53,17 +53,16 @@ public class ReportOrderBrowserComponent extends Panel {
     private void init() {
         HorizontalLayout header = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = UiFactory.createSearchBox(UiIds.LABEL_FILTER, header, new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
-        }, header);
+        });
         filterField.setWidth("150px");
 
-        Label spacerLabel = UiFactory.createSpacer(header);
-        spacerLabel.setWidth("10px");
+        UiFactory.createSpacer(header, "10px", null);
 
         Label expandedGap = new Label();
         expandedGap.setWidth("100%");

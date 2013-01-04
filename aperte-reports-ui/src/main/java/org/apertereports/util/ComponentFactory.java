@@ -23,13 +23,11 @@ import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import org.apertereports.common.users.User;
 import org.apertereports.ui.UiIds;
 
@@ -71,43 +69,6 @@ public abstract class ComponentFactory {
     public static Label createCalendarLabel(Item item, String propertyName, String style, ComponentContainer parent) {
 
         return createLabelByProperty(style, parent, new CalendarProperty(item.getItemProperty(propertyName)));
-    }
-
-    /**
-     *
-     * Creates check box bound to item's boolean property.
-     *
-     * @param captionCode caption's localization code
-     * @param item bound object
-     * @param propertyId object's property name
-     * @param parent container of the component
-     * @return
-     */
-    public static CheckBox createCheckBox(String captionCode, Item item, String propertyId, ComponentContainer parent) {
-        CheckBox checkBox = new CheckBox(VaadinUtil.getValue(captionCode), item.getItemProperty(propertyId));
-        if (parent != null) {
-            parent.addComponent(checkBox);
-        }
-        return checkBox;
-    }
-
-    /**
-     * Creates text field bound to item.
-     *
-     * @param item bound object
-     * @param propertyId object's property name
-     * @param promptKey input prompt's localization code
-     * @param parent container of the component
-     * @return Text field
-     */
-    public static TextField createTextField(Item item, String propertyId, String promptKey, ComponentContainer parent) {
-        TextField field = new TextField(item.getItemProperty(propertyId));
-        field.setInputPrompt(VaadinUtil.getValue(promptKey));
-        field.setWidth("100%");
-        if (parent != null) {
-            parent.addComponent(field);
-        }
-        return field;
     }
 
     private static class CalendarProperty extends DateProperty {
@@ -156,27 +117,6 @@ public abstract class ComponentFactory {
             init();
             return dateFormat.parse(formattedValue);
         }
-    }
-
-    /**
-     * Creates search box in LAZY text change mode.
-     *
-     * @param listener text change event handler
-     * @param container container of the component
-     * @return
-     */
-    public static TextField createSearchBox(TextChangeListener listener, ComponentContainer parent) {
-        TextField search = new TextField();
-        search.setInputPrompt(VaadinUtil.getValue(UiIds.LABEL_FILTER));
-        search.setWidth("100%");
-        search.setImmediate(true);
-        search.setTextChangeTimeout(500);
-        search.setTextChangeEventMode(TextChangeEventMode.LAZY);
-        search.addListener(listener);
-        if (parent != null) {
-            parent.addComponent(search);
-        }
-        return search;
     }
 
     public static ComboBox createFormatCombo(ReportType selectedValue, String captionKey) {

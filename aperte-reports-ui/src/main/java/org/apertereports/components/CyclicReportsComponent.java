@@ -90,17 +90,16 @@ public class CyclicReportsComponent extends Panel {
     private void init() {
 
         HorizontalLayout header = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-        TextField filterField = ComponentFactory.createSearchBox(new TextChangeListener() {
+        TextField filterField = UiFactory.createSearchBox(UiIds.LABEL_FILTER, header, new TextChangeListener() {
 
             @Override
             public void textChange(TextChangeEvent event) {
                 list.filter(event.getText());
             }
-        }, header);
+        });
         filterField.setWidth("150px");
 
-        Label spacerLabel = UiFactory.createSpacer(header);
-        spacerLabel.setWidth("10px");
+        UiFactory.createSpacer(header, "10px", null);
 
         Label expandedGap = new Label();
         expandedGap.setWidth("100%");
@@ -173,12 +172,12 @@ public class CyclicReportsComponent extends Panel {
             HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
             HorizontalLayout row2 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            container = UiFactory.createHLayout(row1);
+            container = UiFactory.createHLayout(row1, FAction.ALIGN_LEFT);
             container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
-            Label name = UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
-                    ORDER_REPORT_REPORTNAME, container, FORMAT_STYLE);
+            UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
+                    ORDER_REPORT_REPORTNAME, container, FORMAT_STYLE, FAction.ALIGN_LEFT);
 
-            Label formatLabel = UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, container);
+            UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, container, FAction.ALIGN_LEFT);
             Label spacerLabel = UiFactory.createSpacer(row1);
             enabledButton = UiFactory.createButton(getStateLabelCaption(), row1, BaseTheme.BUTTON_LINK, new ClickListener() {
 
@@ -203,17 +202,12 @@ public class CyclicReportsComponent extends Panel {
                         throw new AperteReportsRuntimeException(e);
                     }
                 }
-            });
-            row1.setComponentAlignment(container, Alignment.MIDDLE_LEFT);
-            row1.setComponentAlignment(enabledButton, Alignment.MIDDLE_RIGHT);
-            container.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
-            container.setComponentAlignment(formatLabel, Alignment.MIDDLE_LEFT);
+            }, FAction.ALIGN_RIGTH);
             row1.setExpandRatio(spacerLabel, 1.0f);
 
             UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, row2);
             UiFactory.createSpacer(row2);
-            Label whenLabel = UiFactory.createLabel(item, ORDER_CRON_SPEC, row2);
-            row2.setComponentAlignment(whenLabel, Alignment.MIDDLE_RIGHT);
+            UiFactory.createLabel(item, ORDER_CRON_SPEC, row2, FAction.ALIGN_RIGTH);
 
             UiFactory.createLabel(item, ORDER_DESCRIPTION, this, DESCRIPTION_STYLE, FAction.SET_FULL_WIDTH);
 

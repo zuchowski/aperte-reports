@@ -158,9 +158,7 @@ public class HtmlReportBuilder {
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {
-            Button b = new Button(VaadinUtil.getValue("dashboard.view.drill.up"));
-            buttons.addComponent(b);
-            b.addListener(new Button.ClickListener() {
+            UiFactory.createButton("dashboard.view.drill.up", buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
@@ -170,9 +168,7 @@ public class HtmlReportBuilder {
         }
         List<String> allowedFormats = config.getAllowedFormatsAsList();
         for (final String format : allowedFormats) {
-            Button b = new Button(format);
-            buttons.addComponent(b);
-            b.addListener(new Button.ClickListener() {
+            UiFactory.createButton(format, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
@@ -185,9 +181,7 @@ public class HtmlReportBuilder {
             });
         }
         if (config.getAllowRefresh() == Boolean.TRUE) {
-            Button b = new Button(VaadinUtil.getValue(UiIds.LABEL_REFRESH));
-            buttons.addComponent(b);
-            b.addListener(new Button.ClickListener() {
+            UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {

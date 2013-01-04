@@ -8,6 +8,8 @@ import com.vaadin.ui.*;
 import org.apertereports.common.ReportConstants;
 
 import java.util.List;
+import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiIds;
 
 import org.apertereports.util.VaadinUtil;
 
@@ -112,7 +114,7 @@ public class FieldContainer {
         }
 
         if (selectAll) {
-            final CheckBox saCheckbox = new CheckBox(VaadinUtil.getValue("invoker.form.select_all"));
+            final CheckBox saCheckbox = UiFactory.createCheckBox(UiIds.AR_MSG_SELECT_ALL, null);
             saCheckbox.addListener(new Property.ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {

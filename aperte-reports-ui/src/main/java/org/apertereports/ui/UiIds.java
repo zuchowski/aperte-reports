@@ -51,10 +51,20 @@ public class UiIds {
     public static final String LABEL_UPLOAD = "label.upload";
     public static final String LABEL_YES = "label.yes";
     /**
-     * Messages
+     * General messages
      */
     public static final String AR_MSG_GENERATE_IN_BACKGROUND = "ar.msg.generate.in.background";
     public static final String AR_MSG_HIDE_PARAMETERS = "ar.msg.hide.parameters";
     public static final String AR_MSG_HIDE_PERMISSIONS = "ar.msg.hide.permissions";
+    public static final String AR_MSG_SELECT_ALL = "ar.msg.select.all";
     public static final String AR_MSG_SEND_EMAIL = "ar.msg.send.email";
+    /**
+     * Dashboard messages
+     */
+    public static final String AR_DASHBOARD_SHOW_EXPORT_BUTTONS = "ar.dashboard.show.export.buttons";
+    public static final String AR_DASHBOARD_SHOW_REFRESH_BUTTON = "ar.dashboard.show.refresh.button";
+    /**
+     * Manager messages
+     */
+    public static final String AR_MANAGER_REPORT_DESCRIPTION = "ar.manager.report.description";
 }

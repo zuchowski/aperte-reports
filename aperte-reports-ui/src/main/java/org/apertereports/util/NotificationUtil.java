@@ -104,9 +104,7 @@ public class NotificationUtil {
         window.setWidth(300, Sizeable.UNITS_PIXELS);
         window.setResizable(false);
 
-        Button confirmButton = new Button(VaadinUtil.getValue("report.table.confirm"));
-        confirmButton.setImmediate(true);
-        confirmButton.addListener(new ClickListener() {
+        Button confirmButton = UiFactory.createButton(UiIds.LABEL_YES, null, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -114,10 +112,9 @@ public class NotificationUtil {
                 parent.removeWindow(window);
             }
         });
+        confirmButton.setImmediate(true);
 
-        Button cancelButton = new Button(VaadinUtil.getValue(UiIds.LABEL_NO));
-        cancelButton.setImmediate(true);
-        cancelButton.addListener(new ClickListener() {
+        Button cancelButton = UiFactory.createButton(UiIds.LABEL_NO, null, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -125,6 +122,7 @@ public class NotificationUtil {
                 parent.removeWindow(window);
             }
         });
+        cancelButton.setImmediate(true);
 
         VerticalLayout mainLayout = UiFactory.createVLayout(null, FAction.SET_SPACING);
         mainLayout.addComponent(new Label(message, Label.CONTENT_XHTML));
