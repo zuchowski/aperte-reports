@@ -36,7 +36,7 @@ public class RolePermissionsPanel extends Panel {
 
         setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
         VerticalLayout mainLayout = UiFactory.createVLayout(null);
-        ((AbstractLayout) mainLayout).setMargin(true, true, false, true);
+        ((AbstractLayout) mainLayout).setMargin(true, true, true, true);
 
         setContent(mainLayout);
         boolean all = rt.isAccessibleForAllRoles();
@@ -85,7 +85,8 @@ public class RolePermissionsPanel extends Panel {
 
         UiFactory.createSpacer(mainLayout, null, "5px");
 
-        HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING);
+        HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+        UiFactory.createSpacer(buttonsLayout, FAction.SET_EXPAND_RATIO_1_0);
         UiFactory.createButton(UiIds.LABEL_OK, buttonsLayout, new Button.ClickListener() {
 
             @Override
@@ -107,14 +108,14 @@ public class RolePermissionsPanel extends Panel {
 
                 fireCloseListener();
             }
-        });
+        }, FAction.ALIGN_RIGTH);
         UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsLayout, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 fireCloseListener();
             }
-        });
+        }, FAction.ALIGN_RIGTH);
     }
 
     /**

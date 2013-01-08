@@ -14,22 +14,14 @@ import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
-import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.VaadinUtil;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.common.users.User;
 import org.apertereports.ui.UiFactory;
@@ -49,7 +41,6 @@ public class AperteInvokerComponent extends Panel {
     private User user;
 
     public AperteInvokerComponent() {
-
         init();
     }
 
@@ -76,11 +67,11 @@ public class AperteInvokerComponent extends Panel {
         public ReportPanel(final ReportTemplate report) {
             this.reportTemplate = report;
             setStyleName(PANEL_STYLE_NAME);
-            ((AbstractLayout) getContent()).setMargin(true, false, false, false);
+            ((AbstractLayout) getContent()).setMargin(false, false, false, false);
+            UiFactory.createSpacer(this, null, "6px");
             HorizontalLayout row = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
-            Label nameLabel = UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE, FAction.ALIGN_RIGTH);
-
-            Label spacerLabel = UiFactory.createSpacer(row);
+            UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE, FAction.ALIGN_LEFT);
+            UiFactory.createSpacer(row, FAction.SET_EXPAND_RATIO_1_0);
             toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -91,7 +82,6 @@ public class AperteInvokerComponent extends Panel {
             });
             UiFactory.createLabel(report.getDescription(), this, REPORT_DESCR_STYLE, FAction.SET_FULL_WIDTH);
 
-            row.setExpandRatio(spacerLabel, 1.0f);
             setWidth("100%");
         }
 
@@ -110,7 +100,7 @@ public class AperteInvokerComponent extends Panel {
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING);
+            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -160,6 +150,15 @@ public class AperteInvokerComponent extends Panel {
                 backgroundGenerate.setEnabled(false);
                 sendEmailCheckbox.setEnabled(false);
             }
+
+            UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
+            UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    toggleParams();
+                }
+            }, FAction.ALIGN_RIGTH);
 
             return panel;
         }

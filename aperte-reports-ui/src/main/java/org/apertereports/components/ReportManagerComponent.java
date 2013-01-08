@@ -19,7 +19,6 @@ import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
-import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
@@ -41,8 +40,7 @@ import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.ui.UiIds;
 import org.apertereports.model.CyclicReportOrder;
-import org.apertereports.ui.CloseListener;
-import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.*;
 import org.apertereports.ui.UiFactory.FAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +73,6 @@ public class ReportManagerComponent extends Panel {
     private static final String REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT = "report.manager.item.edit.name.prompt";
     private static final String REPORT_MANAGER_ITEM_EDIT_BACKGROUND = "report.manager.item.edit.background";
     private static final String REPORT_MANAGER_ITEM_EDIT_ONLINE = "report.manager.item.edit.online";
-    private static final String DUPLICATE_REPORT_NAME_TITLE = "exception.duplicate_report_name.title";
-    private static final String DUPLICATE_REPORT_NAME_DESC = "exception.duplicate_report_name.desc";
     private static final String MSG_REMOVING_REPORT = "report.manager.removing.report";
     private static final String MSG_REPORT_IS_USED = "report.manager.report.is.used";
     private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
@@ -163,6 +159,7 @@ public class ReportManagerComponent extends Panel {
         private ReportTemplate temporaryData;
         private BeanItem<ReportTemplate> beanItem;
         private TextField nameField;
+        private ErrorLabelHandler errorHandler;
 
         public EditReportItemPanel(ReportItemPanel item) {
             this.item = item;
@@ -201,7 +198,11 @@ public class ReportManagerComponent extends Panel {
 
             UiFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, this, UiIds.AR_MANAGER_REPORT_DESCRIPTION, FAction.SET_FULL_WIDTH);
 
-            UiFactory.createSpacer(this, null, "10px");
+            UiFactory.createSpacer(this, null, "5px");
+            Label errorLabel = UiFactory.createLabel("", this);
+            UiFactory.createSpacer(this, null, "5px");
+
+            errorHandler = new ErrorLabelHandler(errorLabel);
 
             HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
@@ -238,7 +239,7 @@ public class ReportManagerComponent extends Panel {
         }
 
         protected void saveChanges() {
-            if (!checkUnique(temporaryData)) {
+            if (!checkUniqueName(item.reportTemplate.getReportname(), temporaryData)) {
                 return;
             }
             item.requestRepaintAll();
@@ -247,17 +248,21 @@ public class ReportManagerComponent extends Panel {
             list.replaceComponent(this, this.item);
         }
 
-        private boolean checkUnique(ReportTemplate reportTemplate) {
-            if (reportTemplate.getId() != null) {
-                //todots check behaviour when editing name of the existing report
+        private boolean checkUniqueName(String originalName, ReportTemplate reportTemplate) {
+            String newName = reportTemplate.getReportname();
+            if (StringUtils.isEmpty(newName)) {
+                errorHandler.setMessage(UiIds.AR_MANAGER_ERR_ENTER_REPORT_NAME);
+                return false;
+            }
+
+            if (newName.equals(originalName)) {
                 return true;
             }
 
-            Collection<ReportTemplate> exists = ReportTemplateDAO.fetchByName(user, reportTemplate.getReportname());
+            Collection<ReportTemplate> exists = ReportTemplateDAO.fetchByName(user, newName);
             if (exists.size() > 0) {
                 nameField.focus();
-                getWindow().showNotification(VaadinUtil.getValue(DUPLICATE_REPORT_NAME_TITLE),
-                        "<br/>" + VaadinUtil.getValue(DUPLICATE_REPORT_NAME_DESC), Window.Notification.TYPE_ERROR_MESSAGE);
+                errorHandler.setMessage(UiIds.AR_MANAGER_ERR_NAME_ALREDY_EXISTS);
                 return false;
             }
             return true;
@@ -290,11 +295,8 @@ public class ReportManagerComponent extends Panel {
 
             UiFactory.createSpacer(headerRow);
 
-            //todots FAction...
-            Label changedDateLabel = ComponentFactory.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
-                    headerRow);
-            //todots
-            headerRow.setComponentAlignment(changedDateLabel, Alignment.MIDDLE_RIGHT);
+            UiFactoryExt.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
+                    headerRow, FAction.ALIGN_RIGTH);
 
             //todots what is it for?
             HorizontalLayout uploadRow = UiFactory.createHLayout(this);
@@ -380,7 +382,7 @@ public class ReportManagerComponent extends Panel {
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING);
+            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -429,6 +431,14 @@ public class ReportManagerComponent extends Panel {
                 backgroundGenerate.setEnabled(false);
                 sendEmailCheckbox.setEnabled(false);
             }
+            UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
+            UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    toggleParamsPanel();
+                }
+            }, FAction.ALIGN_RIGTH);
 
             return panel;
         }

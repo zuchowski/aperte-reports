@@ -28,6 +28,7 @@ public class ManagerApplication extends AbstractReportingApplication<ReportManag
     @Override
     public void portletInit() {
         mainPanel = new ReportManagerComponent();
+        //todots is title ever used?
         mainWindow = new Window(VaadinUtil.getValue("manager.window.title"), mainPanel);
     }
 

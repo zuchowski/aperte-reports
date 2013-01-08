@@ -28,6 +28,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
+import org.apertereports.ui.UiFactoryExt;
 import org.apertereports.ui.UiIds;
 
 @SuppressWarnings("serial")
@@ -130,7 +131,7 @@ public class ReportOrderBrowserComponent extends Panel {
             ComponentFactory.createIcon(item, REPORT_STATUS, grid);
             UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()), REPORTNAME, grid, REPORTNAME_STYLE);
 
-            ComponentFactory.createCalendarLabel(item, CREATE_DATE, "", grid);
+            UiFactoryExt.createCalendarLabel(item, CREATE_DATE, grid);
             Button previewButton = UiFactory.createButton(UiIds.LABEL_PREVIEW, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override

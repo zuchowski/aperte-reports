@@ -272,10 +272,6 @@ public class HtmlReportBuilder {
             reportData = provider.provideReportData(config, ReportType.HTML, cached);
         } catch (AperteReportsRuntimeException e) {
             try {
-                if (e.getErrorCode() == ErrorCodes.REPORT_ACCESS_DENIED) {
-                    logger.info("ACCESS DENIED");
-                }
-                //todots error code
                 String errorLayout = "<div location=\"errorLabel\"></div>";
                 String msg = "<b><span style=\"color:red\">"
                         + VaadinUtil.getValue("dashboard.report.creation.error") + "</span></b>";

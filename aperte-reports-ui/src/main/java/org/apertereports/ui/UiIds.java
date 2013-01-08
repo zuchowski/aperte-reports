@@ -16,6 +16,7 @@ public class UiIds {
     public static final String LABEL_ADD_3DOTS = "label.add.3dots";
     public static final String LABEL_ALL = "label.all";
     public static final String LABEL_CANCEL = "label.cancel";
+    public static final String LABEL_CLOSE = "label.close";
     public static final String LABEL_CONFIGURATION = "label.configuration";
     public static final String LABEL_DELETE = "label.delete";
     public static final String LABEL_DESCRIPTION = "label.description";
@@ -66,5 +67,7 @@ public class UiIds {
     /**
      * Manager messages
      */
+    public static final String AR_MANAGER_ERR_ENTER_REPORT_NAME = "ar.manager.err.enter.report.name";
+    public static final String AR_MANAGER_ERR_NAME_ALREDY_EXISTS = "ar.manager.err.name.alredy.exists";
     public static final String AR_MANAGER_REPORT_DESCRIPTION = "ar.manager.report.description";
 }

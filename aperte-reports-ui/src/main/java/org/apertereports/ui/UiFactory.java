@@ -1,7 +1,6 @@
 package org.apertereports.ui;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public abstract class UiFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(UiFactory.class);
-    private static final FAction[] EMPTY_ACTION_TABLE = {};
+    static final FAction[] EMPTY_ACTION_TABLE = {};
 
     /**
      * Defines available layouts
@@ -54,6 +53,11 @@ public abstract class UiFactory {
          * parent component
          */
         ALIGN_RIGTH,
+        /**
+         * Set expand ration to 1.0. Available only for {@link AbstractOrderedLayout}
+         * parent component
+         */
+        SET_EXPAND_RATIO_1_0,
         /**
          * Set full width action
          */
@@ -170,6 +174,7 @@ public abstract class UiFactory {
         if (parent != null) {
             parent.addComponent(label);
         }
+        label.setWidth(null);
         performActions(label, actions);
         return label;
     }
@@ -217,6 +222,20 @@ public abstract class UiFactory {
      *
      * @param captionId Id of the caption taken from the localized resources or
      * caption
+     * @param parent Parent container to which the button is added, can be null
+     * @param listener Event listener
+     * @param actions List of actions performed on created component
+     * @return Button
+     */
+    public static Button createButton(String captionId, ComponentContainer parent, ClickListener listener, FAction... actions) {
+        return createButton(captionId, parent, null, listener, actions);
+    }
+
+    /**
+     * Creates button
+     *
+     * @param captionId Id of the caption taken from the localized resources or
+     * caption
      * @param style Style name
      * @param parent Parent container to which the button is added, can be null
      * @param listener Event listener
@@ -235,6 +254,7 @@ public abstract class UiFactory {
      * @param style Style name
      * @param parent Parent container to which the button is added, can be null
      * @param listener Event listener
+     * @param actions List of actions performed on created component
      * @return Button
      */
     public static Button createButton(String captionId, ComponentContainer parent, String style,
@@ -433,7 +453,18 @@ public abstract class UiFactory {
      * @return Spacer
      */
     public static Label createSpacer(ComponentContainer parent) {
-        return createSpacer(parent, null, null);
+        return createSpacer(parent, null, null, EMPTY_ACTION_TABLE);
+    }
+
+    /**
+     * Creates simple label without caption and add it to the parent container
+     *
+     * @param parent Parent container to which the spacer is added, can be null
+     * @param actions List of actions performed on created component
+     * @return Spacer
+     */
+    public static Label createSpacer(ComponentContainer parent, FAction... actions) {
+        return createSpacer(parent, null, null, actions);
     }
 
     /**
@@ -445,6 +476,19 @@ public abstract class UiFactory {
      * @return Spacer
      */
     public static Label createSpacer(ComponentContainer parent, String width, String height) {
+        return createSpacer(parent, width, height, EMPTY_ACTION_TABLE);
+    }
+
+    /**
+     * Creates simple label without caption and add it to the parent container
+     *
+     * @param parent Parent container to which the spacer is added, can be null
+     * @param width Width of the component, can be null
+     * @param height Height of the component, can be null
+     * @param actions List of actions performed on created component
+     * @return Spacer
+     */
+    public static Label createSpacer(ComponentContainer parent, String width, String height, FAction... actions) {
         Label spacer = new Label();
         if (width != null) {
             spacer.setWidth(width);
@@ -453,12 +497,14 @@ public abstract class UiFactory {
             spacer.setHeight(height);
         }
         parent.addComponent(spacer);
+        performActions(spacer, actions);
         return spacer;
     }
 
-    private static void performActions(Component c, FAction[] actions) {
+    static void performActions(Component c, FAction[] actions) {
         for (FAction action : actions) {
-            if (action == FAction.ALIGN_LEFT || action == FAction.ALIGN_CENTER || action == FAction.ALIGN_RIGTH) {
+            if (action == FAction.ALIGN_LEFT || action == FAction.ALIGN_CENTER || action == FAction.ALIGN_RIGTH
+                    || action == FAction.SET_EXPAND_RATIO_1_0) {
                 Component parent = c.getParent();
                 if (parent == null) {
                     throw new RuntimeException("there is no parent component");
@@ -466,9 +512,16 @@ public abstract class UiFactory {
                 if (!(parent instanceof AbstractOrderedLayout)) {
                     throw new RuntimeException("component is not instance of AbstractOrderedLayout");
                 }
-                Alignment a = action == FAction.ALIGN_LEFT ? Alignment.MIDDLE_LEFT : action == FAction.ALIGN_RIGTH
-                        ? Alignment.MIDDLE_RIGHT : Alignment.MIDDLE_CENTER;
-                ((AbstractOrderedLayout) parent).setComponentAlignment(c, a);
+
+                AbstractOrderedLayout layout = ((AbstractOrderedLayout) parent);
+
+                if (action == FAction.SET_EXPAND_RATIO_1_0) {
+                    layout.setExpandRatio(c, 1.0f);
+                } else {
+                    Alignment a = action == FAction.ALIGN_LEFT ? Alignment.MIDDLE_LEFT : action == FAction.ALIGN_RIGTH
+                            ? Alignment.MIDDLE_RIGHT : Alignment.MIDDLE_CENTER;
+                    layout.setComponentAlignment(c, a);
+                }
             } else if (action == FAction.SET_FULL_WIDTH) {
                 c.setWidth("100%");
             } else if (action == FAction.SET_SPACING) {
@@ -477,7 +530,7 @@ public abstract class UiFactory {
                 }
                 ((AbstractOrderedLayout) c).setSpacing(true);
             } else {
-                throw new RuntimeException("action not serviced yet: " + FAction.SET_FULL_WIDTH);
+                throw new RuntimeException("action not serviced yet: " + action);
             }
         }
     }
