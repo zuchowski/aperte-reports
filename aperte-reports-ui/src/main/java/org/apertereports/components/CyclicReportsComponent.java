@@ -64,7 +64,7 @@ public class CyclicReportsComponent extends Panel {
     private static final String CYCLIC_EDIT_INPUT_PROMPT_FORMAT = "cyclic.edit.input-prompt.format";
     private static final String CYCYLIC_EDIT_REQUIRED_ERROR_FORMAT = "cycylic.edit.required-error.format";
     private boolean addingNew = false;
-    private Component addComponent;
+    private Component addOrEditComponent;
     private User user = null;
     private Button addButton;
 
@@ -91,12 +91,6 @@ public class CyclicReportsComponent extends Panel {
 
         UiFactory.createSpacer(header, "10px", null);
 
-        //todo ?
-//        Label expandedGap = new Label();
-//        expandedGap.setWidth("100%");
-//        header.addComponent(expandedGap);
-//        header.setExpandRatio(expandedGap, 1.0f);
-
         UiFactory.createSpacer(header, FAction.SET_EXPAND_RATIO_1_0);
         addButton = UiFactory.createButton(UiIds.LABEL_ADD, header, new ClickListener() {
 
@@ -104,8 +98,7 @@ public class CyclicReportsComponent extends Panel {
             public void buttonClick(ClickEvent event) {
                 addNew();
             }
-        });
-        addButton.setVisible(false);
+        }, FAction.SET_INVISIBLE);
 
         list = new PaginatedPanelList<CyclicReportOrder, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
 
@@ -124,17 +117,15 @@ public class CyclicReportsComponent extends Panel {
                 return CyclicReportOrderDAO.fetch(filter, firstResult, maxResults);
             }
         };
-        //todo ?
-//        list.setMargin(false, false, true, false);
+
         addComponent(list);
         setStyleName(COMPONENT_STYLE_NAME);
         list.filter(null);
 
         if (!AperteReportsJmsFacade.isJmsAvailable()) {
-            HorizontalLayout footer = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-            Form form = new Form();
-            form.setComponentError(new UserError("JMS unavailable, cyclic reports execution is disabled!"));
-            footer.addComponent(form);
+            VerticalLayout footer = UiFactory.createVLayout(this, FAction.SET_FULL_WIDTH);
+            UiFactory.createSpacer(footer, null, "10px");
+            UiFactory.createLabel("JMS unavailable, cyclic reports execution is disabled!", footer);
         }
     }
 
@@ -151,8 +142,8 @@ public class CyclicReportsComponent extends Panel {
         EditCyclicReportPanel ecrp = new EditCyclicReportPanel(order, true);
         vl.addComponent(ecrp);
 
-        addComponent = vl;
-        list.addComponent(addComponent, 0);
+        addOrEditComponent = vl;
+        list.addComponent(addOrEditComponent, 0);
     }
 
     private class CyclicReportPanel extends Panel {
@@ -161,23 +152,25 @@ public class CyclicReportsComponent extends Panel {
         private CyclicReportOrder order;
         private ReportParamPanel paramsPanel;
         private Button toggleParamsButton;
-        private HorizontalLayout container;
+        private HorizontalLayout nameContainer;
         private Button enabledButton;
 
         public CyclicReportPanel(CyclicReportOrder order) {
             this.order = order;
             setStyleName(REPORT_PANEL_STYLE);
             BeanItem<CyclicReportOrder> item = new BeanItem<CyclicReportOrder>(order);
+            ((AbstractLayout) getContent()).setMargin(true, true, false, true);
+
             HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
             HorizontalLayout row2 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            container = UiFactory.createHLayout(row1, FAction.ALIGN_LEFT);
-            container.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
+            nameContainer = UiFactory.createHLayout(row1, FAction.ALIGN_LEFT, FAction.SET_SPACING);
+            nameContainer.setEnabled(CyclicReportPanel.this.order.getEnabled() == Boolean.TRUE);
             UiFactory.createLabel(new BeanItem<ReportTemplate>(order.getReport()),
-                    ORDER_REPORT_REPORTNAME, container, FORMAT_STYLE, FAction.ALIGN_LEFT);
+                    ORDER_REPORT_REPORTNAME, nameContainer, FORMAT_STYLE, FAction.ALIGN_LEFT);
 
-            UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, container, FAction.ALIGN_LEFT);
-            Label spacerLabel = UiFactory.createSpacer(row1);
+            UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, nameContainer, FAction.ALIGN_LEFT);
+            UiFactory.createSpacer(row1, FAction.SET_EXPAND_RATIO_1_0);
             enabledButton = UiFactory.createButton(getStateLabelCaption(), row1, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -188,7 +181,7 @@ public class CyclicReportsComponent extends Panel {
                 private void toggleEnable() {
                     boolean enabled = CyclicReportPanel.this.order.getEnabled() != Boolean.TRUE;
                     CyclicReportPanel.this.order.setEnabled(enabled);
-                    container.setEnabled(enabled);
+                    nameContainer.setEnabled(enabled);
                     enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
                     CyclicReportOrderDAO.saveOrUpdate(CyclicReportPanel.this.order);
                     try {
@@ -202,15 +195,12 @@ public class CyclicReportsComponent extends Panel {
                     }
                 }
             }, FAction.ALIGN_RIGTH);
-            row1.setExpandRatio(spacerLabel, 1.0f);
 
             UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, row2);
-            UiFactory.createSpacer(row2);
-            UiFactory.createLabel(item, ORDER_CRON_SPEC, row2, FAction.ALIGN_RIGTH);
+            UiFactory.createSpacer(row2, FAction.SET_EXPAND_RATIO_1_0);
+            UiFactory.createLabel(item, ORDER_CRON_SPEC, row2);
             UiFactory.createLabel(item, ORDER_DESCRIPTION, this, DESCRIPTION_STYLE, FAction.SET_FULL_WIDTH);
-
             HorizontalLayout row3 = UiFactory.createHLayout(this, FAction.SET_SPACING);
-
             toggleParamsButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -245,7 +235,8 @@ public class CyclicReportsComponent extends Panel {
         }
 
         protected void edit() {
-            list.replaceComponent(this, new EditCyclicReportPanel(this.order, false));
+            addOrEditComponent = new EditCyclicReportPanel(this.order, false);
+            list.replaceComponent(this, addOrEditComponent);
         }
 
         protected void toggleParamsPanel() {
@@ -375,7 +366,7 @@ public class CyclicReportsComponent extends Panel {
         private void finish() {
             addingNew = false;
             addButton.setVisible(true);
-            list.removeComponent(addComponent);
+            list.removeComponent(addOrEditComponent);
         }
     }
 

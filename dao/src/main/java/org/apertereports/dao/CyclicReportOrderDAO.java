@@ -2,13 +2,15 @@ package org.apertereports.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.CyclicReportOrder;
 
 import java.util.*;
+import org.apertereports.common.users.User;
+import org.hibernate.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAO methods for retrieving and saving cyclic report orders.
@@ -17,34 +19,29 @@ import java.util.*;
  */
 public class CyclicReportOrderDAO {
 
+    //todots doc
+    private enum SelectType {
+
+        /**
+         * Select cyclic report order
+         */
+        SELECT_CRO,
+        /**
+         * Count cyclic report orders
+         */
+        SELECT_COUNT_CRO
+    }
+    private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
+
     /**
      * Returns all cyclic report orders from database.
      *
      * @return A collection of cyclic report orders
      */
     public static Collection<CyclicReportOrder> fetchAll() {
-        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
-
-            @Override
-            public Collection<CyclicReportOrder> lambda() {
-                return sess.createCriteria(CyclicReportOrder.class).list();
-            }
-        }.p();
-    }
-
-    /**
-     * Returns all enabled cyclic report orders from database.
-     *
-     * @return A collection of enabled cyclic report orders
-     */
-    public static Collection<CyclicReportOrder> fetchAllEnabled() {
-        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
-
-            @Override
-            public Collection<CyclicReportOrder> lambda() {
-                return sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("enabled", true)).list();
-            }
-        }.p();
+        //todo user
+        User user = null;
+        return fetch(user, null, null, null, (Object[]) null);
     }
 
     /**
@@ -55,7 +52,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the template with given id.
      */
     public static Collection<CyclicReportOrder> fetchByTemplateId(final Integer templateId) {
-        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>() {
+        return new WHS<Collection<CyclicReportOrder>>() {
 
             @Override
             public Collection<CyclicReportOrder> lambda() {
@@ -72,7 +69,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the processed order
      */
     public static CyclicReportOrder fetchForReportOrder(final Long reportId) {
-        return new org.apertereports.dao.utils.WHS<CyclicReportOrder>() {
+        return new WHS<CyclicReportOrder>() {
 
             @Override
             public CyclicReportOrder lambda() {
@@ -97,7 +94,7 @@ public class CyclicReportOrderDAO {
      * @param reports An array of cyclic reports to remove
      */
     public static void remove(final CyclicReportOrder... reports) {
-        new org.apertereports.dao.utils.WHS<Boolean>() {
+        new WHS<Boolean>() {
 
             @Override
             public Boolean lambda() {
@@ -119,7 +116,7 @@ public class CyclicReportOrderDAO {
      * @return id The cyclic report id
      */
     public static Long saveOrUpdate(final CyclicReportOrder cyclicReportOrder) {
-        return new org.apertereports.dao.utils.WHS<Long>() {
+        return new WHS<Long>() {
 
             @Override
             public Long lambda() {
@@ -137,38 +134,27 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the given id
      */
     public static CyclicReportOrder fetchById(final Long id) {
-        return new org.apertereports.dao.utils.WHS<CyclicReportOrder>() {
-
-            @Override
-            public CyclicReportOrder lambda() {
-                CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class).add(Restrictions.eq("id", id)).uniqueResult();
-                return cro;
-            }
-        }.p();
+        //todo user
+        User user = null;
+        Collection<CyclicReportOrder> c = fetch(user, null, "id = ?", null, id);
+        if (c.size() == 1) {
+            return c.iterator().next();
+        }
+        return null;
     }
 
     /**
      * Returns a list of cyclic report orders relevant to given ids.
      *
-     * @param ids An array of {@link org.apertereports.model.CyclicReportOrder}
+     * @param ids List of {@link org.apertereports.model.CyclicReportOrder}
      * primary key values.
-     * @return A list of cyclic report orders
+     * @return Cyclic report orders
      */
-    public static List<CyclicReportOrder> fetchByIds(final Long... ids) {
-        return new org.apertereports.dao.utils.WHS<List<CyclicReportOrder>>(false) {
-
-            @Override
-            public List<CyclicReportOrder> lambda() {
-                if (ids.length == 0) {
-                    return new ArrayList<CyclicReportOrder>();
-                }
-                List<CyclicReportOrder> list = sess.createCriteria(CyclicReportOrder.class).add(Restrictions.in("id", ids)).list();
-                if (list == null || list.size() == 0) {
-                    return new ArrayList<CyclicReportOrder>();
-                }
-                return list;
-            }
-        }.p();
+    public static Collection<CyclicReportOrder> fetchByIds(final Long... ids) {
+        if (ids.length == 0) {
+            return new LinkedList<CyclicReportOrder>();
+        }
+        return fetch(null, null, "id IN (?)", null, (Object[]) ids);
     }
 
     /**
@@ -179,7 +165,7 @@ public class CyclicReportOrderDAO {
      * @return A collection of deleted cyclic reports
      */
     public static Collection<CyclicReportOrder> trimAndUpdate(final Collection<CyclicReportOrder> reportOrders) {
-        return new org.apertereports.dao.utils.WHS<Collection<CyclicReportOrder>>(true) {
+        return new WHS<Collection<CyclicReportOrder>>(true) {
 
             @Override
             public Collection<CyclicReportOrder> lambda() {
@@ -208,13 +194,18 @@ public class CyclicReportOrderDAO {
      * @return Number of matching cyclic report orders
      */
     public static Integer countMatching(final String filter) {
-        return new WHS<Integer>() {
+        return new WHS<Long>() {
 
             @Override
-            public Integer lambda() {
-                return ((Long) createFilterCriteria(sess, filter).setProjection(Projections.rowCount()).uniqueResult()).intValue();
+            public Long lambda() {
+                //todo user
+                User user = null;
+                Query query = createQuery(SelectType.SELECT_COUNT_CRO, sess, user, filter, null, null, (Object[]) null);
+                Long count = (Long) query.uniqueResult();
+                logger.info("count: " + count);
+                return count;
             }
-        }.p();
+        }.p().intValue();
     }
 
     /**
@@ -231,21 +222,112 @@ public class CyclicReportOrderDAO {
 
             @Override
             public Collection<CyclicReportOrder> lambda() {
-                Criteria c = createFilterCriteria(sess, filter);
-                c.setFirstResult(firstResult);
-                c.setMaxResults(maxResults);
-                c.addOrder(Order.asc("id"));
-                return c.list();
+                //todo user
+                User user = null;
+                Query query = createQuery(SelectType.SELECT_CRO, sess, user, filter, null, null, (Object[]) null);
+                query.setFirstResult(firstResult);
+                query.setMaxResults(maxResults);
+                Collection c = query.list();
+                if (c == null) {
+                    c = new LinkedList();
+                }
+                logger.info("found: " + c.size());
+                return c;
             }
         }.p();
     }
 
-    private static Criteria createFilterCriteria(Session session, String filter) {
-        String extendedFilter = "%";
-        if (filter != null && !filter.isEmpty()) {
-            extendedFilter += filter + "%";
+    private static Collection<CyclicReportOrder> fetch(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
+        return new WHS<Collection<CyclicReportOrder>>() {
+
+            @Override
+            public Collection<CyclicReportOrder> lambda() {
+                Query query = createQuery(SelectType.SELECT_CRO, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
+                Collection c = query.list();
+                if (c == null) {
+                    c = new LinkedList();
+                }
+                logger.info("found: " + c.size());
+                return c;
+            }
+        }.p();
+    }
+
+    private static Query createQuery(SelectType type, Session session, User user, String nameFilter,
+            String hqlRestriction, String hqlOther, Object... parameters) {
+
+        if (nameFilter == null) {
+            nameFilter = "";
         }
-        return session.createCriteria(CyclicReportOrder.class).createAlias("report", "r").add(Restrictions.or(Restrictions.ilike("description", extendedFilter),
-                Restrictions.ilike("r.reportname", extendedFilter)));
+        nameFilter = nameFilter.trim();
+        LinkedList<String> where = new LinkedList<String>();
+        LinkedList params = new LinkedList();
+
+        String select = type == SelectType.SELECT_CRO ? "cro" : "count(cro)";
+
+        String queryS = "SELECT " + select + " FROM CyclicReportOrder cro";
+        if (!nameFilter.isEmpty()) {
+            where.add("cro.report.reportname LIKE ? ");
+            params.add('%' + nameFilter.toLowerCase() + '%');
+        }
+        if (hqlRestriction != null && !hqlRestriction.isEmpty()) {
+            where.add(hqlRestriction);
+        }
+        if (parameters != null) {
+            params.addAll(Arrays.asList(parameters));
+        }
+
+        //todots
+//        if (user == null) {
+//            //only when report has access for all users
+//            where.add("? IN elements(rt.rolesWithAccess)");
+//            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
+//        } else if (!user.isAdministrator()) {
+//            String part = "( ? IN elements(rt.rolesWithAccess)";
+//            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
+//            for (UserRole r : user.getRoles()) {
+//                part += " OR ? IN elements(rt.rolesWithAccess)";
+//                params.add(r.getId());
+//            }
+//            part += " )";
+//
+//            where.add(part);
+//        }   //when the user is administrator then all reports are available for him
+
+        if (!where.isEmpty()) {
+            Iterator it = where.iterator();
+            queryS += " WHERE " + it.next();
+            while (it.hasNext()) {
+                queryS += " AND " + it.next();
+            }
+        }
+
+        if (hqlOther != null && !hqlOther.isEmpty()) {
+            queryS += " " + hqlOther;
+        }
+
+        Query q = session.createQuery(queryS);
+        for (int i = 0; i < params.size(); i++) {
+            q.setParameter(i, params.get(i));
+        }
+
+        //todots
+//        logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
+        logger.info("query: " + queryS);
+        if (logger.isInfoEnabled() && !params.isEmpty()) {
+            String paramsS = "[";
+            if (!params.isEmpty()) {
+                Iterator it = params.iterator();
+                paramsS += it.next();
+                while (it.hasNext()) {
+                    paramsS += "," + it.next();
+                }
+            }
+            paramsS += "]";
+            logger.info("params: " + paramsS);
+        }
+        logger.info("params test: " + params);
+
+        return q;
     }
 }

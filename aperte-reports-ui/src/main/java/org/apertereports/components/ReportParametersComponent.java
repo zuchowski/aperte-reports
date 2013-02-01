@@ -64,6 +64,7 @@ import com.vaadin.ui.TextField;
 import java.util.Locale;
 import org.apertereports.common.users.User;
 import org.apertereports.common.utils.LocaleUtils;
+import org.apertereports.ui.UiFactoryExt;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -658,7 +659,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         if (includeLocale) {
-            localeComboBox = ComponentFactory.createLocaleCombo(getLocale(), UiIds.LABEL_LOCALE);
+            localeComboBox = UiFactoryExt.createLocaleCombo(UiIds.LABEL_LOCALE, getLocale());
             form.addField(JRParameter.REPORT_LOCALE, localeComboBox);
         } else {
             form.setDescription(readonly ? VaadinUtil.getValue("invoker.form.header.readonly") : VaadinUtil.getValue("invoker.form.header"));

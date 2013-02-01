@@ -53,6 +53,7 @@ public class CyclicReportOrderScheduler {
      * @throws SchedulerException on Quartz error
      */
     public static void rescheduleCyclicReportOrder(CyclicReportOrder order) throws SchedulerException {
+        logger.info("Rescheduling order: " + order.getId());
         unscheduleCyclicReportOrder(order);
         scheduleCyclicReportOrder(order);
     }
@@ -79,7 +80,7 @@ public class CyclicReportOrderScheduler {
                 CyclicReportOrderJob.class);
 
         sched.scheduleJob(jobDetail, trigger);
-        logger.info("New job, id: " + jobDetail.getName() + ", first fire at: " + trigger.computeFirstFireTime(new BaseCalendar()));
+        logger.info("New job, order id: " + order.getId() + ", first fire at: " + trigger.computeFirstFireTime(new BaseCalendar()));
     }
 
     /**
@@ -123,6 +124,7 @@ public class CyclicReportOrderScheduler {
                 sched.deleteJob(jobName, CyclicReportOrder.class.toString());
             }
             Collection<CyclicReportOrder> cROs = org.apertereports.dao.CyclicReportOrderDAO.fetchAll();
+            logger.info("orders no: " + cROs.size());
             for (CyclicReportOrder cRO : cROs) {
                 scheduleCyclicReportOrder(cRO);
             }

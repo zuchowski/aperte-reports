@@ -36,12 +36,13 @@ import com.vaadin.ui.Panel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collection;
-import java.util.logging.Level;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ReportConstants;
 import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.util.files.TmpDirMgr;
 import org.apertereports.util.files.Zipper;
 import org.slf4j.Logger;
@@ -221,7 +222,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
     public ReportTemplate provideReportTemplate(ReportConfig config) {
         if (!reportMap.containsKey(config.getReportId())) {
             try {
-                ReportTemplate report = org.apertereports.dao.ReportTemplateDAO.fetchById(application.getArUser(), config.getReportId());
+                ReportTemplate report = ReportTemplateDAO.fetchById(application.getArUser(), config.getReportId());
                 if (report != null) {
                     reportMap.put(config.getReportId(), report);
                 }
@@ -350,7 +351,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 }
             }
             return ReportMaster.exportReport(jasperPrint, format.name(), customParams,
-                    org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+                    ConfigurationCache.getConfiguration());
         } catch (AperteReportsException e) {
             throw new AperteReportsRuntimeException(e);
         }
@@ -377,7 +378,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     }
                 }
             }
-            List<CyclicReportOrder> cyclicReports = org.apertereports.dao.CyclicReportOrderDAO.fetchByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
+            Collection<CyclicReportOrder> cyclicReports = CyclicReportOrderDAO.fetchByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
             for (CyclicReportOrder rep : cyclicReports) {
                 ReportConfig rc = cyclicConfigMap.get(rep.getId());
                 rc.setReportId(rep.getReport().getId());
@@ -385,7 +386,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 cyclicReportMap.put(rep.getId(), rep);
             }
 
-            Collection<ReportTemplate> reports = org.apertereports.dao.ReportTemplateDAO.fetchByIds(reportIds.toArray(new Integer[configIds.size()]));
+            Collection<ReportTemplate> reports = ReportTemplateDAO.fetchByIds(reportIds.toArray(new Integer[configIds.size()]));
             for (ReportTemplate rep : reports) {
                 reportMap.put(rep.getId(), rep);
             }

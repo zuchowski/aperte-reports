@@ -110,11 +110,12 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countActiveMatching(user, filter);
+                return ReportTemplateDAO.countActive(user, filter);
             }
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
+                //todots why active and not all?
                 return ReportTemplateDAO.fetchActive(user, filter, firstResult, maxResults);
             }
         };

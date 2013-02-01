@@ -63,6 +63,10 @@ public abstract class UiFactory {
          */
         SET_FULL_WIDTH,
         /**
+         * Set the component invisible
+         */
+        SET_INVISIBLE,
+        /**
          * Set spacing action. Available only for {@link AbstractOrderedLayout}
          * components
          */
@@ -127,6 +131,7 @@ public abstract class UiFactory {
         if (parent != null) {
             parent.addComponent(label);
         }
+        label.setWidth(null);
         performActions(label, actions);
         return label;
     }
@@ -524,6 +529,8 @@ public abstract class UiFactory {
                 }
             } else if (action == FAction.SET_FULL_WIDTH) {
                 c.setWidth("100%");
+            } else if (action == FAction.SET_INVISIBLE) {
+                c.setVisible(false);
             } else if (action == FAction.SET_SPACING) {
                 if (!(c instanceof AbstractOrderedLayout)) {
                     throw new RuntimeException("component is not instance of AbstractOrderedLayout");

@@ -150,6 +150,9 @@ public class RolePermissionsPanel extends Panel {
             selected = ur.isAdministrator();
             checkBox = new CheckBox(ur.getName(), selected);
             checkBox.setImmediate(true);
+            if (ur.isAdministrator()) {
+                checkBox.setEnabled(false);
+            }
             this.checkBox.addListener(new Button.ClickListener() {
 
                 @Override

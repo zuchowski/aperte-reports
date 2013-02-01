@@ -1,14 +1,15 @@
 package org.apertereports.ui;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.PropertyFormatter;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Label;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.util.VaadinUtil;
 
@@ -58,7 +59,6 @@ public abstract class UiFactoryExt {
      * @param item Bound object
      * @param propertyId Property id
      * @param parent Parent container to which the label is added, can be null
-     * @param actions List of actions performed on created component
      * @return Label
      */
     public static Label createCalendarLabel(Item item, String propertyId, ComponentContainer parent) {
@@ -137,5 +137,32 @@ public abstract class UiFactoryExt {
             init();
             return dateFormat.parse(formattedValue);
         }
+    }
+
+    /**
+     * Creates combo box for locale selection
+     *
+     * @param captionId Id of the caption taken from the localized resources or
+     * caption
+     * @param locale Current locale
+     * @return Combo
+     */
+    public static ComboBox createLocaleCombo(String captionId, Locale locale) {
+        List<Locale> allLocales = Arrays.asList(Locale.getAvailableLocales());
+        Collections.sort(allLocales, new Comparator<Locale>() {
+
+            @Override
+            public int compare(Locale o1, Locale o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Container all = new BeanItemContainer<Locale>(Locale.class, allLocales);
+        ComboBox reportLocale = new ComboBox(VaadinUtil.getValue(captionId),
+                all);
+        reportLocale.setValue(locale);
+        reportLocale.setStyleName("small");
+        reportLocale.setNullSelectionAllowed(false);
+        reportLocale.setTextInputAllowed(true);
+        return reportLocale;
     }
 }

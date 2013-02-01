@@ -18,6 +18,22 @@ import org.slf4j.LoggerFactory;
  */
 public class ReportTemplateDAO {
 
+    //todots doc
+    private enum SelectType {
+
+        /**
+         * Select report
+         */
+        SELECT_RT,
+        /**
+         * Count reports
+         */
+        SELECT_COUNT_RT,
+        /**
+         * Select report ids
+         */
+        SELECT_RT_ID
+    }
     private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
     private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
@@ -73,7 +89,7 @@ public class ReportTemplateDAO {
             return c.iterator().next();
         }
         //check if exists...
-        Integer count = countMatching(ADMIN_USER, null, "active = true AND id = ?", null, id);
+        Integer count = count(ADMIN_USER, null, "active = true AND id = ?", null, id);
         if (count > 0) {
             throw new AperteReportsException(ErrorCodes.REPORT_ACCESS_DENIED);
         }
@@ -94,7 +110,7 @@ public class ReportTemplateDAO {
 
             @Override
             public Collection<ReportTemplate> lambda() {
-                Query query = createQuery(false, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
+                Query query = createQuery(SelectType.SELECT_RT, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
                 Collection c = query.list();
                 if (c == null) {
                     c = new LinkedList();
@@ -157,11 +173,11 @@ public class ReportTemplateDAO {
      * Counts report templates matching given filter for given user
      *
      * @param user User
-     * @param filter Filter
+     * @param nameFilter Name filter
      * @return Number of matching report templates
      */
-    public static Integer countActiveMatching(final User user, final String nameFilter) {
-        return countMatching(user, nameFilter, "active = true", null, (Object[]) null);
+    public static Integer countActive(final User user, final String nameFilter) {
+        return count(user, nameFilter, "active = true", null, (Object[]) null);
 
     }
 
@@ -169,15 +185,15 @@ public class ReportTemplateDAO {
      * Counts report templates matching given filter for given user
      *
      * @param user User
-     * @param filter Filter
+     * @param nameFilter Name filter
      * @return Number of matching report templates
      */
-    private static Integer countMatching(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
+    private static Integer count(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
         return new WHS<Long>() {
 
             @Override
             public Long lambda() {
-                Query query = createQuery(true, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
+                Query query = createQuery(SelectType.SELECT_COUNT_RT, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
                 Long count = (Long) query.uniqueResult();
                 logger.info("count: " + count);
                 return count;
@@ -201,7 +217,7 @@ public class ReportTemplateDAO {
 
             @Override
             public Collection<ReportTemplate> lambda() {
-                Query query = createQuery(false, sess, user, filter, "active = true", "order by id");
+                Query query = createQuery(SelectType.SELECT_RT, sess, user, filter, "active = true", "order by id");
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
                 Collection c = query.list();
@@ -214,7 +230,29 @@ public class ReportTemplateDAO {
         }.p();
     }
 
-    private static Query createQuery(boolean countOnly, Session session, User user, String nameFilter,
+    /**
+     * Returns collection of ids of all active report templates
+     *
+     * @param user User
+     * @return Collection of ids
+     */
+    public static Collection<Integer> fetchActiveIds(final User user) {
+        return new WHS<Collection<Integer>>() {
+
+            @Override
+            public Collection<Integer> lambda() {
+                Query query = createQuery(SelectType.SELECT_RT_ID, sess, user, null, "active = true", "order by id");
+                Collection c = query.list();
+                if (c == null) {
+                    c = new LinkedList();
+                }
+                logger.info("found: " + c.size());
+                return c;
+            }
+        }.p();
+    }
+
+    private static Query createQuery(SelectType type, Session session, User user, String nameFilter,
             String hqlRestriction, String hqlOther, Object... parameters) {
 
         if (nameFilter == null) {
@@ -224,7 +262,10 @@ public class ReportTemplateDAO {
         LinkedList<String> where = new LinkedList<String>();
         LinkedList params = new LinkedList();
 
-        String queryS = "SELECT " + (countOnly ? "count(rt)" : "rt") + " FROM ReportTemplate rt";
+        String select = type == SelectType.SELECT_RT ? "rt" : type == SelectType.SELECT_COUNT_RT
+                ? "count(rt)" : "rt.id";
+
+        String queryS = "SELECT " + select + " FROM ReportTemplate rt";
         if (!nameFilter.isEmpty()) {
             where.add("rt.reportname LIKE ? ");
             params.add('%' + nameFilter.toLowerCase() + '%');
