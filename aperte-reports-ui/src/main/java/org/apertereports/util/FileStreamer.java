@@ -5,8 +5,7 @@ import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.StreamResource;
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.common.utils.ExceptionUtils;
-import org.apertereports.common.ReportConstants.ReportMimeType;
+import org.apertereports.common.ARConstants.ReportMimeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -79,7 +78,7 @@ public class FileStreamer {
             String fileName = reportName + "." + StringUtils.lowerCase(format);
             openFileInNewWindow(app, fileName, report, ReportMimeType.valueOf(format).mimeType());
         } catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error(e.getMessage(), e);
             NotificationUtil.showExceptionNotification(app.getMainWindow(), "exception.conversion", e);
             throw new RuntimeException(e);
         }

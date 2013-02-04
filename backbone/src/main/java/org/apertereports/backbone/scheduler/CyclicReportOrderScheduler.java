@@ -2,9 +2,7 @@ package org.apertereports.backbone.scheduler;
 
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.logging.Logger;
 
-import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.model.CyclicReportOrder;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
@@ -13,6 +11,8 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.BaseCalendar;
 import org.quartz.impl.calendar.HolidayCalendar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class that can schedule cyclic report generation with a configured {@link org.quartz.CronExpression}.
@@ -29,7 +29,7 @@ import org.quartz.impl.calendar.HolidayCalendar;
  */
 public class CyclicReportOrderScheduler {
 
-    private static final Logger logger = Logger.getLogger(CyclicReportOrderScheduler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderScheduler.class);
     /**
      * A default calendar name.
      */
@@ -129,7 +129,7 @@ public class CyclicReportOrderScheduler {
                 scheduleCyclicReportOrder(cRO);
             }
         } catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error(e.getMessage(), e);
         }
     }
 }

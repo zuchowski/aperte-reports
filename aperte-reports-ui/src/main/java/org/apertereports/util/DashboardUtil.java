@@ -21,8 +21,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.wrappers.Pair;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
@@ -234,13 +234,13 @@ public final class DashboardUtil {
      * @throws net.sf.jasperreports.engine.JRException
      *          On JasperPrint load error
      */
-    public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws AperteReportsException {
+    public static byte[] exportReportOrderData(ReportOrder reportOrder, ReportType format) throws ARException {
         JasperPrint jasperPrint;
 		try {
 			jasperPrint = (JasperPrint) JRLoader.loadObject(
 			        new ByteArrayInputStream(Base64.decodeBase64(reportOrder.getReportResult())));
 		} catch (JRException e) {
-			throw new AperteReportsException(e);
+			throw new ARException(e);
 		}
         return ReportMaster.exportReport(jasperPrint, format.toString(), org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
     }

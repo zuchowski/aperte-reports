@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 /**
  * Contains constant fields used in the report generation process.
  */
-public interface ReportConstants {
+public interface ARConstants {
 
     /**
      * Web service namespace.
@@ -76,14 +76,41 @@ public interface ReportConstants {
     /**
      * Report generation error codes.
      */
-    public static enum ErrorCodes {
+    public static enum ErrorCode {
 
-        INVALID_REPORT_TYPE, JASPER_REPORTS_EXCEPTION, INVALID_EXPORTER_PARAMETER, REPORT_SOURCE_EXCEPTION, SERIALIZATION_EXCEPTION, TECHNICAL_ERROR, INVALID_DATASOURCE_TYPE, UNKNOWN_PROPERTY_NAME, UNSUPPORTED_ENCODING, SUBREPORT_NOT_FOUND, EMPTY_REPORT_SOURCE, DUPLICATE_REPORT_NAME, EMAIL_SESSION_NOT_FOUND, DRILLDOWN_NOT_FOUND, DRILLDOWN_REPORT_NOT_FOUND, JMS_UNAVAILABLE, FONT_NOT_FOUND,
-        REPORT_TEMPLATE_NOT_FOUND,
+        DRILLDOWN_NOT_FOUND,
+        DRILLDOWN_REPORT_NOT_FOUND,
+        EMAIL_SESSION_NOT_FOUND,
+        EMPTY_REPORT_SOURCE,
+        /**
+         * Font not found
+         */
+        FONT_NOT_FOUND,
+        INVALID_DATASOURCE_TYPE,
+        INVALID_EXPORTER_PARAMETER,
+        /**
+         * Invalid report type
+         */
+        INVALID_REPORT_TYPE,
+        JASPER_REPORTS_EXCEPTION,
+        JMS_UNAVAILABLE,
         /**
          * Access denied to the report
          */
-        REPORT_ACCESS_DENIED
+        REPORT_ACCESS_DENIED,
+        REPORT_SOURCE_EXCEPTION,
+        /**
+         * Report template not found
+         */
+        REPORT_TEMPLATE_NOT_FOUND,
+        SERIALIZATION_EXCEPTION,
+        SUBREPORT_NOT_FOUND,
+        /**
+         * Unknown error
+         */
+        UNKNOWN,
+        UNSUPPORTED_ENCODING,
+        UNKNOWN_PROPERTY_NAME
     }
 
     /**

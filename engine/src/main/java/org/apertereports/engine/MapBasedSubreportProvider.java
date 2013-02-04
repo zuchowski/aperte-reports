@@ -3,8 +3,8 @@ package org.apertereports.engine;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.exception.ARException;
 
 public class MapBasedSubreportProvider implements SubreportProvider {
 
@@ -16,14 +16,14 @@ public class MapBasedSubreportProvider implements SubreportProvider {
 	}
 
 	@Override
-	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
+	public Map<String, Subreport> getSubreports(String... reportNames) throws ARException {
 		Map<String, Subreport> newMap = new HashMap<String, Subreport>();
 		if (reportNames != null) {
 			for (String reportName : reportNames) {
 				if (map.containsKey(reportName)) {
 					newMap.put(reportName, map.get(reportName));
 				} else {
-					throw new AperteReportsException(ErrorCodes.SUBREPORT_NOT_FOUND, reportName);
+					throw new ARException(ErrorCode.SUBREPORT_NOT_FOUND, reportName);
 				}
 			}
 		}

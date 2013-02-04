@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.dao.ReportOrderDAO;
@@ -162,7 +162,7 @@ public class ReportOrderBrowserComponent extends Panel {
             try {
                 reportData = ReportGeneratorUtils.decodeContent(this.order.getReportResult());
             } catch (UnsupportedEncodingException e) {
-                throw new AperteReportsRuntimeException(e);
+                throw new ARRuntimeException(e);
             }
             FileStreamer.showFile(getApplication(), this.order.getReport().getReportname(), reportData,
                     this.order.getOutputFormat());

@@ -8,12 +8,12 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
 
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 /**
  * Utility methods for converting Vaadin value to a simple string.
  */
-public class TextUtils implements ReportConstants {
+public class TextUtils implements ARConstants {
 
     /**
      * Encodes a value to a string so that an SQL query can use it. Converts

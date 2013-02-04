@@ -9,10 +9,10 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.ReportConstants.Parameter;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.ARConstants.Parameter;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.ws.ReportData;
 import org.apertereports.common.xml.ws.ReportExporterParameter;
@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 public class ReportWebServiceHelper {
 	private static final Logger logger = Logger.getLogger(ReportWebServiceHelper.class.getName());
 
-	public byte[] generateAndExportReport(ReportData reportData) throws AperteReportsException {
+	public byte[] generateAndExportReport(ReportData reportData) throws ARException {
 		Map<JRExporterParameter, Object> exporterParameters = getExporterParameters(reportData);
 		Map<String, String> configuration = getJasperConfiguration(reportData);
 		Map<String, Object> reportParameters = getReportParameters(reportData);
@@ -33,14 +33,14 @@ public class ReportWebServiceHelper {
 			content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider())
 					.generateAndExportReport(reportData.getFormat(), reportParameters, exporterParameters,
 							configuration);
-		} catch (AperteReportsException e) {
+		} catch (ARException e) {
 			throw e;
 		} 
 
 		return content;
 	}
 
-	private Map<String, Object> getReportParameters(ReportData reportData) throws AperteReportsException {
+	private Map<String, Object> getReportParameters(ReportData reportData) throws ARException {
 		Map<String, Object> reportParameters = new HashMap<String, Object>();
 		try {
 			for (org.apertereports.common.xml.ws.ReportParameter param : reportData.getReportParameters()) {
@@ -51,10 +51,10 @@ public class ReportWebServiceHelper {
 				reportParameters.put(param.getName(), object);
 			}
 		} catch (Exception e) {
-			throw new AperteReportsException(ErrorCodes.SERIALIZATION_EXCEPTION,  e);
+			throw new ARException(ErrorCode.SERIALIZATION_EXCEPTION,  e);
 		}
 		if (!reportParameters.containsKey(JRXPathQueryExecuterFactory.XML_DATE_PATTERN)) {
-			reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, ReportConstants.DATETIME_PATTERN);
+			reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, ARConstants.DATETIME_PATTERN);
 		}
 		if (StringUtils.hasText(reportData.getLocale())) {
 			reportParameters.put(JRParameter.REPORT_LOCALE, reportData.getLocale());
@@ -74,7 +74,7 @@ public class ReportWebServiceHelper {
 		return configuration;
 	}
 
-	private Map<JRExporterParameter, Object> getExporterParameters(ReportData reportData) throws AperteReportsException {
+	private Map<JRExporterParameter, Object> getExporterParameters(ReportData reportData) throws ARException {
 		Map<JRExporterParameter, Object> exporterParameters = new HashMap<JRExporterParameter, Object>();
 		for (ReportExporterParameter param : reportData.getExporterParameters()) {
 			try {
@@ -82,7 +82,7 @@ public class ReportWebServiceHelper {
 						param.getFieldName());
 				exporterParameters.put((JRExporterParameter) obj, param.getValue());
 			} catch (Exception e) {
-				throw new AperteReportsException(e);
+				throw new ARException(e);
 			}
 		}
 		return exporterParameters;

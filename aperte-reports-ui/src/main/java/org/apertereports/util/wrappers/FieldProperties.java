@@ -1,6 +1,6 @@
 package org.apertereports.util.wrappers;
 
-import org.apertereports.common.ReportConstants.InputTypes;
+import org.apertereports.common.ARConstants.InputTypes;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;

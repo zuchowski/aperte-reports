@@ -5,8 +5,8 @@ import com.vaadin.ui.Window.Notification;
 import java.util.Map;
 
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportTemplate;
 
@@ -33,8 +33,8 @@ public class ReportParamPanel extends Panel {
             VerticalLayout vl = UiFactory.createVLayout(this);
             vl.addComponent(reportParametersComponent);
             buttons = UiFactory.createHLayout(vl);
-        } catch (AperteReportsException e) {
-            throw new AperteReportsRuntimeException(e);
+        } catch (ARException e) {
+            throw new ARRuntimeException(e);
         }
     }
 

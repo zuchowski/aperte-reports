@@ -20,9 +20,9 @@ import junit.framework.Assert;
 import net.sf.jasperreports.engine.JRException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.engine.AperteReport;
 import org.apertereports.engine.EmptySubreportProvider;
@@ -82,7 +82,7 @@ public class ReportMasterTester {
 			ds = toBase64(ds);
 			AperteReport report = ReportMaster.compileReport(ds, null, new EmptySubreportProvider());
 			fail("Should throw exception during compilation");
-		} catch (AperteReportsException e) {
+		} catch (ARException e) {
 			e.printStackTrace();
 			// fine - should throw this exception
 		}
@@ -159,13 +159,13 @@ public class ReportMasterTester {
 			String ds = toBase64(readTestFileToString(reportWithSubreport));
 			ReportMaster.compileReport(ds, null, new MapBasedSubreportProvider(map));
 			fail("Should have failed");
-		} catch (AperteReportsException e) {
-			Assert.assertEquals(ErrorCodes.SUBREPORT_NOT_FOUND, e.getErrorCode());
+		} catch (ARException e) {
+			Assert.assertEquals(ErrorCode.SUBREPORT_NOT_FOUND, e.getErrorCode());
 			// Great - subreport not found
 		}
 	}
 
-	private ReportMaster createReportMaster(String path) throws AperteReportsException, IOException {
+	private ReportMaster createReportMaster(String path) throws ARException, IOException {
 		String ds = readTestFileToString(path);
 		ds = toBase64(ds);
 		return new ReportMaster(ds, new EmptySubreportProvider());

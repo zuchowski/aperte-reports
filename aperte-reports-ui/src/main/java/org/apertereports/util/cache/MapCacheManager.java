@@ -2,8 +2,7 @@ package org.apertereports.util.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
 
 import java.util.*;
 
@@ -25,10 +24,10 @@ public final class MapCacheManager {
             while (true) {
                 checkCaches(System.currentTimeMillis());
                 try {
-                    sleep(ReportConstants.CACHE_MANAGER_CHECK_INTERVAL);
+                    sleep(ARConstants.CACHE_MANAGER_CHECK_INTERVAL);
                 }
                 catch (InterruptedException e) {
-                    ExceptionUtils.logSevereException(e);
+                    logger.error(e.getMessage(), e);
                     invalidatingThread = null;
                 }
             }

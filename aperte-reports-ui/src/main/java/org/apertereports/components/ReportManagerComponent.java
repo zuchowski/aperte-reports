@@ -13,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.ReportMaster;
 import org.apertereports.model.ReportOrder;
@@ -394,8 +394,8 @@ public class ReportManagerComponent extends Panel {
                                 org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), reportTemplate.getReportname(), reportData,
                                 panel.getOuptutFormat());
-                    } catch (AperteReportsException e) {
-                        throw new AperteReportsRuntimeException(e);
+                    } catch (ARException e) {
+                        throw new ARRuntimeException(e);
                     }
 
                 }
@@ -512,7 +512,7 @@ public class ReportManagerComponent extends Panel {
         @Override
         public void uploadFailed(FailedEvent event) {
             NotificationUtil.showExceptionNotification(getWindow(),
-                    new AperteReportsRuntimeException(event.getReason()));
+                    new ARRuntimeException(event.getReason()));
         }
 
         @Override
@@ -521,8 +521,8 @@ public class ReportManagerComponent extends Panel {
             try {
                 ReportMaster rm = new ReportMaster(content, new ReportTemplateProvider());
                 reportTemplate.setReportname(rm.getReportName());
-            } catch (AperteReportsException e) {
-                NotificationUtil.showExceptionNotification(getWindow(), new AperteReportsRuntimeException(e));
+            } catch (ARException e) {
+                NotificationUtil.showExceptionNotification(getWindow(), new ARRuntimeException(e));
                 return;
             }
 

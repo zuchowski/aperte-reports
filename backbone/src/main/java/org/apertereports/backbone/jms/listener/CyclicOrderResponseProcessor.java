@@ -4,12 +4,13 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.CyclicReportOrder;
 import org.apertereports.model.ReportOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Singleton {@link MessageListener} implementation that asynchronously handles the
@@ -22,6 +23,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	 * Singleton
 	 */
 	private static CyclicOrderResponseProcessor instance;
+        private static Logger logger = LoggerFactory.getLogger(CyclicOrderResponseProcessor.class);
 	
 	public static synchronized CyclicOrderResponseProcessor getInstance() {
 		if(instance == null)
@@ -45,11 +47,11 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	@Override
 	public void onMessage(Message message) {
 		try {
-			Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
+			Long id = message.getLongProperty(ARConstants.REPORT_ORDER_ID);
 			ReportOrder reportOrder = ReportOrderDAO.fetchById(id);
 			processReport(reportOrder);
 		} catch (JMSException e) {
-			ExceptionUtils.logSevereException(e);
+			logger.error(e.getMessage(), e);
 //			throw new AperteReportsRuntimeException(e);
 		}
 	}

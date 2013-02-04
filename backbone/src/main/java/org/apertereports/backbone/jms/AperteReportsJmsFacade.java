@@ -11,11 +11,12 @@ import javax.jms.Session;
 import javax.naming.InitialContext;
 
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.dao.utils.ConfigurationCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Facade for JMS used in Aperte Reports. Handles message listeners
@@ -26,6 +27,8 @@ import org.apertereports.dao.utils.ConfigurationCache;
  * 
  */
 public class AperteReportsJmsFacade {
+    
+        private final static Logger logger = LoggerFactory.getLogger(AperteReportsJmsFacade.class);
 
 	/**
 	 * If JMS is initialized.
@@ -57,7 +60,7 @@ public class AperteReportsJmsFacade {
 					MessageConsumer consumer = session.createConsumer((Destination) initCtx.lookup(queueJndiName));
 					consumer.setMessageListener(listener);
 				} catch (Exception e) {
-					ExceptionUtils.logSevereException("Cannot find queue in JNDI: " + configurationKey, e);
+					logger.error("Cannot find queue in JNDI: " + configurationKey, e);
 				}
 			}
 
@@ -65,7 +68,7 @@ public class AperteReportsJmsFacade {
 			initialized = true;
 
 		} catch (Exception e) {
-			ExceptionUtils.logWarningException("Cannot initialize JMS context", e);
+			logger.warn("Cannot initialize JMS context", e);
 			try {
 				if (connection != null) {
 					connection.close();
@@ -74,7 +77,7 @@ public class AperteReportsJmsFacade {
 					session.close();
 				}
 			} catch (Exception ex) {
-				ExceptionUtils.logWarningException("Cannot close JMS connection after error", ex);
+				logger.warn("Cannot close JMS connection after error", ex);
 			}
 			throw e;
 		}
@@ -87,7 +90,7 @@ public class AperteReportsJmsFacade {
 		String jndiName = ConfigurationCache.getValue(configurationKey);
 		if (jndiName == null){
 			String defaultJndiName = JmsSubscribersConfig.getDefaultJndiName(configurationKey);
-			ExceptionUtils.logDebugMessage("JNDI name not found for key: " + configurationKey + " using default:" + defaultJndiName);
+			logger.debug("JNDI name not found for key: " + configurationKey + " using default:" + defaultJndiName);
 			return defaultJndiName;
 		}
 		return jndiName;
@@ -119,11 +122,11 @@ public class AperteReportsJmsFacade {
 					.lookup(getJndiNameFromConfiguration(queueName)));
 
 			Message reportOrderMessage = session.createMessage();
-			reportOrderMessage.setIntProperty(ReportConstants.REPORT_ORDER_ID, orderId.intValue());
+			reportOrderMessage.setIntProperty(ARConstants.REPORT_ORDER_ID, orderId.intValue());
 			producer.send(reportOrderMessage);
-			ExceptionUtils.logDebugMessage(ReportConstants.REPORT_ORDER_ID + ": " + orderId);
+			logger.debug(ARConstants.REPORT_ORDER_ID + ": " + orderId);
 		} catch (Exception e) {
-			throw new AperteReportsRuntimeException(ErrorCodes.JMS_UNAVAILABLE, e);
+			throw new ARRuntimeException(ErrorCode.JMS_UNAVAILABLE, e);
 		} finally {
 			try {
 				if (connection != null) {
@@ -133,7 +136,7 @@ public class AperteReportsJmsFacade {
 					session.close();
 				}
 			} catch (Exception e) {
-				throw new AperteReportsRuntimeException(e);
+				throw new ARRuntimeException(e);
 			}
 		}
 	}
@@ -165,7 +168,7 @@ public class AperteReportsJmsFacade {
 					session.close();
 				}
 			} catch (Exception e) {
-				ExceptionUtils.logWarningException("Cannot close JMS connection after availability test", e);
+				logger.warn("Cannot close JMS connection after availability test", e);
 			}
 		}
 		return true;

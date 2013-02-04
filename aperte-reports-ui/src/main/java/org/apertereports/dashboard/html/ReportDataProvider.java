@@ -2,7 +2,7 @@ package org.apertereports.dashboard.html;
 
 import java.io.File;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 import org.apertereports.common.wrappers.Pair;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.model.ReportTemplate;
@@ -24,7 +24,7 @@ public interface ReportDataProvider {
      * @param cached Should the data be taken from a cache or generated directly
      * @return A pair of {@link JasperPrint} and bytes of report data
      */
-    Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, ReportConstants.ReportType format, boolean cached);
+    Pair<JasperPrint, byte[]> provideReportData(ReportConfig config, ARConstants.ReportType format, boolean cached);
 
     /**
      * Provides a generated report out of a {@link ReportConfig}. The data is

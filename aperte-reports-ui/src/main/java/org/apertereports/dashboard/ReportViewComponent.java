@@ -13,10 +13,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
 import org.apertereports.common.wrappers.Pair;
@@ -38,8 +37,8 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import org.apertereports.AbstractReportingApplication;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.dao.utils.ConfigurationCache;
@@ -137,7 +136,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             try {
                 reportPanel.addComponent(builder.createLayout());
             } catch (IOException e) {
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"));
                 throw new RuntimeException(e);
 
@@ -158,7 +157,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
 
         List<String> reportNames = params.get("reportName");
         if (reportNames == null || reportNames.isEmpty()) {
-            throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_NOT_FOUND);
+            throw new ARRuntimeException(ErrorCode.DRILLDOWN_NOT_FOUND);
         }
         String reportName = reportNames.get(0); // bierzemy pierwszy z brzegu
         for (ReportTemplate template : reportMap.values()) {
@@ -170,7 +169,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         if (drillConfig.getReportId() == null) {
             Collection<ReportTemplate> reportTemplates = ReportTemplateDAO.fetchByName(application.getArUser(), reportName);
             if (reportTemplates.isEmpty()) {
-                throw new AperteReportsRuntimeException(ErrorCodes.DRILLDOWN_REPORT_NOT_FOUND);
+                throw new ARRuntimeException(ErrorCode.DRILLDOWN_REPORT_NOT_FOUND);
             }
             ReportTemplate template = reportTemplates.iterator().next(); // bierzemy pierwszy z brzegu
             drillConfig.setReportId(template.getId());
@@ -226,8 +225,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                 if (report != null) {
                     reportMap.put(config.getReportId(), report);
                 }
-            } catch (AperteReportsException ex) {
-                throw new AperteReportsRuntimeException(ex);
+            } catch (ARException ex) {
+                throw new ARRuntimeException(ex);
             }
         }
         return reportMap.get(config.getReportId());
@@ -243,7 +242,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         File tmpDir = tmp.createNewTmpDir(REPORT_DIR);
         String reportDirPath = tmpDir.getAbsolutePath() + File.separator + REPORT_DIR;
 
-        byte[] data = getReportData(jp, ReportConstants.ReportType.HTML, reportDirPath);
+        byte[] data = getReportData(jp, ARConstants.ReportType.HTML, reportDirPath);
         File f = new File(reportDirPath + File.separator + REPORT_HTML_FILE);
         try {
             FileOutputStream fos = new FileOutputStream(f);
@@ -251,7 +250,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             fos.flush();
             fos.close();
         } catch (Exception e) {
-            throw new AperteReportsRuntimeException(e);
+            throw new ARRuntimeException(e);
         }
 
         File imagesDir = new File(reportDirPath + File.separator + IMAGES_DIR);
@@ -264,7 +263,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             Zipper.zip(reportDirPath, zipF.getAbsolutePath());
             return zipF;
         } catch (Exception ex) {
-            throw new AperteReportsRuntimeException(ex);
+            throw new ARRuntimeException(ex);
         }
     }
 
@@ -305,7 +304,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
 
             ReportTemplate report = provideReportTemplate(config);
             if (report == null) {
-                throw new AperteReportsException(ErrorCodes.REPORT_TEMPLATE_NOT_FOUND);
+                throw new ARException(ErrorCode.REPORT_TEMPLATE_NOT_FOUND);
             }
             ReportMaster reportMaster = new ReportMaster(report.getContent(), report.getId().toString(),
                     new ReportTemplateProvider());
@@ -321,8 +320,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             JasperPrint jp = reportMaster.generateReport(parameters);
             cache.cacheData(config.getId().toString(), TimeUtils.secondsToMilliseconds(config.getCacheTimeout()), jp);
             return jp;
-        } catch (AperteReportsException e) {
-            throw new AperteReportsRuntimeException(e);
+        } catch (ARException e) {
+            throw new ARRuntimeException(e);
         }
     }
 
@@ -352,8 +351,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             }
             return ReportMaster.exportReport(jasperPrint, format.name(), customParams,
                     ConfigurationCache.getConfiguration());
-        } catch (AperteReportsException e) {
-            throw new AperteReportsRuntimeException(e);
+        } catch (ARException e) {
+            throw new ARRuntimeException(e);
         }
     }
 

@@ -1,10 +1,10 @@
 package org.apertereports.components;
 
-import static org.apertereports.common.ReportConstants.InputTypes.CHECKBOXES;
-import static org.apertereports.common.ReportConstants.InputTypes.DATE;
-import static org.apertereports.common.ReportConstants.InputTypes.FILTER;
-import static org.apertereports.common.ReportConstants.InputTypes.FILTERED_SELECT;
-import static org.apertereports.common.ReportConstants.InputTypes.MULTISELECT;
+import static org.apertereports.common.ARConstants.InputTypes.CHECKBOXES;
+import static org.apertereports.common.ARConstants.InputTypes.DATE;
+import static org.apertereports.common.ARConstants.InputTypes.FILTER;
+import static org.apertereports.common.ARConstants.InputTypes.FILTERED_SELECT;
+import static org.apertereports.common.ARConstants.InputTypes.MULTISELECT;
 
 import java.text.ParseException;
 import java.util.Collection;
@@ -27,10 +27,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
 import org.apertereports.common.wrappers.DictionaryItem;
@@ -66,6 +65,8 @@ import org.apertereports.common.users.User;
 import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.ui.UiFactoryExt;
 import org.apertereports.ui.UiIds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Displays report parameters taken from JRXML parameters section as Vaadin
@@ -86,8 +87,9 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     private boolean includeLocale = true;
     private boolean viewInitialized = false;
     private final List<ReportConfigParameter> params;
+    private static Logger logger = LoggerFactory.getLogger(ReportParametersComponent.class);
 
-    public ReportParametersComponent(ReportMaster rm, boolean showFormat, List<ReportConfigParameter> params) throws AperteReportsException {
+    public ReportParametersComponent(ReportMaster rm, boolean showFormat, List<ReportConfigParameter> params) throws ARException {
         this.reportMaster = rm;
         this.includeReportFormat = showFormat;
         if (params == null) {
@@ -177,6 +179,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      *
      * @return A user login
      */
+    //todo user
     private String getLogin() {
         String login = "";
         try {
@@ -186,7 +189,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             }
             login = user.getLogin();
         } catch (Exception e) {
-            ExceptionUtils.logWarningException(VaadinUtil.getValue("liferay.get.login.exception"), e);
+            logger.warn(VaadinUtil.getValue("liferay.get.login.exception"), e);
             throw new RuntimeException(e);
         }
         if (login.contains("@")) {
@@ -231,7 +234,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         } catch (Validator.InvalidValueException e) {
             result = false;
         } catch (Buffered.SourceException e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error(e.getMessage(), e);
             result = false;
         }
         return result;
@@ -276,8 +279,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             }
 
             // obsluga kontrolek multi-level select: filter i filtered_select
-            if (fieldProperties.getInputType() == ReportConstants.InputTypes.FILTERED_SELECT
-                    || fieldProperties.getInputType() == ReportConstants.InputTypes.FILTER) {
+            if (fieldProperties.getInputType() == ARConstants.InputTypes.FILTERED_SELECT
+                    || fieldProperties.getInputType() == ARConstants.InputTypes.FILTER) {
                 FilterContainer filterContainer = getFilterContainer(fieldProperties.getFilterGroup());
                 filterContainer.addFilter((Select) field, fieldProperties.getLevel(), items);
                 container.setFieldComponent(filterContainer);
@@ -334,7 +337,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             try {
                 ((TextField) field).setMaxLength(Integer.valueOf(fieldProperties.getMaxchars()));
             } catch (NumberFormatException e) {
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -356,12 +359,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             } catch (ScriptException e) {
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_validation_code.script_exception", e);
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 throw new BuildingFailedException();
             } catch (NoSuchMethodException e) {
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_validation_code.no_such_method_exception", e);
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 throw new BuildingFailedException();
             }
         }
@@ -422,7 +425,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                     throw new BuildingFailedException();
                 }
 
-                select.setMultiSelect(fieldProperties.getInputType() == ReportConstants.InputTypes.MULTISELECT);
+                select.setMultiSelect(fieldProperties.getInputType() == ARConstants.InputTypes.MULTISELECT);
                 select.setFilteringMode(AbstractSelect.Filtering.FILTERINGMODE_CONTAINS);
                 field = select;
                 break;
@@ -462,12 +465,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                     } catch (ScriptException e) {
                         NotificationUtil.showExceptionNotification(getWindow(),
                                 "invoker.form.special_control_code.script_exception", e);
-                        ExceptionUtils.logSevereException(e);
+                        logger.error(e.getMessage(), e);
                         throw new BuildingFailedException();
                     } catch (NoSuchMethodException e) {
                         NotificationUtil.showExceptionNotification(getWindow(),
                                 "invoker.form.special_control_code.no_such_method_exception", e);
-                        ExceptionUtils.logSevereException(e);
+                        logger.error(e.getMessage(), e);
                         throw new BuildingFailedException();
                     }
                 }
@@ -502,12 +505,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 fieldProperties.getSei().invokeFunction("specialQuery", itemsWrapper, fieldProperties.getDictQuery());
                 items = itemsWrapper.getItems();
             } catch (ScriptException e) {
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_data_query_code.script_exception", e);
                 throw new BuildingFailedException();
             } catch (NoSuchMethodException e) {
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_data_query_code.no_such_method_exception", e);
                 throw new BuildingFailedException();
@@ -542,7 +545,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * @param defaultValue Default value
      * @return Parameter value
      */
-    private String getValueFromMap(Map<ReportConstants.Keys, ReportProperty> props, ReportConstants.Keys key, Enum<?>[] inputTypes,
+    private String getValueFromMap(Map<ARConstants.Keys, ReportProperty> props, ARConstants.Keys key, Enum<?>[] inputTypes,
             String defaultValue) {
         if (props.containsKey(key)) {
             String value = props.get(key).getValue();
@@ -600,7 +603,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         Object v = TextUtils.encodeSQLToObject(fieldType, param.getValue());
                         field.setValue(v);
                     } catch (ParseException e) {
-                        ExceptionUtils.logSevereException(e);
+                        logger.error(e.getMessage(), e);
                         NotificationUtil.showExceptionNotification(getWindow(), VaadinUtil.getValue("exception.gui.error"), e);
                         throw new RuntimeException(e);
                     }
@@ -623,7 +626,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         List<ReportParameter> parameters = reportMaster.getParameters();
         for (ReportParameter param : parameters) {
-            Map<ReportConstants.Keys, ReportProperty> props = param.getProperties();
+            Map<ARConstants.Keys, ReportProperty> props = param.getProperties();
             if (props == null || props.isEmpty()) {
                 continue;
             }
@@ -679,43 +682,43 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      * @param props Parameter properties
      * @return Filled field properties
      */
-    private FieldProperties parseFieldProperties(ReportParameter param, Map<ReportConstants.Keys, ReportProperty> props) {
+    private FieldProperties parseFieldProperties(ReportParameter param, Map<ARConstants.Keys, ReportProperty> props) {
         FieldProperties fieldProperties = new FieldProperties();
 
         // INPUT_TYPE
-        String inputTypeString = getValueFromMap(props, ReportConstants.Keys.INPUT_TYPE, ReportConstants.InputTypes.values(),
-                ReportConstants.InputTypes.CHECKBOX.name());
-        fieldProperties.setInputType(ReportConstants.InputTypes.valueOf(StringUtils.upperCase(inputTypeString)));
+        String inputTypeString = getValueFromMap(props, ARConstants.Keys.INPUT_TYPE, ARConstants.InputTypes.values(),
+                ARConstants.InputTypes.CHECKBOX.name());
+        fieldProperties.setInputType(ARConstants.InputTypes.valueOf(StringUtils.upperCase(inputTypeString)));
         // WIDTH
-        fieldProperties.setWidth(getValueFromMap(props, ReportConstants.Keys.WIDTH, null, ""));
+        fieldProperties.setWidth(getValueFromMap(props, ARConstants.Keys.WIDTH, null, ""));
 
         // CAPTION
-        String caption = getValueFromMap(props, ReportConstants.Keys.LABEL, null, param.getName());
+        String caption = getValueFromMap(props, ARConstants.Keys.LABEL, null, param.getName());
         fieldProperties.setCaption(StringUtils.capitaliseAllWords(StringUtils.lowerCase(caption)));
 
         // ORDER
-        String orderString = getValueFromMap(props, ReportConstants.Keys.ORDER, null, "1000");
+        String orderString = getValueFromMap(props, ARConstants.Keys.ORDER, null, "1000");
         try {
             fieldProperties.setOrder(Integer.valueOf(orderString));
         } catch (NumberFormatException e) {
             fieldProperties.setOrder(1000);
         }
         // REQUIRED
-        String requiredString = getValueFromMap(props, ReportConstants.Keys.REQUIRED, ReportConstants.BooleanValues.values(),
+        String requiredString = getValueFromMap(props, ARConstants.Keys.REQUIRED, ARConstants.BooleanValues.values(),
                 "false");
         fieldProperties.setRequired(Boolean.valueOf(requiredString));
-        fieldProperties.setRequiredError(getValueFromMap(props, ReportConstants.Keys.REQUIRED_ERROR, null,
+        fieldProperties.setRequiredError(getValueFromMap(props, ARConstants.Keys.REQUIRED_ERROR, null,
                 "form.errors.required"));
 
         // REGEXP
-        fieldProperties.setRegexp(getValueFromMap(props, ReportConstants.Keys.REGEXP, null, ""));
-        fieldProperties.setRegexpError(getValueFromMap(props, ReportConstants.Keys.REGEXP_ERROR, null, "form.errors.regexp"));
+        fieldProperties.setRegexp(getValueFromMap(props, ARConstants.Keys.REGEXP, null, ""));
+        fieldProperties.setRegexpError(getValueFromMap(props, ARConstants.Keys.REGEXP_ERROR, null, "form.errors.regexp"));
 
         // MAXCHARS
-        fieldProperties.setMaxchars(getValueFromMap(props, ReportConstants.Keys.MAXCHARS, null, ""));
+        fieldProperties.setMaxchars(getValueFromMap(props, ARConstants.Keys.MAXCHARS, null, ""));
 
         // LEVEL
-        String levelString = getValueFromMap(props, ReportConstants.Keys.LEVEL, null, "1");
+        String levelString = getValueFromMap(props, ARConstants.Keys.LEVEL, null, "1");
         try {
             fieldProperties.setLevel(Integer.valueOf(levelString));
         } catch (NumberFormatException e) {
@@ -723,16 +726,16 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         // FILTER_GROUP
-        fieldProperties.setFilterGroup(getValueFromMap(props, ReportConstants.Keys.FILTER_GROUP, null, ""));
+        fieldProperties.setFilterGroup(getValueFromMap(props, ARConstants.Keys.FILTER_GROUP, null, ""));
 
         // SELECT_ALL
-        String selectAllString = getValueFromMap(props, ReportConstants.Keys.SELECT_ALL, ReportConstants.BooleanValues.values(),
+        String selectAllString = getValueFromMap(props, ARConstants.Keys.SELECT_ALL, ARConstants.BooleanValues.values(),
                 "false");
         fieldProperties.setSelectAll(Boolean.valueOf(selectAllString));
 
         // MULTIPLE_CHOICE
-        String multipleChoiceString = getValueFromMap(props, ReportConstants.Keys.MULTIPLE_CHOICE,
-                ReportConstants.BooleanValues.values(), "false");
+        String multipleChoiceString = getValueFromMap(props, ARConstants.Keys.MULTIPLE_CHOICE,
+                ARConstants.BooleanValues.values(), "false");
         fieldProperties.setMultipleChoice(Boolean.valueOf(multipleChoiceString));
 
         //
@@ -740,16 +743,16 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         //
 
         // DICT_QUERY
-        fieldProperties.setDictQuery(getValueFromMap(props, ReportConstants.Keys.DICT_QUERY, null, ""));
+        fieldProperties.setDictQuery(getValueFromMap(props, ARConstants.Keys.DICT_QUERY, null, ""));
 
-        fieldProperties.setDictItemList(getValueFromMap(props, ReportConstants.Keys.DICT_ITEM_LIST, null, ""));
+        fieldProperties.setDictItemList(getValueFromMap(props, ARConstants.Keys.DICT_ITEM_LIST, null, ""));
 
         //
         // SCRIPTS
         //
 
         // SCRIPT_LANGUAGE
-        String scriptLang = getValueFromMap(props, ReportConstants.Keys.SCRIPT_LANGUAGE, null, "");
+        String scriptLang = getValueFromMap(props, ARConstants.Keys.SCRIPT_LANGUAGE, null, "");
         if (StringUtils.isNotEmpty(scriptLang)) {
             ScriptEngine se;
             ScriptEngineManager sem = new ScriptEngineManager();
@@ -772,18 +775,18 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         }
 
         // SPECIAL_CONTROL_CODE
-        fieldProperties.setSpecialControlCode(getValueFromMap(props, ReportConstants.Keys.SPECIAL_CONTROL_CODE, null, ""));
+        fieldProperties.setSpecialControlCode(getValueFromMap(props, ARConstants.Keys.SPECIAL_CONTROL_CODE, null, ""));
 
         // SPECIAL_VALIDATION_CODE
-        fieldProperties.setSpecialValidationCode(getValueFromMap(props, ReportConstants.Keys.SPECIAL_VALIDATION_CODE, null,
+        fieldProperties.setSpecialValidationCode(getValueFromMap(props, ARConstants.Keys.SPECIAL_VALIDATION_CODE, null,
                 ""));
 
         // SPECIAL_VALIDATION_ERROR
-        fieldProperties.setSpecialValidationError(getValueFromMap(props, ReportConstants.Keys.SPECIAL_VALIDATION_ERROR, null,
+        fieldProperties.setSpecialValidationError(getValueFromMap(props, ARConstants.Keys.SPECIAL_VALIDATION_ERROR, null,
                 ""));
 
         // SPECIAL_DATA_QUERY_CODE
-        fieldProperties.setSpecialDataQueryCode(getValueFromMap(props, ReportConstants.Keys.SPECIAL_DATA_QUERY_CODE, null, ""));
+        fieldProperties.setSpecialDataQueryCode(getValueFromMap(props, ARConstants.Keys.SPECIAL_DATA_QUERY_CODE, null, ""));
         return fieldProperties;
     }
 

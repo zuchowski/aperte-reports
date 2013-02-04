@@ -1,6 +1,5 @@
 package org.apertereports.util.cache;
 
-import org.apertereports.common.utils.ExceptionUtils;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -8,6 +7,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple map cache. Each instance has its own generated id. The id is used to identify the cache within the
@@ -17,6 +18,7 @@ public class MapCache {
     private String id;
 
     private Map<String, Object> cache = new HashMap<String, Object>();
+    private static final Logger logger = LoggerFactory.getLogger(MapCache.class);
 
     /**
      * Constructs a new instance with a generated id.
@@ -26,7 +28,7 @@ public class MapCache {
             id = digest("SHA-1", "" + new Random().nextInt(), "" + System.currentTimeMillis(), "" + (new Random().nextInt() << 13), toString());
         }
         catch (NoSuchAlgorithmException e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error(e.getMessage(), e);
             id = new Random().nextInt() + "" + System.currentTimeMillis() + (new Random().nextInt() << 13) + toString(); // unsafe
         }
     }

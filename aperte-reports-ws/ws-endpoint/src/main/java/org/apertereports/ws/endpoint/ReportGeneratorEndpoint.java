@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.ws.GenerateReportRequest;
 import org.apertereports.common.xml.ws.GenerateReportResponse;
@@ -19,7 +19,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
-public class ReportGeneratorEndpoint implements ReportConstants, ConfigurationConstants {
+public class ReportGeneratorEndpoint implements ARConstants, ConfigurationConstants {
     private static final Logger logger = Logger.getLogger(ReportGeneratorEndpoint.class.getName());
     private static final ObjectFactory objectFactory = new ObjectFactory();
     private ReportWebServiceHelper helper = new ReportWebServiceHelper();
@@ -37,12 +37,12 @@ public class ReportGeneratorEndpoint implements ReportConstants, ConfigurationCo
             byte[] content = helper.generateAndExportReport(reportData);
             response.setContent(ReportGeneratorUtils.wrapBytesInDataHandler(content, mimeType));
         }
-        catch (AperteReportsException e) {
+        catch (ARException e) {
             throw new ReportWebServiceException(e);
         }
         catch (IOException e) {
             logger.info(e.getMessage());
-            throw new ReportWebServiceException(ErrorCodes.JASPER_REPORTS_EXCEPTION, "Exception while generating report: "
+            throw new ReportWebServiceException(ErrorCode.JASPER_REPORTS_EXCEPTION, "Exception while generating report: "
                     + (reportData.getName() != null ? reportData.getName() : reportData.getId())
                     + ". Detailed message: " + e.getMessage());
         }

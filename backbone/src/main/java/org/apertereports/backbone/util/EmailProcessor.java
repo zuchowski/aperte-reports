@@ -20,14 +20,15 @@ import org.apache.commons.mail.HtmlEmail;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.model.ConfigurationEntry;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A helper class for processing email messages. Takes advantage of
@@ -39,6 +40,8 @@ import org.apertereports.model.ReportTemplate;
  * instance for it to work properly.
  */
 public class EmailProcessor implements ConfigurationConstants {
+    
+    private static Logger logger = LoggerFactory.getLogger(EmailProcessor.class);
 	/**
 	 * Default charset of an email message.
 	 */
@@ -175,11 +178,11 @@ public class EmailProcessor implements ConfigurationConstants {
 		try {
 			session = (javax.mail.Session) new InitialContext().lookup(mailSessionJndi);
 		} catch (NamingException e) {
-			ExceptionUtils.logSevereException(e);
+			logger.error(e.getMessage(), e);
 		} 
 
 		if (session == null) {
-			throw new AperteReportsException(ErrorCodes.EMAIL_SESSION_NOT_FOUND, mailSessionJndi);
+			throw new ARException(ErrorCode.EMAIL_SESSION_NOT_FOUND, mailSessionJndi);
 		}
 
 		String finalMessage = generateFinalMessage(reportOrder);
@@ -206,7 +209,7 @@ public class EmailProcessor implements ConfigurationConstants {
 		for (String s : recipients) {
 			htmlEmail.addTo(s, s, charset);
 		}
-		String contentType = ReportConstants.ReportMimeType.valueOf(reportOrder.getOutputFormat()).mimeType();
+		String contentType = ARConstants.ReportMimeType.valueOf(reportOrder.getOutputFormat()).mimeType();
 		htmlEmail.attach(getReportOrderDataSource(reportOrder.getReport(), contentType, reportContent), reportOrder
 				.getReport().getReportname(), reportOrder.getReport().getDescription(), EmailAttachment.ATTACHMENT);
 		htmlEmail.send();
@@ -225,7 +228,7 @@ public class EmailProcessor implements ConfigurationConstants {
 	 *             on Velocity Engine error or when the message template is not
 	 *             found
 	 */
-	private String generateFinalMessage(ReportOrder reportOrder) throws AperteReportsException {
+	private String generateFinalMessage(ReportOrder reportOrder) throws ARException {
 		String messageTemplate = messageProvider.getMessage(backgroundReportMessageKey);
 		if (StringUtils.isEmpty(messageTemplate)) {
 			throw new IllegalStateException("Unable to find message content for email message");
@@ -238,7 +241,7 @@ public class EmailProcessor implements ConfigurationConstants {
 		try {
 			velocityEngine.evaluate(c, w, "velocity_error_log.log", messageTemplate);
 		} catch (IOException e) {
-			throw new AperteReportsException(e);
+			throw new ARException(e);
 		}
 
 		return w.toString();

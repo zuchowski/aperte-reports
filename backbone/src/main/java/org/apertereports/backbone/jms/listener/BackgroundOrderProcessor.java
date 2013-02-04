@@ -12,9 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.util.EmailProcessor;
 import org.apertereports.backbone.util.ReportOrderProcessor;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.ReportOrder;
 import org.apertereports.model.ReportOrder.Status;
@@ -58,7 +57,7 @@ public class BackgroundOrderProcessor implements MessageListener {
         logger.info("Message incomming...");
         ReportOrder reportOrder = null;
         try {
-            Long id = message.getLongProperty(ReportConstants.REPORT_ORDER_ID);
+            Long id = message.getLongProperty(ARConstants.REPORT_ORDER_ID);
             logger.info("Order id: " + id + ", generating report...");
             reportOrder = ReportOrderDAO.fetchById(id);
             processReport(reportOrder);
@@ -67,7 +66,7 @@ public class BackgroundOrderProcessor implements MessageListener {
                 forwardResults(reportOrder);
             }
         } catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error("on message error", e);
             if (reportOrder != null) {
                 reportOrder.setReportStatus(Status.FAILED);
                 reportOrder.setErrorDetails(e.getMessage());
@@ -98,7 +97,7 @@ public class BackgroundOrderProcessor implements MessageListener {
             try {
                 EmailProcessor.getInstance().processEmail(reportOrder);
             } catch (Exception e) {
-                ExceptionUtils.logWarningException("Unable to send email to: " + reportOrder.getRecipientEmail(), e);
+                logger.warn("Unable to send email to: " + reportOrder.getRecipientEmail(), e);
                 throw e;
             }
         }
@@ -114,7 +113,7 @@ public class BackgroundOrderProcessor implements MessageListener {
      * @param reportOrder Processed report order
      * @throws AperteReportsException on error while generating jasper report
      */
-    private void processReport(final ReportOrder reportOrder) throws AperteReportsException {
+    private void processReport(final ReportOrder reportOrder) throws ARException {
         ReportOrderProcessor.getInstance().processReport(reportOrder);
     }
 }

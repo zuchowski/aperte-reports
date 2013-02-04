@@ -47,9 +47,9 @@ import net.sf.jasperreports.engine.util.JRFontNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.exception.ARException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.SubreportProvider.Subreport;
@@ -67,7 +67,7 @@ import pl.net.bluesoft.util.lang.StringUtil;
  * whatever format one wants. <p> In order to maintain the report generation
  * from a template one should create a new instance of this class.
  */
-public class ReportMaster implements ReportConstants, ConfigurationConstants {
+public class ReportMaster implements ARConstants, ConfigurationConstants {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportMaster.class.getName());
     private static Pattern subreportPattern = Pattern.compile("<subreportExpression class\\=\"java\\.lang\\.String\"\\>\\<\\!\\[CDATA\\[\\$P\\{[^}]*\\} [^\"]*\"([^\"]*)\\.jasper\"");
@@ -100,7 +100,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @param subreportProvider Subreport provider
      * @throws AperteReportsException on error
      */
-    public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws AperteReportsException {
+    public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws ARException {
         this(reportSource, null, subreportProvider);
     }
 
@@ -116,7 +116,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @throws SubreportNotFoundException
      */
     public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider)
-            throws AperteReportsException {
+            throws ARException {
         super();
         report = compileReport(reportSource, cacheId, subreportProvider);
     }
@@ -132,7 +132,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @throws AperteReportsException on error
      */
     public ReportMaster(byte[] reportSource, String cacheId, SubreportProvider subreportProvider)
-            throws AperteReportsException {
+            throws ARException {
         super();
         report = compileReport(reportSource, cacheId, subreportProvider);
     }
@@ -157,7 +157,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      */
     public static byte[] exportReport(JasperPrint jasperPrint, String format,
             Map<JRExporterParameter, Object> customExporterParams, Map<String, String> configuration)
-            throws AperteReportsException {
+            throws ARException {
 
         if (configuration == null) {
             configuration = new HashMap<String, String>();
@@ -211,7 +211,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
             exporter.exportReport();
             return bos.toByteArray();
         } catch (JRException e) {
-            throw new AperteReportsException(ErrorCodes.JASPER_REPORTS_EXCEPTION, e);
+            throw new ARException(ErrorCode.JASPER_REPORTS_EXCEPTION, e);
         }
     }
 
@@ -227,7 +227,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * java.util.Map, java.util.Map)
      */
     public static byte[] exportReport(JasperPrint jasperPrint, String format, Map<String, String> configuration)
-            throws AperteReportsException {
+            throws ARException {
         return exportReport(jasperPrint, format, null, configuration);
     }
 
@@ -244,12 +244,12 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @throws SubreportNotFoundException
      */
     public static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider)
-            throws AperteReportsException {
+            throws ARException {
         return compileReport(reportSource, cacheId, subreportProvider, false);
     }
 
     private static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider,
-            boolean hasParent) throws AperteReportsException {
+            boolean hasParent) throws ARException {
         logger.info("Trying to fetch report '" + cacheId + "' from cache");
         AperteReport compiledReport = ReportCache.getReport(cacheId);
         Set<String> subreportNames = new HashSet<String>();
@@ -262,7 +262,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                 compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
                 logger.info("Compiled.");
             } catch (JRException e) {
-                throw new AperteReportsException(ErrorCodes.REPORT_SOURCE_EXCEPTION, e);
+                throw new ARException(ErrorCode.REPORT_SOURCE_EXCEPTION, e);
             }
         } else {
             logger.info("Report found");
@@ -278,7 +278,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
     }
 
     private static void compileSubreports(SubreportProvider subreportProvider, AperteReport compiledReport,
-            Set<String> subreportNames) throws AperteReportsException {
+            Set<String> subreportNames) throws ARException {
         if (subreportNames.size() > 0) {
             if (subreportProvider == null) {
                 subreportProvider = new EmptySubreportProvider();
@@ -295,17 +295,17 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
     }
 
     public static AperteReport compileReport(String reportSource, String cacheId, SubreportProvider subreportProvider)
-            throws AperteReportsException {
+            throws ARException {
         try {
             return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId, subreportProvider);
         } catch (UnsupportedEncodingException e) {
-            throw new AperteReportsRuntimeException(ErrorCodes.UNSUPPORTED_ENCODING, e);
+            throw new ARRuntimeException(ErrorCode.UNSUPPORTED_ENCODING, e);
         }
     }
 
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
             Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
-            throws AperteReportsException {
+            throws ARException {
         JasperPrint jasperPrint = generateReport(reportParameters, configuration);
         return exportReport(jasperPrint, format, exporterParameters, configuration);
     }
@@ -323,7 +323,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @return Bytes of a generated report
      */
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-            Map<String, String> configuration) throws AperteReportsException {
+            Map<String, String> configuration) throws ARException {
         return generateAndExportReport(format, reportParameters, null, configuration);
     }
 
@@ -365,18 +365,18 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * @return Output JasperPrint
      */
     private JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration)
-            throws AperteReportsException {
+            throws ARException {
         try {
             JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration);
             return jasperPrint;
         } catch (JRFontNotFoundException e) {
-            throw new AperteReportsException(ErrorCodes.FONT_NOT_FOUND, e);
+            throw new ARException(ErrorCode.FONT_NOT_FOUND, e);
         } catch (Exception e) {
-            throw new AperteReportsException(e);
+            throw new ARException(e);
         }
     }
 
-    public JasperPrint generateReport(Map<String, Object> reportParameters) throws AperteReportsException {
+    public JasperPrint generateReport(Map<String, Object> reportParameters) throws ARException {
         return generateReport(reportParameters, null);
     }
 
@@ -413,7 +413,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                     ReportProperty property = new ReportProperty(key, propertiesMap.getProperty(propertyName));
                     outputProperties.put(key, property);
                 } catch (IllegalArgumentException e) {
-                    throw new AperteReportsRuntimeException(propertyName, ErrorCodes.UNKNOWN_PROPERTY_NAME);
+                    throw new ARRuntimeException(ErrorCode.UNKNOWN_PROPERTY_NAME, propertyName);
                 }
             }
             outputParameter.setProperties(outputProperties);
@@ -491,8 +491,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
                     jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
                             (JRDataSource) dataSource);
                 } else {
-                    throw new AperteReportsRuntimeException(dataSource.getClass().toString(),
-                            ErrorCodes.INVALID_DATASOURCE_TYPE);
+                    throw new ARRuntimeException(ErrorCode.INVALID_DATASOURCE_TYPE, dataSource.getClass().toString());
                 }
             }
         } finally {

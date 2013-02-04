@@ -7,10 +7,9 @@ import java.util.HashMap;
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.dao.CyclicReportOrderDAO;
 import org.apertereports.engine.ReportMaster;
@@ -28,7 +27,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.terminal.UserError;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -40,6 +38,8 @@ import org.apertereports.common.xml.config.ReportConfigParameter;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 public class CyclicReportsComponent extends Panel {
@@ -67,6 +67,7 @@ public class CyclicReportsComponent extends Panel {
     private Component addOrEditComponent;
     private User user = null;
     private Button addButton;
+    private static Logger logger = LoggerFactory.getLogger(CyclicReportsComponent.class);
 
     public CyclicReportsComponent() {
         init();
@@ -192,7 +193,7 @@ public class CyclicReportsComponent extends Panel {
                             CyclicReportOrderScheduler.unscheduleCyclicReportOrder(CyclicReportPanel.this.order);
                         }
                     } catch (SchedulerException e) {
-                        throw new AperteReportsRuntimeException(e);
+                        throw new ARRuntimeException(e);
                     }
                 }
             }, FAction.ALIGN_RIGTH);
@@ -277,8 +278,8 @@ public class CyclicReportsComponent extends Panel {
                                 org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), order.getReport().getReportname(), reportData,
                                 order.getOutputFormat());
-                    } catch (AperteReportsException e) {
-                        throw new AperteReportsRuntimeException(e);
+                    } catch (ARException e) {
+                        throw new ARRuntimeException(e);
                     }
                 }
             });
@@ -360,7 +361,7 @@ public class CyclicReportsComponent extends Panel {
                 list.replaceComponent(this, new CyclicReportPanel(order));
                 finish();
             } catch (InvalidValueException e) {
-                ExceptionUtils.logWarningException("Edit cyclic report: invalid user input", e);
+                logger.warn("Edit cyclic report: invalid user input", e);
             }
         }
 

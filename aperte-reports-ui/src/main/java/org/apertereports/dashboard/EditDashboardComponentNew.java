@@ -17,8 +17,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.AbstractReportingApplication;
-import org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.ui.CloseListener;
 import org.apertereports.ui.UiFactory;
@@ -110,7 +110,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             if (reportConfig.getReportId() != null) {
                 try {
                     selectedReport = ReportTemplateDAO.fetchById(app.getArUser(), reportConfig.getReportId());
-                } catch (AperteReportsException ex) {
+                } catch (ARException ex) {
                     //nothing to do
                 }
             }

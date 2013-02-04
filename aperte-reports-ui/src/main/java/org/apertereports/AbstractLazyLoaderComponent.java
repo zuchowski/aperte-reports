@@ -6,13 +6,17 @@ import org.apertereports.util.VaadinUtil;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import eu.livotov.tpt.gui.widgets.TPTLazyLoadingLayout;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A Vaadin component wrapper with lazy loading. Extending class should provide its heavy logic (i.e. fetching data from db)
- * in {@link #lazyLoad()} method.
+ * A Vaadin component wrapper with lazy loading. Extending class should provide
+ * its heavy logic (i.e. fetching data from db) in {@link #lazyLoad()} method.
  */
 public abstract class AbstractLazyLoaderComponent extends CustomComponent implements TPTLazyLoadingLayout.LazyLoader {
+
+    private static Logger logger = LoggerFactory.getLogger(AbstractLazyLoaderComponent.class);
+
     public abstract void lazyLoad() throws Exception;
 
     /**
@@ -25,16 +29,16 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
     public Component lazyLoad(TPTLazyLoadingLayout tptLazyLoadingLayout) {
         try {
             lazyLoad();
-        }
-        catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             NotificationUtil.showExceptionNotification(getWindow(), "exception.gui.error", e.getMessage());
         }
         return this;
     }
 
     /**
-     * Returns the message shown on lazy load (i.e. "The data is still loading...").
+     * Returns the message shown on lazy load (i.e. "The data is still
+     * loading...").
      *
      * @return The message
      */
@@ -43,5 +47,3 @@ public abstract class AbstractLazyLoaderComponent extends CustomComponent implem
         return VaadinUtil.getValue("loading.data");
     }
 }
-
-

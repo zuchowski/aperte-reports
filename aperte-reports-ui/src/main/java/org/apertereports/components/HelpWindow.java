@@ -2,7 +2,7 @@ package org.apertereports.components;
 
 import com.vaadin.ui.*;
 import eu.livotov.tpt.gui.windows.TPTWindow;
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -68,7 +68,7 @@ public class HelpWindow extends TPTWindow {
         VerticalLayout vl = UiFactory.createVLayout(null);
         vl.addComponent(new Label(VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".intro"), Label.CONTENT_XHTML));
         Accordion accordion = new Accordion();
-        for (ReportConstants.Keys param : ReportConstants.Keys.values()) {
+        for (ARConstants.Keys param : ARConstants.Keys.values()) {
             String title = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
                     + param.toString().toLowerCase() + ".title", param.toString().toLowerCase()) + " - " + param.toString().toLowerCase();
 

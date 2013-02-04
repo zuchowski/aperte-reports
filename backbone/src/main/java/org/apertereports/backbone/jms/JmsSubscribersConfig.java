@@ -8,7 +8,7 @@ import javax.jms.MessageListener;
 import org.apertereports.backbone.jms.listener.BackgroundOrderProcessor;
 import org.apertereports.backbone.jms.listener.CyclicOrderResponseProcessor;
 import org.apertereports.common.ConfigurationConstants;
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 /**
  * Configuration of JMS subscribers. Contains MessageListener/queue mapping and
@@ -50,9 +50,9 @@ public class JmsSubscribersConfig {
 		/**
 		 * Default JNDI names
 		 */
-		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY, ReportConstants.JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME);
-		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT, ReportConstants.CYCLIC_REPORT_ORDER_QUEUE_DEFAULT_JNDI_NAME);
-		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT, ReportConstants.GENERATE_REPORT_QUEUE_DEFAULT_JNDI_NAME);
+		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_CONNECTION_FACTORY, ARConstants.JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME);
+		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_CYCLIC_REPORT, ARConstants.CYCLIC_REPORT_ORDER_QUEUE_DEFAULT_JNDI_NAME);
+		defaultJndiNames.put(ConfigurationConstants.JNDI_JMS_QUEUE_GENERATE_REPORT, ARConstants.GENERATE_REPORT_QUEUE_DEFAULT_JNDI_NAME);
 		
 		
 		initialized = true;

@@ -4,12 +4,12 @@ package org.apertereports.common.utils;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 /**
  * An utility for converting dates and time.
  */
-public class TimeUtils implements ReportConstants {
+public class TimeUtils implements ARConstants {
     /**
      * Returns a default date format.
      *

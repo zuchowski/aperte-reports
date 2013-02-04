@@ -5,7 +5,7 @@ package org.apertereports.engine;
 
 import java.util.Map;
 
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.exception.ARException;
 
 /**
  * @author MW
@@ -13,7 +13,7 @@ import org.apertereports.common.exception.AperteReportsException;
  */
 public interface SubreportProvider {
 
-	Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException;
+	Map<String, Subreport> getSubreports(String... reportNames) throws ARException;
 
 	public class Subreport {
 		private String name;

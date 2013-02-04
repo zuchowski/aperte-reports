@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.engine.SubreportProvider;
@@ -21,7 +21,7 @@ public class ReportTemplateProvider implements SubreportProvider {
 	private static final Logger logger = Logger.getLogger(ReportTemplateProvider.class.getName());
 
 	@Override
-	public Map<String, Subreport> getSubreports(String... reportNames) throws AperteReportsException {
+	public Map<String, Subreport> getSubreports(String... reportNames) throws ARException {
         //xxx user
 		Collection<ReportTemplate> list = ReportTemplateDAO.fetchByNames(null, reportNames);
 		Map<String, Subreport> map = new HashMap<String, Subreport>(list.size());
@@ -40,7 +40,7 @@ public class ReportTemplateProvider implements SubreportProvider {
 		if(!notFound.isEmpty()){
 			String[] notFoundArray = (String[]) notFound.toArray(new String[notFound.size()]);
 			String message = "Subreports not found: " + StringUtils.join(notFoundArray, ", ");
-			throw new AperteReportsException(ErrorCodes.SUBREPORT_NOT_FOUND, notFoundArray);
+			throw new ARException(ErrorCode.SUBREPORT_NOT_FOUND, notFoundArray);
 		}
 
 		return map;

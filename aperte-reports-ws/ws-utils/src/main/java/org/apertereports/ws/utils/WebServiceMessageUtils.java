@@ -1,7 +1,7 @@
 package org.apertereports.ws.utils;
 
 import org.springframework.ws.WebServiceMessage;
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class WebServiceMessageUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             message.writeTo(baos);
-            logger.info("Logging message at: " + ReportConstants.DATETIME_FORMAT.format(new Date()) + "\n" + new String(baos.toByteArray()));
+            logger.info("Logging message at: " + ARConstants.DATETIME_FORMAT.format(new Date()) + "\n" + new String(baos.toByteArray()));
         }
         catch (IOException e) {
             printStackTraceToLog(logger, e);

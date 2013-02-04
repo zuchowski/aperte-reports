@@ -5,14 +5,17 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.exception.ARRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DAO utility class. Initializes Hibernate session factory with annotated
  * classes. Has methods for providing a new Hibernate session.
  */
 public class SQLUtil {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SQLUtil.class);
 
     /**
      * Session factory
@@ -34,8 +37,8 @@ public class SQLUtil {
             sessionFactory = cfg.buildSessionFactory();
             sessionFactory.getStatistics().setStatisticsEnabled(true);
         } catch (Exception e) {
-            ExceptionUtils.logSevereException(e);
-            throw new AperteReportsRuntimeException(e);
+            logger.error("configure session error", e);
+            throw new ARRuntimeException(e);
         }
     }
 

@@ -4,7 +4,7 @@ import com.vaadin.ui.CustomComponent;
 import org.apache.commons.codec.binary.Base64;
 import org.apertereports.util.cache.MapCache;
 
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 
@@ -89,7 +89,7 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
                 preferences.store();
             }
             catch (Exception e) {
-                throw new AperteReportsRuntimeException(e);
+                throw new ARRuntimeException(e);
             }
         }
     }

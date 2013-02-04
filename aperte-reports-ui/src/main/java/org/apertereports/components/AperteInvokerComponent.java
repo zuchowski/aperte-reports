@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apertereports.backbone.jms.AperteReportsJmsFacade;
 import org.apertereports.backbone.util.ReportOrderPusher;
 import org.apertereports.backbone.util.ReportTemplateProvider;
-import org.apertereports.common.exception.AperteReportsException;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARException;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.engine.ReportMaster;
@@ -115,8 +115,8 @@ public class AperteInvokerComponent extends Panel {
                                 ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), reportTemplate.getReportname(), reportData,
                                 panel.getOuptutFormat());
-                    } catch (AperteReportsException e) {
-                        throw new AperteReportsRuntimeException(e);
+                    } catch (ARException e) {
+                        throw new ARRuntimeException(e);
 
                     }
 

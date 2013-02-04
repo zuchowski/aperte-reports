@@ -1,6 +1,6 @@
 package org.apertereports.engine;
 
-import org.apertereports.common.ReportConstants.Keys;
+import org.apertereports.common.ARConstants.Keys;
 
 import java.util.Map;
 

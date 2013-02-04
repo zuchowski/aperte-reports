@@ -3,7 +3,7 @@ package org.apertereports.util;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apertereports.common.ReportConstants.ReportType;
+import org.apertereports.common.ARConstants.ReportType;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.model.ReportTemplate;
 

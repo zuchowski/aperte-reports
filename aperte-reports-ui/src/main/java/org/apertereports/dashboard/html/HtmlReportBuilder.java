@@ -17,7 +17,6 @@ import org.apertereports.util.FileStreamer;
 import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 import org.vaadin.activelink.ActiveLink;
-import org.apertereports.common.utils.ExceptionUtils;
 import org.apertereports.common.wrappers.Pair;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.model.ReportTemplate;
@@ -31,9 +30,8 @@ import java.util.List;
 
 import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import java.io.File;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import static org.apertereports.common.ReportConstants.ReportType;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import static org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
@@ -270,16 +268,18 @@ public class HtmlReportBuilder {
         Pair<JasperPrint, byte[]> reportData;
         try {
             reportData = provider.provideReportData(config, ReportType.HTML, cached);
-        } catch (AperteReportsRuntimeException e) {
+        } catch (ARRuntimeException e) {
             try {
                 String errorLayout = "<div location=\"errorLabel\"></div>";
                 String msg = "<b><span style=\"color:red\">"
                         + VaadinUtil.getValue("dashboard.report.creation.error") + "</span></b>";
                 msg += "<br>";
 
-                msg += VaadinUtil.getValue(e.getLocalizationPrefix() + ".title");
+                String errorPrefix = "exception." + e.getErrorCode().name().toLowerCase();
+
+                msg += VaadinUtil.getValue(errorPrefix + ".title");
                 String description = "<br/>"
-                        + VaadinUtil.getValue(e.getLocalizationPrefix() + ".desc", e.getErrorDetails());
+                        + VaadinUtil.getValue(errorPrefix + ".desc", e.getErrorDetails());
                 if (e.getCause() != null && e.getCause().getLocalizedMessage() != null) {
                     description += "<br/>" + e.getCause().getLocalizedMessage();
                 }
@@ -294,7 +294,7 @@ public class HtmlReportBuilder {
 
                 return cl;
             } catch (IOException ex) {
-                ExceptionUtils.logSevereException(ex);
+                logger.error(ex.getMessage(), ex);
                 throw new RuntimeException(ex);
             }
         }
@@ -314,7 +314,7 @@ public class HtmlReportBuilder {
             reportLayout.setSizeUndefined();
             reportLayout.setWidth(100, UNITS_PERCENTAGE);
         } catch (IOException e) {
-            ExceptionUtils.logSevereException(e);
+            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
@@ -363,7 +363,7 @@ public class HtmlReportBuilder {
                             addReportComponent(img, componentId, config);
                         }
                     } catch (Exception e) {
-                        ExceptionUtils.logSevereException(e);
+                        logger.error(e.getMessage(), e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
                         throw new RuntimeException(e);
@@ -437,7 +437,7 @@ public class HtmlReportBuilder {
                             addReportComponent(link, componentId, config);
                         }
                     } catch (Exception e) {
-                        ExceptionUtils.logSevereException(e);
+                        logger.error(e.getMessage(), e);
                         NotificationUtil.showExceptionNotification(application.getMainWindow(), VaadinUtil.getValue("exception.report.build.title"),
                                 VaadinUtil.getValue("exception.report.build.description").replaceFirst("%s", e.getMessage()));
                         throw new RuntimeException(e);

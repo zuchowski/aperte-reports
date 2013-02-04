@@ -1,8 +1,8 @@
 package org.apertereports.dao;
 
 import java.util.*;
-import org.apertereports.common.ReportConstants.ErrorCodes;
-import org.apertereports.common.exception.AperteReportsException;
+import org.apertereports.common.ARConstants.ErrorCode;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.users.User;
 import org.apertereports.common.users.UserRole;
 import org.apertereports.common.utils.TextUtils;
@@ -83,7 +83,7 @@ public class ReportTemplateDAO {
      * @throws AperteReportsException With {@link ErrorCodes#REPORT_ACCESS_DENIED}
      * code when user has no permissions
      */
-    public static ReportTemplate fetchById(User user, Integer id) throws AperteReportsException {
+    public static ReportTemplate fetchById(User user, Integer id) throws ARException {
         Collection<ReportTemplate> c = fetch(user, null, "active = true AND id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
@@ -91,7 +91,7 @@ public class ReportTemplateDAO {
         //check if exists...
         Integer count = count(GeneralDAO.ADMIN_USER, null, "active = true AND id = ?", null, id);
         if (count > 0) {
-            throw new AperteReportsException(ErrorCodes.REPORT_ACCESS_DENIED);
+            throw new ARException(ErrorCode.REPORT_ACCESS_DENIED);
         }
         //doesn't exist
         return null;

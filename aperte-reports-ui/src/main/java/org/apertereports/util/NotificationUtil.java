@@ -10,7 +10,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
-import org.apertereports.common.exception.AperteReportsRuntimeException;
+import org.apertereports.common.exception.ARRuntimeException;
 
 import static com.vaadin.ui.Window.Notification.*;
 import org.apertereports.ui.UiFactory;
@@ -52,10 +52,11 @@ public class NotificationUtil {
         window.showNotification(title, "<br/>" + message, TYPE_ERROR_MESSAGE);
     }
 
-    public static void showExceptionNotification(Window window, AperteReportsRuntimeException exception) {
-        String title = VaadinUtil.getValue(exception.getLocalizationPrefix() + ".title");
+    public static void showExceptionNotification(Window window, ARRuntimeException exception) {
+        String errorPrefix = "exception." + exception.getErrorCode().name().toLowerCase();
+        String title = VaadinUtil.getValue(errorPrefix + ".title");
         String description = "<br/>"
-                + VaadinUtil.getValue(exception.getLocalizationPrefix() + ".desc", exception.getErrorDetails());
+                + VaadinUtil.getValue(errorPrefix + ".desc", exception.getErrorDetails());
         if (exception.getCause() != null && exception.getCause().getLocalizedMessage() != null) {
             description += "<br/>" + exception.getCause().getLocalizedMessage();
         }

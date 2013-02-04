@@ -12,8 +12,7 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
-import org.apertereports.common.exception.AperteReportsRuntimeException;
-import org.apertereports.common.utils.ExceptionUtils;
+import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.util.NotificationUtil;
 
 import com.liferay.portal.util.PortalUtil;
@@ -121,7 +120,8 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
     public void terminalError(com.vaadin.terminal.Terminal.ErrorEvent event) {
         Throwable throwable = event.getThrowable();
         if (throwable instanceof Exception) {
-            ExceptionUtils.logSevereException((Exception) throwable);
+            Exception e = (Exception) throwable;
+            logger.error(e.getMessage(), throwable);
         }
         /**
          * Exceptions thrown inside Vaadin listeners methods are wrapped by
@@ -131,8 +131,8 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
             throwable = ((ListenerMethod.MethodException) throwable).getCause();
         }
 
-        if (throwable instanceof AperteReportsRuntimeException) {
-            AperteReportsRuntimeException vre = (AperteReportsRuntimeException) throwable;
+        if (throwable instanceof ARRuntimeException) {
+            ARRuntimeException vre = (ARRuntimeException) throwable;
             NotificationUtil.showExceptionNotification(getMainWindow(), vre);
         } else {
             super.terminalError(event);
@@ -178,7 +178,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
 
                 locale = PortalUtil.getLocale(request);
             } catch (Exception e) {
-                ExceptionUtils.logSevereException(e);
+                logger.error(e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         }

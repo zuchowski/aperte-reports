@@ -5,7 +5,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.*;
-import org.apertereports.common.ReportConstants;
+import org.apertereports.common.ARConstants;
 
 import java.util.List;
 import org.apertereports.ui.UiFactory;
@@ -23,7 +23,7 @@ public class FieldContainer {
     private String name;
     private Component fieldComponent;
     private boolean selectAll;
-    private ReportConstants.InputTypes componentType;
+    private ARConstants.InputTypes componentType;
 
     public FieldContainer() {
     }
@@ -51,7 +51,7 @@ public class FieldContainer {
         }
     }
 
-    public ReportConstants.InputTypes getComponentType() {
+    public ARConstants.InputTypes getComponentType() {
         return componentType;
     }
 
@@ -147,7 +147,7 @@ public class FieldContainer {
         }
     }
 
-    public void setComponentType(ReportConstants.InputTypes componentType) {
+    public void setComponentType(ARConstants.InputTypes componentType) {
         this.componentType = componentType;
     }
 
