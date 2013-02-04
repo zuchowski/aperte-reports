@@ -477,7 +477,7 @@ public class ReportManagerComponent extends Panel {
     private void remove(final ReportItemPanel reportItemPanel) {
         final ReportTemplate rt = reportItemPanel.reportTemplate;
         final Collection<CyclicReportOrder> cyclic = CyclicReportOrderDAO.fetchByReportId(user, rt.getId());
-        final Collection<ReportOrder> orders = ReportOrderDAO.fetchByTemplateId(rt.getId());
+        final Collection<ReportOrder> orders = ReportOrderDAO.fetchByReportId(user, rt.getId());
         if (!cyclic.isEmpty()) {
             NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue(MSG_REMOVING_REPORT, rt.getReportname()),
                     VaadinUtil.getValue(MSG_REPORT_IS_USED)

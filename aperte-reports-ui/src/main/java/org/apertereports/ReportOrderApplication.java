@@ -27,6 +27,6 @@ public class ReportOrderApplication extends AbstractReportingApplication<ReportO
 
     @Override
     protected void initUserData(User user) {
-        System.out.println("TODO");
+        mainPanel.initData(user);
     }
 }

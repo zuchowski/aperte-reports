@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apertereports.common.users.User;
 import org.apertereports.common.users.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a stub abstract class for all application portlets. Extending classes
@@ -37,6 +39,8 @@ import org.apertereports.common.users.UserRole;
  */
 public abstract class AbstractReportingApplication<T extends Panel> extends TPTApplication implements
         PortletApplicationContext2.PortletListener {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractReportingApplication.class);
 
     /**
      * Main window object
@@ -145,6 +149,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
      */
     @Override
     public void handleRenderRequest(RenderRequest request, RenderResponse response, Window window) {
+        logger.info("RENDER REQUEST, " + getClass().getSimpleName());
         if (getContext() instanceof PortletApplicationContext2) {
             try {
                 com.liferay.portal.model.User liferayUser = PortalUtil.getUser(request);
@@ -166,6 +171,8 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                     user = new User(login, roles, admin, email);
                     initUserData(user);
                 }
+                
+                //todo user logged of
 
                 locale = PortalUtil.getLocale(request);
             } catch (Exception e) {

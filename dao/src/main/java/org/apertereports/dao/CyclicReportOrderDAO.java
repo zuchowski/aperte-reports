@@ -24,7 +24,7 @@ public class CyclicReportOrderDAO {
     private enum SelectType {
 
         /**
-         * Select cyclic report order
+         * Select cyclic report orders
          */
         SELECT_CRO,
         /**
@@ -33,6 +33,7 @@ public class CyclicReportOrderDAO {
         SELECT_COUNT_CRO
     }
     private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
+    //todo generalDao
     private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
@@ -130,7 +131,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the given id
      */
     public static CyclicReportOrder fetchById(final Long id) {
-        Collection<CyclicReportOrder> c = fetch(null, null, "id = ?", null, id);
+        Collection<CyclicReportOrder> c = fetch(ADMIN_USER, null, "id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
         }
@@ -248,13 +249,6 @@ public class CyclicReportOrderDAO {
 
     private static Query createQuery(SelectType type, Session session, User user, String nameFilter,
             String hqlRestriction, String hqlOther, Object... parameters) {
-        
-        if (user == null || !user.isAdministrator()) {
-            Collection<Integer> ids = ReportTemplateDAO.fetchActiveIds(user);
-            for (Integer id : ids) {
-                logger.info("ID: " + id);
-            }
-        }
 
         if (nameFilter == null) {
             nameFilter = "";
@@ -277,22 +271,19 @@ public class CyclicReportOrderDAO {
             params.addAll(Arrays.asList(parameters));
         }
 
-        //todots
-//        if (user == null) {
-//            //only when report has access for all users
-//            where.add("? IN elements(rt.rolesWithAccess)");
-//            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
-//        } else if (!user.isAdministrator()) {
-//            String part = "( ? IN elements(rt.rolesWithAccess)";
-//            params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
-//            for (UserRole r : user.getRoles()) {
-//                part += " OR ? IN elements(rt.rolesWithAccess)";
-//                params.add(r.getId());
-//            }
-//            part += " )";
-//
-//            where.add(part);
-//        }   //when the user is administrator then all reports are available for him
+        if (user == null || !user.isAdministrator()) {
+            Collection<Integer> ids = ReportTemplateDAO.fetchActiveIds(user);
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (Integer id : ids) {
+                if (!first) {
+                    sb.append(',');
+                }
+                first = false;
+                sb.append(id);
+            }
+            where.add("cro.report.id IN (" + sb + ")");
+        }   //when the user is administrator then all reports are available for him
 
         if (!where.isEmpty()) {
             Iterator it = where.iterator();
@@ -311,7 +302,6 @@ public class CyclicReportOrderDAO {
             q.setParameter(i, params.get(i));
         }
 
-        //todots
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
@@ -326,7 +316,6 @@ public class CyclicReportOrderDAO {
             paramsS += "]";
             logger.info("params: " + paramsS);
         }
-        logger.info("params test: " + params);
 
         return q;
     }

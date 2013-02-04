@@ -72,9 +72,10 @@ public class CyclicReportsComponent extends Panel {
         init();
     }
 
-    public void setUser(User user) {
+    public void initData(User user) {
         this.user = user;
         addButton.setVisible(user != null);
+        list.filter(null);
     }
 
     private void init() {

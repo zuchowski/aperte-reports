@@ -26,6 +26,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.common.users.User;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiFactoryExt;
@@ -41,8 +42,14 @@ public class ReportOrderBrowserComponent extends Panel {
     private static final String REPORTNAME = "reportname";
     private static final String REPORT_STATUS = "reportStatus";
     private PaginatedPanelList<ReportOrder, ReportOrderPanel> list;
+    private User user;
 
     public ReportOrderBrowserComponent() {
+    }
+
+    public void initData(User user) {
+        this.user = user;
+        list.filter(null);
     }
 
     @Override
@@ -64,11 +71,7 @@ public class ReportOrderBrowserComponent extends Panel {
         filterField.setWidth("150px");
 
         UiFactory.createSpacer(header, "10px", null);
-
-        Label expandedGap = new Label();
-        expandedGap.setWidth("100%");
-        header.addComponent(expandedGap);
-        header.setExpandRatio(expandedGap, 1.0f);
+        UiFactory.createSpacer(header, FAction.SET_FULL_WIDTH, FAction.SET_EXPAND_RATIO_1_0);
 
         UiFactory.createButton(UiIds.LABEL_REFRESH, header, new ClickListener() {
 
@@ -87,12 +90,12 @@ public class ReportOrderBrowserComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportOrderDAO.countMatching(filter);
+                return ReportOrderDAO.count(user, filter);
             }
 
             @Override
             protected Collection<ReportOrder> fetch(String filter, int firstResult, int maxResults) {
-                return ReportOrderDAO.fetch(filter, firstResult, maxResults);
+                return ReportOrderDAO.fetch(user, filter, firstResult, maxResults);
             }
         };
 
