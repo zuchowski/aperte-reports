@@ -8,6 +8,7 @@ import org.apertereports.model.CyclicReportOrder;
 
 import java.util.*;
 import org.apertereports.common.users.User;
+import org.apertereports.common.users.UserRole;
 import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,51 +33,44 @@ public class CyclicReportOrderDAO {
         SELECT_COUNT_CRO
     }
     private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
+    private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
-     * Returns all cyclic report orders from database.
+     * Returns all cyclic report orders from database corresponding to the
+     * active reports to which user has permissions
      *
      * @return A collection of cyclic report orders
      */
-    public static Collection<CyclicReportOrder> fetchAll() {
-        //todo user
-        User user = null;
-        return fetch(user, null, null, null, (Object[]) null);
+    public static Collection<CyclicReportOrder> fetch() {
+        return fetch(ADMIN_USER, null, null, null, (Object[]) null);
     }
 
     /**
-     * Returns a unique cyclic report representation from database by primary
-     * key.
+     * Returns a list of cyclic report orders related to the report with given
+     * id (only when user has access to the report with that id)
      *
-     * @param templateId Id of report template used in cyclic reports.
-     * @return A cyclic report corresponding to the template with given id.
+     * @param user user
+     * @param reportId Report id
+     * @return List of cyclic report orders
      */
-    public static Collection<CyclicReportOrder> fetchByTemplateId(final Integer templateId) {
-        return new WHS<Collection<CyclicReportOrder>>() {
-
-            @Override
-            public Collection<CyclicReportOrder> lambda() {
-                return sess.createCriteria(CyclicReportOrder.class).createCriteria("report").add(Restrictions.eq("id", templateId)).list();
-            }
-        }.p();
+    public static Collection<CyclicReportOrder> fetchByReportId(User user, final Integer reportId) {
+        return fetch(user, null, "report.id = ?", null, reportId);
     }
 
     /**
      * Returns a unique cyclic report representation from database by processed
      * report order id.
      *
-     * @param reportId Processed report order id
+     * @param reportOrderId Processed report order id
      * @return A cyclic report corresponding to the processed order
      */
-    public static CyclicReportOrder fetchForReportOrder(final Long reportId) {
-        return new WHS<CyclicReportOrder>() {
-
-            @Override
-            public CyclicReportOrder lambda() {
-                CyclicReportOrder cro = (CyclicReportOrder) sess.createCriteria(CyclicReportOrder.class).createCriteria("processedOrder").add(Restrictions.eq("id", reportId)).uniqueResult();
-                return cro;
-            }
-        }.p();
+    public static CyclicReportOrder fetchForReportOrder(final Long reportOrderId) {
+        Collection<CyclicReportOrder> c = fetch(null, null, "processedOrder.id = ?", null, reportOrderId);
+        if (c.size() == 1) {
+            return c.iterator().next();
+        }
+        return null;
+        //todo uniqueResult
     }
 
     /**
@@ -91,16 +85,17 @@ public class CyclicReportOrderDAO {
     /**
      * Removes all given cyclic report orders from database.
      *
-     * @param reports An array of cyclic reports to remove
+     * @param cyclicReportOrders An array of cyclic reports to remove
      */
-    public static void remove(final CyclicReportOrder... reports) {
+    public static void remove(final CyclicReportOrder... cyclicReportOrders) {
         new WHS<Boolean>() {
 
             @Override
             public Boolean lambda() {
-                for (CyclicReportOrder reportOrder : reports) {
-                    if (reportOrder != null) {
-                        sess.delete(reportOrder);
+                for (CyclicReportOrder cro : cyclicReportOrders) {
+                    if (cro != null) {
+                        logger.info("removing cyclic report order, id: " + cro.getId());
+                        sess.delete(cro);
                     }
                 }
                 return true;
@@ -120,6 +115,7 @@ public class CyclicReportOrderDAO {
 
             @Override
             public Long lambda() {
+                logger.info("saving cyclic report order, id: " + cyclicReportOrder.getId());
                 sess.saveOrUpdate(cyclicReportOrder);
                 return cyclicReportOrder.getId();
             }
@@ -134,9 +130,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the given id
      */
     public static CyclicReportOrder fetchById(final Long id) {
-        //todo user
-        User user = null;
-        Collection<CyclicReportOrder> c = fetch(user, null, "id = ?", null, id);
+        Collection<CyclicReportOrder> c = fetch(null, null, "id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
         }
@@ -169,6 +163,7 @@ public class CyclicReportOrderDAO {
 
             @Override
             public Collection<CyclicReportOrder> lambda() {
+                //todo
                 Set<Long> ids = new HashSet<Long>();
                 for (CyclicReportOrder cro : reportOrders) {
                     ids.add(cro.getId());
@@ -190,16 +185,15 @@ public class CyclicReportOrderDAO {
     /**
      * Counts cyclic report orders matching given filter
      *
+     * @param user user
      * @param filter Filter
      * @return Number of matching cyclic report orders
      */
-    public static Integer countMatching(final String filter) {
+    public static Integer count(final User user, final String filter) {
         return new WHS<Long>() {
 
             @Override
             public Long lambda() {
-                //todo user
-                User user = null;
                 Query query = createQuery(SelectType.SELECT_COUNT_CRO, sess, user, filter, null, null, (Object[]) null);
                 Long count = (Long) query.uniqueResult();
                 logger.info("count: " + count);
@@ -212,18 +206,17 @@ public class CyclicReportOrderDAO {
      * Fetches cyclic report orders matching given filter starting from
      * firstResult position. No more than maxResults is returned.
      *
+     * @param user User
      * @param filter Filter
      * @param firstResult Index of the first result
      * @param maxResults Number of maximum results
      * @return A collection of mathing cyclic report orders
      */
-    public static Collection<CyclicReportOrder> fetch(final String filter, final int firstResult, final int maxResults) {
+    public static Collection<CyclicReportOrder> fetch(final User user, final String filter, final int firstResult, final int maxResults) {
         return new WHS<Collection<CyclicReportOrder>>() {
 
             @Override
             public Collection<CyclicReportOrder> lambda() {
-                //todo user
-                User user = null;
                 Query query = createQuery(SelectType.SELECT_CRO, sess, user, filter, null, null, (Object[]) null);
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
@@ -255,6 +248,13 @@ public class CyclicReportOrderDAO {
 
     private static Query createQuery(SelectType type, Session session, User user, String nameFilter,
             String hqlRestriction, String hqlOther, Object... parameters) {
+        
+        if (user == null || !user.isAdministrator()) {
+            Collection<Integer> ids = ReportTemplateDAO.fetchActiveIds(user);
+            for (Integer id : ids) {
+                logger.info("ID: " + id);
+            }
+        }
 
         if (nameFilter == null) {
             nameFilter = "";
@@ -312,7 +312,7 @@ public class CyclicReportOrderDAO {
         }
 
         //todots
-//        logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
+        logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
             String paramsS = "[";

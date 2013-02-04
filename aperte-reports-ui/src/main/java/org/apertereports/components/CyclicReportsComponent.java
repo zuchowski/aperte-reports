@@ -109,12 +109,13 @@ public class CyclicReportsComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return CyclicReportOrderDAO.countMatching(filter);
+                return CyclicReportOrderDAO.count(user, filter);
             }
 
             @Override
             protected Collection<CyclicReportOrder> fetch(String filter, int firstResult, int maxResults) {
-                return CyclicReportOrderDAO.fetch(filter, firstResult, maxResults);
+                //todo user
+                return CyclicReportOrderDAO.fetch(user, filter, firstResult, maxResults);
             }
         };
 

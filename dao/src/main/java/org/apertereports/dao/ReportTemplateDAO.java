@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ReportTemplateDAO {
 
-    //todots doc
     private enum SelectType {
 
         /**
@@ -43,8 +42,8 @@ public class ReportTemplateDAO {
      * @param user User
      * @return A collection active report templates
      */
-    public static Collection<ReportTemplate> fetchAllActive(User user) {
-        return fetch(user, null, "active = true");
+    public static Collection<ReportTemplate> fetchActive(User user) {
+        return fetch(user, null, "active = true", null, new Object[]{});
     }
 
     /**
@@ -97,14 +96,6 @@ public class ReportTemplateDAO {
         return null;
     }
 
-    private static Collection<ReportTemplate> fetch(User user, String nameFilter, String hqlRestriction) {
-        return fetch(user, nameFilter, hqlRestriction, null, new Object[]{});
-    }
-
-    private static Collection<ReportTemplate> fetch(User user, String nameFilter, String hqlRestriction, String hqlOther) {
-        return fetch(user, nameFilter, hqlRestriction, hqlOther, new Object[]{});
-    }
-
     private static Collection<ReportTemplate> fetch(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
         return new WHS<Collection<ReportTemplate>>() {
 
@@ -124,9 +115,8 @@ public class ReportTemplateDAO {
     /**
      * Returns a list of report templates relevant to given ids.
      *
-     * @param ids An array of {@link org.apertereports.model.CyclicReportOrder}
-     * primary key values.
-     * @return A list of cyclic report orders
+     * @param ids An array of primary key values
+     * @return A list of report templates
      */
     public static Collection<ReportTemplate> fetchByIds(Integer... ids) {
         if (ids.length == 0) {
@@ -138,14 +128,15 @@ public class ReportTemplateDAO {
     /**
      * Removes given report template
      *
-     * @param reportTemplate Report template to remove
+     * @param rt Report template to remove
      */
-    public static void remove(final ReportTemplate reportTemplate) {
+    public static void remove(final ReportTemplate rt) {
         new WHS<Void>() {
 
             @Override
             public Void lambda() {
-                sess.delete(reportTemplate);
+                logger.info("removing report template, id: " + rt.getId());
+                sess.delete(rt);
                 return null;
             }
         }.p();
@@ -155,14 +146,15 @@ public class ReportTemplateDAO {
      * Saves an instance of report template to database. Returns the persisted
      * object's id.
      *
-     * @param reportTemplate A report template to save
+     * @param rt A report template to save
      */
-    public static void saveOrUpdate(final ReportTemplate reportTemplate) {
+    public static void saveOrUpdate(final ReportTemplate rt) {
         new WHS<Void>() {
 
             @Override
             public Void lambda() {
-                sess.saveOrUpdate(reportTemplate);
+                logger.info("saving report template, id: " + rt.getId());
+                sess.saveOrUpdate(rt);
                 return null;
             }
         }.p();
