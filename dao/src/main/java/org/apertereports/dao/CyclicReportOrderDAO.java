@@ -1,14 +1,13 @@
 package org.apertereports.dao;
 
-import org.hibernate.Criteria;
+import org.apertereports.dao.utils.GeneralDAO;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.CyclicReportOrder;
 
 import java.util.*;
 import org.apertereports.common.users.User;
-import org.apertereports.common.users.UserRole;
+import org.apertereports.common.utils.TextUtils;
 import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
  */
 public class CyclicReportOrderDAO {
 
-    //todots doc
     private enum SelectType {
 
         /**
@@ -33,8 +31,6 @@ public class CyclicReportOrderDAO {
         SELECT_COUNT_CRO
     }
     private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
-    //todo generalDao
-    private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
      * Returns all cyclic report orders from database corresponding to the
@@ -43,7 +39,7 @@ public class CyclicReportOrderDAO {
      * @return A collection of cyclic report orders
      */
     public static Collection<CyclicReportOrder> fetch() {
-        return fetch(ADMIN_USER, null, null, null, (Object[]) null);
+        return fetch(GeneralDAO.ADMIN_USER, null, null, null, (Object[]) null);
     }
 
     /**
@@ -70,8 +66,11 @@ public class CyclicReportOrderDAO {
         if (c.size() == 1) {
             return c.iterator().next();
         }
+
+        if (c.size() > 1) {
+            logger.info("size > 1, return null");
+        }
         return null;
-        //todo uniqueResult
     }
 
     /**
@@ -80,7 +79,7 @@ public class CyclicReportOrderDAO {
      * @param reports A collection of cyclic reports to remove
      */
     public static void remove(Collection<CyclicReportOrder> reports) {
-        remove(reports.toArray(new CyclicReportOrder[0]));
+        GeneralDAO.remove(reports);
     }
 
     /**
@@ -89,19 +88,7 @@ public class CyclicReportOrderDAO {
      * @param cyclicReportOrders An array of cyclic reports to remove
      */
     public static void remove(final CyclicReportOrder... cyclicReportOrders) {
-        new WHS<Boolean>() {
-
-            @Override
-            public Boolean lambda() {
-                for (CyclicReportOrder cro : cyclicReportOrders) {
-                    if (cro != null) {
-                        logger.info("removing cyclic report order, id: " + cro.getId());
-                        sess.delete(cro);
-                    }
-                }
-                return true;
-            }
-        }.p();
+        GeneralDAO.remove((Object[]) cyclicReportOrders);
     }
 
     /**
@@ -112,15 +99,8 @@ public class CyclicReportOrderDAO {
      * @return id The cyclic report id
      */
     public static Long saveOrUpdate(final CyclicReportOrder cyclicReportOrder) {
-        return new WHS<Long>() {
-
-            @Override
-            public Long lambda() {
-                logger.info("saving cyclic report order, id: " + cyclicReportOrder.getId());
-                sess.saveOrUpdate(cyclicReportOrder);
-                return cyclicReportOrder.getId();
-            }
-        }.p();
+        GeneralDAO.saveOrUpdate(cyclicReportOrder);
+        return cyclicReportOrder.getId();
     }
 
     /**
@@ -131,7 +111,7 @@ public class CyclicReportOrderDAO {
      * @return A cyclic report corresponding to the given id
      */
     public static CyclicReportOrder fetchById(final Long id) {
-        Collection<CyclicReportOrder> c = fetch(ADMIN_USER, null, "id = ?", null, id);
+        Collection<CyclicReportOrder> c = fetch(GeneralDAO.ADMIN_USER, null, "id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
         }
@@ -150,37 +130,6 @@ public class CyclicReportOrderDAO {
             return new LinkedList<CyclicReportOrder>();
         }
         return fetch(null, null, "id IN (?)", null, (Object[]) ids);
-    }
-
-    /**
-     * Updates only given instances of {@link CyclicReportOrder} and removes not
-     * listed from database. Returns a list of deleted (trimmed) cyclic reports.
-     *
-     * @param reportOrders Instances to update
-     * @return A collection of deleted cyclic reports
-     */
-    public static Collection<CyclicReportOrder> trimAndUpdate(final Collection<CyclicReportOrder> reportOrders) {
-        return new WHS<Collection<CyclicReportOrder>>(true) {
-
-            @Override
-            public Collection<CyclicReportOrder> lambda() {
-                //todo
-                Set<Long> ids = new HashSet<Long>();
-                for (CyclicReportOrder cro : reportOrders) {
-                    ids.add(cro.getId());
-                    sess.saveOrUpdate(cro);
-                }
-                Criteria crit = sess.createCriteria(CyclicReportOrder.class);
-                if (!ids.isEmpty()) {
-                    crit.add(Restrictions.not(Restrictions.in("id", ids)));
-                }
-                List<CyclicReportOrder> list = crit.list();
-                for (CyclicReportOrder cro : list) {
-                    sess.delete(cro);
-                }
-                return list;
-            }
-        }.p();
     }
 
     /**
@@ -305,16 +254,7 @@ public class CyclicReportOrderDAO {
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
-            String paramsS = "[";
-            if (!params.isEmpty()) {
-                Iterator it = params.iterator();
-                paramsS += it.next();
-                while (it.hasNext()) {
-                    paramsS += "," + it.next();
-                }
-            }
-            paramsS += "]";
-            logger.info("params: " + paramsS);
+            logger.info("params: [" + TextUtils.getCommaSeparatedString(params) + "]");
         }
 
         return q;

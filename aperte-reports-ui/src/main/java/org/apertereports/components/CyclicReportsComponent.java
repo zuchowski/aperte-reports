@@ -115,7 +115,6 @@ public class CyclicReportsComponent extends Panel {
 
             @Override
             protected Collection<CyclicReportOrder> fetch(String filter, int firstResult, int maxResults) {
-                //todo user
                 return CyclicReportOrderDAO.fetch(user, filter, firstResult, maxResults);
             }
         };
@@ -442,8 +441,6 @@ public class CyclicReportsComponent extends Panel {
                 return field;
             } else {
                 Field field = super.createField(item, propertyId, uiContext);
-                //todots ?
-//                field.setWidth("150px");
                 field.setCaption(VaadinUtil.getValue(CYCLIC_EDIT_CAPTION + propertyId));
                 field.setRequired(true);
                 if (propertyId.equals(ORDER_CRON_SPEC) || propertyId.equals(ORDER_RECIPIENT_EMAIL)) {

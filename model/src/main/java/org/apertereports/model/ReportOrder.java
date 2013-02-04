@@ -226,4 +226,9 @@ public class ReportOrder {
         copy.setUsername(getUsername());
         return copy;
     }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ", id: " + id;
+    }
 }

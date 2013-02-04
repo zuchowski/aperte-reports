@@ -34,8 +34,6 @@ public abstract class ComponentFactory {
         format.setStyleName("small");
         format.setNullSelectionAllowed(false);
         format.setTextInputAllowed(false);
-        //todots
-        //format.setWidth("100%");
         return format;
     }
 

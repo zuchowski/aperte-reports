@@ -235,4 +235,9 @@ public class ReportTemplate implements Serializable {
         }
         return true;
     }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ", id: " + id;
+    }
 }

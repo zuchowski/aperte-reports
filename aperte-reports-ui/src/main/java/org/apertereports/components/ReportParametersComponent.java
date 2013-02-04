@@ -164,9 +164,9 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             parameters.put(field.getName(), value);
         }
 
-        //todots move id to id, move management of user properties to base class (?)
+        //xxxs move id to id, move management of user properties to base class (?)
         parameters.put("login", getLogin());
-//        TODO: use property set underneath the form
+//        xxx: use property set underneath the form
         parameters.put(JRParameter.REPORT_LOCALE, localeComboBox.getValue() == null ? null : localeComboBox.getValue().toString());
         return parameters;
 
@@ -574,7 +574,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
         for (ReportConfigParameter param : params) {
 
-            //todots maybe it could be easier to have linked map as parameters instead of list
+            //xxx maybe it could be easier to have linked map as parameters instead of list
             if (param.getName().equals(JRParameter.REPORT_LOCALE)) {
                 if (localeComboBox != null) {
                     Locale locale = LocaleUtils.createLocale(param.getValue());

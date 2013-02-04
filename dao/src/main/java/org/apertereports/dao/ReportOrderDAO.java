@@ -2,7 +2,8 @@ package org.apertereports.dao;
 
 import java.util.*;
 import org.apertereports.common.users.User;
-import org.apertereports.common.users.UserRole;
+import org.apertereports.common.utils.TextUtils;
+import org.apertereports.dao.utils.GeneralDAO;
 
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportOrder;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ReportOrderDAO {
 
-    //todots doc
     private enum SelectType {
 
         /**
@@ -31,7 +31,6 @@ public class ReportOrderDAO {
         SELECT_COUNT_RO
     }
     private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
-    private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
      * Returns a unique report order representation from database by primary
@@ -41,7 +40,7 @@ public class ReportOrderDAO {
      * @return A report order corresponding to the given id
      */
     public static ReportOrder fetchById(final Long id) {
-        Collection<ReportOrder> c = fetch(ADMIN_USER, null, "id = ?", null, id);
+        Collection<ReportOrder> c = fetch(GeneralDAO.ADMIN_USER, null, "id = ?", null, id);
         if (c.size() == 1) {
             return c.iterator().next();
         }
@@ -65,9 +64,8 @@ public class ReportOrderDAO {
      *
      * @param reports A collection of cyclic reports to remove
      */
-    //todo generalDao
     public static void remove(Collection<ReportOrder> reports) {
-        remove(reports.toArray(new ReportOrder[0]));
+        GeneralDAO.remove(reports);
     }
 
     /**
@@ -76,20 +74,8 @@ public class ReportOrderDAO {
      *
      * @param reports An array of report orders to delete.
      */
-    //todo generalDao
     public static void remove(final ReportOrder... reports) {
-        new WHS<Void>() {
-
-            @Override
-            public Void lambda() {
-                for (ReportOrder reportOrder : reports) {
-                    if (reportOrder != null) {
-                        sess.delete(reportOrder);
-                    }
-                }
-                return null;
-            }
-        }.p();
+        GeneralDAO.remove((Object[]) reports);
     }
 
     /**
@@ -98,16 +84,9 @@ public class ReportOrderDAO {
      * @param reportOrder A report order
      * @return The id
      */
-    //todo generalDAO
     public static Long saveOrUpdate(final ReportOrder reportOrder) {
-        return new WHS<Long>() {
-
-            @Override
-            public Long lambda() {
-                sess.saveOrUpdate(reportOrder);
-                return reportOrder.getId();
-            }
-        }.p();
+        GeneralDAO.saveOrUpdate(reportOrder);
+        return reportOrder.getId();
     }
 
     /**
@@ -232,17 +211,7 @@ public class ReportOrderDAO {
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
-            //todo string list utils
-            String paramsS = "[";
-            if (!params.isEmpty()) {
-                Iterator it = params.iterator();
-                paramsS += it.next();
-                while (it.hasNext()) {
-                    paramsS += "," + it.next();
-                }
-            }
-            paramsS += "]";
-            logger.info("params: " + paramsS);
+            logger.info("params: [" + TextUtils.getCommaSeparatedString(params) + "]");
         }
 
         return q;

@@ -5,6 +5,8 @@ import org.apertereports.common.ReportConstants.ErrorCodes;
 import org.apertereports.common.exception.AperteReportsException;
 import org.apertereports.common.users.User;
 import org.apertereports.common.users.UserRole;
+import org.apertereports.common.utils.TextUtils;
+import org.apertereports.dao.utils.GeneralDAO;
 
 import org.apertereports.dao.utils.WHS;
 import org.apertereports.model.ReportTemplate;
@@ -34,13 +36,12 @@ public class ReportTemplateDAO {
         SELECT_RT_ID
     }
     private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
-    private static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
 
     /**
      * Returns all active report templates for given user
      *
      * @param user User
-     * @return A collection active report templates
+     * @return A collection of active report templates
      */
     public static Collection<ReportTemplate> fetchActive(User user) {
         return fetch(user, null, "active = true", null, new Object[]{});
@@ -88,11 +89,11 @@ public class ReportTemplateDAO {
             return c.iterator().next();
         }
         //check if exists...
-        Integer count = count(ADMIN_USER, null, "active = true AND id = ?", null, id);
+        Integer count = count(GeneralDAO.ADMIN_USER, null, "active = true AND id = ?", null, id);
         if (count > 0) {
             throw new AperteReportsException(ErrorCodes.REPORT_ACCESS_DENIED);
         }
-        //not exists
+        //doesn't exist
         return null;
     }
 
@@ -131,15 +132,7 @@ public class ReportTemplateDAO {
      * @param rt Report template to remove
      */
     public static void remove(final ReportTemplate rt) {
-        new WHS<Void>() {
-
-            @Override
-            public Void lambda() {
-                logger.info("removing report template, id: " + rt.getId());
-                sess.delete(rt);
-                return null;
-            }
-        }.p();
+        GeneralDAO.remove(rt);
     }
 
     /**
@@ -149,15 +142,7 @@ public class ReportTemplateDAO {
      * @param rt A report template to save
      */
     public static void saveOrUpdate(final ReportTemplate rt) {
-        new WHS<Void>() {
-
-            @Override
-            public Void lambda() {
-                logger.info("saving report template, id: " + rt.getId());
-                sess.saveOrUpdate(rt);
-                return null;
-            }
-        }.p();
+        GeneralDAO.saveOrUpdate(rt);
 
     }
 
@@ -168,9 +153,19 @@ public class ReportTemplateDAO {
      * @param nameFilter Name filter
      * @return Number of matching report templates
      */
+    public static Integer count(final User user, final String nameFilter) {
+        return count(user, nameFilter, null, null, (Object[]) null);
+    }
+
+    /**
+     * Counts active report templates matching given filter for given user
+     *
+     * @param user User
+     * @param nameFilter Name filter
+     * @return Number of matching active report templates
+     */
     public static Integer countActive(final User user, final String nameFilter) {
         return count(user, nameFilter, "active = true", null, (Object[]) null);
-
     }
 
     /**
@@ -205,11 +200,33 @@ public class ReportTemplateDAO {
      * @return A collection of mathing report templates
      */
     public static Collection<ReportTemplate> fetchActive(final User user, final String filter, final int firstResult, final int maxResults) {
+        return fetch(user, filter, firstResult, maxResults, true);
+    }
+
+    /**
+     * Returns report templates matching given filter starting from firstResult
+     * position. No more than maxResults is returned. Only reports with access
+     * for given user are available.
+     *
+     * @param user User
+     * @param filter Filter
+     * @param firstResult Index of the first result
+     * @param maxResults Number of maximum results
+     * @return A collection of mathing report templates
+     */
+    public static Collection<ReportTemplate> fetch(final User user, final String filter, final int firstResult, final int maxResults) {
+        return fetch(user, filter, firstResult, maxResults, false);
+    }
+
+    private static Collection<ReportTemplate> fetch(final User user, final String filter, final int firstResult, final int maxResults,
+            final boolean onlyActive) {
+
         return new WHS<Collection<ReportTemplate>>() {
 
             @Override
             public Collection<ReportTemplate> lambda() {
-                Query query = createQuery(SelectType.SELECT_RT, sess, user, filter, "active = true", "order by id");
+                Query query = createQuery(SelectType.SELECT_RT, sess, user, filter,
+                        onlyActive ? "active = true" : null, "order by id");
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
                 Collection c = query.list();
@@ -305,16 +322,7 @@ public class ReportTemplateDAO {
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
         logger.info("query: " + queryS);
         if (logger.isInfoEnabled() && !params.isEmpty()) {
-            String paramsS = "[";
-            if (!params.isEmpty()) {
-                Iterator it = params.iterator();
-                paramsS += it.next();
-                while (it.hasNext()) {
-                    paramsS += "," + it.next();
-                }
-            }
-            paramsS += "]";
-            logger.info("params: " + paramsS);
+            logger.info("params: [" + TextUtils.getCommaSeparatedString(params) + "]");
         }
 
         return q;

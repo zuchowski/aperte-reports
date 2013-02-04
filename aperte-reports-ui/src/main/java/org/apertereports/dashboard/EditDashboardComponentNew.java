@@ -240,7 +240,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
      * @return Report config or
      * <code>null</code>
      */
-    //todots consider moving config management to base class
+    //xxx consider moving config management to base class
     private ReportConfig getCurrentConfig() {
         if (reportConfigs == null || reportConfigs.isEmpty()) {
             return new ReportConfig();

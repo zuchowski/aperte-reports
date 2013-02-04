@@ -62,7 +62,6 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
-<!--        todots-->
         <dependency>
             <groupId>com.liferay.portal</groupId>
             <artifactId>portal-impl</artifactId>

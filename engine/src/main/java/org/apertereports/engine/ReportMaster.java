@@ -97,7 +97,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      * and compiles the report from source directly.
      *
      * @param reportSource A JRXML report source
-     * @param subreportProvider TODO
+     * @param subreportProvider Subreport provider
      * @throws AperteReportsException on error
      */
     public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws AperteReportsException {
@@ -111,7 +111,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      *
      * @param reportSource A JRXML report source
      * @param cacheId A report cache id
-     * @param subreportProvider TODO
+     * @param subreportProvider Subreport provider
      * @throws JRException on Jasper error
      * @throws SubreportNotFoundException
      */
@@ -128,7 +128,7 @@ public class ReportMaster implements ReportConstants, ConfigurationConstants {
      *
      * @param reportSource Bytes of a JRXML report source
      * @param cacheId A report cache id
-     * @param subreportProvider TODO
+     * @param subreportProvider Subreport provider
      * @throws AperteReportsException on error
      */
     public ReportMaster(byte[] reportSource, String cacheId, SubreportProvider subreportProvider)

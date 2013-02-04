@@ -7,7 +7,7 @@ import com.vaadin.ui.Window;
 /**
  * A simple modal window with fixed height. The base component is added to a scrollable panel.
  */
-//todots maybe in the future use modal windows to perform some configuration actions?
+//xxx maybe in the future use modal windows to perform some configuration actions?
 public class ModalWindow extends Window {
     public ModalWindow(String caption, Component component) {
         super(caption);

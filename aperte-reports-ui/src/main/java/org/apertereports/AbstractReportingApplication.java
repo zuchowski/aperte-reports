@@ -39,9 +39,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractReportingApplication<T extends Panel> extends TPTApplication implements
         PortletApplicationContext2.PortletListener {
-    
-    private static final Logger logger = LoggerFactory.getLogger(AbstractReportingApplication.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractReportingApplication.class);
     /**
      * Main window object
      */
@@ -82,11 +81,11 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
     protected abstract void portletInit();
 
     /**
-     * Initializes user data when the first request of the user occurs
+     * Reinitializes user data when the user is logged on or logged off.
      *
-     * @param user User
+     * @param user User, can be null when user is not logged
      */
-    protected abstract void initUserData(User user);
+    protected abstract void reinitUserData(User user);
 
     /**
      * This method should be overriden to implement a custom behavior on a first
@@ -155,7 +154,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                 com.liferay.portal.model.User liferayUser = PortalUtil.getUser(request);
 
                 //liferay user can be null because he can be not logged in 
-                if (liferayUser != null) {
+                if (liferayUser != null && (user == null || user.getLogin().equals(liferayUser.getLogin()))) {
                     String login = liferayUser.getLogin();
                     String email = liferayUser.getEmailAddress();
                     Set<UserRole> roles = new HashSet<UserRole>();
@@ -169,10 +168,13 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                     }
 
                     user = new User(login, roles, admin, email);
-                    initUserData(user);
+                    reinitUserData(user);
                 }
-                
-                //todo user logged of
+
+                if (liferayUser == null && user != null) {  //check if user logged off
+                    user = null;
+                    reinitUserData(user);
+                }
 
                 locale = PortalUtil.getLocale(request);
             } catch (Exception e) {
@@ -180,6 +182,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                 throw new RuntimeException(e);
             }
         }
+        logger.info("RENDER REQUEST END, " + getClass().getSimpleName());
     }
 
     /**

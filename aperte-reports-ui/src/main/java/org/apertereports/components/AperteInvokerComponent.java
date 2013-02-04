@@ -96,7 +96,7 @@ public class AperteInvokerComponent extends Panel {
             }
         }
 
-//		TODO: could be better
+//		xxx: could be better
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));

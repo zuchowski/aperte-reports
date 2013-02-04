@@ -181,4 +181,9 @@ public class CyclicReportOrder {
     public void setReportOrder(ReportOrder reportOrder) {
         this.reportOrder = reportOrder;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ", id: " + id;
+    }
 }

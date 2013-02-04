@@ -126,7 +126,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
     }
 
     @Override
-    protected void initUserData(User user) {
+    protected void reinitUserData(User user) {
         //nothing to do
     }
 }

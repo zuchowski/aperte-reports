@@ -25,7 +25,7 @@ public class InvokerApplication extends AbstractReportingApplication<AperteInvok
     }
 
     @Override
-    protected void initUserData(User user) {
+    protected void reinitUserData(User user) {
         mainPanel.initData(user);
     }
 }

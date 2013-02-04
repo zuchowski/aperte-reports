@@ -110,13 +110,12 @@ public class ReportManagerComponent extends Panel {
 
             @Override
             protected int getListSize(String filter) {
-                return ReportTemplateDAO.countActive(user, filter);
+                return ReportTemplateDAO.count(user, filter);
             }
 
             @Override
             protected Collection<ReportTemplate> fetch(String filter, int firstResult, int maxResults) {
-                //todots why active and not all?
-                return ReportTemplateDAO.fetchActive(user, filter, firstResult, maxResults);
+                return ReportTemplateDAO.fetch(user, filter, firstResult, maxResults);
             }
         };
 
@@ -299,9 +298,6 @@ public class ReportManagerComponent extends Panel {
             UiFactoryExt.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
                     headerRow, FAction.ALIGN_RIGTH);
 
-            //todots what is it for?
-            HorizontalLayout uploadRow = UiFactory.createHLayout(this);
-
             UiFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, this, DESC_STYLE, FAction.SET_FULL_WIDTH);
 
             HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_SPACING);
@@ -379,7 +375,7 @@ public class ReportManagerComponent extends Panel {
             }
         }
 
-        // TODO: could be better
+        // xxx: could be better
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
