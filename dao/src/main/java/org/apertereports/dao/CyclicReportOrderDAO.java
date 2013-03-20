@@ -223,13 +223,18 @@ public class CyclicReportOrderDAO {
         if (user == null || !user.isAdministrator()) {
             Collection<Integer> ids = ReportTemplateDAO.fetchActiveIds(user);
             StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for (Integer id : ids) {
-                if (!first) {
-                    sb.append(',');
+            if (!ids.isEmpty()) {
+
+                boolean first = true;
+                for (Integer id : ids) {
+                    if (!first) {
+                        sb.append(',');
+                    }
+                    first = false;
+                    sb.append(id);
                 }
-                first = false;
-                sb.append(id);
+            } else {
+                sb.append("-1");    //no report found
             }
             where.add("cro.report.id IN (" + sb + ")");
         }   //when the user is administrator then all reports are available for him
