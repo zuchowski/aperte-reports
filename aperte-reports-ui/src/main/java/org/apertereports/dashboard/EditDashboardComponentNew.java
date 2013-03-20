@@ -63,7 +63,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         paramsParentComponent.addComponent(paramsPanel);
         paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
 
-        HorizontalLayout hl = UiFactory.createHLayout(paramsParentComponent);
+        HorizontalLayout hl = UiFactory.createHLayout(paramsParentComponent, FAction.SET_SPACING);
         UiFactory.createButton(UiIds.LABEL_OK, hl, new ClickListener() {
 
             @Override

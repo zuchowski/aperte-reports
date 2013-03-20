@@ -98,7 +98,7 @@ public class ReportManagerComponent extends Panel {
         Upload newReportUpload = new Upload(null, newReportReceiver);
         newReportUpload.addListener((SucceededListener) newReportReceiver);
         newReportUpload.addListener((FailedListener) newReportReceiver);
-        newReportUpload.setButtonCaption(VaadinUtil.getValue(UiIds.LABEL_ADD_3DOTS));
+        newReportUpload.setButtonCaption(VaadinUtil.getValue(UiIds.LABEL_ADD));
         newReportUpload.setImmediate(true);
         HorizontalLayout hl = UiFactory.createHLayout(mainLayout, FAction.SET_FULL_WIDTH);
         list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {

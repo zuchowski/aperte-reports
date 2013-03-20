@@ -372,6 +372,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
         } catch (JRFontNotFoundException e) {
             throw new ARException(ErrorCode.FONT_NOT_FOUND, e);
         } catch (Exception e) {
+            logger.error("Unknown error", e);
             throw new ARException(e);
         }
     }
