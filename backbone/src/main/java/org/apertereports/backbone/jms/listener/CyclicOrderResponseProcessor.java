@@ -5,9 +5,9 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.apertereports.common.ARConstants;
-import org.apertereports.dao.CyclicReportOrderDAO;
+import org.apertereports.dao.CyclicReportConfigDAO;
 import org.apertereports.dao.ReportOrderDAO;
-import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.CyclicReportConfig;
 import org.apertereports.model.ReportOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +23,12 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	 * Singleton
 	 */
 	private static CyclicOrderResponseProcessor instance;
-        private static Logger logger = LoggerFactory.getLogger(CyclicOrderResponseProcessor.class);
+        private static Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
 	
 	public static synchronized CyclicOrderResponseProcessor getInstance() {
-		if(instance == null)
-			instance = new CyclicOrderResponseProcessor();
+		if(instance == null) {
+            instance = new CyclicOrderResponseProcessor();
+        }
 		return instance;
 	}
 	
@@ -48,6 +49,7 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	public void onMessage(Message message) {
 		try {
 			Long id = message.getLongProperty(ARConstants.REPORT_ORDER_ID);
+            logger.info("On message, order id: " + id);
 			ReportOrder reportOrder = ReportOrderDAO.fetchById(id);
 			processReport(reportOrder);
 		} catch (JMSException e) {
@@ -63,18 +65,17 @@ public class CyclicOrderResponseProcessor implements MessageListener {
 	 *            Generated report order
 	 */
 	private void processReport(final ReportOrder reportOrder) {
-		CyclicReportOrder cyclicReportOrder = CyclicReportOrderDAO.fetchForReportOrder(reportOrder.getId());
-
-		if (cyclicReportOrder == null) {
+		CyclicReportConfig config = CyclicReportConfigDAO.fetchForProcessedReportOrder(reportOrder.getId());
+		if (config == null) {
+            logger.warn("config is null");
 			return;
 		}
 
-		cyclicReportOrder.setProcessedOrder(null);
-
+		config.setProcessedOrder(null);
 		if (reportOrder.getReportResult() != null) {
-			cyclicReportOrder.setReportOrder(reportOrder);
+			config.setReportOrder(reportOrder);
 		}
 
-		CyclicReportOrderDAO.saveOrUpdate(cyclicReportOrder);
+		CyclicReportConfigDAO.saveOrUpdate(config);
 	}
 }

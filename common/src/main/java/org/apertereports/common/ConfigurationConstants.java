@@ -38,21 +38,6 @@ public interface ConfigurationConstants {
     static final String MAIL_SEND_DELAY = "mail.send.delay";
 
     /**
-     * The key used to get the report generation JMS queue from configuration.
-     */
-    static final String JNDI_JMS_QUEUE_GENERATE_REPORT = "jndi.jms.queue.generate_report";
-
-    /**
-     * The key used to get the cyclic reports JMS queue from configuration.
-     */
-    static final String JNDI_JMS_QUEUE_CYCLIC_REPORT = "jndi.jms.queue.cyclic_report_order";
-
-    /**
-     * The key used to get the JMS connection factory name from configuration.
-     */
-    static final String JNDI_JMS_CONNECTION_FACTORY = "jndi.jms.connection_factory";
-
-    /**
      * The key used to set Jasper's character encoding.
      */
     static final String JASPER_REPORTS_CHARACTER_ENCODING = "jasper_reports.character_encoding";

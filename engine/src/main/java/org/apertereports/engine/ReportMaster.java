@@ -536,7 +536,9 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @throws SQLException on errors while connecting to the datasource
      */
     private Connection getConnectionByJNDI(String jndiName) throws NamingException, SQLException {
-        logger.info("Getting database connection by JNDI");
+        logger.info("Getting database connection by JNDI: " + jndiName);
+        logger.info("Getting database connection by JNDI: " + jndiName);
+        logger.info("Getting database connection by JNDI: " + jndiName);
         DataSource ds;
         try {
             ds = (DataSource) new InitialContext().lookup(jndiName);

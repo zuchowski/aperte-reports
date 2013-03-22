@@ -2,7 +2,6 @@ package org.apertereports.components;
 
 import java.util.Collection;
 
-import org.apertereports.util.ComponentFactory;
 
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -11,6 +10,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apertereports.ui.UiFactory;
+import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 
 /**
@@ -85,7 +85,7 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
     }
 
     private void addFooter() {
-        HorizontalLayout hl = UiFactory.createHLayout(this);
+        HorizontalLayout hl = UiFactory.createHLayout(this, FAction.SET_SPACING);
         hl.setMargin(true, false, false, false);
         if (hasPrevious()) {
             UiFactory.createButton(UiIds.LABEL_PREVIOUS, hl, BaseTheme.BUTTON_LINK, new ClickListener() {

@@ -3,7 +3,7 @@
 // */
 //package org.apertereports.backbone.tests;
 //
-//import org.apertereports.backbone.jms.ReportOrderPusher;
+//import org.apertereports.backbone.jms.ReportOrderBuilder;
 //import org.junit.BeforeClass;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration( {"/testEnvContext.xml"})
 //@TestExecutionListeners
-//public class ReportOrderPusherTest {
+//public class ReportOrderBuilderTest {
 //    /**
 //     * @throws java.lang.Exception
 //     */
@@ -37,7 +37,7 @@
 //
 //    /**
 //     * Test method for
-//     * {@link org.apertereports.backbone.jms.ReportOrderPusher#buildNewOrder(org.apertereports.model.ReportTemplate,
+//     * {@link org.apertereports.backbone.jms.ReportOrderBuilder#buildNewOrder(org.apertereports.model.ReportTemplate,
 //     * java.util.Map, String, String, String, String)}
 //     * .
 //     *
@@ -65,23 +65,23 @@
 //
 //            int reportOrders0 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 //
-//            rep1 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
+//            rep1 = ReportOrderBuilder.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
 //
 //            int reportOrders1 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 //
-//            rep2 = ReportOrderPusher.buildNewOrder(reportTemplate2, parameters1, "", "", "", "");
+//            rep2 = ReportOrderBuilder.buildNewOrder(reportTemplate2, parameters1, "", "", "", "");
 //
 //            int reportOrders2 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 //
-//            rep3 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
+//            rep3 = ReportOrderBuilder.buildNewOrder(reportTemplate1, parameters1, "", "", "", "");
 //
 //            int reportOrders3 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 //
-//            rep4 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters2, "", "", "", "");
+//            rep4 = ReportOrderBuilder.buildNewOrder(reportTemplate1, parameters2, "", "", "", "");
 //
 //            int reportOrders4 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();
 //
-//            rep5 = ReportOrderPusher.buildNewOrder(reportTemplate1, parameters1, format, recipientEmail, username,
+//            rep5 = ReportOrderBuilder.buildNewOrder(reportTemplate1, parameters1, format, recipientEmail, username,
 //                    replyToQ);
 //
 //            int reportOrders5 = org.apertereports.dao.ReportOrderDAO.fetchAllReportOrders().size();

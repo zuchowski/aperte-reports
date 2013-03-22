@@ -45,17 +45,18 @@ public interface ARConstants {
      */
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
     /**
-     * Cyclic reports JMS default queue name.
+     * Cyclic reports JMS queue name.
      */
-    public static final String CYCLIC_REPORT_ORDER_QUEUE_DEFAULT_JNDI_NAME = "java:comp/env/jms/CyclicReportOrderQueue";
+    //todots order czy moze config?
+    public static final String JNDI_JMS_CYCLIC_REPORT_ORDER_QUEUE_NAME = "java:comp/env/jms/CyclicReportOrderQueue";
     /**
-     * Report generation JMS default queue name.
+     * Report generation JMS queue name.
      */
-    public static final String GENERATE_REPORT_QUEUE_DEFAULT_JNDI_NAME = "java:comp/env/jms/GenerateReportQueue";
+    public static final String JNDI_JMS_GENERATE_REPORT_QUEUE_NAME = "java:comp/env/jms/GenerateReportQueue";
     /**
-     * JMS connection factory default name.
+     * JMS connection factory name.
      */
-    public static final String JMS_CONNECTION_FACTORY_DEFAULT_JNDI_NAME = "java:comp/env/jms/ConnectionFactory";
+    public static final String JNDI_JMS_CONNECTION_FACTORY_NAME = "java:comp/env/jms/ConnectionFactory";
     /**
      * Report order id property name.
      */

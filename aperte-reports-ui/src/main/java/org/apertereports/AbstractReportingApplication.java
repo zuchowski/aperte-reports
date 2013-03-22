@@ -74,6 +74,17 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
         setMainWindow(mainWindow);
     }
 
+    @Override
+    public void close() {
+        //todots
+        logger.warn(" ----------------- CLOSE ------------");
+        logger.warn(" ----------------- CLOSE ------------");
+        logger.warn(" ----------------- CLOSE ------------");
+        logger.warn(" ----------------- CLOSE ------------");
+        logger.warn(" ----------------- CLOSE ------------");
+        super.close();
+    }
+
     /**
      * Initializes the portlet GUI.
      */
@@ -148,7 +159,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
      */
     @Override
     public void handleRenderRequest(RenderRequest request, RenderResponse response, Window window) {
-        logger.info("RENDER REQUEST, " + getClass().getSimpleName());
+        logger.debug("RENDER REQUEST, " + getClass().getSimpleName());
         if (getContext() instanceof PortletApplicationContext2) {
             try {
                 com.liferay.portal.model.User liferayUser = PortalUtil.getUser(request);
@@ -182,7 +193,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                 throw new RuntimeException(e);
             }
         }
-        logger.info("RENDER REQUEST END, " + getClass().getSimpleName());
+        logger.debug("RENDER REQUEST END, " + getClass().getSimpleName());
     }
 
     /**

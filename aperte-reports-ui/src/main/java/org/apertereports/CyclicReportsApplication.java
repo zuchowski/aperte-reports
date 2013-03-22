@@ -1,11 +1,12 @@
 package org.apertereports;
 
-import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
+import com.vaadin.ui.Window;
+import org.apertereports.backbone.scheduler.CyclicReportScheduler;
+import org.apertereports.common.exception.ARRuntimeException;
+import org.apertereports.common.users.User;
 import org.apertereports.components.CyclicReportsComponent;
 import org.apertereports.util.VaadinUtil;
-
-import com.vaadin.ui.Window;
-import org.apertereports.common.users.User;
+import org.quartz.SchedulerException;
 
 /**
  * This portlet provides the tabular view of the cyclic reports.
@@ -32,11 +33,18 @@ public class CyclicReportsApplication extends AbstractReportingApplication<Cycli
      */
     @Override
     public void firstApplicationStartup() {
+        System.out.println("------------------------------------");
+        System.out.println("FIRST APP STARTUP ------------------");
+        System.out.println("------------------------------------");
         invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                CyclicReportOrderScheduler.scanForCyclicReportOrders();
+                try {
+                    CyclicReportScheduler.init();
+                } catch (SchedulerException ex) {
+                    throw new ARRuntimeException(ex);
+                }
             }
         });
     }

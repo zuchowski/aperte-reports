@@ -35,7 +35,7 @@ public class ReportTemplateDAO {
          */
         SELECT_RT_ID
     }
-    private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
+    private static final Logger logger = LoggerFactory.getLogger("ar.dao.rt");
 
     /**
      * Returns all active report templates for given user
@@ -319,10 +319,13 @@ public class ReportTemplateDAO {
             q.setParameter(i, params.get(i));
         }
 
+        if (logger.isInfoEnabled()) {       
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
-        logger.info("query: " + queryS);
-        if (logger.isInfoEnabled() && !params.isEmpty()) {
-            logger.info("params: [" + TextUtils.getCommaSeparatedString(params) + "]");
+            String paramsS = "";
+            if (!params.isEmpty()){
+                paramsS = "; params: [" + TextUtils.getCommaSeparatedString(params) + "]";
+            }
+            logger.info("query: " + queryS + paramsS);
         }
 
         return q;

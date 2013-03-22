@@ -4,16 +4,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apertereports.backbone.jms.AperteReportsJmsFacade;
-import org.apertereports.backbone.scheduler.CyclicReportOrderScheduler;
+import org.apertereports.backbone.jms.ARJmsFacade;
+import org.apertereports.backbone.scheduler.CyclicReportScheduler;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.ARConstants.ReportType;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
-import org.apertereports.dao.CyclicReportOrderDAO;
+import org.apertereports.dao.CyclicReportConfigDAO;
 import org.apertereports.engine.ReportMaster;
-import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.CyclicReportConfig;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.ComponentFactory;
 import org.apertereports.util.CronExpressionValidator;
@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apertereports.common.users.User;
 import org.apertereports.common.xml.config.ReportConfigParameter;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
@@ -46,7 +47,7 @@ public class CyclicReportsComponent extends Panel {
 
     private static final int PAGE_SIZE = 10;
     private static final String COMPONENT_STYLE_NAME = "borderless light";
-    private PaginatedPanelList<CyclicReportOrder, CyclicReportPanel> list;
+    private PaginatedPanelList<CyclicReportConfig, CyclicReportPanel> list;
     private static final String DESCRIPTION_STYLE = "small";
     private static final String FORMAT_STYLE = "h4";
     private static final String ORDER_DESCRIPTION = "description";
@@ -102,21 +103,21 @@ public class CyclicReportsComponent extends Panel {
             }
         }, FAction.SET_INVISIBLE);
 
-        list = new PaginatedPanelList<CyclicReportOrder, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
+        list = new PaginatedPanelList<CyclicReportConfig, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
 
             @Override
-            protected CyclicReportPanel transform(CyclicReportOrder object) {
+            protected CyclicReportPanel transform(CyclicReportConfig object) {
                 return new CyclicReportPanel(object);
             }
 
             @Override
             protected int getListSize(String filter) {
-                return CyclicReportOrderDAO.count(user, filter);
+                return CyclicReportConfigDAO.count(user, filter);
             }
 
             @Override
-            protected Collection<CyclicReportOrder> fetch(String filter, int firstResult, int maxResults) {
-                return CyclicReportOrderDAO.fetch(user, filter, firstResult, maxResults);
+            protected Collection<CyclicReportConfig> fetch(String filter, int firstResult, int maxResults) {
+                return CyclicReportConfigDAO.fetch(user, filter, firstResult, maxResults);
             }
         };
 
@@ -124,7 +125,7 @@ public class CyclicReportsComponent extends Panel {
         setStyleName(COMPONENT_STYLE_NAME);
         list.filter(null);
 
-        if (!AperteReportsJmsFacade.isJmsAvailable()) {
+        if (!ARJmsFacade.isJmsAvailable()) {
             VerticalLayout footer = UiFactory.createVLayout(this, FAction.SET_FULL_WIDTH);
             UiFactory.createSpacer(footer, null, "10px");
             UiFactory.createLabel("JMS unavailable, cyclic reports execution is disabled!", footer);
@@ -138,7 +139,7 @@ public class CyclicReportsComponent extends Panel {
         addingNew = true;
         addButton.setVisible(false);
 
-        CyclicReportOrder order = new CyclicReportOrder();
+        CyclicReportConfig order = new CyclicReportConfig();
         VerticalLayout vl = UiFactory.createVLayout(null);
         UiFactory.createSpacer(vl, null, "5px");
         EditCyclicReportPanel ecrp = new EditCyclicReportPanel(order, true);
@@ -151,16 +152,16 @@ public class CyclicReportsComponent extends Panel {
     private class CyclicReportPanel extends Panel {
 
         private static final String REPORT_PANEL_STYLE = COMPONENT_STYLE_NAME;
-        private CyclicReportOrder order;
+        private CyclicReportConfig order;
         private ReportParamPanel paramsPanel;
         private Button toggleParamsButton;
         private HorizontalLayout nameContainer;
         private Button enabledButton;
 
-        public CyclicReportPanel(CyclicReportOrder order) {
+        public CyclicReportPanel(CyclicReportConfig order) {
             this.order = order;
             setStyleName(REPORT_PANEL_STYLE);
-            BeanItem<CyclicReportOrder> item = new BeanItem<CyclicReportOrder>(order);
+            BeanItem<CyclicReportConfig> item = new BeanItem<CyclicReportConfig>(order);
             ((AbstractLayout) getContent()).setMargin(true, true, false, true);
 
             HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
@@ -185,12 +186,12 @@ public class CyclicReportsComponent extends Panel {
                     CyclicReportPanel.this.order.setEnabled(enabled);
                     nameContainer.setEnabled(enabled);
                     enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
-                    CyclicReportOrderDAO.saveOrUpdate(CyclicReportPanel.this.order);
+                    CyclicReportConfigDAO.saveOrUpdate(CyclicReportPanel.this.order);
                     try {
                         if (enabled) {
-                            CyclicReportOrderScheduler.rescheduleCyclicReportOrder(CyclicReportPanel.this.order);
+                            CyclicReportScheduler.schedule(CyclicReportPanel.this.order);
                         } else {
-                            CyclicReportOrderScheduler.unscheduleCyclicReportOrder(CyclicReportPanel.this.order);
+                            CyclicReportScheduler.unschedule(CyclicReportPanel.this.order);
                         }
                     } catch (SchedulerException e) {
                         throw new ARRuntimeException(e);
@@ -232,7 +233,12 @@ public class CyclicReportsComponent extends Panel {
         }
 
         protected void remove() {
-            CyclicReportOrderDAO.remove(order);
+            try {
+                CyclicReportScheduler.unschedule(order);
+            } catch (SchedulerException ex) {
+                throw new ARRuntimeException(ex);
+            }
+            CyclicReportConfigDAO.remove(order);
             list.removeComponent(this);
         }
 
@@ -275,7 +281,7 @@ public class CyclicReportsComponent extends Panel {
                                 new ReportTemplateProvider());
                         byte[] reportData = rm.generateAndExportReport(order.getOutputFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
-                                org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+                                ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), order.getReport().getReportname(), reportData,
                                 order.getOutputFormat());
                     } catch (ARException e) {
@@ -294,7 +300,7 @@ public class CyclicReportsComponent extends Panel {
                     }
                     order.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(
                             paramsPanel.collectParametersValues()));
-                    CyclicReportOrderDAO.saveOrUpdate(order);
+                    CyclicReportConfigDAO.saveOrUpdate(order);
                     toggleParamsPanel();;
                 }
             }, FAction.ALIGN_RIGTH);
@@ -313,11 +319,11 @@ public class CyclicReportsComponent extends Panel {
 
     private class EditCyclicReportPanel extends Panel {
 
-        private CyclicReportOrder order;
+        private CyclicReportConfig order;
         private EditCyclicReportForm form;
         private boolean newItem;
 
-        public EditCyclicReportPanel(CyclicReportOrder order, boolean newItem) {
+        public EditCyclicReportPanel(CyclicReportConfig order, boolean newItem) {
             this.newItem = newItem;
             this.order = order;
 
@@ -357,7 +363,7 @@ public class CyclicReportsComponent extends Panel {
         protected void save() {
             try {
                 form.commit();
-                CyclicReportOrderDAO.saveOrUpdate(order);
+                CyclicReportConfigDAO.saveOrUpdate(order);
                 list.replaceComponent(this, new CyclicReportPanel(order));
                 finish();
             } catch (InvalidValueException e) {
@@ -376,13 +382,13 @@ public class CyclicReportsComponent extends Panel {
 
         private GridLayout layout;
 
-        public EditCyclicReportForm(CyclicReportOrder order) {
+        public EditCyclicReportForm(CyclicReportConfig order) {
             layout = new GridLayout(1, 5);
             layout.setWidth("100%");
             layout.setSpacing(true);
             setLayout(layout);
             setFormFieldFactory(new EditCyclicFormFactory());
-            setItemDataSource(new BeanItem<CyclicReportOrder>(order));
+            setItemDataSource(new BeanItem<CyclicReportConfig>(order));
             setVisibleItemProperties(Arrays.asList(new String[]{ORDER_REPORT, ORDER_CRON_SPEC, ORDER_RECIPIENT_EMAIL,
                         ORDER_OUTPUT_FORMAT, ORDER_DESCRIPTION}));
             setWidth("100%");
@@ -443,15 +449,14 @@ public class CyclicReportsComponent extends Panel {
             } else {
                 Field field = super.createField(item, propertyId, uiContext);
                 field.setCaption(VaadinUtil.getValue(CYCLIC_EDIT_CAPTION + propertyId));
-                field.setRequired(true);
                 if (propertyId.equals(ORDER_CRON_SPEC) || propertyId.equals(ORDER_RECIPIENT_EMAIL)) {
                     ((TextField) field).setNullRepresentation("");
                     ((TextField) field).setInputPrompt(VaadinUtil.getValue(CYCLIC_EDIT_INPUT_PROMPT + propertyId));
                 }
-                field.setRequired(true);
-                field.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR + propertyId));
                 if (propertyId.equals(ORDER_CRON_SPEC)) {
                     field.addValidator(new CronExpressionValidator(VaadinUtil.getValue(VALIDATION_CRON_EXPRESSION)));
+                    field.setRequired(true);
+                    field.setRequiredError(VaadinUtil.getValue(CYCYLIC_EDIT_REQUIRED_ERROR + propertyId));
                 }
                 if (propertyId.equals(ORDER_RECIPIENT_EMAIL)) {
                     field.addValidator(new EmailValidator(VaadinUtil.getValue(VALIDATION_EMAIL)));

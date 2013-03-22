@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apertereports.backbone.jms.AperteReportsJmsFacade;
-import org.apertereports.backbone.util.ReportOrderPusher;
+import org.apertereports.backbone.jms.ARJmsFacade;
+import org.apertereports.backbone.util.ReportOrderBuilder;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
@@ -23,6 +23,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apertereports.common.ARConstants;
+import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.users.User;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
@@ -138,12 +140,10 @@ public class AperteInvokerComponent extends Panel {
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
                         email = null;
                     }
-                    ReportOrder reportOrder = ReportOrderPusher.buildNewOrder(reportTemplate, parameters,
+                    ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
                             panel.getOuptutFormat(), email, user.getLogin(), null);
-                    Long id = reportOrder.getId();
-                    if (id != null) {
-                        ReportOrderPusher.addToJMS(id);
-                    }
+                    //todots id kolejki do wnetrza metody?
+                    ARJmsFacade.sendReportOrderId(reportOrder, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_NAME);
                 }
             });
             if (!backgorundGenerationAvail()) {
@@ -165,7 +165,7 @@ public class AperteInvokerComponent extends Panel {
 
         private boolean backgorundGenerationAvail() {
 
-            return AperteReportsJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+            return ARJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
                     && reportTemplate.getActive();
         }
     }

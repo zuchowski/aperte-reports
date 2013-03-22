@@ -24,7 +24,7 @@ import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.dashboard.html.HtmlReportBuilder;
 import org.apertereports.dashboard.html.ReportDataProvider;
 import org.apertereports.engine.ReportMaster;
-import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.CyclicReportConfig;
 import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.DashboardUtil;
 import org.apertereports.util.NotificationUtil;
@@ -39,7 +39,7 @@ import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.exception.ARException;
-import org.apertereports.dao.CyclicReportOrderDAO;
+import org.apertereports.dao.CyclicReportConfigDAO;
 import org.apertereports.dao.ReportTemplateDAO;
 import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.util.files.TmpDirMgr;
@@ -74,7 +74,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
      */
     private Map<Integer, ReportTemplate> reportMap = new HashMap<Integer, ReportTemplate>();
     private Map<Integer, ReportConfig> configMap = new HashMap<Integer, ReportConfig>();
-    private Map<Long, CyclicReportOrder> cyclicReportMap = new HashMap<Long, CyclicReportOrder>();
+    private Map<Long, CyclicReportConfig> cyclicReportMap = new HashMap<Long, CyclicReportConfig>();
     private String template;
     private MapCache cache;
     private AbstractReportingApplication application;
@@ -310,7 +310,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     new ReportTemplateProvider());
             Map<String, Object> parameters;
             if (config.getCyclicReportId() != null) {
-                CyclicReportOrder cro = cyclicReportMap.get(config.getCyclicReportId());
+                CyclicReportConfig cro = cyclicReportMap.get(config.getCyclicReportId());
                 parameters = new HashMap<String, Object>(XmlReportConfigLoader.getInstance().xmlAsMap(
                         cro.getParametersXml() != null ? cro.getParametersXml() : ""));
             } else {
@@ -377,8 +377,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     }
                 }
             }
-            Collection<CyclicReportOrder> cyclicReports = CyclicReportOrderDAO.fetchByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
-            for (CyclicReportOrder rep : cyclicReports) {
+            Collection<CyclicReportConfig> cyclicReports = CyclicReportConfigDAO.fetchByIds(cyclicConfigMap.keySet().toArray(new Long[cyclicConfigMap.keySet().size()]));
+            for (CyclicReportConfig rep : cyclicReports) {
                 ReportConfig rc = cyclicConfigMap.get(rep.getId());
                 rc.setReportId(rep.getReport().getId());
                 reportIds.add(rep.getReport().getId());

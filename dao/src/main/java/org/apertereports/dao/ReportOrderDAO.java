@@ -30,7 +30,7 @@ public class ReportOrderDAO {
          */
         SELECT_COUNT_RO
     }
-    private static final Logger logger = LoggerFactory.getLogger(CyclicReportOrderDAO.class);
+    private static final Logger logger = LoggerFactory.getLogger("ar.dao.ro");
 
     /**
      * Returns a unique report order representation from database by primary
@@ -180,13 +180,17 @@ public class ReportOrderDAO {
         if (user == null || !user.isAdministrator()) {
             Collection<Integer> ids = ReportTemplateDAO.fetchActiveIds(user);
             StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for (Integer id : ids) {
-                if (!first) {
-                    sb.append(',');
+            if (!ids.isEmpty()) {
+                boolean first = true;
+                for (Integer id : ids) {
+                    if (!first) {
+                        sb.append(',');
+                    }
+                    first = false;
+                    sb.append(id);
                 }
-                first = false;
-                sb.append(id);
+            } else {
+                sb.append("-1");    //no report found
             }
             where.add("ro.report.id IN (" + sb + ")");
         }   //when the user is administrator then all reports are available for him
@@ -208,10 +212,13 @@ public class ReportOrderDAO {
             q.setParameter(i, params.get(i));
         }
 
+        if (logger.isInfoEnabled()) {       
         logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
-        logger.info("query: " + queryS);
-        if (logger.isInfoEnabled() && !params.isEmpty()) {
-            logger.info("params: [" + TextUtils.getCommaSeparatedString(params) + "]");
+            String paramsS = "";
+            if (!params.isEmpty()){
+                paramsS = "; params: [" + TextUtils.getCommaSeparatedString(params) + "]";
+            }
+            logger.info("query: " + queryS + paramsS);
         }
 
         return q;

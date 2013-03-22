@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Class provides useful methods for creating UI components
  *
- * @author Tomasz Serafin, Bluesoft sp. z o. o.
+ * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
 public abstract class UiFactory {
 

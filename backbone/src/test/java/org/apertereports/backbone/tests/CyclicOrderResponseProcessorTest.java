@@ -5,7 +5,7 @@
 //
 //import org.apache.activemq.command.ActiveMQMessage;
 //import org.apertereports.backbone.jms.CyclicOrderResponseProcessor;
-//import org.apertereports.backbone.jms.ReportOrderPusher;
+//import org.apertereports.backbone.jms.ReportOrderBuilder;
 //import org.junit.BeforeClass;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
@@ -60,10 +60,10 @@
 //        try {
 //            reportTemplate = new ReportTemplate();
 //            org.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate);
-//            reportOrder1 = ReportOrderPusher.buildNewOrder(reportTemplate, new HashMap<String, String>(), "a", "", "",
+//            reportOrder1 = ReportOrderBuilder.buildNewOrder(reportTemplate, new HashMap<String, String>(), "a", "", "",
 //                    "");
 //
-//            reportOrder2 = ReportOrderPusher.buildNewOrder(reportTemplate, new HashMap<String, String>(), "b", "", "",
+//            reportOrder2 = ReportOrderBuilder.buildNewOrder(reportTemplate, new HashMap<String, String>(), "b", "", "",
 //                    "");
 //            reportOrder1.setReportStatus(Status.SUCCEEDED);
 //            reportOrder1.setReportResult(testResult);

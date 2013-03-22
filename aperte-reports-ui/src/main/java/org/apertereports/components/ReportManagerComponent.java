@@ -10,8 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.backbone.jms.AperteReportsJmsFacade;
-import org.apertereports.backbone.util.ReportOrderPusher;
+import org.apertereports.backbone.jms.ARJmsFacade;
+import org.apertereports.backbone.util.ReportOrderBuilder;
 import org.apertereports.backbone.util.ReportTemplateProvider;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
@@ -35,11 +35,13 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.themes.BaseTheme;
 import java.util.*;
+import org.apertereports.common.ARConstants;
 import org.apertereports.common.users.User;
-import org.apertereports.dao.CyclicReportOrderDAO;
+import org.apertereports.dao.CyclicReportConfigDAO;
 import org.apertereports.dao.ReportOrderDAO;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.ui.UiIds;
-import org.apertereports.model.CyclicReportOrder;
+import org.apertereports.model.CyclicReportConfig;
 import org.apertereports.ui.*;
 import org.apertereports.ui.UiFactory.FAction;
 import org.slf4j.Logger;
@@ -391,7 +393,7 @@ public class ReportManagerComponent extends Panel {
                         ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
-                                org.apertereports.dao.utils.ConfigurationCache.getConfiguration());
+                                ConfigurationCache.getConfiguration());
                         FileStreamer.showFile(getApplication(), reportTemplate.getReportname(), reportData,
                                 panel.getOuptutFormat());
                     } catch (ARException e) {
@@ -413,15 +415,9 @@ public class ReportManagerComponent extends Panel {
                     if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
                         email = null;
                     }
-                    ReportOrder reportOrder = ReportOrderPusher.buildNewOrder(reportTemplate, parameters,
+                    ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
                             panel.getOuptutFormat(), email, user.getLogin(), null);
-                    Long id = reportOrder.getId();
-                    if (id != null) {
-                        logger.info("Report order id: " + id);
-                        ReportOrderPusher.addToJMS(id);
-                    } else {
-                        logger.warn("Report order id is null, no raport will be generated");
-                    }
+                    ARJmsFacade.sendReportOrderId(reportOrder, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_NAME);
                 }
             });
             if (!backgorundGenerationAvail()) {
@@ -441,7 +437,7 @@ public class ReportManagerComponent extends Panel {
         }
 
         private boolean backgorundGenerationAvail() {
-            return AperteReportsJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+            return ARJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
                     && reportTemplate.getActive();
         }
 
@@ -457,11 +453,11 @@ public class ReportManagerComponent extends Panel {
         list.replaceComponent(reportItemPanel, edit);
     }
 
-    private void removeReportAndDependants(ReportItemPanel panel, ReportTemplate reportTemplate, Collection<CyclicReportOrder> cyclic,
+    private void removeReportAndDependants(ReportItemPanel panel, ReportTemplate reportTemplate, Collection<CyclicReportConfig> cyclic,
             Collection<ReportOrder> orders) {
 
         if (cyclic != null && !cyclic.isEmpty()) {
-            CyclicReportOrderDAO.remove(cyclic);
+            CyclicReportConfigDAO.remove(cyclic);
         }
         if (orders != null && !orders.isEmpty()) {
             ReportOrderDAO.remove(orders);
@@ -472,7 +468,7 @@ public class ReportManagerComponent extends Panel {
 
     private void remove(final ReportItemPanel reportItemPanel) {
         final ReportTemplate rt = reportItemPanel.reportTemplate;
-        final Collection<CyclicReportOrder> cyclic = CyclicReportOrderDAO.fetchByReportId(user, rt.getId());
+        final Collection<CyclicReportConfig> cyclic = CyclicReportConfigDAO.fetchByReportId(user, rt.getId());
         final Collection<ReportOrder> orders = ReportOrderDAO.fetchByReportId(user, rt.getId());
         if (!cyclic.isEmpty()) {
             NotificationUtil.showConfirmWindow(getWindow(), VaadinUtil.getValue(MSG_REMOVING_REPORT, rt.getReportname()),

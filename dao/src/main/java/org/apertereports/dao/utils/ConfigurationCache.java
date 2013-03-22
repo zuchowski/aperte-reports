@@ -1,9 +1,9 @@
 package org.apertereports.dao.utils;
 
-import org.apertereports.common.ConfigurationConstants;
-
 import java.util.Calendar;
 import java.util.Map;
+import org.apertereports.common.ConfigurationConstants;
+import org.apertereports.dao.ConfigurationDAO;
 
 /**
  * A static cache for configuration entries. Thread-safe.
@@ -46,7 +46,7 @@ public class ConfigurationCache implements ConfigurationConstants {
      */
     synchronized private static void init() {
         if (configuration == null || Calendar.getInstance().after(validUntil)) {
-            configuration = org.apertereports.dao.ConfigurationDAO.fetchAllToMap();
+            configuration = ConfigurationDAO.fetchAllToMap();
             String timeout = configuration.get(CONFIGURATION_CACHE_TIMEOUT_IN_MINUTES);
             if (timeout == null) {
                 timeout = "15";

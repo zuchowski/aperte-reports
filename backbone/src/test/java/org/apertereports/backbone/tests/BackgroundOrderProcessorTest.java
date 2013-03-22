@@ -6,7 +6,7 @@
 //import org.apache.activemq.command.ActiveMQMessage;
 //import org.apache.commons.codec.binary.Base64;
 //import org.apertereports.backbone.jms.BackgroundOrderProcessor;
-//import org.apertereports.backbone.jms.ReportOrderPusher;
+//import org.apertereports.backbone.jms.ReportOrderBuilder;
 //import org.junit.BeforeClass;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
@@ -53,7 +53,7 @@
 //            String contentCA = new String(Base64.encodeBase64(content.getBytes("UTF-8")));
 //            reportTemplate.setContent(contentCA);
 //            org.apertereports.dao.ReportTemplateDAO.saveOrUpdate(reportTemplate);
-//            reportOrder = ReportOrderPusher
+//            reportOrder = ReportOrderBuilder
 //                    .buildNewOrder(reportTemplate, new HashMap<String, String>(), "", "", "", "");
 //            BackgroundOrderProcessor bop = new BackgroundOrderProcessor();
 //            Message message = new ActiveMQMessage();

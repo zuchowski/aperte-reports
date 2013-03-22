@@ -24,7 +24,7 @@
 	    <mapping package="org.apertereports.model"/>
 		<mapping class="org.apertereports.model.ReportTemplate"/>
 		<mapping class="org.apertereports.model.ConfigurationEntry"/>
-		<mapping class="org.apertereports.model.CyclicReportOrder"/>
+		<mapping class="org.apertereports.model.CyclicReportConfig"/>
 		<mapping class="org.apertereports.model.ReportOrder"/>
 		
     </session-factory>
