@@ -50,7 +50,8 @@ public class CyclicReportScheduler {
     public static void schedule(CyclicReportConfig config) throws SchedulerException {
         init();
 
-        if (!config.getEnabled()) {
+        boolean enabled = config.getEnabled() == Boolean.TRUE;
+        if (!enabled) {
             logger.info("Trying to schedule disabled config, discarding: " + config.getId());
             return;
         }
@@ -58,7 +59,7 @@ public class CyclicReportScheduler {
         logger.info("Scheduling config: " + config.getId());
         boolean deleted = scheduler.deleteJob(config.getId().toString(), CyclicReportConfig.class.toString());
         if (deleted) {
-            logger.info("Config unscheduled: " + config.getId().toString());
+            logger.info("Previous config unscheduled: " + config.getId().toString());
         }
 
         //schedule

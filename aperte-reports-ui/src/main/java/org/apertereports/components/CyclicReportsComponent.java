@@ -164,16 +164,18 @@ public class CyclicReportsComponent extends Panel {
             BeanItem<CyclicReportConfig> item = new BeanItem<CyclicReportConfig>(config);
             ((AbstractLayout) getContent()).setMargin(true, true, false, true);
 
-            HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-            HorizontalLayout row2 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
+            HorizontalLayout row1 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
+            HorizontalLayout row2 = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
 
+            //name
             nameContainer = UiFactory.createHLayout(row1, FAction.ALIGN_LEFT, FAction.SET_SPACING);
             nameContainer.setEnabled(CyclicReportPanel.this.config.getEnabled() == Boolean.TRUE);
             UiFactory.createLabel(new BeanItem<ReportTemplate>(config.getReport()),
                     ORDER_REPORT_REPORTNAME, nameContainer, FORMAT_STYLE, FAction.ALIGN_LEFT);
-
+            //format
             UiFactory.createLabel(item, ORDER_OUTPUT_FORMAT, nameContainer, FAction.ALIGN_LEFT);
             UiFactory.createSpacer(row1, FAction.SET_EXPAND_RATIO_1_0);
+            //enable/disable button
             enabledButton = UiFactory.createButton(getStateLabelCaption(), row1, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -191,12 +193,13 @@ public class CyclicReportsComponent extends Panel {
                     scheduleOrUnschedule(CyclicReportPanel.this.config);
                 }
             }, FAction.ALIGN_RIGTH);
-
-            UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, row2);
+            HorizontalLayout hl = UiFactory.createHLayout(row2);
+            VerticalLayout vl = UiFactory.createVLayout(hl);
+            UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, vl);
             UiFactory.createSpacer(row2, FAction.SET_EXPAND_RATIO_1_0);
             UiFactory.createLabel(item, ORDER_CRON_SPEC, row2);
-            UiFactory.createLabel(item, ORDER_DESCRIPTION, this, DESCRIPTION_STYLE, FAction.SET_FULL_WIDTH);
-            HorizontalLayout row3 = UiFactory.createHLayout(this, FAction.SET_SPACING);
+            UiFactory.createLabel(item, ORDER_DESCRIPTION, vl, DESCRIPTION_STYLE, FAction.SET_FULL_WIDTH);
+            HorizontalLayout row3 = UiFactory.createHLayout(vl, FAction.SET_SPACING);
             toggleParamsButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -312,7 +315,7 @@ public class CyclicReportsComponent extends Panel {
 
     private void scheduleOrUnschedule(CyclicReportConfig config) {
         try {
-            if (config.getEnabled()) {
+            if (config.getEnabled() == Boolean.TRUE) {
                 CyclicReportScheduler.schedule(config);
             } else {
                 CyclicReportScheduler.unschedule(config);
