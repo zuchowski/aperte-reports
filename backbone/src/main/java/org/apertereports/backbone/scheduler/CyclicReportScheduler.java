@@ -104,7 +104,6 @@ public class CyclicReportScheduler {
 
         scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.addCalendar(calendarName, new HolidayCalendar(), true, true);
-        List cej = scheduler.getCurrentlyExecutingJobs();
         scheduler.start();
 
         logger.info("Scanning for cyclic report configurations");
@@ -114,7 +113,7 @@ public class CyclicReportScheduler {
             for (String jobName : jobNames) {
                 boolean deleted = scheduler.deleteJob(jobName, CyclicReportConfig.class.toString());
                 if (deleted) {
-                    logger.info("Config unscheduled: " + jobName);
+                    logger.info("Previous config unscheduled: " + jobName);
                 }
             }
             Collection<CyclicReportConfig> configs = CyclicReportConfigDAO.fetch();
