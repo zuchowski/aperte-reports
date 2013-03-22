@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
  */
 public class GeneralDAO {
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneralDAO.class);
-    public static final User ADMIN_USER = new User("--", new HashSet<UserRole>(), true, null);
+    private static final Logger logger = LoggerFactory.getLogger("ar.dao.general");
+    public static final User ADMIN_USER = new User("A", new HashSet<UserRole>(), true, null);
 
     /**
      * Persists given object to database

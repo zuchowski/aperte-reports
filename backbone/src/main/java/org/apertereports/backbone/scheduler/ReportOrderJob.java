@@ -37,9 +37,9 @@ public class ReportOrderJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDetail detail = context.getJobDetail();
-        logger.info("Report order job, config id: " + detail.getName() + ", executing...");
+        logger.info("Report order job started, config id: " + detail.getName());
         processOrder(detail);
-        logger.info("report order job, config id: " + detail.getName() + ", finished");
+        logger.info("Report order job FINISHED, config id: " + detail.getName());
     }
 
     /**
@@ -57,21 +57,14 @@ public class ReportOrderJob implements Job {
         CyclicReportConfig config = CyclicReportConfigDAO.fetchById(reportId);
 
         if (config == null) {
-            logger.warn("config is null");
+            logger.warn("config == null");
             return null;
         }
-        java.text.SimpleDateFormat sdf= new java.text.SimpleDateFormat("HH:mm:ss");
-        
 
         ReportOrder ro = config.getProcessedOrder();
-        Calendar cd = ro.getCreateDate();
-        logger.info("cd: " + sdf.format(cd.getTime()));
-        Calendar cu = Calendar.getInstance();
-        cu.setTime(new Date());
-        logger.info("cu: " + sdf.format(cu.getTime()));
-        
         if (ro != null) {
-            logger.info("processedOrder != null");
+            Calendar cd = ro.getCreateDate();
+            logger.info("processedOrder != null, diff time [s]: " + (System.currentTimeMillis() - cd.getTimeInMillis()) / 1000);
             return null;
         }
 

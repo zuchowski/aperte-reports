@@ -52,7 +52,7 @@ public class ARJmsFacade {
      *
      * @throws Exception
      */
-    private static void subscribeMessageListeners() throws Exception {
+    private static void init() throws Exception {
         if (initialized) {
             return;
         }
@@ -103,18 +103,23 @@ public class ARJmsFacade {
      */
     //todots przerobic przekazywanie nazwy kolejki
     public static void sendReportOrderId(ReportOrder ro, String queueName) {
+        logger.info("Sending report order id: " + ro.getId() + ", queue: " + queueName);
+        
+        if (!isJmsAvailable()) {
+            logger.warn("JMS not available, discarding set report order id");
+            return;
+        }
 
         Long id = ro.getId();
         if (id == null) {
-            logger.warn("id is null, discarding sending id to: " + queueName);
+            logger.warn("id == null, discarding...");
             return;
         }
         
-        logger.info("Sending report order id: " + id + ", queue: " + queueName);
         Connection connection = null;
         Session session = null;
         try {
-            subscribeMessageListeners();
+            init();
 
             InitialContext initCtx = new InitialContext();
             ConnectionFactory connectionFactory = (ConnectionFactory) initCtx

@@ -212,13 +212,13 @@ public class ReportOrderDAO {
             q.setParameter(i, params.get(i));
         }
 
-        if (logger.isInfoEnabled()) {       
-        logger.info("user: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : "")));
-            String paramsS = "";
-            if (!params.isEmpty()){
-                paramsS = "; params: [" + TextUtils.getCommaSeparatedString(params) + "]";
+        if (logger.isInfoEnabled()) {
+            String userInfo = " U: " + (user == null ? "null" : user.getLogin() + (user.isAdministrator() ? ", admin" : ""));
+            String paramsInfo = "";
+            if (!params.isEmpty()) {
+                paramsInfo = " [" + TextUtils.getCommaSeparatedString(params) + "]";
             }
-            logger.info("query: " + queryS + paramsS);
+            logger.info(queryS + ";" + paramsInfo + userInfo);
         }
 
         return q;

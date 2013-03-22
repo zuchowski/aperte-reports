@@ -104,9 +104,7 @@ public class ReportOrderProcessor implements MessageListener {
             }
         }
         String replyQueue = ro.getReplyToQ();
-        logger.info("Reply queue: " + replyQueue);
         if (StringUtils.isNotEmpty(replyQueue)) {
-            logger.info("add to jms: " + replyQueue);
             addToJMS(ro);
         }
     }

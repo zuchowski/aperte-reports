@@ -514,7 +514,6 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @throws SQLException on errors while connecting to the datasource
      */
     private Connection getConnectionFromReport(JasperReport jasperReport) throws NamingException, SQLException {
-        logger.info("Getting database connection from report");
         JRParameter[] parameters = jasperReport.getParameters();
         Connection con = null;
         for (JRParameter parameter : parameters) {
@@ -536,9 +535,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @throws SQLException on errors while connecting to the datasource
      */
     private Connection getConnectionByJNDI(String jndiName) throws NamingException, SQLException {
-        logger.info("Getting database connection by JNDI: " + jndiName);
-        logger.info("Getting database connection by JNDI: " + jndiName);
-        logger.info("Getting database connection by JNDI: " + jndiName);
+        logger.info("Getting database connection, jndiName: " + jndiName);
         DataSource ds;
         try {
             ds = (DataSource) new InitialContext().lookup(jndiName);
