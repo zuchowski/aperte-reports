@@ -24,7 +24,7 @@
     </portlet>
     <portlet>
         <portlet-name>Cyclic Reports portlet</portlet-name>
-        <instanceable>true</instanceable>
+        <instanceable>false</instanceable>
         <ajaxable>false</ajaxable>
     </portlet>
 </liferay-portlet-app>
