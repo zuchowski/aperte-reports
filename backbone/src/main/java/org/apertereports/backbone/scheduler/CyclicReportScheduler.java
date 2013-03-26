@@ -110,7 +110,6 @@ public class CyclicReportScheduler {
         logger.info("Scanning for cyclic report configurations");
         try {
             String[] jobNames = scheduler.getJobNames(CyclicReportConfig.class.toString());
-            logger.info("jon names: " + jobNames.length);
             for (String jobName : jobNames) {
                 boolean deleted = scheduler.deleteJob(jobName, CyclicReportConfig.class.toString());
                 if (deleted) {

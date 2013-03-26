@@ -26,20 +26,20 @@ public class ReportOrderBuilder {
      * @param recipientEmail A recipient email address that should receive the
      * report generation result
      * @param username Order creator login
-     * @param replyToQ JMS queue name the result should be replied to
+     * @param replyToJms Indicates whether reply to JMS in order to process
+     * generated report
      * @return A configured report order
      */
     public static ReportOrder build(final ReportTemplate report, Map<String, String> parameters, String format,
-            String recipientEmail, String username, String replyToQ) {
+            String recipientEmail, String username, boolean replyToJms) {
         final ReportOrder reportOrder = new ReportOrder();
         reportOrder.setParametersXml(XmlReportConfigLoader.getInstance().mapAsXml(parameters));
         reportOrder.setOutputFormat(format);
         reportOrder.setRecipientEmail(recipientEmail);
         reportOrder.setUsername(username);
         reportOrder.setReport(report);
-        reportOrder.setReplyToQ(replyToQ);
+        reportOrder.setReplyToJms(replyToJms);
         Boolean alreadyExists = new WHS<Boolean>() {
-
             @Override
             public Boolean lambda() {
                 Criteria c = sess.createCriteria(ReportOrder.class);
@@ -49,7 +49,7 @@ public class ReportOrderBuilder {
                 c.add(Restrictions.eq("outputFormat", reportOrder.getOutputFormat()));
                 c.add(Restrictions.eq("username", reportOrder.getUsername()));
                 c.add(Restrictions.eq("recipientEmail", reportOrder.getRecipientEmail()));
-                c.add(Restrictions.eq("replyToQ", reportOrder.getReplyToQ()));
+                c.add(Restrictions.eq("replyToJms", reportOrder.getReplyToJms()));
                 c.add(Restrictions.isNull("reportResult"));
                 return !c.list().isEmpty();
             }
@@ -59,7 +59,7 @@ public class ReportOrderBuilder {
         }
         Long id = ReportOrderDAO.saveOrUpdate(reportOrder);
         reportOrder.setId(id);
-        
+
         return reportOrder;
     }
 }

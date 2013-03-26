@@ -79,10 +79,11 @@ public class ReportOrder {
     @Column(name = "recipient_email")
     private String recipientEmail;
     /**
-     * JMS queue the order should reply to.
+     * Indicates if order should be replied to JMS queue in order to process
+     * generated report
      */
-    @Column(name = "reply_to_q")
-    private String replyToQ;
+    @Column(name = "reply_to_jms")
+    private Boolean replyToJms;
     /**
      * Report template used.
      */
@@ -135,8 +136,8 @@ public class ReportOrder {
         return recipientEmail;
     }
 
-    public String getReplyToQ() {
-        return replyToQ;
+    public Boolean getReplyToJms() {
+        return replyToJms;
     }
 
     public ReportTemplate getReport() {
@@ -187,8 +188,8 @@ public class ReportOrder {
         this.recipientEmail = recipientEmail;
     }
 
-    public void setReplyToQ(String replyToQ) {
-        this.replyToQ = replyToQ;
+    public void setReplyToJms(Boolean replyToJms) {
+        this.replyToJms = replyToJms;
     }
 
     public void setReport(ReportTemplate report) {
@@ -221,7 +222,7 @@ public class ReportOrder {
         copy.setOutputFormat(getOutputFormat());
         copy.setParametersXml(getParametersXml());
         copy.setRecipientEmail(getRecipientEmail());
-        copy.setReplyToQ(getReplyToQ());
+        copy.setReplyToJms(getReplyToJms());
         copy.setReport(getReport());
         copy.setUsername(getUsername());
         return copy;

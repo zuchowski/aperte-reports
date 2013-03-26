@@ -93,9 +93,8 @@ public class GenerateReportQueueMessageListener implements MessageListener {
                 logger.warn("Unable to send email to: " + email, e);
             }
         }
-        String replyQueue = ro.getReplyToQ();
-        if (StringUtils.isNotEmpty(replyQueue)) {
-            ARJmsFacade.sendReportOrderId(ro, ro.getReplyToQ());
+        if (ro.getReplyToJms()) {
+            ARJmsFacade.sendToProcessReport(ro);
         }
     }
 

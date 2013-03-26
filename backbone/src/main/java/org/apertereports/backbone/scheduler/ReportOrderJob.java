@@ -69,10 +69,10 @@ public class ReportOrderJob implements Job {
 
         Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(config.getParametersXml());
         ro = ReportOrderBuilder.build(config.getReport(), params, config.getOutputFormat(),
-                config.getRecipientEmail(), null, ARConstants.JNDI_JMS_PROCESS_REPORT_QUEUE_ID);
+                config.getRecipientEmail(), null, true);
         config.setProcessedOrder(ro);
         CyclicReportConfigDAO.saveOrUpdate(config);
-        ARJmsFacade.sendReportOrderId(ro, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_ID);
+        ARJmsFacade.sendToGenerateReport(ro);
         return ro;
     }
 }
