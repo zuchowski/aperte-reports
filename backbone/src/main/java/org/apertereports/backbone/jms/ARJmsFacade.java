@@ -11,8 +11,8 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.InitialContext;
-import org.apertereports.backbone.jms.listener.CyclicOrderResponseProcessor;
-import org.apertereports.backbone.jms.listener.ReportOrderProcessor;
+import org.apertereports.backbone.jms.listener.ProcessReportQueueMessageListener;
+import org.apertereports.backbone.jms.listener.GenerateReportQueueMessageListener;
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.exception.ARRuntimeException;
@@ -36,15 +36,14 @@ public class ARJmsFacade {
      * If JMS is initialized.
      */
     private static boolean initialized = false;
-    
-    private static final Map<MessageListener, String> messageListeners = new HashMap<MessageListener, String>();
-    static {
-        messageListeners.put(ReportOrderProcessor.getInstance(),
-                ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_NAME);
-        messageListeners.put(CyclicOrderResponseProcessor.getInstance(),
-                ARConstants.JNDI_JMS_CYCLIC_REPORT_ORDER_QUEUE_NAME);
-    }
+    private static final Map<String, MessageListener> messageListeners = new HashMap<String, MessageListener>();
 
+    static {
+        messageListeners.put(ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_ID,
+                GenerateReportQueueMessageListener.getInstance());
+        messageListeners.put(ARConstants.JNDI_JMS_PROCESS_REPORT_QUEUE_ID,
+                ProcessReportQueueMessageListener.getInstance());
+    }
 
     /**
      * If not initialized, subscribes configured listeners to proper queues and
@@ -62,12 +61,12 @@ public class ARJmsFacade {
         try {
             InitialContext initCtx = new InitialContext();
             ConnectionFactory connectionFactory = (ConnectionFactory) initCtx
-                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_NAME);
+                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_ID);
             connection = connectionFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            for (MessageListener listener : messageListeners.keySet()) {
-                String jndiQueueName = messageListeners.get(listener);
+            for (String jndiQueueName : messageListeners.keySet()) {
+                MessageListener listener = messageListeners.get(jndiQueueName);
                 try {
                     MessageConsumer consumer = session.createConsumer((Destination) initCtx.lookup(jndiQueueName));
                     consumer.setMessageListener(listener);
@@ -104,7 +103,7 @@ public class ARJmsFacade {
     //todots przerobic przekazywanie nazwy kolejki
     public static void sendReportOrderId(ReportOrder ro, String queueName) {
         logger.info("Sending report order id: " + ro.getId() + ", queue: " + queueName);
-        
+
         if (!isJmsAvailable()) {
             logger.warn("JMS not available, discarding set report order id");
             return;
@@ -115,7 +114,7 @@ public class ARJmsFacade {
             logger.warn("id == null, discarding...");
             return;
         }
-        
+
         Connection connection = null;
         Session session = null;
         try {
@@ -123,7 +122,7 @@ public class ARJmsFacade {
 
             InitialContext initCtx = new InitialContext();
             ConnectionFactory connectionFactory = (ConnectionFactory) initCtx
-                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_NAME);
+                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_ID);
             connection = connectionFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
@@ -131,7 +130,7 @@ public class ARJmsFacade {
                     .lookup(queueName));
 
             Message reportOrderMessage = session.createMessage();
-            reportOrderMessage.setIntProperty(ARConstants.REPORT_ORDER_ID, id.intValue());
+            reportOrderMessage.setIntProperty(ARConstants.JMS_PROPERTY_REPORT_ORDER_ID, id.intValue());
             producer.send(reportOrderMessage);
         } catch (Exception e) {
             logger.error("EXC: ", e);
@@ -163,7 +162,7 @@ public class ARJmsFacade {
         try {
             InitialContext initCtx = new InitialContext();
             ConnectionFactory connectionFactory = (ConnectionFactory) initCtx
-                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_NAME);
+                    .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_ID);
             connection = connectionFactory.createConnection();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 

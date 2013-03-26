@@ -143,7 +143,7 @@ public class AperteInvokerComponent extends Panel {
                     ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
                             panel.getOuptutFormat(), email, user.getLogin(), null);
                     //todots id kolejki do wnetrza metody?
-                    ARJmsFacade.sendReportOrderId(reportOrder, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_NAME);
+                    ARJmsFacade.sendReportOrderId(reportOrder, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_ID);
                 }
             });
             if (!backgorundGenerationAvail()) {

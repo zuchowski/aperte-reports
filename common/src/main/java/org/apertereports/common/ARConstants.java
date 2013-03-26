@@ -45,22 +45,21 @@ public interface ARConstants {
      */
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
     /**
-     * Cyclic reports JMS queue name.
+     * JNDI JMS process report queue id
      */
-    //todots order czy moze config?
-    public static final String JNDI_JMS_CYCLIC_REPORT_ORDER_QUEUE_NAME = "java:comp/env/jms/CyclicReportOrderQueue";
+    public static final String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "java:comp/env/jms/ProcessReportQueue";
     /**
-     * Report generation JMS queue name.
+     * JNDI JMS generate report queue id
      */
-    public static final String JNDI_JMS_GENERATE_REPORT_QUEUE_NAME = "java:comp/env/jms/GenerateReportQueue";
+    public static final String JNDI_JMS_GENERATE_REPORT_QUEUE_ID = "java:comp/env/jms/GenerateReportQueue";
     /**
-     * JMS connection factory name.
+     * JMS connection factory id
      */
-    public static final String JNDI_JMS_CONNECTION_FACTORY_NAME = "java:comp/env/jms/ConnectionFactory";
+    public static final String JNDI_JMS_CONNECTION_FACTORY_ID = "java:comp/env/jms/ConnectionFactory";
     /**
      * Report order id property name.
      */
-    public static final String REPORT_ORDER_ID = "reportOrderId";
+    public static final String JMS_PROPERTY_REPORT_ORDER_ID = "reportOrderId";
     /**
      * Key used to pass map with compiled subreports to JasperFiller
      */

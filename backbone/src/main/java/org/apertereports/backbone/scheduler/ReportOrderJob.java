@@ -1,7 +1,6 @@
 package org.apertereports.backbone.scheduler;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import org.apertereports.backbone.jms.ARJmsFacade;
 import org.apertereports.backbone.util.ReportOrderBuilder;
@@ -70,10 +69,10 @@ public class ReportOrderJob implements Job {
 
         Map<String, String> params = XmlReportConfigLoader.getInstance().xmlAsMap(config.getParametersXml());
         ro = ReportOrderBuilder.build(config.getReport(), params, config.getOutputFormat(),
-                config.getRecipientEmail(), null, ARConstants.JNDI_JMS_CYCLIC_REPORT_ORDER_QUEUE_NAME);
+                config.getRecipientEmail(), null, ARConstants.JNDI_JMS_PROCESS_REPORT_QUEUE_ID);
         config.setProcessedOrder(ro);
         CyclicReportConfigDAO.saveOrUpdate(config);
-        ARJmsFacade.sendReportOrderId(ro, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_NAME);
+        ARJmsFacade.sendReportOrderId(ro, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_ID);
         return ro;
     }
 }

@@ -76,12 +76,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
 
     @Override
     public void close() {
-        //todots
-        logger.warn(" ----------------- CLOSE ------------");
-        logger.warn(" ----------------- CLOSE ------------");
-        logger.warn(" ----------------- CLOSE ------------");
-        logger.warn(" ----------------- CLOSE ------------");
-        logger.warn(" ----------------- CLOSE ------------");
+        logger.info(" ----------------- CLOSING APPLICATION ------------");
         super.close();
     }
 

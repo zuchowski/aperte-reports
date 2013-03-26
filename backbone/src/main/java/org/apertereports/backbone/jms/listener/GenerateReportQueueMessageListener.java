@@ -29,19 +29,19 @@ import org.slf4j.LoggerFactory;
  * generation orders. It then pushes the id of the resulting report order back
  * to JMS for further processing.
  */
-public class ReportOrderProcessor implements MessageListener {
+public class GenerateReportQueueMessageListener implements MessageListener {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
-    private static ReportOrderProcessor instance;
+    private static GenerateReportQueueMessageListener instance;
 
-    public static synchronized ReportOrderProcessor getInstance() {
+    public static synchronized GenerateReportQueueMessageListener getInstance() {
         if (instance == null) {
-            instance = new ReportOrderProcessor();
+            instance = new GenerateReportQueueMessageListener();
         }
         return instance;
     }
 
-    private ReportOrderProcessor() {
+    private GenerateReportQueueMessageListener() {
     }
 
     /**
@@ -57,14 +57,14 @@ public class ReportOrderProcessor implements MessageListener {
     public void onMessage(Message message) {
         ReportOrder ro = null;
         try {
-            Long id = message.getLongProperty(ARConstants.REPORT_ORDER_ID);
+            Long id = message.getLongProperty(ARConstants.JMS_PROPERTY_REPORT_ORDER_ID);
             logger.info("On message, order id: " + id + ", generating report...");
             ro = ReportOrderDAO.fetchById(id);
             if (ro == null) {
                 logger.error("ro is null");
                 return;
             }
-            processReport(ro);
+            processReportOrder(ro);
             logger.info("Order id: " + id + ", generation finished");
             forwardResults(ro);
         } catch (Exception e) {
@@ -76,16 +76,6 @@ public class ReportOrderProcessor implements MessageListener {
             }
 //			throw new AperteReportsRuntimeException(e);
         }
-    }
-
-    /**
-     * Adds a JMS message containing the id of the generated report order using
-     * configured JMS connection factory.
-     *
-     * @param reportOrder
-     */
-    private void addToJMS(ReportOrder reportOrder) throws NamingException, JMSException {
-        ARJmsFacade.sendReportOrderId(reportOrder, reportOrder.getReplyToQ());
     }
 
     /**
@@ -105,21 +95,20 @@ public class ReportOrderProcessor implements MessageListener {
         }
         String replyQueue = ro.getReplyToQ();
         if (StringUtils.isNotEmpty(replyQueue)) {
-            addToJMS(ro);
+            ARJmsFacade.sendReportOrderId(ro, ro.getReplyToQ());
         }
     }
 
     /**
-     * Invokes the main workhorse of the listener - the
-     * {@link ReportOrderProcessor}.
+     * Processes report order
      *
      * @param reportOrder Processed report order
      * @throws AperteReportsException on error while generating jasper report
      */
-    private void processReport(final ReportOrder reportOrder) throws ARException {
+    private void processReportOrder(final ReportOrder reportOrder) throws ARException {
         reportOrder.setStartDate(Calendar.getInstance());
         reportOrder.setReportStatus(ReportOrder.Status.PROCESSING);
-        org.apertereports.dao.ReportOrderDAO.saveOrUpdate(reportOrder);
+        ReportOrderDAO.saveOrUpdate(reportOrder);
 
         ReportTemplate reportTemplate = reportOrder.getReport();
 
@@ -136,7 +125,7 @@ public class ReportOrderProcessor implements MessageListener {
             reportOrder.setReportResult(ReportGeneratorUtils.encodeContent(reportData));
             reportOrder.setFinishDate(Calendar.getInstance());
             reportOrder.setReportStatus(ReportOrder.Status.SUCCEEDED);
-            org.apertereports.dao.ReportOrderDAO.saveOrUpdate(reportOrder);
+            ReportOrderDAO.saveOrUpdate(reportOrder);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ARException(e);
