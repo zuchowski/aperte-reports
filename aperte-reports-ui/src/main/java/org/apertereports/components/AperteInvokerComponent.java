@@ -205,5 +205,7 @@ public class AperteInvokerComponent extends Panel {
         };
 
         addComponent(reportList);
+        
+        reportList.filter(null);
     }
 }
