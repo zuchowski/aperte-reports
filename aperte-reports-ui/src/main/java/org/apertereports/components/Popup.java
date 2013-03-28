@@ -1,7 +1,5 @@
 package org.apertereports.components;
 
-import org.apertereports.util.VaadinUtil;
-
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;

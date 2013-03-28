@@ -5,12 +5,11 @@ package org.apertereports.engine;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 /**
  * 
- * Wrapper for class {@link JasperPrint} used by {@link ReportMaster} for
+ * Wrapper for class {@link net.sf.jasperreports.engine.JasperPrint} used by {@link ReportMaster} for
  * storing information about subreports.
  * 
  */
