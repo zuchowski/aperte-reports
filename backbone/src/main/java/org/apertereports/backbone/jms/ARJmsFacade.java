@@ -81,6 +81,7 @@ public class ARJmsFacade {
             if (mainCtx != null) {
                 mainCtx.close();
             }
+            return false;
         }
         logger.info("Initializing JMS context, done.");
         return initialized;
@@ -134,8 +135,7 @@ public class ARJmsFacade {
                     .lookup(queueName));
 
             Message reportOrderMessage = ctx.getSession().createMessage();
-            //todo int or long?
-            reportOrderMessage.setIntProperty(ARConstants.JMS_PROPERTY_REPORT_ORDER_ID, id.intValue());
+            reportOrderMessage.setLongProperty(ARConstants.JMS_PROPERTY_REPORT_ORDER_ID, id.intValue());
             producer.send(reportOrderMessage);
         } catch (Exception e) {
             logger.error("Error while sending report order id", e);
