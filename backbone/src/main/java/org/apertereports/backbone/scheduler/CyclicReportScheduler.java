@@ -2,7 +2,6 @@ package org.apertereports.backbone.scheduler;
 
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.List;
 import org.apertereports.dao.CyclicReportConfigDAO;
 import org.apertereports.model.CyclicReportConfig;
 import org.quartz.CronTrigger;
@@ -15,7 +14,6 @@ import org.quartz.impl.calendar.HolidayCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//todots doc
 /**
  * A utility class that can schedule cyclic report generation with a configured
  * {@link org.quartz.CronExpression}.
@@ -24,9 +22,11 @@ import org.slf4j.LoggerFactory;
  * simply takes the {@link CyclicReportConfig} object and use the cron
  * expression it contains to schedule a {@link ReportOrderJob} task.
  * <p/>
- * <p> The scheduler have to be initialized first, by invoking {@link #init()}
+ * <p> The scheduler can be initialized first, by invoking {@link #init()}
  * method. This method fetches all cyclic report configurations form database
- * and schedules them.
+ * and schedules them. If {@link #init()} hasn't been invoked before, the
+ * scheduler will be initialized automatically with the first use of another
+ * method.
  */
 public class CyclicReportScheduler {
 
@@ -41,8 +41,9 @@ public class CyclicReportScheduler {
     private static Scheduler scheduler;
 
     /**
-     * Schedule a given cyclic report configuration. If the configuraiton has
-     * been scheduled before, it will be unscheduled first.
+     * Schedules a given cyclic report configuration. If the configuraiton has
+     * been scheduled before, it will be unscheduled first and next scheduled
+     * once again.
      *
      * @param config A cyclic report configurations
      * @throws SchedulerException on Quartz error
@@ -55,7 +56,7 @@ public class CyclicReportScheduler {
             logger.info("Trying to schedule disabled config, discarding: " + config.getId());
             return;
         }
-        
+
         logger.info("Scheduling config: " + config.getId());
         boolean deleted = scheduler.deleteJob(config.getId().toString(), CyclicReportConfig.class.toString());
         if (deleted) {
@@ -92,7 +93,9 @@ public class CyclicReportScheduler {
 
     /**
      * Initializes the scheduler. It performs scan of all cyclic report
-     * configurations from database and starts jobs for every configurations
+     * configurations from database and starts jobs for every configurations <p>
+     * The scheduler is automatycally initialized with the first use of any
+     * other method
      *
      * @throws SchedulerException on Quartz error
      */

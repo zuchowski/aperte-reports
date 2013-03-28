@@ -179,7 +179,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
      *
      * @return A user login
      */
-    //todo user
+    //xxx user
     private String getLogin() {
         String login = "";
         try {
