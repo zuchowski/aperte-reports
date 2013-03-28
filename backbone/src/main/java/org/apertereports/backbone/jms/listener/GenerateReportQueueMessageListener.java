@@ -3,10 +3,8 @@ package org.apertereports.backbone.jms.listener;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.ARJmsFacade;
 import org.apertereports.backbone.util.EmailProcessor;
@@ -66,7 +64,12 @@ public class GenerateReportQueueMessageListener implements MessageListener {
             }
             processReportOrder(ro);
             logger.info("Order id: " + id + ", generation finished");
-            forwardResults(ro);
+
+            if (ro.getReplyToJms()) {
+                ARJmsFacade.sendToProcessReport(ro);
+            }
+
+            sendEmail(ro);
         } catch (Exception e) {
             logger.error("on message error", e);
             if (ro != null) {
@@ -74,16 +77,15 @@ public class GenerateReportQueueMessageListener implements MessageListener {
                 ro.setErrorDetails(e.getMessage());
                 ReportOrderDAO.saveOrUpdate(ro);
             }
-//			throw new AperteReportsRuntimeException(e);
         }
     }
 
     /**
-     * Forwards results to JMS and email address.
+     * Forwards results to email address.
      *
      * @param ro Generated report order
      */
-    private void forwardResults(ReportOrder ro) throws Exception {
+    private void sendEmail(ReportOrder ro) throws Exception {
         String email = ro.getRecipientEmail();
         if (StringUtils.isNotEmpty(email)) {
             logger.info("Sending order, id: " + ro.getId() + ", to " + email);
@@ -92,9 +94,6 @@ public class GenerateReportQueueMessageListener implements MessageListener {
             } catch (Exception e) {
                 logger.warn("Unable to send email to: " + email, e);
             }
-        }
-        if (ro.getReplyToJms()) {
-            ARJmsFacade.sendToProcessReport(ro);
         }
     }
 

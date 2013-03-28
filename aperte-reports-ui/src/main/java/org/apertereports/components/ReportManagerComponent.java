@@ -417,7 +417,11 @@ public class ReportManagerComponent extends Panel {
                     }
                     ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
                             panel.getOuptutFormat(), email, user.getLogin(), false);
-                    ARJmsFacade.sendToGenerateReport(reportOrder);
+                    try {
+                        ARJmsFacade.sendToGenerateReport(reportOrder);
+                    } catch (Exception ex) {
+                        throw new ARRuntimeException(ex);
+                    }
                 }
             });
             if (!backgorundGenerationAvail()) {

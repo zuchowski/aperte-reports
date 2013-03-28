@@ -16,7 +16,7 @@ import org.apertereports.backbone.jms.listener.GenerateReportQueueMessageListene
 import org.apertereports.backbone.jms.listener.ProcessReportQueueMessageListener;
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.ARConstants.ErrorCode;
-import org.apertereports.common.exception.ARRuntimeException;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.model.ReportOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,7 @@ import org.slf4j.LoggerFactory;
  * usage outside a J2EE container.
  *
  * @author Zbigniew Malinowski
- * @
- *
+ * @author Tomasz Serafin, BlueSoft Sp. z o.o.
  */
 public class ARJmsFacade {
 
@@ -92,8 +91,9 @@ public class ARJmsFacade {
      * order
      *
      * @param ro Report order as a base for report to generate
+     * @throws ARException When there is a problem to send message to JMS
      */
-    public static synchronized void sendToGenerateReport(ReportOrder ro) {
+    public static synchronized void sendToGenerateReport(ReportOrder ro) throws ARException {
         sendReportOrderId(ro, ARConstants.JNDI_JMS_GENERATE_REPORT_QUEUE_ID);
     }
 
@@ -102,8 +102,9 @@ public class ARJmsFacade {
      * report order
      *
      * @param ro Report order as a base for generated report
+     * @throws ARException When there is a problem to send message to JMS
      */
-    public static synchronized void sendToProcessReport(ReportOrder ro) {
+    public static synchronized void sendToProcessReport(ReportOrder ro) throws ARException {
         sendReportOrderId(ro, ARConstants.JNDI_JMS_PROCESS_REPORT_QUEUE_ID);
     }
 
@@ -113,7 +114,7 @@ public class ARJmsFacade {
      * @param orderId id of the order to be stored
      * @param queueName configuration key of queue which message will be sent to
      */
-    private static synchronized void sendReportOrderId(ReportOrder ro, String queueName) {
+    private static synchronized void sendReportOrderId(ReportOrder ro, String queueName) throws ARException {
         logger.info("Sending report order id: " + ro.getId() + " to " + queueName);
 
         Long id = ro.getId();
@@ -123,7 +124,7 @@ public class ARJmsFacade {
         }
 
         if (!init()) {
-            throw new ARRuntimeException(ErrorCode.JMS_UNAVAILABLE);
+            throw new ARException(ErrorCode.JMS_UNAVAILABLE);
         }
 
         JmsContext ctx = null;
@@ -139,7 +140,7 @@ public class ARJmsFacade {
             producer.send(reportOrderMessage);
         } catch (Exception e) {
             logger.error("Error while sending report order id", e);
-            throw new ARRuntimeException(ErrorCode.JMS_UNAVAILABLE, e);
+            throw new ARException(ErrorCode.JMS_UNAVAILABLE, e);
         } finally {
             if (ctx != null) {
                 ctx.close();

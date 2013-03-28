@@ -4,9 +4,10 @@ import java.util.Calendar;
 import java.util.Map;
 import org.apertereports.backbone.jms.ARJmsFacade;
 import org.apertereports.backbone.util.ReportOrderBuilder;
-import org.apertereports.common.ARConstants;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 import org.apertereports.dao.CyclicReportConfigDAO;
+import org.apertereports.dao.ReportOrderDAO;
 import org.apertereports.model.CyclicReportConfig;
 import org.apertereports.model.ReportOrder;
 import org.quartz.Job;
@@ -71,8 +72,16 @@ public class ReportOrderJob implements Job {
         ro = ReportOrderBuilder.build(config.getReport(), params, config.getOutputFormat(),
                 config.getRecipientEmail(), null, true);
         config.setProcessedOrder(ro);
+        try {
+            ARJmsFacade.sendToGenerateReport(ro);
+        } catch (ARException ex) {
+            logger.warn("Cannot send report order id to JMS, discarding...");
+            ro.setReportStatus(ReportOrder.Status.FAILED);
+            ro.setErrorDetails(ex.getMessage());
+            ReportOrderDAO.saveOrUpdate(ro);
+            return null;
+        }
         CyclicReportConfigDAO.saveOrUpdate(config);
-        ARJmsFacade.sendToGenerateReport(ro);
         return ro;
     }
 }

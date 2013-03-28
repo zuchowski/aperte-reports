@@ -23,8 +23,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
-import org.apertereports.common.ARConstants;
-import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.users.User;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
@@ -142,7 +140,11 @@ public class AperteInvokerComponent extends Panel {
                     }
                     ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
                             panel.getOuptutFormat(), email, user.getLogin(), false);
-                    ARJmsFacade.sendToGenerateReport(reportOrder);
+                    try {
+                        ARJmsFacade.sendToGenerateReport(reportOrder);
+                    } catch (ARException ex) {
+                        throw new ARRuntimeException(ex);
+                    }
                 }
             });
             if (!backgorundGenerationAvail()) {
