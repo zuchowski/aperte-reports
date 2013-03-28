@@ -5,8 +5,6 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
 import org.apertereports.util.VaadinUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class provides useful methods for creating UI components
@@ -15,8 +13,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class UiFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(UiFactory.class);
     static final FAction[] EMPTY_ACTION_TABLE = {};
+    private static final int DEFAULT_TEXT_CHANGE_TIMEOUT = 500;
 
     /**
      * Defines available layouts
@@ -380,7 +378,7 @@ public abstract class UiFactory {
         TextField tf = new TextField();
         tf.setInputPrompt(VaadinUtil.getValue(promptId));
         tf.setImmediate(true);
-        tf.setTextChangeTimeout(500);
+        tf.setTextChangeTimeout(DEFAULT_TEXT_CHANGE_TIMEOUT);
         tf.setTextChangeEventMode(AbstractTextField.TextChangeEventMode.LAZY);
         tf.addListener(listener);
         if (parent != null) {

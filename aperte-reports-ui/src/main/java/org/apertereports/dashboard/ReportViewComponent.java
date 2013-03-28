@@ -1,26 +1,35 @@
 package org.apertereports.dashboard;
 
+import com.vaadin.ui.Panel;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
-
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import org.apertereports.AbstractLazyLoaderComponent;
+import org.apertereports.AbstractReportingApplication;
 import org.apertereports.backbone.util.ReportTemplateProvider;
+import org.apertereports.common.ARConstants;
 import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.ARConstants.ReportType;
+import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
 import org.apertereports.common.wrappers.Pair;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
+import org.apertereports.dao.CyclicReportConfigDAO;
+import org.apertereports.dao.ReportTemplateDAO;
+import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.dashboard.html.HtmlReportBuilder;
 import org.apertereports.dashboard.html.ReportDataProvider;
 import org.apertereports.engine.ReportMaster;
@@ -30,18 +39,6 @@ import org.apertereports.util.DashboardUtil;
 import org.apertereports.util.NotificationUtil;
 import org.apertereports.util.VaadinUtil;
 import org.apertereports.util.cache.MapCache;
-
-import com.vaadin.ui.Panel;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Collection;
-import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
-import org.apertereports.AbstractReportingApplication;
-import org.apertereports.common.ARConstants;
-import org.apertereports.common.exception.ARException;
-import org.apertereports.dao.CyclicReportConfigDAO;
-import org.apertereports.dao.ReportTemplateDAO;
-import org.apertereports.dao.utils.ConfigurationCache;
 import org.apertereports.util.files.TmpDirMgr;
 import org.apertereports.util.files.Zipper;
 import org.slf4j.Logger;
@@ -244,12 +241,20 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
 
         byte[] data = getReportData(jp, ARConstants.ReportType.HTML, reportDirPath);
         File f = new File(reportDirPath + File.separator + REPORT_HTML_FILE);
+        
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fos = new FileOutputStream(f);
+            fos = new FileOutputStream(f);
             fos.write(data);
             fos.flush();
             fos.close();
         } catch (Exception e) {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                }
+            }
             throw new ARRuntimeException(e);
         }
 

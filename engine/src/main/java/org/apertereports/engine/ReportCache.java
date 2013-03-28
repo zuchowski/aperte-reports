@@ -1,12 +1,13 @@
 package org.apertereports.engine;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple thread-safe cache for Jasper reports.
  */
 public class ReportCache {
-    static HashMap<String, AperteReport> reports;
+    static Map<String, AperteReport> reports;
 
     /**
      * Gets a cached report. Returns <code>null</code> if not found.
@@ -58,7 +59,7 @@ public class ReportCache {
     /**
      * Initializes the cache.
      */
-    synchronized private static void init() {
+    private static synchronized void init() {
         if (reports == null) {
             reports = new HashMap<String, AperteReport>();
         }

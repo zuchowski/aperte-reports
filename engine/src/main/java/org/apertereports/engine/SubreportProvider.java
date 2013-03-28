@@ -1,10 +1,7 @@
-/**
- * 
- */
+
 package org.apertereports.engine;
 
 import java.util.Map;
-
 import org.apertereports.common.exception.ARException;
 
 /**
@@ -15,7 +12,7 @@ public interface SubreportProvider {
 
 	Map<String, Subreport> getSubreports(String... reportNames) throws ARException;
 
-	public class Subreport {
+	class Subreport {
 		private String name;
 		private String cacheId;
 		private byte[] content;

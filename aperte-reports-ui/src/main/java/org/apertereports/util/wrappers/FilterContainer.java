@@ -5,14 +5,14 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.VerticalLayout;
-import org.apertereports.common.wrappers.DictionaryItem;
-import org.apertereports.common.wrappers.DictionaryItemFilter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import org.apertereports.common.wrappers.DictionaryItem;
+import org.apertereports.common.wrappers.DictionaryItemFilter;
 
 /**
  * A container wrapper for multilevel filters in the report parameter forms.
@@ -20,7 +20,7 @@ import java.util.Map.Entry;
  * The first level is always the main select which carries the final value.
  */
 public class FilterContainer extends VerticalLayout {
-    HashMap<Integer, Select> levels;
+    Map<Integer, Select> levels;
     private List<DictionaryItem> items;
 
     public FilterContainer() {

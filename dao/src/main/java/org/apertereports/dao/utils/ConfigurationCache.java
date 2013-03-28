@@ -44,7 +44,7 @@ public class ConfigurationCache implements ConfigurationConstants {
      * Initializes the cache. Retrieves the configuration from database and sets
      * the expiration date.
      */
-    synchronized private static void init() {
+    private static synchronized void init() {
         if (configuration == null || Calendar.getInstance().after(validUntil)) {
             configuration = ConfigurationDAO.fetchAllToMap();
             String timeout = configuration.get(CONFIGURATION_CACHE_TIMEOUT_IN_MINUTES);

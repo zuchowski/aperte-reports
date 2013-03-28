@@ -38,7 +38,9 @@ public class ReportGeneratorUtils {
             return ois.readObject();
         }
         finally {
-            ois.close();
+            if (ois != null) {
+                ois.close();
+            }
         }
     }
 
@@ -63,8 +65,9 @@ public class ReportGeneratorUtils {
     public static byte[] unwrapDataHandler(DataHandler handler) throws ARException {
         try {
 			byte[] content = IOUtils.toByteArray(handler.getInputStream());
-			if (content.length == 0)
-				throw new IllegalStateException();
+			if (content.length == 0) {
+                throw new IllegalStateException();
+            }
 			return content;
 		} catch (Exception e) {
 				throw new ARException(ErrorCode.EMPTY_REPORT_SOURCE);

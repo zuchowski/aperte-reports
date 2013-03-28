@@ -10,5 +10,5 @@ public interface CloseListener {
     /**
      * Invoked when a kind of user interface component is or should be closed
      */
-    public void close();
+    void close();
 }

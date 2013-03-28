@@ -39,7 +39,7 @@ public class Popup extends Window {
             }
         }, FAction.ALIGN_LEFT);
 
-        Button apply = UiFactory.createButton(POPUP_APPLY, buttons, new Button.ClickListener() {
+        UiFactory.createButton(POPUP_APPLY, buttons, new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {

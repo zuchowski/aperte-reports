@@ -1,6 +1,8 @@
 package org.apertereports.util.files;
 
 import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class creates simple manager for temporary directories
@@ -9,7 +11,9 @@ import java.io.File;
  */
 public class TmpDirMgr {
 
+    private static final Logger logger = LoggerFactory.getLogger(TmpDirMgr.class);
     private File baseDir;
+    private static final int MAX_TRIES_NO = 10;
 
     /**
      * Creates temporary directory manager. Directory
@@ -36,7 +40,10 @@ public class TmpDirMgr {
      */
     public TmpDirMgr(File baseDir) {
         if (!baseDir.exists()) {
-            baseDir.mkdirs();
+            boolean created = baseDir.mkdirs();
+            if (!created) {
+                throw new RuntimeException("error creating base dir: " + baseDir);
+            }
         }
         if (!baseDir.isDirectory()) {
             throw new IllegalArgumentException("file " + baseDir.getAbsolutePath() + " is not a directory");
@@ -51,7 +58,10 @@ public class TmpDirMgr {
     public void clearBaseDir() {
         for (File f : baseDir.listFiles()) {
             try {
-                f.delete();
+                boolean deleted = f.delete();
+                if (!deleted) {
+                    logger.warn("error while deleting base dir: " + baseDir);
+                }
             } catch (Exception e) {
             }
         }
@@ -73,15 +83,21 @@ public class TmpDirMgr {
      * @return Created temporary directory
      */
     public File createNewTmpDir(String subdir) {
-        int i = 10;
+        int i = MAX_TRIES_NO;
         while (i > 0) {
             String name = "" + System.currentTimeMillis();
             File d = new File(baseDir.getAbsolutePath() + File.separator + name);
             if (!d.exists()) {
-                d.mkdirs();
+                boolean created = d.mkdirs();
+                if (!created) {
+                    throw new RuntimeException("error while creating dir: " + d.getAbsolutePath());
+                }
                 if (subdir != null && subdir.length() > 0) {
                     File sd = new File(d.getAbsolutePath() + File.separator + subdir);
-                    sd.mkdir();
+                    created = sd.mkdir();
+                    if (!created) {
+                        throw new RuntimeException("error while creating dir: " + d.getAbsolutePath());
+                    }
                 }
                 return d;
             }

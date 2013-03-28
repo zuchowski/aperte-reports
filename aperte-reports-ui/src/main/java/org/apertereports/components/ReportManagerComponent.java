@@ -540,7 +540,7 @@ public class ReportManagerComponent extends Panel {
 
     private interface ReportReceivedListener {
 
-        public void reportReceived(ReportTemplate reportTemplate);
+        void reportReceived(ReportTemplate reportTemplate);
     }
 
     private static void deepCopy(ReportTemplate source, ReportTemplate target) {

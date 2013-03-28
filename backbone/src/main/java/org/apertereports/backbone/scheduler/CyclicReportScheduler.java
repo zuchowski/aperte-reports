@@ -34,7 +34,7 @@ public class CyclicReportScheduler {
     /**
      * A default calendar name.
      */
-    private static final String calendarName = "cyclicCalendar";
+    private static final String CALENDAR_NAME = "cyclicCalendar";
     /**
      * The Quartz scheduler.
      */
@@ -67,7 +67,7 @@ public class CyclicReportScheduler {
         CronTrigger trigger;
         try {
             trigger = new CronTrigger(config.getId().toString(), CyclicReportConfig.class.toString(), config.getCronSpec());
-            trigger.setCalendarName(calendarName);
+            trigger.setCalendarName(CALENDAR_NAME);
         } catch (ParseException e) {
             throw new SchedulerException(e);
         }
@@ -107,7 +107,7 @@ public class CyclicReportScheduler {
         logger.info("Cyclic report scheduler initialization...");
 
         scheduler = StdSchedulerFactory.getDefaultScheduler();
-        scheduler.addCalendar(calendarName, new HolidayCalendar(), true, true);
+        scheduler.addCalendar(CALENDAR_NAME, new HolidayCalendar(), true, true);
         scheduler.start();
 
         logger.info("Scanning for cyclic report configurations");

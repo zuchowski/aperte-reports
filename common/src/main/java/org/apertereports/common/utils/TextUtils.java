@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
-
 import org.apertereports.common.ARConstants;
 
 /**
@@ -115,7 +114,7 @@ public class TextUtils implements ARConstants {
      * @param list List of objects
      * @return Comma-separated string representation of objects
      */
-    public static String getCommaSeparatedString(LinkedList<Object> list) {
+    public static String getCommaSeparatedString(List<Object> list) {
         StringBuilder sb = new StringBuilder();
 
         if (list.isEmpty()) {

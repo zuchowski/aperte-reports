@@ -11,28 +11,28 @@ public abstract class AbstractContextReloadHandler implements ContextReloadHandl
      *
      * @param holder A bean containing common context parameters.
      */
-    abstract public void handleHelp(PortletContextHolder holder);
+    public abstract void handleHelp(PortletContextHolder holder);
 
     /**
      * Invoked on render edit view request.
      *
      * @param holder A bean containing common context parameters.
      */
-    abstract public void handleEdit(PortletContextHolder holder);
+    public abstract void handleEdit(PortletContextHolder holder);
 
     /**
      * Invoked on render main view request.
      *
      * @param holder A bean containing common context parameters.
      */
-    abstract public void handleView(PortletContextHolder holder);
+    public abstract void handleView(PortletContextHolder holder);
 
     /**
      * Invoked on get resource request.
      *
      * @param holder A bean containing common context parameters.
      */
-    abstract public void handleResource(PortletContextHolder holder);
+    public abstract void handleResource(PortletContextHolder holder);
 
     /**
      * Dispatches the rendering to a relevant method.

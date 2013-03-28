@@ -56,7 +56,7 @@ public final class DashboardUtil {
     /**
      * Regexp that identifies a complex drilldown anchor.
      */
-    public static Pattern CHART_TAG_PATTERN = Pattern.compile("(<img\\s+src=\"" + CHART_SOURCE_PREFIX_REGEXP +
+    public static final Pattern CHART_TAG_PATTERN = Pattern.compile("(<img\\s+src=\"" + CHART_SOURCE_PREFIX_REGEXP +
             "[^>]+?/>)|(<img\\s+src=\"" + CHART_SOURCE_PREFIX_REGEXP + "[^>]+?>.*</img>)", Pattern.CASE_INSENSITIVE);
     public static final Pattern DRILLDOWN_TAG_PATTERN = Pattern.compile("(<a\\s+href=\"drilldown\\?reportName=[^>]+?/>)|(<a\\s+href=\"drilldown\\?reportName=[^>]+?>.*</a>)", Pattern.CASE_INSENSITIVE);
 
@@ -248,14 +248,14 @@ public final class DashboardUtil {
     /**
      * Handles single group match.
      */
-    public static abstract class MatchHandler {
+    public abstract static class MatchHandler {
         public abstract void handleMatch(int start, int end, String match);
     }
 
     /**
      * Handles multiple groups match.
      */
-    public static abstract class MatchHandlerWithList {
+    public abstract static class MatchHandlerWithList {
         public abstract void handleMatch(int start, int end, List<String> match);
     }
 }

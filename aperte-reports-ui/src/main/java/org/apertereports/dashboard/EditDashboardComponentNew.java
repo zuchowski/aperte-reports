@@ -197,7 +197,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             newParamsPanel.setVisible(false);
         } else {
             newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
-        };
+        }
 
         newParamsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
         paramsParentComponent.replaceComponent(paramsPanel, newParamsPanel);

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ARJmsFacade {
 
-    private final static Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
+    private static final Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
     /**
      * If JMS is initialized.
      */

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 public class ReportOrderJob implements Job {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.backbone.scheduler");
+    private static final int MILLIS_IN_ONE_SEC = 1000;
 
     /**
      * Invokes the report order processing.
@@ -64,7 +65,7 @@ public class ReportOrderJob implements Job {
         ReportOrder ro = config.getProcessedOrder();
         if (ro != null) {
             Calendar cd = ro.getCreateDate();
-            logger.info("processedOrder != null, diff time [s]: " + (System.currentTimeMillis() - cd.getTimeInMillis()) / 1000);
+            logger.info("processedOrder != null, diff time [s]: " + (System.currentTimeMillis() - cd.getTimeInMillis()) / MILLIS_IN_ONE_SEC);
             return null;
         }
 

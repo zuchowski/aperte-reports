@@ -18,12 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -44,10 +41,9 @@ import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRFontNotFoundException;
-
 import org.apache.commons.lang.StringUtils;
-import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ARConstants;
+import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.utils.LocaleUtils;
@@ -55,7 +51,6 @@ import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.SubreportProvider.Subreport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.net.bluesoft.util.lang.StringUtil;
 
 /**
@@ -451,7 +446,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
             throws JRException, NamingException, SQLException {
 
         //previously data source was passed as a method argument, but it was not used nowhere
-        Object dataSource = null;
+//xxx dataSource condition
+//        Object dataSource = null;
 
         if (configuration == null) {
             configuration = new HashMap<String, String>();
@@ -471,7 +467,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 
         Connection connection = null;
         try {
-            if (dataSource == null) {
+//            if (dataSource == null) {
                 String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
                 connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
                         : getConnectionFromReport(getJasperReport());
@@ -484,17 +480,17 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                     jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
                             new JRMapCollectionDataSource(params));
                 }
-            } else {
-                if (dataSource instanceof Connection) {
-                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
-                            (Connection) dataSource);
-                } else if (dataSource instanceof JRDataSource) {
-                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
-                            (JRDataSource) dataSource);
-                } else {
-                    throw new ARRuntimeException(ErrorCode.INVALID_DATASOURCE_TYPE, dataSource.getClass().toString());
-                }
-            }
+//            } else {
+//                if (dataSource instanceof Connection) {
+//                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+//                            (Connection) dataSource);
+//                } else if (dataSource instanceof JRDataSource) {
+//                    jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
+//                            (JRDataSource) dataSource);
+//                } else {
+//                    throw new ARRuntimeException(ErrorCode.INVALID_DATASOURCE_TYPE, dataSource.getClass().toString());
+//                }
+//            }
         } finally {
             if (connection != null) {
                 connection.close();

@@ -1,7 +1,5 @@
 package org.apertereports.util;
 
-import org.apertereports.components.SimpleHorizontalLayout;
-
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -10,9 +8,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
-import org.apertereports.common.exception.ARRuntimeException;
-
 import static com.vaadin.ui.Window.Notification.*;
+import org.apertereports.common.exception.ARRuntimeException;
+import org.apertereports.components.SimpleHorizontalLayout;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
@@ -133,7 +131,7 @@ public class NotificationUtil {
         parent.addWindow(window);
     }
 
-    public static interface ConfirmListener {
+    public interface ConfirmListener {
 
         void onConfirm();
 

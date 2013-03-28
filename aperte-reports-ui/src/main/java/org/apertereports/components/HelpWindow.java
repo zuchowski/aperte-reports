@@ -16,8 +16,6 @@ import org.apertereports.util.VaadinUtil;
  */
 public class HelpWindow extends TPTWindow {
 
-    private TabSheet tabs;
-
     /**
      * Initializes the possible tab contents.
      *
@@ -30,7 +28,7 @@ public class HelpWindow extends TPTWindow {
         setHeight("80%");
         setModal(true);
 
-        tabs = new TabSheet();
+        TabSheet tabs = new TabSheet();
         HashMap<Tab, Component> tabContent = new HashMap<HelpWindow.Tab, Component>();
 
         if (Module.MANAGER.equals(module)) {

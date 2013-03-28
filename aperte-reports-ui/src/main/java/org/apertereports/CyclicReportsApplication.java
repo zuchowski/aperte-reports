@@ -7,6 +7,8 @@ import org.apertereports.common.users.User;
 import org.apertereports.components.CyclicReportsComponent;
 import org.apertereports.util.VaadinUtil;
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This portlet provides the tabular view of the cyclic reports.
@@ -17,6 +19,8 @@ import org.quartz.SchedulerException;
  * should be confirmed by pushing the "Save" button.
  */
 public class CyclicReportsApplication extends AbstractReportingApplication<CyclicReportsComponent> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(CyclicReportsApplication.class);
 
     /**
      * Initializes the portlet GUI.
@@ -33,9 +37,9 @@ public class CyclicReportsApplication extends AbstractReportingApplication<Cycli
      */
     @Override
     public void firstApplicationStartup() {
-        System.out.println("------------------------------------");
-        System.out.println("FIRST APP STARTUP ------------------");
-        System.out.println("------------------------------------");
+        logger.info("------------------------------------");
+        logger.info("FIRST APP STARTUP ------------------");
+        logger.info("------------------------------------");
         invokeLater(new Runnable() {
 
             @Override

@@ -16,8 +16,6 @@ import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiFactory.FAction;
 import org.apertereports.ui.UiIds;
 import org.apertereports.util.VaadinUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class defines panel allowing configuration of the roles permission
@@ -26,8 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RolePermissionsPanel extends Panel {
 
-    private static final Logger logger = LoggerFactory.getLogger(RolePermissionsPanel.class.getName());
-    private LinkedList<UserRoleWrapper> wrappers = new LinkedList<UserRoleWrapper>();
+    private List<UserRoleWrapper> wrappers = new LinkedList<UserRoleWrapper>();
     private CloseListener closeListener = null;
 
     public RolePermissionsPanel(final ReportTemplate rt) {

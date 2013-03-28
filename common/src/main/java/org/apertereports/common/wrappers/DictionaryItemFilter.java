@@ -1,12 +1,11 @@
 package org.apertereports.common.wrappers;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class filters dictionary items by levels.
@@ -14,7 +13,7 @@ import java.util.Map.Entry;
 public class DictionaryItemFilter {
     private List<String>[] columns;
 
-    public DictionaryItemFilter(int columnCount, HashMap<Integer, Object> filterValues) {
+    public DictionaryItemFilter(int columnCount, Map<Integer, Object> filterValues) {
         columns = new List[columnCount];
         for (Entry<Integer, Object> filter : filterValues.entrySet()) {
             if (filter.getValue() instanceof Collection) {

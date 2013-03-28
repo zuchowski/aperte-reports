@@ -10,60 +10,60 @@ public interface ARConstants {
     /**
      * Web service namespace.
      */
-    public static final String WS_NAMESPACE = "http://bluesoft.net.pl/rnd/apertereports/schemas";
+    String WS_NAMESPACE = "http://bluesoft.net.pl/rnd/apertereports/schemas";
     /**
      * Web service request local part.
      */
-    public static final String WS_REQUEST_LOCAL_PART = "GenerateReportRequest";
+    String WS_REQUEST_LOCAL_PART = "GenerateReportRequest";
     /**
      * File prefix for log purposes.
      */
-    public static final String FILE_PREFIX = "AperteReports_";
+    String FILE_PREFIX = "AperteReports_";
     /**
      * A date format for writing in log files.
      */
-    public static final SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("ddMMyyyy_hhmmss");
+    SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("ddMMyyyy_hhmmss");
     /**
      * CSV field delimiter.
      */
-    public static final String FIELD_DELIMITER = ";";
+    String FIELD_DELIMITER = ";";
     /**
      * CSV record delimiter.
      */
-    public static final String RECORD_DELIMITER = "\n\r";
+    String RECORD_DELIMITER = "\n\r";
     /**
      * Cache manager's thread interval between each cache analysis. Set to 1
      * second (1000 milliseconds).
      */
-    public static final Integer CACHE_MANAGER_CHECK_INTERVAL = 1000;
+    Integer CACHE_MANAGER_CHECK_INTERVAL = 1000;
     /**
      * A simple datetime pattern.
      */
-    public static final String DATETIME_PATTERN = "dd-MM-yyyy HH:mm";
+    String DATETIME_PATTERN = "dd-MM-yyyy HH:mm";
     /**
      * An instance of a default date formatter.
      */
-    public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
+    SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
     /**
      * JNDI JMS process report queue id
      */
-    public static final String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "java:comp/env/jms/ProcessReportQueue";
+    String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "java:comp/env/jms/ProcessReportQueue";
     /**
      * JNDI JMS generate report queue id
      */
-    public static final String JNDI_JMS_GENERATE_REPORT_QUEUE_ID = "java:comp/env/jms/GenerateReportQueue";
+    String JNDI_JMS_GENERATE_REPORT_QUEUE_ID = "java:comp/env/jms/GenerateReportQueue";
     /**
      * JMS connection factory id
      */
-    public static final String JNDI_JMS_CONNECTION_FACTORY_ID = "java:comp/env/jms/ConnectionFactory";
+    String JNDI_JMS_CONNECTION_FACTORY_ID = "java:comp/env/jms/ConnectionFactory";
     /**
      * Report order id property name.
      */
-    public static final String JMS_PROPERTY_REPORT_ORDER_ID = "reportOrderId";
+    String JMS_PROPERTY_REPORT_ORDER_ID = "reportOrderId";
     /**
      * Key used to pass map with compiled subreports to JasperFiller
      */
-    public static final String SUBREPORT_MAP_PARAMETER_NAME = "SUBREPORT_MAP";
+    String SUBREPORT_MAP_PARAMETER_NAME = "SUBREPORT_MAP";
 
     /**
      * Represents a boolean report property.

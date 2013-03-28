@@ -5,6 +5,6 @@ package org.apertereports.util;
  */
 public interface DashboardPreferences {
 
-    public static final String PREFERENCE_TEMPLATE_KEY = "template";
-    public static final String PREFERENCE_REPORT_CONFIGS_KEY = "reportConfigs";
+    String PREFERENCE_TEMPLATE_KEY = "template";
+    String PREFERENCE_REPORT_CONFIGS_KEY = "reportConfigs";
 }

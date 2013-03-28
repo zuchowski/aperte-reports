@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 
     private Form form = new Form();
-    private HashMap<String, FilterContainer> filters;
+    private Map<String, FilterContainer> filters;
     private List<FieldContainer> fields = new LinkedList<FieldContainer>();
     private ComboBox format;
     private ComboBox localeComboBox;
@@ -273,9 +273,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             // INPUT_TYPE
             Field field = buildFieldBaseForInputType(fieldProperties, items, container);
 
-            if (field != null && field instanceof Field) {
+            if (field != null) {
                 applyAttributes(fieldProperties, container, field);
-
             }
 
             // obsluga kontrolek multi-level select: filter i filtered_select
@@ -383,9 +382,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             FieldContainer container) throws BuildingFailedException {
         Field field = null;
         switch (fieldProperties.getInputType()) {
-            case TEXT:
-                field = new TextField(fieldProperties.getCaption());
-                break;
             case CHECKBOX:
                 field = new CheckBox(fieldProperties.getCaption());
                 break;
@@ -480,6 +476,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 }
                 break;
 
+            case TEXT:
             default:
                 field = new TextField(fieldProperties.getCaption());
                 break;

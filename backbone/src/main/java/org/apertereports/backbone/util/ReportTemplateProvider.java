@@ -40,7 +40,7 @@ public class ReportTemplateProvider implements SubreportProvider {
 		if(!notFound.isEmpty()){
 			String[] notFoundArray = (String[]) notFound.toArray(new String[notFound.size()]);
 			String message = "Subreports not found: " + StringUtils.join(notFoundArray, ", ");
-			throw new ARException(ErrorCode.SUBREPORT_NOT_FOUND, notFoundArray);
+			throw new ARException(ErrorCode.SUBREPORT_NOT_FOUND, message);
 		}
 
 		return map;

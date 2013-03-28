@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.*;
-
 import org.hibernate.annotations.Type;
 
 /**
@@ -20,7 +18,7 @@ public class ReportTemplate implements Serializable {
     /**
      * Id indicating access for all roles to the report
      */
-    public static long ACCESS_ALL_ROLES_ID = -1;
+    public static final long ACCESS_ALL_ROLES_ID = -1;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ar_roles_with_access", joinColumns =
     @JoinColumn(name = "report_id"))

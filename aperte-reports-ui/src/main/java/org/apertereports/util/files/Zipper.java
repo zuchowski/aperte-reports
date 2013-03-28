@@ -15,7 +15,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Zipper {
 
-    private final static Logger logger = LoggerFactory.getLogger(Zipper.class);
+    private static final Logger logger = LoggerFactory.getLogger(Zipper.class);
+    private static final int BYTES_IN_1KB = 1024;
 
     /**
      * Creates .zip file from element pointed by source path
@@ -24,7 +25,7 @@ public class Zipper {
      * @param destPath Destination
      * @throws Exception
      */
-    static public void zip(String srcPath, String destPath) throws Exception {
+    public static void zip(String srcPath, String destPath) throws Exception {
 
         logger.info("SRC: " + srcPath);
         logger.info("DST: " + destPath);
@@ -41,7 +42,7 @@ public class Zipper {
         zos.close();
     }
 
-    static private void addFolder(File f, String zipPath, ZipOutputStream zos) throws Exception {
+    private static void addFolder(File f, String zipPath, ZipOutputStream zos) throws Exception {
         if (!f.isDirectory()) {
             throw new IllegalArgumentException("folder File object exected");
         }
@@ -56,18 +57,23 @@ public class Zipper {
         }
     }
 
-    static private void addFile(File f, String zipPath, ZipOutputStream zos) throws Exception {
+    private static void addFile(File f, String zipPath, ZipOutputStream zos) throws Exception {
         if (f.isDirectory()) {
             throw new IllegalArgumentException("regular file expected");
         }
 
         logger.debug("adding file: " + f.getAbsolutePath() + " -> " + zipPath);
         FileInputStream in = new FileInputStream(f);
-        zos.putNextEntry(new ZipEntry(zipPath + (zipPath.length() == 0 ? "" : File.separator) + f.getName()));
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            zos.write(buf, 0, len);
+        try {
+            zos.putNextEntry(new ZipEntry(zipPath + (zipPath.length() == 0 ? "" : File.separator) + f.getName()));
+            byte[] buf = new byte[BYTES_IN_1KB];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                zos.write(buf, 0, len);
+            }
+        } catch (Exception e) {
+            in.close();
+            throw e;
         }
     }
 }

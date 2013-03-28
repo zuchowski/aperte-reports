@@ -2,16 +2,13 @@ package org.apertereports.engine;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
-
-import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.ARConstants.Parameter;
+import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.common.xml.ws.ReportData;
@@ -19,7 +16,6 @@ import org.apertereports.common.xml.ws.ReportExporterParameter;
 import org.springframework.util.StringUtils;
 
 public class ReportWebServiceHelper {
-	private static final Logger logger = Logger.getLogger(ReportWebServiceHelper.class.getName());
 
 	public byte[] generateAndExportReport(ReportData reportData) throws ARException {
 		Map<JRExporterParameter, Object> exporterParameters = getExporterParameters(reportData);
