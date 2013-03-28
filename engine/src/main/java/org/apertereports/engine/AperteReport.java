@@ -3,15 +3,10 @@
  */
 package org.apertereports.engine;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.jasperreports.engine.JRExpressionCollector;
-import net.sf.jasperreports.engine.JRReport;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.base.JRBaseObjectFactory;
 
 /**
  * 

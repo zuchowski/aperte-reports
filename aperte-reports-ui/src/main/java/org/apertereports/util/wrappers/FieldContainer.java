@@ -5,13 +5,11 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.*;
-import org.apertereports.common.ARConstants;
-
 import java.util.List;
+import org.apertereports.common.ARConstants;
 import org.apertereports.ui.UiFactory;
 import org.apertereports.ui.UiIds;
 
-import org.apertereports.util.VaadinUtil;
 
 /**
  * This is a wrapper container for report fields. It includes a Vaadin component and a bunch of configuration params.

@@ -1,7 +1,5 @@
 package org.apertereports.engine;
 
-import net.sf.jasperreports.engine.JasperReport;
-
 import java.util.HashMap;
 
 /**
@@ -30,7 +28,7 @@ public class ReportCache {
      * Puts a report in the cache.
      *
      * @param reportId Report cache id
-     * @param report   A {@link JasperReport} to cache
+     * @param report   A {@link net.sf.jasperreports.engine.JasperReport} to cache
      */
     public static void putReport(String reportId, AperteReport report) {
         if (reportId == null) {

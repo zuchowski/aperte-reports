@@ -1,10 +1,8 @@
 package org.apertereports;
 
 import com.vaadin.ui.Window;
-import org.apertereports.components.ReportManagerComponent;
-import org.apertereports.util.VaadinUtil;
-
 import org.apertereports.common.users.User;
+import org.apertereports.components.ReportManagerComponent;
 
 /**
  * This is the main report administration portlet.
