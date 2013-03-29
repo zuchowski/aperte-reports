@@ -7,15 +7,13 @@ package org.apertereports.common.wrappers;
  * @param <T2> Second object.
  */
 public class Pair<T1, T2> {
-    T1 key;
-    T2 entry;
+    private T1 key;
+    private T2 entry;
 
     public Pair() {
-
     }
 
     public Pair(T1 key, T2 entry) {
-        super();
         this.key = key;
         this.entry = entry;
     }

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * An application container should provide a <code>javax.mail.session</code>
  * instance for it to work properly.
  */
-public class EmailProcessor implements ConfigurationConstants {
+public final class EmailProcessor implements ConfigurationConstants {
     
     private static Logger logger = LoggerFactory.getLogger(EmailProcessor.class);
 	/**
@@ -102,8 +102,9 @@ public class EmailProcessor implements ConfigurationConstants {
 	 * @return An EmailProcessor instance
 	 */
 	public static synchronized EmailProcessor getInstance() {
-		if (instance == null)
-			instance = new EmailProcessor();
+		if (instance == null) {
+            instance = new EmailProcessor();
+        }
 		return instance;
 	}
 

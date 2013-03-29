@@ -65,7 +65,6 @@ public class ReportParamPanel extends Panel {
         boolean result = reportParametersComponent.validateForm();
         if (!result) {
             getWindow().showNotification(VaadinUtil.getValue("notification.fill.in.the.form.correctly"), Notification.TYPE_WARNING_MESSAGE);
-            Notification n;
         }
         return result;
     }

@@ -55,7 +55,8 @@ public class ResourceBundleMessageProvider {
     public String getMessage(Locale messageLocale, String messageKey) {
         ResourceBundle messages = resourceBundleMap.get(messageLocale);
         if (messages == null) {
-            resourceBundleMap.put(messageLocale, messages = ResourceBundle.getBundle(resourceName, messageLocale));
+            messages = ResourceBundle.getBundle(resourceName, messageLocale);
+            resourceBundleMap.put(messageLocale, messages);
         }
         return messages.getString(messageKey);
     }

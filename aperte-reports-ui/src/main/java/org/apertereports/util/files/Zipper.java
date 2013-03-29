@@ -75,8 +75,6 @@ public final class Zipper {
             while ((len = in.read(buf)) > 0) {
                 zos.write(buf, 0, len);
             }
-        } catch (IOException e) {
-            throw e;
         } finally {
             in.close();
         }

@@ -57,12 +57,9 @@ public class TmpDirMgr {
      */
     public void clearBaseDir() {
         for (File f : baseDir.listFiles()) {
-            try {
-                boolean deleted = f.delete();
-                if (!deleted) {
-                    logger.warn("error while deleting base dir: " + baseDir);
-                }
-            } catch (Exception e) {
+            boolean deleted = f.delete();
+            if (!deleted) {
+                logger.warn("error while deleting base dir: " + baseDir);
             }
         }
     }
@@ -106,6 +103,7 @@ public class TmpDirMgr {
             try {
                 Thread.sleep(2);
             } catch (Exception e) {
+                logger.error("sleep error: ", e);
             }
         }
         throw new RuntimeException("cannot create tmp directory");

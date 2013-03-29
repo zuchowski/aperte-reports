@@ -70,10 +70,10 @@ public class HelpWindow extends TPTWindow {
             String title = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
                     + param.toString().toLowerCase() + ".title", param.toString().toLowerCase()) + " - " + param.toString().toLowerCase();
 
-            String property_name = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".param_name", param.toString().toLowerCase());
-            String property_desc = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
+            String propertyName = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + ".param_name", param.toString().toLowerCase());
+            String propertyDesc = VaadinUtil.getValue("help_window.tabs." + Tab.PARAMS.toString().toLowerCase() + "."
                     + param.toString().toLowerCase() + ".content", param.toString().toLowerCase());
-            Label content = new Label(property_name + "<br/>" + property_desc, Label.CONTENT_XHTML);
+            Label content = new Label(propertyName + "<br/>" + propertyDesc, Label.CONTENT_XHTML);
             accordion.addTab(content, title, null);
         }
         vl.addComponent(accordion);

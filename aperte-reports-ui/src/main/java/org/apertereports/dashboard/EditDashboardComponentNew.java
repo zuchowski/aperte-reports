@@ -58,7 +58,8 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
         paramsParentComponent = UiFactory.createVLayout(mainPanel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
 
         HorizontalLayout reportRow = UiFactory.createHLayout(paramsParentComponent, FAction.SET_FULL_WIDTH);
-        reportRow.addComponent(form = new EditDashboardForm());
+        form = new EditDashboardForm();
+        reportRow.addComponent(form);
 
         paramsParentComponent.addComponent(paramsPanel);
         paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));

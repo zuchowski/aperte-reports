@@ -20,7 +20,7 @@ public class SQLUtil {
     /**
      * Session factory
      */
-    protected static SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
     /**
      * Static initializer of the session factory.

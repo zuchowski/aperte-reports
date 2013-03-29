@@ -292,7 +292,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             container.setName(param.getName());
             return container;
         } catch (BuildingFailedException e) {
-//            return null;
             throw new RuntimeException(e);
         }
     }
@@ -393,7 +392,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         try {
                             return super.handleUnparsableDateString(dateString);
                         } catch (ConversionException e) {
-                            throw new ConversionException(VaadinUtil.getValue("form.errors.unparsable_date", getCaption(), dateString));
+                            throw new ConversionException(VaadinUtil.getValue("form.errors.unparsable_date", getCaption(), dateString), e);
                         }
                     }
                 };
@@ -644,7 +643,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         // ADD ALL FIELDS TO FORM
         FormLayout layout = new FormLayout();
         form.setLayout(layout);
-        // form.addField("id", new TextField("pole testowe"));
         for (FieldContainer field : fields) {
             if (field != null) {
                 field.placeYourselfInForm(form, layout);

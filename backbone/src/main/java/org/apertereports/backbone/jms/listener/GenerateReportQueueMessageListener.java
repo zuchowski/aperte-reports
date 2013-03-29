@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * generation orders. It then pushes the id of the resulting report order back
  * to JMS for further processing.
  */
-public class GenerateReportQueueMessageListener implements MessageListener {
+public final class GenerateReportQueueMessageListener implements MessageListener {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
     private static GenerateReportQueueMessageListener instance;

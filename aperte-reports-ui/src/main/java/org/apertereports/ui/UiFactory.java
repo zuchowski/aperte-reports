@@ -510,10 +510,10 @@ public abstract class UiFactory {
                     || action == FAction.SET_EXPAND_RATIO_1_0) {
                 Component parent = c.getParent();
                 if (parent == null) {
-                    throw new RuntimeException("there is no parent component");
+                    throw new IllegalArgumentException("there is no parent component");
                 }
                 if (!(parent instanceof AbstractOrderedLayout)) {
-                    throw new RuntimeException("component is not instance of AbstractOrderedLayout");
+                    throw new IllegalArgumentException("component is not instance of AbstractOrderedLayout");
                 }
 
                 AbstractOrderedLayout layout = ((AbstractOrderedLayout) parent);
@@ -531,11 +531,11 @@ public abstract class UiFactory {
                 c.setVisible(false);
             } else if (action == FAction.SET_SPACING) {
                 if (!(c instanceof AbstractOrderedLayout)) {
-                    throw new RuntimeException("component is not instance of AbstractOrderedLayout");
+                    throw new IllegalArgumentException("component is not instance of AbstractOrderedLayout");
                 }
                 ((AbstractOrderedLayout) c).setSpacing(true);
             } else {
-                throw new RuntimeException("action not serviced yet: " + action);
+                throw new UnsupportedOperationException("action not serviced yet: " + action);
             }
         }
     }

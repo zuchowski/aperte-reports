@@ -51,11 +51,11 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
     /**
      * Liferay user.
      */
-    protected User user;
+    private User user;
     /**
      * User locale.
      */
-    protected Locale locale;
+    private Locale locale;
 
     /**
      * Initializes the application context.
@@ -234,5 +234,13 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
      */
     public User getArUser() {
         return user;
+    }
+
+    /**
+     * Returns application locale
+     * @return Locale
+     */
+    public Locale getArLocale() {
+        return locale;
     }
 }

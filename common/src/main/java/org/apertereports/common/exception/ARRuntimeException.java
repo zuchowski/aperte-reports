@@ -38,7 +38,7 @@ public class ARRuntimeException extends RuntimeException {
      * @param details Error details
      */
     public ARRuntimeException(ErrorCode errorCode, Throwable cause, String... details) {
-        init(errorCode, null, details);
+        init(errorCode, cause, details);
     }
 
     /**

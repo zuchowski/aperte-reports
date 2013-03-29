@@ -138,9 +138,9 @@ public class RolePermissionsPanel extends Panel {
 
     private class UserRoleWrapper {
 
-        public final UserRole ur;
-        public boolean selected;
-        public CheckBox checkBox;
+        private final UserRole ur;
+        private boolean selected;
+        private CheckBox checkBox;
 
         public UserRoleWrapper(final UserRole ur) {
             this.ur = ur;

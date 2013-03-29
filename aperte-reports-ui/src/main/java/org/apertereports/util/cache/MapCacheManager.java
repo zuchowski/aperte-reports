@@ -37,7 +37,7 @@ public final class MapCacheManager {
     /**
      * A helper bean for control of the cached objects.
      */
-    private static class IntervalControlBean {
+    private final static class IntervalControlBean {
         private String objKey;
         private long interval;
         private long cachedTime;

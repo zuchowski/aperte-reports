@@ -8,9 +8,12 @@ import org.apertereports.common.ARConstants;
 /**
  * An utility for converting dates and time.
  */
-public class TimeUtils implements ARConstants {
+public final class TimeUtils implements ARConstants {
 
     private static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
+
+    private TimeUtils() {
+    }
 
     /**
      * Returns a default date format.

@@ -2,13 +2,12 @@ package org.apertereports.engine;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.exception.ARException;
 
 public class MapBasedSubreportProvider implements SubreportProvider {
 
-	Map<String, Subreport> map = new HashMap<String, Subreport>();
+	private Map<String, Subreport> map = new HashMap<String, Subreport>();
 
 	public MapBasedSubreportProvider(Map<String, Subreport> subreportMap) {
 		super();

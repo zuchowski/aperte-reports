@@ -71,7 +71,7 @@ public class ReportManagerComponent extends Panel {
     private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
     private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
     private ReportReceiver newReportReceiver;
-    private User user;
+    private transient User user;
 
     public ReportManagerComponent() {
 
@@ -158,7 +158,8 @@ public class ReportManagerComponent extends Panel {
             this.item = item;
             setStyleName(EDIT_PANEL_STYLE);
             setCaption(VaadinUtil.getValue(UiIds.LABEL_EDITION) + " - " + item.reportTemplate.getReportname());
-            deepCopy(item.reportTemplate, temporaryData = new ReportTemplate());
+            temporaryData = new ReportTemplate();
+            deepCopy(item.reportTemplate, temporaryData);
             beanItem = new BeanItem<ReportTemplate>(temporaryData);
 
             HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
@@ -339,7 +340,8 @@ public class ReportManagerComponent extends Panel {
 
         private void toggleParamsPanel() {
             if (paramsPanel == null) {
-                addComponent(paramsPanel = createParamsPanel());
+                paramsPanel = createParamsPanel();
+                addComponent(paramsPanel);
                 toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
@@ -492,7 +494,7 @@ public class ReportManagerComponent extends Panel {
      */
     private class ReportReceiver implements Upload.Receiver, Upload.SucceededListener, Upload.FailedListener {
 
-        private ByteArrayOutputStream baos;
+        private transient ByteArrayOutputStream baos;
         private ReportTemplate reportTemplate;
         private List<ReportReceivedListener> listeners = new LinkedList<ReportManagerComponent.ReportReceivedListener>();
 
@@ -509,7 +511,7 @@ public class ReportManagerComponent extends Panel {
         @Override
         public void uploadSucceeded(SucceededEvent event) {
             if (baos == null) {
-                throw new NullPointerException("baos == null");
+                throw new IllegalStateException("baos == null");
             }
             String content = new String(Base64.encodeBase64(baos.toByteArray()));
             try {
@@ -533,7 +535,8 @@ public class ReportManagerComponent extends Panel {
 
         @Override
         public OutputStream receiveUpload(String filename, String mimeType) {
-            return baos = new ByteArrayOutputStream();
+            baos = new ByteArrayOutputStream();
+            return baos;
         }
 
         public void addListener(ReportReceivedListener listener) {

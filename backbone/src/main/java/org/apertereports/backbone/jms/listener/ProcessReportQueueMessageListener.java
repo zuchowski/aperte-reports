@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * the cyclic report orders. On response to its queue the listener fetches the
  * relevant report order and connects its results with the cyclic report order.
  */
-public class ProcessReportQueueMessageListener implements MessageListener {
+public final class ProcessReportQueueMessageListener implements MessageListener {
 
     /**
      * Singleton
@@ -50,7 +50,6 @@ public class ProcessReportQueueMessageListener implements MessageListener {
             processReport(reportOrder);
         } catch (JMSException e) {
             logger.error(e.getMessage(), e);
-//			throw new AperteReportsRuntimeException(e);
         }
     }
 

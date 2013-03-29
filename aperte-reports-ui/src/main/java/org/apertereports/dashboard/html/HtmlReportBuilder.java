@@ -129,7 +129,8 @@ public class HtmlReportBuilder {
         contentBuffer.append(createDivAnchor(componentKey));
 
         Component reportComponent = createReportComponent(config, true);
-        mainComponentMap.put(componentKey = REPORT_TAG + config.getId(), reportComponent != null ? reportComponent : new Label());
+        componentKey = REPORT_TAG + config.getId();
+        mainComponentMap.put(componentKey, reportComponent != null ? reportComponent : new Label());
         contentBuffer.append(createDivAnchor(componentKey));
     }
 

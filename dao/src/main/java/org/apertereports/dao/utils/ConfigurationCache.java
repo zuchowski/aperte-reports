@@ -13,7 +13,7 @@ public final class ConfigurationCache implements ConfigurationConstants {
     /**
      * Map cache.
      */
-    static Map<String, String> configuration;
+    private static Map<String, String> configuration;
     /**
      * Date when the cache expires.
      */

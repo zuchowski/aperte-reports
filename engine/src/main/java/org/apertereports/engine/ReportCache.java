@@ -7,7 +7,7 @@ import java.util.Map;
  * A simple thread-safe cache for Jasper reports.
  */
 public final class ReportCache {
-    static Map<String, AperteReport> reports;
+    private static Map<String, AperteReport> reports;
 
     private ReportCache() {
     }

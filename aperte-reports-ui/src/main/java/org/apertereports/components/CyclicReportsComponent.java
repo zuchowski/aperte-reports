@@ -245,7 +245,8 @@ public class CyclicReportsComponent extends Panel {
 
         protected void toggleParamsPanel() {
             if (paramsPanel == null) {
-                addComponent(paramsPanel = createParamsPanel());
+                paramsPanel = createParamsPanel();
+                addComponent(paramsPanel);
                 toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
                 removeComponent(paramsPanel);
@@ -338,7 +339,8 @@ public class CyclicReportsComponent extends Panel {
             setCaption(VaadinUtil.getValue(newItem ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION));
 
             setWidth("100%");
-            addComponent(form = new EditCyclicReportForm(config));
+            form = new EditCyclicReportForm(config);
+            addComponent(form);
             UiFactory.createSpacer(this, null, "5px");
             HorizontalLayout buttons = UiFactory.createHLayout(this, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createSpacer(buttons, FAction.SET_EXPAND_RATIO_1_0);

@@ -23,15 +23,11 @@ public class ReportWebServiceHelper {
 		Map<String, Object> reportParameters = getReportParameters(reportData);
 
 		byte[] content;
-		try {
-			content = ReportGeneratorUtils.unwrapDataHandler(reportData.getSource());
+        content = ReportGeneratorUtils.unwrapDataHandler(reportData.getSource());
 
-			content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider())
-					.generateAndExportReport(reportData.getFormat(), reportParameters, exporterParameters,
-							configuration);
-		} catch (ARException e) {
-			throw e;
-		} 
+        content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider())
+                .generateAndExportReport(reportData.getFormat(), reportParameters, exporterParameters,
+                        configuration);
 
 		return content;
 	}

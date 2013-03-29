@@ -68,7 +68,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
     private static Pattern subreportPattern = Pattern.compile("<subreportExpression class\\=\"java\\.lang\\.String\"\\>\\<\\!\\[CDATA\\[\\$P\\{[^}]*\\} [^\"]*\"([^\"]*)\\.jasper\"");
     private static Pattern jasperReportPattern = Pattern.compile("<jasperReport[^>]+>(\\s+<property[^>]+>)*",
             Pattern.MULTILINE);
-    private static Pattern subreport_reportElementPattern = Pattern.compile(
+    private static Pattern subreportReportElementPattern = Pattern.compile(
             "<subreport>\\s*<reportElement[^>]+>(\\s*)", Pattern.MULTILINE);
     private static String subreportMapParameter = "\n\t<parameter name=\"" + SUBREPORT_MAP_PARAMETER_NAME
             + "\" class=\"java.util.Map\" isForPrompting=\"false\"/>";
@@ -331,7 +331,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                     + SUBREPORT_MAP_PARAMETER_NAME + "}.get(\"" + subReportName + "\").getJasperReport()");
             m.reset(source);
         }
-        m = subreport_reportElementPattern.matcher(source);
+        m = subreportReportElementPattern.matcher(source);
 
         if (m.find()) {
             source = m.replaceAll("$0<subreportParameter name=\"" + SUBREPORT_MAP_PARAMETER_NAME + "\">"

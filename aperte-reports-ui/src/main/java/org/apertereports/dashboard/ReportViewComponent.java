@@ -159,9 +159,9 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             throw new ARRuntimeException(ErrorCode.DRILLDOWN_NOT_FOUND);
         }
         String reportName = reportNames.get(0); // bierzemy pierwszy z brzegu
-        for (ReportTemplate template : reportMap.values()) {
-            if (template.getReportname().equals(reportName)) {
-                drillConfig.setReportId(template.getId());
+        for (ReportTemplate rt : reportMap.values()) {
+            if (rt.getReportname().equals(reportName)) {
+                drillConfig.setReportId(rt.getId());
                 break;
             }
         }
@@ -170,8 +170,8 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
             if (reportTemplates.isEmpty()) {
                 throw new ARRuntimeException(ErrorCode.DRILLDOWN_REPORT_NOT_FOUND);
             }
-            ReportTemplate template = reportTemplates.iterator().next(); // bierzemy pierwszy z brzegu
-            drillConfig.setReportId(template.getId());
+            ReportTemplate rt = reportTemplates.iterator().next(); // bierzemy pierwszy z brzegu
+            drillConfig.setReportId(rt.getId());
         }
 
         drillConfig.setAllowRefresh(false);

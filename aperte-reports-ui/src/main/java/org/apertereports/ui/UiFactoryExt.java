@@ -106,7 +106,7 @@ public abstract class UiFactoryExt {
         @Override
         public Object parse(String formattedValue) throws Exception {
             GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(dateFormat.parse(formattedValue));
+            cal.setTime(getDateFormat().parse(formattedValue));
             return cal;
         }
     }
@@ -114,7 +114,7 @@ public abstract class UiFactoryExt {
     @SuppressWarnings({"unchecked", "serial"})
     private static class DateProperty extends PropertyFormatter {
 
-        protected SimpleDateFormat dateFormat;
+        private SimpleDateFormat dateFormat;
 
         public DateProperty(Property property) {
             super(property);
@@ -136,6 +136,10 @@ public abstract class UiFactoryExt {
         public Object parse(String formattedValue) throws Exception {
             init();
             return dateFormat.parse(formattedValue);
+        }
+
+        protected SimpleDateFormat getDateFormat() {
+            return dateFormat;
         }
     }
 
