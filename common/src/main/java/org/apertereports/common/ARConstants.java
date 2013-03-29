@@ -41,10 +41,6 @@ public interface ARConstants {
      */
     String DATETIME_PATTERN = "dd-MM-yyyy HH:mm";
     /**
-     * An instance of a default date formatter.
-     */
-    SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(DATETIME_PATTERN);
-    /**
      * JNDI JMS process report queue id
      */
     String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "java:comp/env/jms/ProcessReportQueue";

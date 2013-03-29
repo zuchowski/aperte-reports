@@ -7,7 +7,10 @@ import java.util.Locale;
  *
  * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
-public class LocaleUtils {
+public final class LocaleUtils {
+
+    private LocaleUtils() {
+    }
 
     /**
      * Creates {@link java.util.Locale} object according to provided locale

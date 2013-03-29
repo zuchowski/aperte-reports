@@ -14,10 +14,12 @@ import org.apertereports.ui.UiIds;
  */
 public class HelpButton extends Button {
 
+    private static final int DEFAULT_WIDTH_IN_UNITS = 20;
+
     public HelpButton(final Module module, final Tab tab) {
         setDescription(VaadinUtil.getValue(UiIds.LABEL_HELP));
         addStyleName(BaseTheme.BUTTON_LINK);
-        setWidth(20, UNITS_PIXELS);
+        setWidth(DEFAULT_WIDTH_IN_UNITS, UNITS_PIXELS);
         addListener(new Button.ClickListener() {
 
             @Override

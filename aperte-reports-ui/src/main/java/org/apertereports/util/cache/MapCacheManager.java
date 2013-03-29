@@ -197,7 +197,7 @@ public final class MapCacheManager {
     /**
      * Initializes the interval checking thread.
      */
-    private static void init() {
+    private static synchronized void init() {
         if (invalidatingThread == null) {
             invalidatingThread = new InvalidatingThread();
             invalidatingThread.start();

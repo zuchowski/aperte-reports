@@ -19,17 +19,18 @@ public class MapCache {
 
     private Map<String, Object> cache = new HashMap<String, Object>();
     private static final Logger logger = LoggerFactory.getLogger(MapCache.class);
+    private static final Random RANDOM_GEN = new Random();
 
     /**
      * Constructs a new instance with a generated id.
      */
     public MapCache() {
         try {
-            id = digest("SHA-1", "" + new Random().nextInt(), "" + System.currentTimeMillis(), "" + (new Random().nextInt() << 13), toString());
+            id = digest("SHA-1", "" + RANDOM_GEN.nextInt(), "" + System.currentTimeMillis(), "" + (RANDOM_GEN.nextInt() << 13), toString());
         }
         catch (NoSuchAlgorithmException e) {
             logger.error(e.getMessage(), e);
-            id = new Random().nextInt() + "" + System.currentTimeMillis() + (new Random().nextInt() << 13) + toString(); // unsafe
+            id = RANDOM_GEN.nextInt() + "" + System.currentTimeMillis() + (RANDOM_GEN.nextInt() << 13) + toString(); // unsafe
         }
     }
 

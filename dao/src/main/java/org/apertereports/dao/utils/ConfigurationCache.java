@@ -8,7 +8,7 @@ import org.apertereports.dao.ConfigurationDAO;
 /**
  * A static cache for configuration entries. Thread-safe.
  */
-public class ConfigurationCache implements ConfigurationConstants {
+public final class ConfigurationCache implements ConfigurationConstants {
 
     /**
      * Map cache.
@@ -18,6 +18,9 @@ public class ConfigurationCache implements ConfigurationConstants {
      * Date when the cache expires.
      */
     static Calendar validUntil;
+
+    private ConfigurationCache() {
+    }
 
     /**
      * Gets a single configuration entry corresponding to given key.

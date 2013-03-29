@@ -10,11 +10,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author tlipski@bluesoft.net.pl
  */
-public class VaadinUtil {
+public final class VaadinUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportTemplateDAO.class);
     private static final Map<Thread, Locale> LOCALE_THREAD_MAP = new HashMap<Thread, Locale>();
 
+    private VaadinUtil() {
+    }
+    
     public static synchronized void setThreadLocale(Locale l) {
         LOCALE_THREAD_MAP.put(Thread.currentThread(), l);
     }

@@ -359,12 +359,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_validation_code.script_exception", e);
                 logger.error(e.getMessage(), e);
-                throw new BuildingFailedException();
+                throw new BuildingFailedException(e);
             } catch (NoSuchMethodException e) {
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_validation_code.no_such_method_exception", e);
                 logger.error(e.getMessage(), e);
-                throw new BuildingFailedException();
+                throw new BuildingFailedException(e);
             }
         }
     }
@@ -418,7 +418,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 } catch (NullPointerException e) {
                     NotificationUtil.showErrorNotification(getWindow(),
                             VaadinUtil.getValue("invoker.form.no_items_for_exception") + " " + fieldProperties.getCaption());
-                    throw new BuildingFailedException();
+                    throw new BuildingFailedException(e);
                 }
 
                 select.setMultiSelect(fieldProperties.getInputType() == ARConstants.InputTypes.MULTISELECT);
@@ -437,7 +437,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 } catch (NullPointerException e) {
                     NotificationUtil.showErrorNotification(getWindow(),
                             VaadinUtil.getValue("invoker.form.no_items_for_exception") + " " + fieldProperties.getCaption());
-                    throw new BuildingFailedException();
+                    throw new BuildingFailedException(e);
                 }
                 optionGroup.setMultiSelect(fieldProperties.getInputType() == CHECKBOXES);
                 field = optionGroup;
@@ -462,12 +462,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                         NotificationUtil.showExceptionNotification(getWindow(),
                                 "invoker.form.special_control_code.script_exception", e);
                         logger.error(e.getMessage(), e);
-                        throw new BuildingFailedException();
+                        throw new BuildingFailedException(e);
                     } catch (NoSuchMethodException e) {
                         NotificationUtil.showExceptionNotification(getWindow(),
                                 "invoker.form.special_control_code.no_such_method_exception", e);
                         logger.error(e.getMessage(), e);
-                        throw new BuildingFailedException();
+                        throw new BuildingFailedException(e);
                     }
                 }
                 Component component = container.getFieldComponent();
@@ -505,12 +505,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
                 logger.error(e.getMessage(), e);
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_data_query_code.script_exception", e);
-                throw new BuildingFailedException();
+                throw new BuildingFailedException(e);
             } catch (NoSuchMethodException e) {
                 logger.error(e.getMessage(), e);
                 NotificationUtil.showExceptionNotification(getWindow(),
                         "invoker.form.special_data_query_code.no_such_method_exception", e);
-                throw new BuildingFailedException();
+                throw new BuildingFailedException(e);
             }
         }
         return items;
@@ -788,6 +788,10 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
     }
 
     private class BuildingFailedException extends Exception {
+
+        public BuildingFailedException(Throwable cause) {
+            super(cause);
+        }
     }
 
     /**

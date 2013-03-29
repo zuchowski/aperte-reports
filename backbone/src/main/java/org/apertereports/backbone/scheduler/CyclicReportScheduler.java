@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * scheduler will be initialized automatically with the first use of another
  * method.
  */
-public class CyclicReportScheduler {
+public final class CyclicReportScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.backbone.scheduler");
     /**
@@ -39,6 +39,9 @@ public class CyclicReportScheduler {
      * The Quartz scheduler.
      */
     private static Scheduler scheduler;
+
+    private CyclicReportScheduler() {
+    }
 
     /**
      * Schedules a given cyclic report configuration. If the configuraiton has
@@ -51,7 +54,7 @@ public class CyclicReportScheduler {
     public static void schedule(CyclicReportConfig config) throws SchedulerException {
         init();
 
-        boolean enabled = config.getEnabled() == Boolean.TRUE;
+        boolean enabled = Boolean.TRUE.equals(config.getEnabled());
         if (!enabled) {
             logger.info("Trying to schedule disabled config, discarding: " + config.getId());
             return;
@@ -99,7 +102,7 @@ public class CyclicReportScheduler {
      *
      * @throws SchedulerException on Quartz error
      */
-    public static void init() throws SchedulerException {
+    public static synchronized void init() throws SchedulerException {
         if (scheduler != null) {
             return;
         }

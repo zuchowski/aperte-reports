@@ -12,8 +12,11 @@ import org.apertereports.common.ARConstants;
 /**
  * Utility methods for converting Vaadin value to a simple string.
  */
-public class TextUtils implements ARConstants {
+public final class TextUtils implements ARConstants {
 
+    private TextUtils() {
+    }
+    
     /**
      * Encodes a value to a string so that an SQL query can use it. Converts
      * collections to a single coma separated string.

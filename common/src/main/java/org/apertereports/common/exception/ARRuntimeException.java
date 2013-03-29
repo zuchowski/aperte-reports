@@ -35,6 +35,17 @@ public class ARRuntimeException extends RuntimeException {
      *
      * @param errorCode Error code
      * @param cause Cause
+     * @param details Error details
+     */
+    public ARRuntimeException(ErrorCode errorCode, Throwable cause, String... details) {
+        init(errorCode, null, details);
+    }
+
+    /**
+     * Creates new AR runtime exception
+     *
+     * @param errorCode Error code
+     * @param cause Cause
      */
     public ARRuntimeException(ErrorCode errorCode, Throwable cause) {
         init(errorCode, cause, (String[]) null);

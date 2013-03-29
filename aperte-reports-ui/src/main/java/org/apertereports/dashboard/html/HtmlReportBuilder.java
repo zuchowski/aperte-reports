@@ -30,6 +30,7 @@ import java.util.List;
 
 import static com.vaadin.terminal.Sizeable.UNITS_PERCENTAGE;
 import java.io.File;
+import java.util.Map.Entry;
 import static org.apertereports.common.ARConstants.ReportType;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.ui.UiFactory;
@@ -91,14 +92,14 @@ public class HtmlReportBuilder {
      */
     public CustomLayout createLayout() throws IOException {
         layout = new CustomLayout(new ByteArrayInputStream(contentBuffer.toString().getBytes()));
-        for (String key : mainComponentMap.keySet()) {
-            Component c = mainComponentMap.get(key);
-            layout.addComponent(c, key);
+        for (Entry<String, Component> e : mainComponentMap.entrySet()) {
+            Component c = e.getValue();
+            layout.addComponent(c, e.getKey());
             if (c instanceof CustomLayout) {
-                Map<String, Component> map = customComponentMap.get(key);
+                Map<String, Component> map = customComponentMap.get(e.getKey());
                 if (map != null && !map.isEmpty()) {
-                    for (String mapKey : map.keySet()) {
-                        ((CustomLayout) c).addComponent(map.get(mapKey), mapKey);
+                    for (Entry<String, Component> ee : map.entrySet()) {
+                        ((CustomLayout) c).addComponent(ee.getValue(), ee.getKey());
                     }
                 }
             }
@@ -178,7 +179,7 @@ public class HtmlReportBuilder {
                 }
             });
         }
-        if (config.getAllowRefresh() == Boolean.TRUE) {
+        if (Boolean.TRUE.equals(config.getAllowRefresh())) {
             UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
 
                 @Override
@@ -243,8 +244,8 @@ public class HtmlReportBuilder {
         CustomLayout reportComponent = createReportComponent(config, false);
         if (reportComponent != null) {
             if (map != null && !map.isEmpty()) {
-                for (String mapKey : map.keySet()) {
-                    reportComponent.addComponent(map.get(mapKey), mapKey);
+                for (Entry<String, Component> e : map.entrySet()) {
+                    reportComponent.addComponent(e.getValue(), e.getKey());
                 }
             }
             Component oldComponent = mainComponentMap.get(componentKey);
@@ -488,8 +489,8 @@ public class HtmlReportBuilder {
             Component drillButtons = createReportButtons(drillConfig, parentConfig, null, componentId);
             Map<String, Component> map = customComponentMap.get(REPORT_TAG + drillConfig.getId());
             if (map != null && !map.isEmpty()) {
-                for (String mapKey : map.keySet()) {
-                    drillReport.addComponent(map.get(mapKey), mapKey);
+                for (Entry<String, Component> e : map.entrySet()) {
+                    drillReport.addComponent(e.getValue(), e.getKey());
                 }
             }
 

@@ -6,8 +6,11 @@ import java.util.Map;
 /**
  * A simple thread-safe cache for Jasper reports.
  */
-public class ReportCache {
+public final class ReportCache {
     static Map<String, AperteReport> reports;
+
+    private ReportCache() {
+    }
 
     /**
      * Gets a cached report. Returns <code>null</code> if not found.

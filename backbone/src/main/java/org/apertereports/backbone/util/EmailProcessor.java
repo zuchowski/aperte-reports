@@ -164,7 +164,14 @@ public class EmailProcessor implements ConfigurationConstants {
 	 * @param reportOrder
 	 * @throws Exception
 	 */
-	public synchronized void processEmail(final ReportOrder reportOrder) throws Exception {
+    public void processEmail(final ReportOrder reportOrder) throws Exception {
+		doProcessEmail(reportOrder);
+		if (mailSendDelay != null && mailSendDelay > 0) {
+			Thread.sleep(mailSendDelay);
+		}
+	}
+
+	private synchronized void doProcessEmail(ReportOrder reportOrder) throws Exception {
 		if (StringUtils.isEmpty(reportOrder.getRecipientEmail())) {
 			throw new IllegalStateException("empty email recipient");
 		}
@@ -213,9 +220,6 @@ public class EmailProcessor implements ConfigurationConstants {
 		htmlEmail.attach(getReportOrderDataSource(reportOrder.getReport(), contentType, reportContent), reportOrder
 				.getReport().getReportname(), reportOrder.getReport().getDescription(), EmailAttachment.ATTACHMENT);
 		htmlEmail.send();
-		if (mailSendDelay != null && mailSendDelay > 0) {
-			Thread.sleep(mailSendDelay);
-		}
 	}
 
 	/**

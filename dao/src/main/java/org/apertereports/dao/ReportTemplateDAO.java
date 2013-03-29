@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author MW
  */
-public class ReportTemplateDAO {
+public final class ReportTemplateDAO {
 
     private enum SelectType {
 
@@ -36,6 +36,9 @@ public class ReportTemplateDAO {
         SELECT_RT_ID
     }
     private static final Logger logger = LoggerFactory.getLogger("ar.dao.rt");
+
+    private ReportTemplateDAO() {
+    }
 
     /**
      * Returns all active report templates for given user
@@ -78,10 +81,11 @@ public class ReportTemplateDAO {
      * for given user
      *
      * @param user User
-     * @param id Primary key value of {@link org.apertereports.model.ReportTemplate}
+     * @param id Primary key value of
+     * {@link org.apertereports.model.ReportTemplate}
      * @return A report template corresponding to the given id or null if not
-     * @throws AperteReportsException With {@link ErrorCodes#REPORT_ACCESS_DENIED}
-     * code when user has no permissions
+     * @throws AperteReportsException With
+     * {@link ErrorCodes#REPORT_ACCESS_DENIED} code when user has no permissions
      */
     public static ReportTemplate fetchById(User user, Integer id) throws ARException {
         Collection<ReportTemplate> c = fetch(user, null, "active = true AND id = ?", null, id);
@@ -99,7 +103,6 @@ public class ReportTemplateDAO {
 
     private static Collection<ReportTemplate> fetch(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
         return new WHS<Collection<ReportTemplate>>() {
-
             @Override
             public Collection<ReportTemplate> lambda() {
                 Query query = createQuery(SelectType.SELECT_RT, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
@@ -177,7 +180,6 @@ public class ReportTemplateDAO {
      */
     private static Integer count(final User user, final String nameFilter, final String hqlRestriction, final String hqlOther, final Object... parameters) {
         return new WHS<Long>() {
-
             @Override
             public Long lambda() {
                 Query query = createQuery(SelectType.SELECT_COUNT_RT, sess, user, nameFilter, hqlRestriction, hqlOther, parameters);
@@ -222,7 +224,6 @@ public class ReportTemplateDAO {
             final boolean onlyActive) {
 
         return new WHS<Collection<ReportTemplate>>() {
-
             @Override
             public Collection<ReportTemplate> lambda() {
                 Query query = createQuery(SelectType.SELECT_RT, sess, user, filter,
@@ -247,7 +248,6 @@ public class ReportTemplateDAO {
      */
     public static Collection<Integer> fetchActiveIds(final User user) {
         return new WHS<Collection<Integer>>() {
-
             @Override
             public Collection<Integer> lambda() {
                 Query query = createQuery(SelectType.SELECT_RT_ID, sess, user, null, "active = true", "order by id");
@@ -274,7 +274,8 @@ public class ReportTemplateDAO {
         String select = type == SelectType.SELECT_RT ? "rt" : type == SelectType.SELECT_COUNT_RT
                 ? "count(rt)" : "rt.id";
 
-        String queryS = "SELECT " + select + " FROM ReportTemplate rt";
+        StringBuilder queryS = new StringBuilder();
+        queryS.append("SELECT ").append(select).append(" FROM ReportTemplate rt");
         if (!nameFilter.isEmpty()) {
             where.add("rt.reportname LIKE ? ");
             params.add('%' + nameFilter.toLowerCase() + '%');
@@ -291,30 +292,30 @@ public class ReportTemplateDAO {
             where.add("? IN elements(rt.rolesWithAccess)");
             params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
         } else if (!user.isAdministrator()) {
-            String part = "( ? IN elements(rt.rolesWithAccess)";
+            StringBuilder part = new StringBuilder("( ? IN elements(rt.rolesWithAccess)");
             params.add(ReportTemplate.ACCESS_ALL_ROLES_ID);
             for (UserRole r : user.getRoles()) {
-                part += " OR ? IN elements(rt.rolesWithAccess)";
+                part.append(" OR ? IN elements(rt.rolesWithAccess)");
                 params.add(r.getId());
             }
-            part += " )";
+            part.append(" )");
 
-            where.add(part);
+            where.add(part.toString());
         }   //when the user is administrator then all reports are available for him
 
         if (!where.isEmpty()) {
             Iterator it = where.iterator();
-            queryS += " WHERE " + it.next();
+            queryS.append(" WHERE ").append(it.next());
             while (it.hasNext()) {
-                queryS += " AND " + it.next();
+                queryS.append(" AND ").append(it.next());
             }
         }
 
         if (hqlOther != null && !hqlOther.isEmpty()) {
-            queryS += " " + hqlOther;
+            queryS.append(" ").append(hqlOther);
         }
 
-        Query q = session.createQuery(queryS);
+        Query q = session.createQuery(queryS.toString());
         for (int i = 0; i < params.size(); i++) {
             q.setParameter(i, params.get(i));
         }

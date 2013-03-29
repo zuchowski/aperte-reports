@@ -3,6 +3,7 @@ package org.apertereports.util.files;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.slf4j.Logger;
@@ -13,10 +14,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
-public class Zipper {
+public final class Zipper {
 
     private static final Logger logger = LoggerFactory.getLogger(Zipper.class);
     private static final int BYTES_IN_1KB = 1024;
+
+    private Zipper() {
+    }
 
     /**
      * Creates .zip file from element pointed by source path
@@ -25,7 +29,7 @@ public class Zipper {
      * @param destPath Destination
      * @throws Exception
      */
-    public static void zip(String srcPath, String destPath) throws Exception {
+    public static void zip(String srcPath, String destPath) throws IOException {
 
         logger.info("SRC: " + srcPath);
         logger.info("DST: " + destPath);
@@ -42,7 +46,7 @@ public class Zipper {
         zos.close();
     }
 
-    private static void addFolder(File f, String zipPath, ZipOutputStream zos) throws Exception {
+    private static void addFolder(File f, String zipPath, ZipOutputStream zos) throws IOException {
         if (!f.isDirectory()) {
             throw new IllegalArgumentException("folder File object exected");
         }
@@ -57,7 +61,7 @@ public class Zipper {
         }
     }
 
-    private static void addFile(File f, String zipPath, ZipOutputStream zos) throws Exception {
+    private static void addFile(File f, String zipPath, ZipOutputStream zos) throws IOException {
         if (f.isDirectory()) {
             throw new IllegalArgumentException("regular file expected");
         }
@@ -71,9 +75,10 @@ public class Zipper {
             while ((len = in.read(buf)) > 0) {
                 zos.write(buf, 0, len);
             }
-        } catch (Exception e) {
-            in.close();
+        } catch (IOException e) {
             throw e;
+        } finally {
+            in.close();
         }
     }
 }

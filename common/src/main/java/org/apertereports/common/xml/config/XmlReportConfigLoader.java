@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apertereports.common.xml.XmlHelper;
 
@@ -106,10 +107,10 @@ public class XmlReportConfigLoader extends XmlHelper {
      */
     public List<ReportConfigParameter> mapToParameterList(Map<String, String> map) {
         List<ReportConfigParameter> list = new ArrayList<ReportConfigParameter>(map.values().size());
-        for (String key : map.keySet()) {
+        for (Entry<String, String> e : map.entrySet()) {
             ReportConfigParameter p = new ReportConfigParameter();
-            p.setName(key);
-            p.setValue(map.get(key));
+            p.setName(e.getKey());
+            p.setValue(e.getValue());
             list.add(p);
         }
         return list;

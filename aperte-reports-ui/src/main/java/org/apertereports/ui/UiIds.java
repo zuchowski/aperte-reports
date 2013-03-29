@@ -5,7 +5,7 @@ package org.apertereports.ui;
  *
  * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
-public class UiIds {
+public final class UiIds {
 
     /**
      * Labels
@@ -70,4 +70,7 @@ public class UiIds {
     public static final String AR_MANAGER_ERR_ENTER_REPORT_NAME = "ar.manager.err.enter.report.name";
     public static final String AR_MANAGER_ERR_NAME_ALREDY_EXISTS = "ar.manager.err.name.alredy.exists";
     public static final String AR_MANAGER_REPORT_DESCRIPTION = "ar.manager.report.description";
+
+    private UiIds() {
+    }
 }

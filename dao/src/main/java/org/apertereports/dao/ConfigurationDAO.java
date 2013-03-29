@@ -12,7 +12,10 @@ import java.util.Map;
 /**
  * DAO methods for retrieving and saving configuration
  */
-public class ConfigurationDAO {
+public final class ConfigurationDAO {
+
+    private ConfigurationDAO() {
+    }
 
     /**
      * Returns all configuration entries

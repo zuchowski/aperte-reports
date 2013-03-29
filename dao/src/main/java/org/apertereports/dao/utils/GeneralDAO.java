@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
-public class GeneralDAO {
+public final class GeneralDAO {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.dao.general");
     public static final User ADMIN_USER = new User("A", new HashSet<UserRole>(), true, null);
+
+    private GeneralDAO() {
+    }
 
     /**
      * Persists given object to database
@@ -41,7 +44,7 @@ public class GeneralDAO {
      * @param c Collection of objects to remove
      */
     public static void remove(Collection<ReportOrder> c) {
-        remove(c.toArray(new Object[0]));
+        remove(c.toArray(new Object[c.size()]));
     }
 
     /**

@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ReportOrder
  */
-public class ReportOrderDAO {
+public final class ReportOrderDAO {
 
     private enum SelectType {
 
@@ -32,11 +32,15 @@ public class ReportOrderDAO {
     }
     private static final Logger logger = LoggerFactory.getLogger("ar.dao.ro");
 
+    private ReportOrderDAO() {
+    }
+
     /**
      * Returns a unique report order representation from database by primary
      * key.
      *
-     * @param id Primary key value of {@link org.apertereports.model.ReportOrder}
+     * @param id Primary key value of
+     * {@link org.apertereports.model.ReportOrder}
      * @return A report order corresponding to the given id
      */
     public static ReportOrder fetchById(final Long id) {
@@ -98,7 +102,7 @@ public class ReportOrderDAO {
      */
     public static Integer count(final User user, final String filter) {
         return new WHS<Long>() {
-
+            
             @Override
             public Long lambda() {
                 Query query = createQuery(SelectType.SELECT_COUNT_RO, sess, user, filter, null, null, (Object[]) null);
@@ -165,7 +169,8 @@ public class ReportOrderDAO {
 
         String select = type == SelectType.SELECT_RO ? "ro" : "count(ro)";
 
-        String queryS = "SELECT " + select + " FROM ReportOrder ro";
+        StringBuilder queryS = new StringBuilder();
+        queryS.append("SELECT ").append(select).append(" FROM ReportOrder ro");
         if (!nameFilter.isEmpty()) {
             where.add("ro.report.reportname LIKE ? ");
             params.add('%' + nameFilter.toLowerCase() + '%');
@@ -197,17 +202,17 @@ public class ReportOrderDAO {
 
         if (!where.isEmpty()) {
             Iterator it = where.iterator();
-            queryS += " WHERE " + it.next();
+            queryS.append(" WHERE ").append(it.next());
             while (it.hasNext()) {
-                queryS += " AND " + it.next();
+                queryS.append(" AND ").append(it.next());
             }
         }
 
         if (hqlOther != null && !hqlOther.isEmpty()) {
-            queryS += " " + hqlOther;
+            queryS.append(" ").append(hqlOther);
         }
 
-        Query q = session.createQuery(queryS);
+        Query q = session.createQuery(queryS.toString());
         for (int i = 0; i < params.size(); i++) {
             q.setParameter(i, params.get(i));
         }

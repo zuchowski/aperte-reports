@@ -16,9 +16,12 @@ import org.slf4j.LoggerFactory;
 /**
  * A utility class that handles opening of a new window with a report stream.
  */
-public class FileStreamer {
+public final class FileStreamer {
 
     private static Logger logger = LoggerFactory.getLogger(FileStreamer.class);
+
+    private FileStreamer() {
+    }
 
     /**
      * Opens a new download window with provided content.

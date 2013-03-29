@@ -20,12 +20,11 @@ import org.apertereports.common.wrappers.DictionaryItemFilter;
  * The first level is always the main select which carries the final value.
  */
 public class FilterContainer extends VerticalLayout {
-    Map<Integer, Select> levels;
-    private List<DictionaryItem> items;
+    Map<Integer, Select> levels = new HashMap<Integer, Select>();
+    private List<DictionaryItem> items = new LinkedList<DictionaryItem>();
 
     public FilterContainer() {
         super();
-        levels = new HashMap<Integer, Select>();
     }
 
     /**

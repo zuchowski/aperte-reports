@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Zbigniew Malinowski
  * @author Tomasz Serafin, BlueSoft Sp. z o.o.
  */
-public class ARJmsFacade {
+public final class ARJmsFacade {
 
     private static final Logger logger = LoggerFactory.getLogger("ar.backbone.jms");
     /**
@@ -44,6 +44,9 @@ public class ARJmsFacade {
                 GenerateReportQueueMessageListener.getInstance());
         queueToListenerMap.put(ARConstants.JNDI_JMS_PROCESS_REPORT_QUEUE_ID,
                 ProcessReportQueueMessageListener.getInstance());
+    }
+
+    private ARJmsFacade() {
     }
 
     /**

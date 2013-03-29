@@ -15,7 +15,10 @@ import java.util.*;
  *
  * @see DictionaryItem
  */
-public class DictionaryDAO {
+public final class DictionaryDAO {
+
+    private DictionaryDAO() {
+    }
 
     /**
      * This method returns a list of dictionary items returned by the query. The
@@ -67,8 +70,11 @@ public class DictionaryDAO {
                     ps.close();
                 }
             } finally {
-                c.rollback(); // żeby komuś nie przyszło coś głupiego do głowy
-                c.close();
+                try {
+                    c.rollback(); // żeby komuś nie przyszło coś głupiego do głowy
+                } finally {
+                    c.close();
+                }
             }
             Collections.sort(res, new Comparator<DictionaryItem>() {
 

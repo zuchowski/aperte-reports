@@ -135,7 +135,7 @@ public class AperteInvokerComponent extends Panel {
                     }
                     Map<String, String> parameters = panel.collectParametersValues();
                     String email = user.getEmail();
-                    if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
+                    if (!Boolean.TRUE.equals(sendEmailCheckbox.getValue())) {
                         email = null;
                     }
                     ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
@@ -166,7 +166,7 @@ public class AperteInvokerComponent extends Panel {
 
         private boolean backgorundGenerationAvail() {
 
-            return ARJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+            return ARJmsFacade.isJmsAvailable() && Boolean.TRUE.equals(reportTemplate.getAllowBackgroundOrder())
                     && reportTemplate.getActive();
         }
     }

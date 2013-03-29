@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CyclicReportConfig
  */
-public class CyclicReportConfigDAO {
+public final class CyclicReportConfigDAO {
 
     private enum SelectType {
 
@@ -30,6 +30,9 @@ public class CyclicReportConfigDAO {
         SELECT_COUNT_CRC
     }
     private static final Logger logger = LoggerFactory.getLogger("ar.dao.crc");
+
+    private CyclicReportConfigDAO() {
+    }
 
     /**
      * Returns all cyclic report configurations from database corresponding to the
@@ -207,7 +210,8 @@ public class CyclicReportConfigDAO {
 
         String select = type == SelectType.SELECT_CRC ? "crc" : "count(crc)";
 
-        String queryS = "SELECT " + select + " FROM CyclicReportConfig crc";
+        StringBuilder queryS = new StringBuilder();
+        queryS.append("SELECT ").append(select).append(" FROM CyclicReportConfig crc");
         if (!nameFilter.isEmpty()) {
             where.add("crc.report.reportname LIKE ? ");
             params.add('%' + nameFilter.toLowerCase() + '%');
@@ -240,17 +244,17 @@ public class CyclicReportConfigDAO {
 
         if (!where.isEmpty()) {
             Iterator it = where.iterator();
-            queryS += " WHERE " + it.next();
+            queryS.append(" WHERE ").append(it.next());
             while (it.hasNext()) {
-                queryS += " AND " + it.next();
+                queryS.append(" AND ").append(it.next());
             }
         }
 
         if (hqlOther != null && !hqlOther.isEmpty()) {
-            queryS += " " + hqlOther;
+            queryS.append(" ").append(hqlOther);
         }
 
-        Query q = session.createQuery(queryS);
+        Query q = session.createQuery(queryS.toString());
         for (int i = 0; i < params.size(); i++) {
             q.setParameter(i, params.get(i));
         }

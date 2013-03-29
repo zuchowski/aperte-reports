@@ -12,7 +12,10 @@ import org.hibernate.criterion.Restrictions;
 /**
  * Helper class for building report orders
  */
-public class ReportOrderBuilder {
+public final class ReportOrderBuilder {
+
+    private ReportOrderBuilder() {
+    }
 
     /**
      * Builds a new report order with given parameters. Returns

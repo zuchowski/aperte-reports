@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -176,15 +178,14 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         drillConfig.setCacheTimeout(0);
         drillConfig.setId(DashboardUtil.generateDrilldownId(configMap.keySet()));
         Map<String, String> reportParameters = new HashMap<String, String>();
-        for (String key : params.keySet()) {
-            List<String> values = params.get(key);
+        for (Entry<String, List<String>> e : params.entrySet()) {
+            String key = e.getKey();
+            List<String> values = e.getValue();
             if (key.equalsIgnoreCase("allowedFormats")) {
                 List<String> allowedFormats = new ArrayList<String>();
                 for (String f : values) {
                     String[] splitted = f.split(",");
-                    for (String s : splitted) {
-                        allowedFormats.add(s);
-                    }
+                    allowedFormats.addAll(Arrays.asList(splitted));
                 }
                 drillConfig.setAllowedFormatsFromList(allowedFormats);
             } else if (key.equalsIgnoreCase("allowRefresh")) {

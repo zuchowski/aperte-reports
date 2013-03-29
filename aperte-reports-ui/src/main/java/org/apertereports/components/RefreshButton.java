@@ -8,10 +8,13 @@ import com.vaadin.ui.themes.BaseTheme;
  * Displays a button with a refresh icon.
  */
 public class RefreshButton extends Button {
+
+    private static final int DEFAULT_WIDTH_IN_UNITS = 16;
+
     public RefreshButton(String caption, Button.ClickListener listener) {
         setDescription(caption);
         addStyleName(BaseTheme.BUTTON_LINK);
-        setWidth(16, UNITS_PIXELS);
+        setWidth(DEFAULT_WIDTH_IN_UNITS, UNITS_PIXELS);
         addListener(listener);
     }
 

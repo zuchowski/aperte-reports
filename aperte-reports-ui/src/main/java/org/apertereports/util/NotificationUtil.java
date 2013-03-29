@@ -18,8 +18,11 @@ import org.apertereports.ui.UiIds;
 /**
  * @author MW
  */
-public class NotificationUtil {
+public final class NotificationUtil {
 
+    private NotificationUtil() {
+    }
+    
     public static void notImplementedYet(Window window) {
         window.showNotification(VaadinUtil.getValue("exception.not.implemented.title"),
                 VaadinUtil.getValue("exception.not.implemented.description"), TYPE_WARNING_MESSAGE);

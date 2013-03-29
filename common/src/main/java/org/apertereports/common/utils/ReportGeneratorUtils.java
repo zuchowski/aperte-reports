@@ -10,9 +10,13 @@ import javax.activation.DataHandler;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public class ReportGeneratorUtils {
+public final class ReportGeneratorUtils {
 
+    private ReportGeneratorUtils() {
+    }
+    
     public static <T> T resolveFieldValue(ClassLoader classLoader, String className, String fieldName) throws ClassNotFoundException,
             NoSuchFieldException, IllegalAccessException {
         Field field = classLoader.loadClass(className).getDeclaredField(fieldName);
@@ -54,7 +58,9 @@ public class ReportGeneratorUtils {
             return bos.toByteArray();
         }
         finally {
-            oos.close();
+            if (oos != null) {
+                oos.close();
+            }
         }
     }
 
@@ -70,15 +76,17 @@ public class ReportGeneratorUtils {
             }
 			return content;
 		} catch (Exception e) {
-				throw new ARException(ErrorCode.EMPTY_REPORT_SOURCE);
+			throw new ARException(ErrorCode.EMPTY_REPORT_SOURCE, e);
 		}
     }
 
     public static Object convertBytesToInputStreams(Object object) {
         if (object instanceof Map) {
             Map map = (Map) object;
-            for (Object key : map.keySet()) {
-                Object value = map.get(key);
+            for (Object o : map.entrySet()) {
+                Entry e = (Entry) o;
+                Object key = e.getKey();
+                Object value = e.getValue();
                 if (canConvertToInputStreams(value)) {
                     map.put(key, convertBytesToInputStreams(value));
                 }

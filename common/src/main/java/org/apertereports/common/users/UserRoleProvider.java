@@ -13,8 +13,11 @@ import java.util.logging.Logger;
  *
  * @author Tomasz Serafin, BlueSoft sp. z o. o.
  */
-public class UserRoleProvider {
+public final class UserRoleProvider {
 
+    private UserRoleProvider() {
+    }
+    
     /**
      * Returns all available roles
      *

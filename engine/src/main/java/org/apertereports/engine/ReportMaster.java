@@ -409,7 +409,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                     ReportProperty property = new ReportProperty(key, propertiesMap.getProperty(propertyName));
                     outputProperties.put(key, property);
                 } catch (IllegalArgumentException e) {
-                    throw new ARRuntimeException(ErrorCode.UNKNOWN_PROPERTY_NAME, propertyName);
+                    throw new ARRuntimeException(ErrorCode.UNKNOWN_PROPERTY_NAME, e, propertyName);
                 }
             }
             outputParameter.setProperties(outputProperties);

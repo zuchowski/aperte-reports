@@ -169,7 +169,7 @@ public class CyclicReportsComponent extends Panel {
 
             //name
             nameContainer = UiFactory.createHLayout(row1, FAction.ALIGN_LEFT, FAction.SET_SPACING);
-            nameContainer.setEnabled(CyclicReportPanel.this.config.getEnabled() == Boolean.TRUE);
+            nameContainer.setEnabled(Boolean.TRUE.equals(CyclicReportPanel.this.config.getEnabled()));
             UiFactory.createLabel(new BeanItem<ReportTemplate>(config.getReport()),
                     ORDER_REPORT_REPORTNAME, nameContainer, FORMAT_STYLE, FAction.ALIGN_LEFT);
             //format
@@ -184,7 +184,7 @@ public class CyclicReportsComponent extends Panel {
                 }
 
                 private void toggleEnable() {
-                    boolean enabled = CyclicReportPanel.this.config.getEnabled() != Boolean.TRUE;
+                    boolean enabled = !Boolean.TRUE.equals(CyclicReportPanel.this.config.getEnabled());
                     CyclicReportPanel.this.config.setEnabled(enabled);
                     nameContainer.setEnabled(enabled);
                     enabledButton.setCaption(VaadinUtil.getValue(getStateLabelCaption()));
@@ -225,7 +225,7 @@ public class CyclicReportsComponent extends Panel {
         }
 
         private String getStateLabelCaption() {
-            return config.getEnabled() == Boolean.TRUE ? UiIds.LABEL_DISABLE : UiIds.LABEL_ENABLE;
+            return Boolean.TRUE.equals(config.getEnabled()) ? UiIds.LABEL_DISABLE : UiIds.LABEL_ENABLE;
         }
 
         protected void remove() {
@@ -315,7 +315,7 @@ public class CyclicReportsComponent extends Panel {
 
     private void scheduleOrUnschedule(CyclicReportConfig config) {
         try {
-            if (config.getEnabled() == Boolean.TRUE) {
+            if (Boolean.TRUE.equals(config.getEnabled())) {
                 CyclicReportScheduler.schedule(config);
             } else {
                 CyclicReportScheduler.unschedule(config);

@@ -403,7 +403,7 @@ public class ReportManagerComponent extends Panel {
                     logger.info("Generate in background action...");
                     Map<String, String> parameters = panel.collectParametersValues();
                     String email = user.getEmail();
-                    if ((Boolean) sendEmailCheckbox.getValue() != Boolean.TRUE) {
+                    if (!Boolean.TRUE.equals((Boolean) sendEmailCheckbox.getValue())) {
                         email = null;
                     }
                     ReportOrder reportOrder = ReportOrderBuilder.build(reportTemplate, parameters,
@@ -432,7 +432,7 @@ public class ReportManagerComponent extends Panel {
         }
 
         private boolean backgorundGenerationAvail() {
-            return ARJmsFacade.isJmsAvailable() && reportTemplate.getAllowBackgroundOrder() == Boolean.TRUE
+            return ARJmsFacade.isJmsAvailable() && Boolean.TRUE.equals(reportTemplate.getAllowBackgroundOrder())
                     && reportTemplate.getActive();
         }
 
@@ -508,6 +508,9 @@ public class ReportManagerComponent extends Panel {
 
         @Override
         public void uploadSucceeded(SucceededEvent event) {
+            if (baos == null) {
+                throw new NullPointerException("baos == null");
+            }
             String content = new String(Base64.encodeBase64(baos.toByteArray()));
             try {
                 ReportMaster rm = new ReportMaster(content, new ReportTemplateProvider());

@@ -26,7 +26,7 @@ public class DictionaryItem {
         super();
         this.code = code;
         this.description = description;
-        this.columns = columns;
+        this.columns = columns.clone();
     }
 
     public String getCode() {
@@ -50,7 +50,7 @@ public class DictionaryItem {
     }
 
     public void setColumns(String[] columns) {
-        this.columns = columns;
+        this.columns = columns.clone();
     }
 
     public void setDescription(String description) {
