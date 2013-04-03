@@ -20,7 +20,7 @@ public final class MapCacheManager {
     public static class InvalidatingThread extends Thread {
         @Override
         public void run() {
-            logger.info(MapCacheManager.class.getName() + ": starting Cache Manager, thread: " + getName());
+            logger.info("Starting Cache Manager, thread: " + getName());
             while (true) {
                 checkCaches(System.currentTimeMillis());
                 try {
@@ -96,13 +96,13 @@ public final class MapCacheManager {
                         if (elapsedTime > ic.getInterval()) {
                             MapCache cache = cacheMap.get(key);
                             if (cache != null) {
-                                logger.info(MapCacheManager.class.getName() + ": Invalidating object: " + ic.getObjKey()
+                                logger.info("Invalidating object: " + ic.getObjKey()
                                         + " from: " + key + " after: " + elapsedTime);
                                 cache.invalidateObject(ic.getObjKey());
                                 it2.remove();
                             }
                             else {
-                                logger.info(MapCacheManager.class.getName() + ": Removing all intervals after cache mismatch key: " + key);
+                                logger.info("Removing all intervals after cache mismatch key: " + key);
                                 intervals.clear();
                                 break;
                             }
@@ -125,7 +125,7 @@ public final class MapCacheManager {
                     if (cache != null) {
                         it.remove();
                         cache.clearCache();
-                        logger.info(MapCacheManager.class.getName() + ": Cleared cache: " + key);
+                        logger.info("Cleared cache: " + key);
                     }
                 }
             }
@@ -140,7 +140,7 @@ public final class MapCacheManager {
      * @param key   Object key
      */
     public static void objectProvided(MapCache cache, String key) {
-        logger.info(MapCacheManager.class.getName() + ": Object provided: " + key + " from: " + cache.getId());
+        logger.info("Object provided: " + key + " from: " + cache.getId());
         synchronized (MapCacheManager.class) {
             registerCache(cache);
         }
@@ -154,7 +154,7 @@ public final class MapCacheManager {
      * @param interval Interval the cache is valid for
      */
     public static void objectCached(MapCache cache, String key, long interval) {
-        logger.info(MapCacheManager.class.getName() + ": Object cached: " + key + " in: " + cache.getId() + " for: " + interval);
+        logger.info("Object cached: " + key + " in: " + cache.getId() + " for: " + interval);
         synchronized (MapCacheManager.class) {
             registerCache(cache);
             Map<String, IntervalControlBean> intervals = intervalMap.get(cache.getId());
@@ -182,12 +182,12 @@ public final class MapCacheManager {
      * Clears all registered caches from all objects and the interval map.
      */
     public static void invalidateAllCaches() {
-        logger.info(MapCacheManager.class.getName() + ": Clearing all caches...");
+        logger.info("Clearing all caches...");
         synchronized (MapCacheManager.class) {
             init();
             for (MapCache cache : cacheMap.values()) {
                 cache.clearCache();
-                logger.info(MapCacheManager.class.getName() + ": Cleared cache: " + cache.getId());
+                logger.info("Cleared cache: " + cache.getId());
             }
             cacheMap.clear();
             intervalMap.clear();
