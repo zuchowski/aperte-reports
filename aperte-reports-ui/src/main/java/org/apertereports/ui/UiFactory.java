@@ -354,6 +354,7 @@ public abstract class UiFactory {
      */
     public static TextField createTextField(Item item, String propertyId, ComponentContainer parent, String promptId, FAction... actions) {
         TextField tf = new TextField(item.getItemProperty(propertyId));
+        tf.setNullRepresentation("");
         if (parent != null) {
             parent.addComponent(tf);
         }

@@ -38,7 +38,17 @@ public final class VaadinUtil {
         return sb.toString();
     }
 
+    /**
+     * Returns value for given key from ui-message.properties file or another
+     * localized ui-message properties file. If the key given is null, then
+     * an empty string is returned
+     * @param key Key
+     * @return Value for given key
+     */
     public static String getValue(String key) {
+        if (key == null) {
+            return "";
+        }
         ResourceBundle bundle = ResourceBundle.getBundle("ui-messages",
                 nvl(LOCALE_THREAD_MAP.get(Thread.currentThread()), Locale.getDefault()));
         if (bundle.containsKey(key)) {
