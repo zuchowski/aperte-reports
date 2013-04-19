@@ -41,17 +41,21 @@ public interface ARConstants {
      */
     String DATETIME_PATTERN = "dd-MM-yyyy HH:mm";
     /**
+     * Default context: java:comp/env
+     */
+    String JNDI_DEFAULT_CONTEXT = "java:comp/env";
+    /**
      * JNDI JMS process report queue id
      */
-    String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "java:comp/env/jms/ProcessReportQueue";
+    String JNDI_JMS_PROCESS_REPORT_QUEUE_ID = "jms/ProcessReportQueue";
     /**
      * JNDI JMS generate report queue id
      */
-    String JNDI_JMS_GENERATE_REPORT_QUEUE_ID = "java:comp/env/jms/GenerateReportQueue";
+    String JNDI_JMS_GENERATE_REPORT_QUEUE_ID = "jms/GenerateReportQueue";
     /**
      * JMS connection factory id
      */
-    String JNDI_JMS_CONNECTION_FACTORY_ID = "java:comp/env/jms/ConnectionFactory";
+    String JNDI_JMS_CONNECTION_FACTORY_ID = "jms/ConnectionFactory";
     /**
      * Report order id property name.
      */

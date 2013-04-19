@@ -11,7 +11,6 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.naming.InitialContext;
 import org.apertereports.backbone.jms.listener.GenerateReportQueueMessageListener;
 import org.apertereports.backbone.jms.listener.ProcessReportQueueMessageListener;
 import org.apertereports.common.ARConstants;
@@ -64,12 +63,11 @@ public final class ARJmsFacade {
         logger.info("Initializing JMS context...");
         try {
             mainCtx = JmsContext.getNewContext();
-            InitialContext initCtx = new InitialContext();
             for (String queueName : queueToListenerMap.keySet()) {
                 MessageListener listener = queueToListenerMap.get(queueName);
                 try {
                     MessageConsumer consumer = mainCtx.getSession().createConsumer(
-                            (Destination) initCtx.lookup(queueName));
+                            (Destination) JndiContext.lookup(queueName));
                     consumer.setMessageListener(listener);
                 } catch (Exception e) {
                     logger.error("Cannot find queue in JNDI: " + queueName, e);
@@ -133,9 +131,8 @@ public final class ARJmsFacade {
         JmsContext ctx = null;
         try {
             ctx = JmsContext.getNewContext();
-            InitialContext initCtx = new InitialContext();
 
-            MessageProducer producer = ctx.getSession().createProducer((Destination) initCtx
+            MessageProducer producer = ctx.getSession().createProducer((Destination) JndiContext
                     .lookup(queueName));
 
             Message reportOrderMessage = ctx.getSession().createMessage();
@@ -185,8 +182,7 @@ public final class ARJmsFacade {
         public static JmsContext getNewContext() throws Exception {
             JmsContext ctx = new JmsContext();
             try {
-                InitialContext initCtx = new InitialContext();
-                ConnectionFactory connectionFactory = (ConnectionFactory) initCtx
+                ConnectionFactory connectionFactory = (ConnectionFactory) JndiContext
                         .lookup(ARConstants.JNDI_JMS_CONNECTION_FACTORY_ID);
                 ctx.connection = connectionFactory.createConnection();
                 ctx.session = ctx.connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
