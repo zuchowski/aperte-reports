@@ -257,6 +257,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                 compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
                 logger.info("Compiled.");
             } catch (JRException e) {
+                logger.error("report source exception", e);
                 throw new ARException(ErrorCode.REPORT_SOURCE_EXCEPTION, e);
             }
         } else {
