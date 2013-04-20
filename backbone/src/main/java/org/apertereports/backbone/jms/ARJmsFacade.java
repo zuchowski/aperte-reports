@@ -60,7 +60,7 @@ public final class ARJmsFacade {
             return true;
         }
 
-        logger.info("Initializing JMS context...");
+        logger.info("Initializing JMS context");
         try {
             mainCtx = JmsContext.getNewContext();
             for (String queueName : queueToListenerMap.keySet()) {
@@ -83,7 +83,6 @@ public final class ARJmsFacade {
             }
             return false;
         }
-        logger.info("Initializing JMS context, done.");
         return initialized;
     }
 
