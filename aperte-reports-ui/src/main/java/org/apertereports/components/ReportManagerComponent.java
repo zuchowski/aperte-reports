@@ -131,7 +131,7 @@ public class ReportManagerComponent extends Panel {
     private void addNewReport(ReportTemplate reportTemplate) {
         ReportItemPanel reportItem = new ReportItemPanel(reportTemplate);
         list.addComponent(reportItem, 0);
-        editReportData(reportItem);
+        addOrEditReport(reportItem, true);
         newReportReceiver.reportTemplate = new ReportTemplate();
     }
 
@@ -141,26 +141,28 @@ public class ReportManagerComponent extends Panel {
     }
 
     /**
-     * List item in edit state.
+     * List item in adding or edition state.
      *
      * @author Zbigniew Malinowski
      *
      */
-    private class EditReportItemPanel extends Panel {
+    private class AddOrEditReportItemPanel extends Panel {
 
-        private ReportItemPanel item;
-        private ReportTemplate temporaryData;
+        private ReportItemPanel itemPanel;
+        private ReportTemplate tmpReportTemplate;
         private BeanItem<ReportTemplate> beanItem;
         private TextField nameField;
         private ErrorLabelHandler errorHandler;
+        private final boolean adding;
 
-        public EditReportItemPanel(ReportItemPanel item) {
-            this.item = item;
+        public AddOrEditReportItemPanel(ReportItemPanel itemPanel, boolean adding) {
+            this.itemPanel = itemPanel;
+            this.adding = adding;
             setStyleName(EDIT_PANEL_STYLE);
-            setCaption(VaadinUtil.getValue(UiIds.LABEL_EDITION) + " - " + item.reportTemplate.getReportname());
-            temporaryData = new ReportTemplate();
-            deepCopy(item.reportTemplate, temporaryData);
-            beanItem = new BeanItem<ReportTemplate>(temporaryData);
+            setCaption(VaadinUtil.getValue(adding ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION) + " - " + itemPanel.reportTemplate.getReportname());
+            tmpReportTemplate = new ReportTemplate();
+            deepCopy(itemPanel.reportTemplate, tmpReportTemplate);
+            beanItem = new BeanItem<ReportTemplate>(tmpReportTemplate);
 
             HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
@@ -173,7 +175,7 @@ public class ReportManagerComponent extends Panel {
             UiFactory.createLabel(beanItem, FILENAME_PROPERTY, uploadCell,
                     FILE_NAME_STYLE, FAction.ALIGN_LEFT);
 
-            ReportReceiver uploadReceiver = new ReportReceiver(temporaryData);
+            ReportReceiver uploadReceiver = new ReportReceiver(tmpReportTemplate);
             uploadReceiver.addListener(new ReportReceivedListener() {
 
                 @Override
@@ -225,21 +227,21 @@ public class ReportManagerComponent extends Panel {
         }
 
         protected void discardChanges() {
-            if (item.reportTemplate.getId() == null) {
+            if (itemPanel.reportTemplate.getId() == null) {
                 list.removeComponent(this);
             } else {
-                list.replaceComponent(this, item);
+                list.replaceComponent(this, itemPanel);
             }
         }
 
         protected void saveChanges() {
-            if (!checkUniqueName(item.reportTemplate.getReportname(), temporaryData)) {
+            if (!checkUniqueName(itemPanel.reportTemplate.getReportname(), tmpReportTemplate)) {
                 return;
             }
-            item.requestRepaintAll();
-            deepCopy(temporaryData, item.reportTemplate);
-            ReportTemplateDAO.saveOrUpdate(item.reportTemplate);
-            list.replaceComponent(this, this.item);
+            itemPanel.requestRepaintAll();
+            deepCopy(tmpReportTemplate, itemPanel.reportTemplate);
+            ReportTemplateDAO.saveOrUpdate(itemPanel.reportTemplate);
+            list.replaceComponent(this, this.itemPanel);
         }
 
         private boolean checkUniqueName(String originalName, ReportTemplate reportTemplate) {
@@ -249,10 +251,11 @@ public class ReportManagerComponent extends Panel {
                 return false;
             }
 
-            if (newName.equals(originalName)) {
+            if (!adding && newName.equals(originalName)) {
                 return true;
             }
 
+            //xxx without user, we want to check all reports
             Collection<ReportTemplate> exists = ReportTemplateDAO.fetchByName(user, newName);
             if (exists.size() > 0) {
                 nameField.focus();
@@ -313,7 +316,7 @@ public class ReportManagerComponent extends Panel {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    editReportData(ReportItemPanel.this);
+                    addOrEditReport(ReportItemPanel.this, false);
                 }
             });
 
@@ -445,8 +448,8 @@ public class ReportManagerComponent extends Panel {
         }
     }
 
-    protected void editReportData(ReportItemPanel reportItemPanel) {
-        EditReportItemPanel edit = new EditReportItemPanel(reportItemPanel);
+    private void addOrEditReport(ReportItemPanel reportItemPanel, boolean adding) {
+        AddOrEditReportItemPanel edit = new AddOrEditReportItemPanel(reportItemPanel, adding);
         list.replaceComponent(reportItemPanel, edit);
     }
 
