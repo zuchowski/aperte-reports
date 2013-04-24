@@ -224,6 +224,11 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
                     reportMap.put(config.getReportId(), report);
                 }
             } catch (ARException ex) {
+                //xxx should be reconstructed
+                if (ex.getErrorCode() == ErrorCode.REPORT_ACCESS_DENIED) {
+                    logger.warn("no permission to report");
+                    return null;
+                }
                 throw new ARRuntimeException(ex);
             }
         }

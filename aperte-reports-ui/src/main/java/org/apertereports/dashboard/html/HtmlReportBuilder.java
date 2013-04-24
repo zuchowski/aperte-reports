@@ -216,6 +216,10 @@ public class HtmlReportBuilder {
     private void handleExportRequest(ReportConfig config, String format) {
         ReportType reportType = ReportType.valueOf(format);
         ReportTemplate report = provider.provideReportTemplate(config);
+        //xxx should be reconstructed
+        if (report == null) {
+            return;
+        }
 
         if ("HTML".equals(format)) {
             File f = provider.provideReportFileForHtmlExport(config, true);
