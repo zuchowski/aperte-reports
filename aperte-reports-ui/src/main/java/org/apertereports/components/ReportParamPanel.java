@@ -62,6 +62,13 @@ public class ReportParamPanel extends Panel {
     }
 
     public boolean validateForm() {
+        //if reports hasn't been selected then value is null
+        //xxx another solution would be better
+        if (reportParametersComponent == null){
+            getWindow().showNotification(VaadinUtil.getValue("notification.fill.in.the.form.correctly"), Notification.TYPE_WARNING_MESSAGE);
+            return false;
+        }
+        
         boolean result = reportParametersComponent.validateForm();
         if (!result) {
             getWindow().showNotification(VaadinUtil.getValue("notification.fill.in.the.form.correctly"), Notification.TYPE_WARNING_MESSAGE);
