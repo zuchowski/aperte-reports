@@ -100,7 +100,7 @@ public class AperteInvokerComponent extends Panel {
 //		xxx: could be better
         private ReportParamPanel createParamsPanel() {
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
-            panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
+            panel.setStyleName("borderless");
             HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 

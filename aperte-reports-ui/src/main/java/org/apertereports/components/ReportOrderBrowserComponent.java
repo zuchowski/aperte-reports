@@ -142,7 +142,7 @@ public class ReportOrderBrowserComponent extends Panel {
                     showReport();
                 }
             });
-            UiFactory.createButton(UiIds.LABEL_PARAMETERS, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
+            Button parametersButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -154,7 +154,12 @@ public class ReportOrderBrowserComponent extends Panel {
                 previewButton.setEnabled(false);
             }
 
-            params = new ReportOrderParamsPanel(order.getParametersXml());
+            //xxx change to better solution in the future
+            if (order.getParametersXml() == null || order.getParametersXml().isEmpty()) {
+                parametersButton.setEnabled(false);
+            } else {
+                params = new ReportOrderParamsPanel(order.getParametersXml());
+            }
         }
 
         private void showReport() {
