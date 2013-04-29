@@ -78,10 +78,10 @@ public final class CyclicReportConfigDAO {
     /**
      * Removes all given cyclic report configurations from database.
      *
-     * @param reports A collection of cyclic reports to remove
+     * @param configs A collection of cyclic report configuration to remove
      */
-    public static void remove(Collection<CyclicReportConfig> reports) {
-        GeneralDAO.remove(reports);
+    public static void remove(Collection<CyclicReportConfig> configs) {
+            GeneralDAO.remove(configs.toArray());
     }
 
     /**
