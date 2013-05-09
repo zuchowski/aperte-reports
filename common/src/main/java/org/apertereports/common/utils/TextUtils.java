@@ -50,6 +50,8 @@ public final class TextUtils implements ARConstants {
             }
         } else if (rawValue instanceof Date) {
             value.append(TimeUtils.getDateFormatted((Date) rawValue));
+        } else {
+            value.append(rawValue.toString());
         }
         return value.toString();
     }
