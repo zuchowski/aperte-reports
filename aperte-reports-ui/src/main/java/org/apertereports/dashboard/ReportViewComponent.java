@@ -1,6 +1,7 @@
 package org.apertereports.dashboard;
 
 import com.vaadin.ui.Panel;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,9 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+
 import org.apertereports.AbstractLazyLoaderComponent;
 import org.apertereports.AbstractReportingApplication;
 import org.apertereports.backbone.util.ReportTemplateProvider;
@@ -24,6 +27,7 @@ import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.ARConstants.ReportType;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
+import org.apertereports.common.users.User;
 import org.apertereports.common.utils.TextUtils;
 import org.apertereports.common.utils.TimeUtils;
 import org.apertereports.common.wrappers.Pair;
@@ -86,6 +90,7 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
         initInternalData(configs);
 
         reportPanel.setSizeFull();
+      //  reportPanel.setScrollable(false);
         reportPanel.getContent().setSizeUndefined();
         reportPanel.getContent().setStyleName(AR_DASHBOARD_REPORT_PANEL_STYLE_ID);
 
@@ -110,7 +115,9 @@ public class ReportViewComponent extends AbstractLazyLoaderComponent implements 
      */
     private void init() {
         if (template != null && !template.isEmpty()) {
+        	
             final HtmlReportBuilder builder = new HtmlReportBuilder(application, this);
+            
             final int[] index = {0};
             DashboardUtil.executeTemplateMatcherWithList(template, DashboardUtil.REPORT_TAG_PATTERN,
                     new DashboardUtil.MatchHandlerWithList() {

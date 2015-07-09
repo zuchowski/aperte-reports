@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -41,16 +43,19 @@ import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRFontNotFoundException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.ConfigurationConstants;
 import org.apertereports.common.exception.ARException;
 import org.apertereports.common.exception.ARRuntimeException;
+import org.apertereports.common.users.User;
 import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.common.utils.ReportGeneratorUtils;
 import org.apertereports.engine.SubreportProvider.Subreport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.liferay.portal.kernel.util.InfrastructureUtil;
 import pl.net.bluesoft.util.lang.StringUtil;
 
 /**
@@ -76,6 +81,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * Currently processed Jasper report.
      */
     private AperteReport report;
+    private User user;
 
     /**
      * Constructs a new ReportMaster with a given {@link JasperReport}.
@@ -112,10 +118,30 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      */
     public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider)
             throws ARException {
-        super();
+		super();
         report = compileReport(reportSource, cacheId, subreportProvider);
     }
-
+    
+    /**
+     * Creates a new ReportMaster instance that checks the cache for a compiled
+     * version of this report. If the compiled report is not found, it creates
+     * it using a given JRXML report source.
+     *
+     * @param reportSource A JRXML report source
+     * @param cacheId A report cache id
+     * @param subreportProvider Subreport provider
+     * @param user User 
+     * @throws JRException on Jasper error
+     * @throws SubreportNotFoundException
+     */
+    public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider, User user)
+            throws ARException {
+		super();
+		if (user != null) {
+			this.user = user;
+		}
+        report = compileReport(reportSource, cacheId, subreportProvider);
+    }
     /**
      * Creates a new ReportMaster instance that checks the cache for a compiled
      * version of this report. If the compiled report is not found, it creates
@@ -302,6 +328,22 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
             Map<JRExporterParameter, Object> exporterParameters, Map<String, String> configuration)
             throws ARException {
+    	if(user!=null)
+    	{
+    	long userid=user.getUserid();
+		long groupid=user.getGroupid();
+		long companyid=user.getCompanyid();
+		
+		reportParameters.put("userid", userid);
+		reportParameters.put("groupud", groupid);
+		reportParameters.put("companyid", companyid);
+		
+		 for(String key : reportParameters.keySet())
+		    {
+		      System.out.print("Key: " + key + " - ");
+		      System.out.print("Value: " + reportParameters.get(key) + "\n");
+		    }
+    	}
         JasperPrint jasperPrint = generateReport(reportParameters, configuration);
         return exportReport(jasperPrint, format, exporterParameters, configuration);
     }
@@ -319,7 +361,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @return Bytes of a generated report
      */
     public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters,
-            Map<String, String> configuration) throws ARException {
+            Map<String, String> configuration) throws ARException {	
+
         return generateAndExportReport(format, reportParameters, null, configuration);
     }
 
@@ -442,9 +485,10 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @throws JRException on Jasper error
      * @throws NamingException on errors while accessing the initial context
      * @throws SQLException on errors while accessing a configured datasource
+     * @throws ClassNotFoundException 
      */
     private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration)
-            throws JRException, NamingException, SQLException {
+            throws JRException, NamingException, SQLException, ClassNotFoundException {
 
         //previously data source was passed as a method argument, but it was not used nowhere
 //xxx dataSource condition
@@ -472,6 +516,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                 String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
                 connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
                         : getConnectionFromReport(getJasperReport());
+      
                 if (connection != null) {
                     jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters,
                             connection);
@@ -496,6 +541,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
             if (connection != null) {
                 connection.close();
             }
+          
         }
         logger.info("Finished building jasper print");
         return jasperPrint;
@@ -509,14 +555,16 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @return The connection to the datasource
      * @throws NamingException on errors while accessing the initial context
      * @throws SQLException on errors while connecting to the datasource
+     * @throws ClassNotFoundException 
      */
-    private Connection getConnectionFromReport(JasperReport jasperReport) throws NamingException, SQLException {
+    private Connection getConnectionFromReport(JasperReport jasperReport) throws NamingException, SQLException, ClassNotFoundException {
         JRParameter[] parameters = jasperReport.getParameters();
         Connection con = null;
         for (JRParameter parameter : parameters) {
             if (parameter.getName().equalsIgnoreCase(Parameter.DATASOURCE.name())) {
                 String jndiName = parameter.getDescription();
                 con = getConnectionByJNDI(jndiName);
+                
                 break;
             }
         }
@@ -530,8 +578,10 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
      * @return Connection to a datasource
      * @throws NamingException on errors while accessing the initial context
      * @throws SQLException on errors while connecting to the datasource
+     * @throws ClassNotFoundException 
+     
      */
-    private Connection getConnectionByJNDI(String jndiName) throws NamingException, SQLException {
+    private Connection getConnectionByJNDI(String jndiName) throws NamingException, SQLException, ClassNotFoundException {
         logger.info("Getting database connection, jndiName: " + jndiName);
         DataSource ds;
         try {
@@ -544,13 +594,31 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
                 ds = (DataSource) new InitialContext().lookup(prefix + jndiName);
             }
         }
-
-        if (ds == null) {
-            String message = "Unable to lookup datasource: " + jndiName;
-            logger.info(message);
-            throw new RuntimeException(message);
+        try{
+        Connection c=ds.getConnection();
+      
+        return c;
+        }catch(Exception e2)
+        {
+        	/*String URL = "jdbc:mysql://localhost:3306/social_office_head";
+    		String USER = "root";
+    		String PASS = "admin";
+    		Class.forName("com.mysql.jdbc.Driver");
+    Connection	conn = DriverManager.getConnection(URL, USER, PASS);*/
+        	 DataSource dataSource=InfrastructureUtil.getDataSource(); 
+             Connection conn=dataSource.getConnection();
+        	
+    if (ds == null) {
+        String message = "Unable to lookup datasource: " + jndiName;
+        logger.info(message);
+        throw new RuntimeException(message);
+    }
+    		return conn;
         }
-        return ds.getConnection();
+      
+        //return c;
+     
+      
     }
 
     /**

@@ -77,7 +77,7 @@ public class HtmlReportBuilder {
      */
     private CustomLayout layout;
     private Application application;
-
+   
     public HtmlReportBuilder(Application application, ReportDataProvider provider) {
         this.application = application;
         this.provider = provider;
@@ -104,6 +104,7 @@ public class HtmlReportBuilder {
                 }
             }
         }
+    
         return layout;
     }
 
@@ -319,6 +320,7 @@ public class HtmlReportBuilder {
             reportLayout = new CustomLayout(new ByteArrayInputStream(reportHtml.getBytes()));
             reportLayout.setSizeUndefined();
             reportLayout.setWidth(100, UNITS_PERCENTAGE);
+            
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);

@@ -275,7 +275,7 @@ public class CyclicReportsComponent extends Panel {
                             return;
                         }
                         ReportMaster rm = new ReportMaster(config.getReport().getContent(), config.getReport().getId().toString(),
-                                new ReportTemplateProvider());
+                                new ReportTemplateProvider(),user);
                         byte[] reportData = rm.generateAndExportReport(config.getOutputFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
                                 ConfigurationCache.getConfiguration());

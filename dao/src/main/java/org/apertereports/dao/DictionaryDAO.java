@@ -2,9 +2,13 @@ package org.apertereports.dao;
 
 import org.apertereports.common.wrappers.DictionaryItem;
 
+import com.liferay.portal.kernel.util.InfrastructureUtil;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
@@ -29,65 +33,86 @@ public final class DictionaryDAO {
      * SQL query.
      * @return A list of dictionary items
      */
-    public static List<DictionaryItem> fetchDictionary(String dictQuery) {
-        String[] dictQueryArray = dictQuery.split(";", 2);
-        String jndiName = dictQueryArray[0];
-        String procedureName = dictQueryArray[1];
-        try {
-            List<DictionaryItem> res = new LinkedList<DictionaryItem>();
+	public static List<DictionaryItem> fetchDictionary(String dictQuery) {
+		String[] dictQueryArray = dictQuery.split(";", 2);
+		String jndiName = dictQueryArray[0];
+		String procedureName = dictQueryArray[1];
+		Connection c;
+		try {
+			List<DictionaryItem> res = new LinkedList<DictionaryItem>();
 
-            DataSource ds;
-            try {
-                ds = (DataSource) new InitialContext().lookup(jndiName);
-            } catch (Exception e1) {
-                String prefix = "java:comp/env/";
-                if (jndiName.matches(prefix + ".*")) {
-                    ds = (DataSource) new InitialContext().lookup(jndiName.substring(prefix.length()));
-                } else {
-                    ds = (DataSource) new InitialContext().lookup(prefix + jndiName);
-                }
-            }
-            Connection c = ds.getConnection();
-            try {
-                c.setAutoCommit(false);
-                PreparedStatement ps = c.prepareStatement("select * from ( " + procedureName + " ) as data");
-                try {
-                    final ResultSet rs = ps.executeQuery();
-                    try {
-                        while (rs.next()) {
-                            DictionaryItem e = new DictionaryItem(rs.getMetaData().getColumnCount());
-                            e.setCode(rs.getString(1));
-                            e.setDescription(rs.getString(2));
-                            res.add(e);
-                            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                                e.setColumn(i - 1, rs.getString(i));
-                            }
-                        }
-                    } finally {
-                        rs.close();
-                    }
-                } finally {
-                    ps.close();
-                }
-            } finally {
-                try {
-                    c.rollback(); // żeby komuś nie przyszło coś głupiego do głowy
-                } finally {
-                    c.close();
-                }
-            }
-            Collections.sort(res, new Comparator<DictionaryItem>() {
+			DataSource ds;
+			try {
+				ds = (DataSource) new InitialContext().lookup(jndiName);
 
-                @Override
-                public int compare(DictionaryItem o1, DictionaryItem o2) {
-                    return (o1.getDescription() + "").compareToIgnoreCase(o2.getDescription() + "");
-                }
-            });
-            return res;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+			} catch (Exception e1) {
+				String prefix = "java:comp/env/";
+				if (jndiName.matches(prefix + ".*")) {
+					ds = (DataSource) new InitialContext().lookup(jndiName
+							.substring(prefix.length()));
+				}
+
+				else
+
+				{
+					ds = (DataSource) new InitialContext().lookup(prefix
+							+ jndiName);
+				}
+
+			}
+try{
+			c = ds.getConnection();
+}catch(Exception e2)
+{
+
+  ds=InfrastructureUtil.getDataSource(); 
+              c=ds.getConnection();
+}
+			try {
+				c.setAutoCommit(false);
+				PreparedStatement ps = c.prepareStatement("select * from ( "
+						+ procedureName + " ) as data");
+				try {
+					final ResultSet rs = ps.executeQuery();
+					try {
+						while (rs.next()) {
+							DictionaryItem e = new DictionaryItem(rs
+									.getMetaData().getColumnCount());
+							e.setCode(rs.getString(1));
+							e.setDescription(rs.getString(2));
+							res.add(e);
+							for (int i = 1; i <= rs.getMetaData()
+									.getColumnCount(); i++) {
+								e.setColumn(i - 1, rs.getString(i));
+							}
+						}
+					} finally {
+						rs.close();
+					}
+				} finally {
+					ps.close();
+				}
+			} finally {
+				try {
+					c.rollback(); // żeby komuś nie przyszło coś głupiego do
+									// głowy
+				} finally {
+					c.close();
+				}
+			}
+			Collections.sort(res, new Comparator<DictionaryItem>() {
+
+				@Override
+				public int compare(DictionaryItem o1, DictionaryItem o2) {
+					return (o1.getDescription() + "").compareToIgnoreCase(o2
+							.getDescription() + "");
+				}
+			});
+			return res;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     /**
      * Separates an input string into dictionary items. This is used to parse a

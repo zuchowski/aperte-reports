@@ -1,8 +1,12 @@
 package org.apertereports.dao.utils;
 
+import javax.naming.InitialContext;
+
 import org.apertereports.common.exception.ARRuntimeException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+
 
 /**
  * This generic class handles the opening and closing Hibernate session. It can
@@ -17,6 +21,7 @@ public abstract class WHS<ResultType> {
      * A Hibernate session retrieved from {@link SQLUtil}.
      */
     protected Session sess;
+   
     /**
      * Indicates whether to use a transaction or not.
      */
@@ -49,10 +54,10 @@ public abstract class WHS<ResultType> {
      * The main workhorse of this class. Retrieves the session from {@link SQLUtil}
      * and wraps the invocation of
      * {@link #lambda()} into transaction.
-     *
      * @return The object returned by {@link #lambda()}
      */
     public ResultType p() {
+ 
         sess = SQLUtil.getSession();
         Transaction tx = null;
         try {

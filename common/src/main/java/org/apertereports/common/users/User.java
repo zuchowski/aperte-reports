@@ -15,14 +15,43 @@ public class User {
     private Set<UserRole> roles = new HashSet<UserRole>();
     private final boolean administrator;
     private final String email;
+    private long userid;
+    private long groupid;
+    private long companyid;
 
-    public User(String login, Set<UserRole> roles, boolean administrator, String email) {
+    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid) {
+    	this.userid= userid;
+    	this.groupid=groupid;
+    	this.companyid=companyid;
         this.login = login;
         this.roles = roles;
         this.administrator = administrator;
         this.email = email;
     }
-
+    /**
+     * Return id of the user
+     *
+     * @return userid
+     */
+    public long getUserid() {
+        return userid;
+    }
+    /**
+     * Return id of the user
+     *
+     * @return groupid
+     */
+    public long getGroupid() {
+        return groupid;
+    }
+    /**
+     * Return id of the user
+     *
+     * @return companyid
+     */
+    public long getCompanyid() {
+        return companyid;
+    }
     /**
      * Return login of the user
      *

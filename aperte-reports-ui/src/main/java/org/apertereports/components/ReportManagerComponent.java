@@ -5,6 +5,9 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+
+import com.vaadin.ui.ComponentContainer;
+
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
@@ -386,7 +389,7 @@ public class ReportManagerComponent extends Panel {
                         return;
                     }
                     try {
-                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
+                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider(),user);
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
                                 ConfigurationCache.getConfiguration());

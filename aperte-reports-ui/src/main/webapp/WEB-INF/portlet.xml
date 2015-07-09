@@ -36,6 +36,11 @@
             <value>org.apertereports.ManagerApplication</value>
         </init-param>
 
+		<init-param>
+            <name>widgetset</name>
+            <value>com.vaadin.portal.gwt.PortalDefaultWidgetSet</value>
+        </init-param>
+
         <!-- Supported portlet modes and content types. -->
         <supports>
             <mime-type>text/html</mime-type>

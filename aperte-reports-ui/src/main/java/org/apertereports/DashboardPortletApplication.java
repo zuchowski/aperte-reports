@@ -57,12 +57,14 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
      */
     @Override
     public void portletInit() {
+    	
         mainWindow = new Window(VaadinUtil.getValue("dashboard.window.title"), viewMode);
-
+        
+        setTheme("mytheme");
         if (getContext() instanceof PortletApplicationContext2) {
             PortletApplicationContext2 ctx = (PortletApplicationContext2) getContext();
             ctx.addPortletListener(this, new ContextReloadListener(new AbstractContextReloadHandler() {
-
+            	
                 @Override
                 public void handleHelp(PortletContextHolder holder) {
                     if (mainWindow.getContent() != helpMode) {
@@ -86,6 +88,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
                         update(mainWindow, (AbstractDashboardComponent) mainWindow.getContent(), holder, false);
                     }
                 }
+                
             }));
 
             editMode.setCloseListener(new CloseListener() {
@@ -101,6 +104,7 @@ public class DashboardPortletApplication extends AbstractReportingApplication {
                 }
             });
         }
+        
     }
 
     /**

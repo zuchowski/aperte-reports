@@ -110,7 +110,9 @@ public class AperteInvokerComponent extends Panel {
                         if (!panel.validateForm()) {
                             return;
                         }
-                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
+                
+                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider(), user);
+                       
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
                                 ConfigurationCache.getConfiguration());

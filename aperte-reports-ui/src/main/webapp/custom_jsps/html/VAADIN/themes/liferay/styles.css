@@ -1,0 +1,27 @@
+
+.v-scrollable {
+	overflow: hidden;
+}
+
+.v-panel-caption,
+.v-panel-nocaption {
+	text-shadow: 1px 1px #fff;
+	font-size: 12px;
+	color: #222;
+	margin-left: 0px;
+	 background-color: #FAFAFA;
+	/*background: transparent url(panel/top-right.png) no-repeat right top;*/
+	padding: 5px 5px 10px 2px;
+	height: 12px;
+}
+
+.v-panel-caption .v-icon { 
+	padding-right: 2px;
+}
+
+.v-panel-content {
+	border: 0px solid #999;
+	-webkit-border-radius: 0 0 4px 4px;
+	-moz-border-radius: 0 0 4px 4px;
+	border-radius: 0 0 4px 4px;
+}

@@ -45,6 +45,7 @@ import org.apertereports.util.wrappers.FieldContainer;
 import org.apertereports.util.wrappers.FieldProperties;
 import org.apertereports.util.wrappers.FilterContainer;
 
+import com.liferay.portal.util.PortalUtil;
 import com.vaadin.data.Buffered;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.RegexpValidator;
@@ -60,7 +61,9 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+
 import java.util.Locale;
+
 import org.apertereports.common.users.User;
 import org.apertereports.common.utils.LocaleUtils;
 import org.apertereports.ui.UiFactoryExt;
@@ -96,7 +99,7 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             params = new LinkedList<ReportConfigParameter>();
         }
         this.params = params;
-
+        
         init();
     }
 
@@ -804,3 +807,4 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
         initFieldsFromConfig();
     }
 }
+

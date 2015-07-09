@@ -51,6 +51,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     @Override
     protected void initComponentData() {
         Panel mainPanel = UiFactory.createPanel(UiIds.LABEL_CONFIGURATION);
+        
         setCompositionRoot(mainPanel);
 
         app = (AbstractReportingApplication) getApplication();

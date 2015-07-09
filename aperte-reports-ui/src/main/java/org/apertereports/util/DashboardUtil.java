@@ -32,11 +32,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
 /**
  * Utility class with methods for report tags retrieval, regexp matching etc.
  */
-public final class DashboardUtil {
+public final class DashboardUtil  {
     private DashboardUtil() {
+    	
     }
 
     /**
@@ -258,4 +260,7 @@ public final class DashboardUtil {
     public abstract static class MatchHandlerWithList {
         public abstract void handleMatch(int start, int end, List<String> match);
     }
+
+	
 }
+
