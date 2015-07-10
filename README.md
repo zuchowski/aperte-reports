@@ -31,6 +31,10 @@ Application Portlet technology allows you to place graphical components on an or
 All GUI elements are created as a separate components using *Vaadin* framework, allowing easy and quick use of them in any applications based on this framework or even running inside of run Java servlet container. Applications written in other technologies can use a special mechanism to generate and return reports in desired format. Such mechanism can also be used to generate application-specific documents.
 
 
+### Aperte Reports Wiki ###
+https://github.com/bluesoft-rnd/aperte-reports/wiki
+
+
 ----
 Migration to Liferay 6.2 was supported by <a href="http://itsd-consulting.de">ITSD Consulting GmbH</a>.
 
