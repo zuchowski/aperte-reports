@@ -1,4 +1,4 @@
-# Aperte Reports #
+# Aperte Reports for Liferay 6.2#
 
 #### Aperte Reports now works with Liferay 6.2! ####
 
