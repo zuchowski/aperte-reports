@@ -1,4 +1,3 @@
-
 .v-scrollable {
 	overflow: hidden;
 }
@@ -10,9 +9,9 @@
 	color: #222;
 	margin-left: 0px;
 	background-color: #FAFAFA;
-	background: transparent;
+	background: #FAFAFA;
 	padding: 5px 5px 10px 2px;
-	height: 12px;
+	height: 6px;
 }
 
 .v-panel-caption .v-icon { 
@@ -20,8 +19,60 @@
 }
 
 .v-panel-content {
-	border: 1px solid #999;
-	-webkit-border-radius: 0 0 4px 4px;
-	-moz-border-radius: 0 0 4px 4px;
-	border-radius: 0 0 4px 4px;
+  border: 1px solid #FAFAFA;
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 4px 4px 4px 4px;
+  padding-right: 12px;
+}
+
+.v-checkbox,
+.v-checkbox label,
+.v-checkbox input,
+.v-checkbox .v-icon {
+	vertical-align: middle;
+	white-space: nowrap;
+	display: inline;
+	margin-left: 5px;
+	margin-bottom: -5px;
+}
+
+.v-button-wrap, .v-button-caption {
+  vertical-align: middle;
+  white-space: nowrap;
+  font: inherit;
+  color: inherit;
+  line-height: normal;
+}
+
+
+.v-button-link .v-button-caption,
+.v-nativebutton-link .v-nativebutton-caption {
+	text-decoration:inherit;
+	color: inherit;
+	text-align: left;
+	display: block;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #c8c9ca;
+  border-right-color: #9e9e9e;
+  border-bottom-color: #9e9e9e;
+  background: #d4d4d4 url(/html/themes/classic/images/portlet/header_bg.png) repeat-x 0 0;
+  -webkit-background-origin: padding;
+  -moz-background-origin: padding;
+  padding: 4px 4px 0px 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  line-height: 16px;
+  min-height: 16px;
+  text-shadow: 1px 1px #fff;
+  color: #34404f;
+  text-overflow: ellipsis;
+  height: 20px;
+	}
+	
+label {
+  display: block;
+  margin-bottom: -5px;
 }

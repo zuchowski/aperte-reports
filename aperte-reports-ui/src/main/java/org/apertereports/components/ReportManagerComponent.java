@@ -127,7 +127,7 @@ public class ReportManagerComponent extends Panel {
         hl.addComponent(newReportUpload);
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
-        setWidth("100%");
+        setWidth("95%");
         setStyleName(PANEL_STYLE);
     }
 
