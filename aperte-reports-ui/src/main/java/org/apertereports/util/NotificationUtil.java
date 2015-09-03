@@ -24,33 +24,46 @@ public final class NotificationUtil {
     }
     
     public static void notImplementedYet(Window window) {
-        window.showNotification(VaadinUtil.getValue("exception.not.implemented.title"),
+    	Notification n = new Notification(
+        		VaadinUtil.getValue("exception.not.implemented.title"),
                 VaadinUtil.getValue("exception.not.implemented.description"), TYPE_WARNING_MESSAGE);
+    	n.setStyleName("alert alert-warning");
+    	window.showNotification(n);
     }
 
     public static void showValidationErrors(Window window, String message) {
-        window.showNotification(VaadinUtil.getValue("notification.validation.errors.title"), "<br/>" + message,
+    	Notification n = new Notification(VaadinUtil.getValue("notification.validation.errors.title"), "<br/>" + message,
                 TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showExceptionNotification(Window window, String prefix) {
-        window.showNotification(VaadinUtil.getValue(prefix + ".title"),
+    	Notification n = new Notification(VaadinUtil.getValue(prefix + ".title"),
                 "<br/>" + VaadinUtil.getValue(prefix + ".description"), TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showExceptionNotification(Window window, String prefix, Exception e) {
-        window.showNotification(VaadinUtil.getValue(prefix + ".title"),
+    	Notification n = new Notification(VaadinUtil.getValue(prefix + ".title"),
                 "<br/>" + VaadinUtil.getValue(prefix + ".description") + ": " + e.getLocalizedMessage(),
                 TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showExceptionNotification(Window window, String prefix, Object... details) {
-        window.showNotification(VaadinUtil.getValue(prefix + ".title"),
+    	Notification n = new Notification(VaadinUtil.getValue(prefix + ".title"),
                 "<br/>" + VaadinUtil.getValue(prefix + ".description", details), TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showExceptionNotification(Window window, String title, String message) {
-        window.showNotification(title, "<br/>" + message, TYPE_ERROR_MESSAGE);
+    	Notification n = new Notification(title, "<br/>" + message, TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showExceptionNotification(Window window, ARRuntimeException exception) {
@@ -61,21 +74,29 @@ public final class NotificationUtil {
         if (exception.getCause() != null && exception.getCause().getLocalizedMessage() != null) {
             description += "<br/>" + exception.getCause().getLocalizedMessage();
         }
-        window.showNotification(title, description, TYPE_ERROR_MESSAGE);
+        Notification n = new Notification(title, description, TYPE_ERROR_MESSAGE);
+        n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showErrorNotification(Window window, String messageId) {
-        window.showNotification(VaadinUtil.getValue(messageId), TYPE_ERROR_MESSAGE);
+    	Notification n = new Notification(VaadinUtil.getValue(messageId), TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void validationErrors(Window window) {
-        window.showNotification(VaadinUtil.getValue("exception.validation.errors.title"),
+    	Notification n = new Notification(VaadinUtil.getValue("exception.validation.errors.title"),
                 "<br/>" + VaadinUtil.getValue("exception.validation.errors.description"), TYPE_WARNING_MESSAGE);
+    	n.setStyleName("alert alert-warning");
+    	window.showNotification(n);
     }
 
     public static void validationErrors(Window window, String message) {
-        window.showNotification(VaadinUtil.getValue("exception.validation.errors.title"),
+    	Notification n = new Notification(VaadinUtil.getValue("exception.validation.errors.title"),
                 "<br/><b>" + message + "</b>", TYPE_ERROR_MESSAGE);
+    	n.setStyleName("alert alert-danger");
+    	window.showNotification(n);
     }
 
     public static void showSavedNotification(Window window) {
@@ -91,6 +112,7 @@ public final class NotificationUtil {
                 + VaadinUtil.getValue(prefix + ".desc") + "</b>", TYPE_HUMANIZED_MESSAGE);
         notification.setPosition(POSITION_CENTERED);
         notification.setDelayMsec(2000);
+        notification.setStyleName("alert alert-danger");
         window.showNotification(notification);
     }
 
