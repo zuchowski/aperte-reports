@@ -99,7 +99,6 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
             params = new LinkedList<ReportConfigParameter>();
         }
         this.params = params;
-        
         init();
     }
 

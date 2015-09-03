@@ -115,7 +115,7 @@ public final class NotificationUtil {
             }
         });
         confirmButton.setImmediate(true);
-
+        confirmButton.addStyleName("btn");
         Button cancelButton = UiFactory.createButton(UiIds.LABEL_NO, null, new ClickListener() {
 
             @Override
@@ -125,7 +125,7 @@ public final class NotificationUtil {
             }
         });
         cancelButton.setImmediate(true);
-
+        cancelButton.addStyleName("btn");
         VerticalLayout mainLayout = UiFactory.createVLayout(null, FAction.SET_SPACING);
         mainLayout.addComponent(new Label(message, Label.CONTENT_XHTML));
         mainLayout.addComponent(new SimpleHorizontalLayout(confirmButton, cancelButton));

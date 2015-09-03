@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
@@ -23,14 +24,14 @@ import org.apertereports.ui.UiIds;
  * @param <W> class used to display properties of backing class objects in GUI
  */
 @SuppressWarnings("serial")
-public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLayout {
+public abstract class CssPaginatedPanelList<O, W extends Panel> extends CssLayout {
 
     private String filter;
     private int pageSize;
     private int listSize;
     private int pageNumber;
 
-    public PaginatedPanelList(int pageSize) {
+    public CssPaginatedPanelList(int pageSize) {
         this.pageSize = pageSize;
     }
 

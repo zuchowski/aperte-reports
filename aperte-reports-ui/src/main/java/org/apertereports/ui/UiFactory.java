@@ -4,6 +4,8 @@ import com.vaadin.data.Item;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
+
+import org.apertereports.components.LiferayAccordion;
 import org.apertereports.util.VaadinUtil;
 
 /**
@@ -156,7 +158,7 @@ public abstract class UiFactory {
      * @return Label
      */
     public static Label createLabel(String captionId, ComponentContainer parent, String style) {
-        return createLabel(captionId, parent, null, EMPTY_ACTION_TABLE);
+        return createLabel(captionId, parent, style, EMPTY_ACTION_TABLE);
     }
 
     /**
@@ -273,6 +275,7 @@ public abstract class UiFactory {
         if (listener != null) {
             button.addListener(listener);
         }
+        button.addStyleName("btn");
         return button;
     }
 
@@ -539,5 +542,28 @@ public abstract class UiFactory {
                 throw new UnsupportedOperationException("action not serviced yet: " + action);
             }
         }
+    }
+    
+    public static LiferayAccordion createAccordion(ComponentContainer parent, CssLayout header){
+    	return createAccordion(parent, header, null);
+    }
+    
+    public static LiferayAccordion createAccordion(ComponentContainer parent, String caption){
+    	CssLayout header = new CssLayout();
+    	UiFactory.createLabel(caption, header);
+    	return createAccordion(parent, header);
+    }
+    
+    public static LiferayAccordion createAccordion(ComponentContainer parent, String caption, Component content){
+    	CssLayout header = new CssLayout();
+    	UiFactory.createLabel(caption, header);
+    	return createAccordion(parent, header, content);
+    }
+    
+    public static LiferayAccordion createAccordion(ComponentContainer parent, CssLayout header, Component content){
+    	
+    	LiferayAccordion acc = new LiferayAccordion(header, content);
+    	parent.addComponent(acc);
+    	return acc;
     }
 }

@@ -32,7 +32,7 @@ public class ReportParamPanel extends Panel {
         try {
             ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
             
-            this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, params);
+            this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, params);      
             VerticalLayout vl = UiFactory.createVLayout(this);
             vl.addComponent(reportParametersComponent);
             buttons = UiFactory.createHLayout(vl);

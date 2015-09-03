@@ -17,6 +17,8 @@ import org.apertereports.model.ReportTemplate;
 import org.apertereports.util.FileStreamer;
 import org.apertereports.util.VaadinUtil;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.*;
@@ -37,10 +39,11 @@ public class AperteInvokerComponent extends Panel {
 
     private static final int PAGE_SIZE = 10;
     private static final String COMPONENT_STYLE_NAME = "borderless light";
-    private PaginatedPanelList<ReportTemplate, ReportPanel> reportList;
+    private CssPaginatedPanelList<ReportTemplate, ReportPanel> reportList;
     private User user;
 
     public AperteInvokerComponent() {
+    	super(new CssLayout());
         init();
     }
 
@@ -63,16 +66,19 @@ public class AperteInvokerComponent extends Panel {
         private ReportParamPanel paramsPanel = null;
         private Button toggleParams;
         private ReportTemplate reportTemplate;
+        
+        private LiferayAccordion accordion;
 
         public ReportPanel(final ReportTemplate report) {
+        	super(new CssLayout());
             this.reportTemplate = report;
-            setStyleName(PANEL_STYLE_NAME);
-            ((AbstractLayout) getContent()).setMargin(false, false, false, false);
-            UiFactory.createSpacer(this, null, "6px");
-            HorizontalLayout row = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH, FAction.SET_SPACING);
-            UiFactory.createLabel(report.getReportname(), row, REPORT_NAME_STYLE, FAction.ALIGN_LEFT);
-            UiFactory.createSpacer(row, FAction.SET_EXPAND_RATIO_1_0);
-            toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, row, BaseTheme.BUTTON_LINK, new ClickListener() {
+            addStyleName(PANEL_STYLE_NAME);  
+            addStyleName("invoker"); 
+            //((AbstractLayout) getContent()).setMargin(false, false, false, false);
+            //UiFactory.createSpacer(this, null, "6px");
+            CssLayout header = new CssLayout();         
+            UiFactory.createLabel(report.getReportname(), header);
+            toggleParams = UiFactory.createButton(UiIds.LABEL_PARAMETERS, header, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -80,18 +86,17 @@ public class AperteInvokerComponent extends Panel {
 
                 }
             });
-            UiFactory.createLabel(report.getDescription(), this, REPORT_DESCR_STYLE, FAction.SET_FULL_WIDTH);
-
-            setWidth("100%");
+            accordion = UiFactory.createAccordion(this, header);
+            this.setSizeUndefined();
         }
 
         private void toggleParams() {
             if (paramsPanel == null) {
                 paramsPanel = createParamsPanel();
-                addComponent(paramsPanel);
+                accordion.addContent(paramsPanel);
                 toggleParams.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
-                removeComponent(paramsPanel);
+                accordion.removeContent();
                 paramsPanel = null;
                 toggleParams.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             }
@@ -99,10 +104,12 @@ public class AperteInvokerComponent extends Panel {
 
 //		xxx: could be better
         private ReportParamPanel createParamsPanel() {
-            final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
+        	final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
             panel.setStyleName("borderless");
-            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
-            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+            //HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING);
+            CssLayout hl = new CssLayout();
+            panel.addComponent(hl);
+            Button reportParamBtn = UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -125,9 +132,10 @@ public class AperteInvokerComponent extends Panel {
 
                 }
             });
-
+            reportParamBtn.addStyleName("btn");
             Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND,
                     hl, BaseTheme.BUTTON_LINK);
+            backgroundGenerate.addStyleName("btn");
             final CheckBox sendEmailCheckbox = UiFactory.createCheckBox(UiIds.AR_MSG_SEND_EMAIL, hl);
             backgroundGenerate.addListener(new ClickListener() {
 
@@ -155,15 +163,16 @@ public class AperteInvokerComponent extends Panel {
                 sendEmailCheckbox.setEnabled(false);
             }
 
-            UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
-            UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
+            //UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
+            /*Button reportParamBtn2  =UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     toggleParams();
                 }
             }, FAction.ALIGN_RIGTH);
-
+            reportParamBtn2.addStyleName("btn");
+            */
             return panel;
         }
 
@@ -179,8 +188,8 @@ public class AperteInvokerComponent extends Panel {
      */
     private void init() {
         setScrollable(true);
-        setStyleName(COMPONENT_STYLE_NAME);
-
+        addStyleName(COMPONENT_STYLE_NAME);
+        addStyleName("accordion");
         TextField filterField = UiFactory.createSearchBox(UiIds.LABEL_FILTER, this, new TextChangeListener() {
 
             @Override
@@ -191,7 +200,7 @@ public class AperteInvokerComponent extends Panel {
         });
         filterField.setWidth("150px");
 
-        reportList = new PaginatedPanelList<ReportTemplate, AperteInvokerComponent.ReportPanel>(PAGE_SIZE) {
+        reportList = new CssPaginatedPanelList<ReportTemplate, AperteInvokerComponent.ReportPanel>(PAGE_SIZE) {
 
             @Override
             protected ReportPanel transform(ReportTemplate object) {

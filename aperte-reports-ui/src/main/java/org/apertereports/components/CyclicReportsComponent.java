@@ -102,7 +102,7 @@ public class CyclicReportsComponent extends Panel {
                 addNew();
             }
         }, FAction.SET_INVISIBLE);
-
+        addButton.addStyleName("btn");
         list = new PaginatedPanelList<CyclicReportConfig, CyclicReportsComponent.CyclicReportPanel>(PAGE_SIZE) {
 
             @Override
@@ -193,6 +193,7 @@ public class CyclicReportsComponent extends Panel {
                     scheduleOrUnschedule(CyclicReportPanel.this.config);
                 }
             }, FAction.ALIGN_RIGTH);
+            enabledButton.addStyleName("btn");
             HorizontalLayout hl = UiFactory.createHLayout(row2);
             VerticalLayout vl = UiFactory.createVLayout(hl);
             UiFactory.createLabel(item, ORDER_RECIPIENT_EMAIL, vl);
@@ -207,21 +208,23 @@ public class CyclicReportsComponent extends Panel {
                     toggleParamsPanel();
                 }
             });
-            UiFactory.createButton(UiIds.LABEL_EDIT, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
+            toggleParamsButton.addStyleName("btn");
+            Button tmpButton = UiFactory.createButton(UiIds.LABEL_EDIT, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     edit();
                 }
             });
-            UiFactory.createButton(UiIds.LABEL_DELETE, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
+            tmpButton.addStyleName("btn");
+            Button tmpButton2 = UiFactory.createButton(UiIds.LABEL_DELETE, row3, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     remove();
                 }
             });
-
+            tmpButton2.addStyleName("btn");
         }
 
         private String getStateLabelCaption() {
@@ -264,9 +267,11 @@ public class CyclicReportsComponent extends Panel {
 
             final ReportParamPanel panel = new ReportParamPanel(config.getReport(), false, params);
             panel.setStyleName("borderless");
-            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
-
-            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+            CssLayout hl = new CssLayout() ;
+            panel.addComponent(hl);
+            //HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+            
+            Button tmpButton3 = UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -286,9 +291,9 @@ public class CyclicReportsComponent extends Panel {
                     }
                 }
             });
-
+            tmpButton3.addStyleName("btn");
             UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
-            UiFactory.createButton(UiIds.LABEL_SAVE, hl, new ClickListener() {
+            Button tmpButton4 = UiFactory.createButton(UiIds.LABEL_SAVE, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -301,15 +306,15 @@ public class CyclicReportsComponent extends Panel {
                     toggleParamsPanel();
                 }
             }, FAction.ALIGN_RIGTH);
-
-            UiFactory.createButton(UiIds.LABEL_CANCEL, hl, new ClickListener() {
+            tmpButton4.addStyleName("btn");
+            Button tmpButton5 = UiFactory.createButton(UiIds.LABEL_CANCEL, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     toggleParamsPanel();
                 }
             }, FAction.ALIGN_RIGTH);
-
+            tmpButton5.addStyleName("tmp");
             return panel;
         }
     }
@@ -344,19 +349,21 @@ public class CyclicReportsComponent extends Panel {
             UiFactory.createSpacer(this, null, "5px");
             HorizontalLayout buttons = UiFactory.createHLayout(this, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createSpacer(buttons, FAction.SET_EXPAND_RATIO_1_0);
-            UiFactory.createButton(UiIds.LABEL_SAVE, buttons, new ClickListener() {
+            Button tmpButton5 = UiFactory.createButton(UiIds.LABEL_SAVE, buttons, new ClickListener() {
                 @Override
                 public void buttonClick(ClickEvent event) {
                     save();
                 }
             }, FAction.ALIGN_RIGTH);
-            UiFactory.createButton(UiIds.LABEL_CANCEL, buttons, new ClickListener() {
+            tmpButton5.addStyleName("btn");
+            Button tmpButton6 = UiFactory.createButton(UiIds.LABEL_CANCEL, buttons, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     cancel();
                 }
             }, FAction.ALIGN_RIGTH);
+            tmpButton6.addStyleName("btn");
         }
 
         protected void cancel() {

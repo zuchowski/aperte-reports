@@ -67,7 +67,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
    
     @Override
     public void applicationInit() {
-    	setTheme("mymanagertheme");
+    	setTheme("mytheme");
         if (getContext() instanceof PortletApplicationContext2) {
             ((PortletApplicationContext2) getContext()).removePortletListener(this, this);
             ((PortletApplicationContext2) getContext()).addPortletListener(this, this);

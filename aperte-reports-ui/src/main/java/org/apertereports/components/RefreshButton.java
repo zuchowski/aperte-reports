@@ -14,6 +14,7 @@ public class RefreshButton extends Button {
     public RefreshButton(String caption, Button.ClickListener listener) {
         setDescription(caption);
         addStyleName(BaseTheme.BUTTON_LINK);
+        addStyleName("btn");
         setWidth(DEFAULT_WIDTH_IN_UNITS, UNITS_PIXELS);
         addListener(listener);
     }

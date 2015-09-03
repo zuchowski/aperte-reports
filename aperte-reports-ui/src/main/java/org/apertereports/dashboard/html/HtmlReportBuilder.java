@@ -159,17 +159,18 @@ public class HtmlReportBuilder {
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {
-            UiFactory.createButton("dashboard.view.drill.up", buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton("dashboard.view.drill.up", buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     returnFromDrill(config, parentConfig, componentId);
                 }
             });
+            tmpButton.addStyleName("btn");
         }
         List<String> allowedFormats = config.getAllowedFormatsAsList();
         for (final String format : allowedFormats) {
-            UiFactory.createButton(format, buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton(format, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
@@ -180,15 +181,17 @@ public class HtmlReportBuilder {
                     }
                 }
             });
+            tmpButton.addStyleName("btn");
         }
         if (Boolean.TRUE.equals(config.getAllowRefresh())) {
-            UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     refreshReport(config);
                 }
             });
+            tmpButton.addStyleName("btn");
         }
 
         boolean first = true;

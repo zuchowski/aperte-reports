@@ -1,6 +1,10 @@
 package org.apertereports.dashboard;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
@@ -40,7 +44,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
     private static final String DASHBOARD_EDIT_INPUT_PROMPT_REPORT_ID = "dashboard.edit.input-prompt.reportId";
     private static final String DASHBOARD_EDIT_REQUIRED_ERROR_REPORT_ID = "dashboard.edit.required-error.reportId";
     private static final String DASHBOARD_EDIT_CAPTION_REPORT_ID = "dashboard.edit.caption.reportId";
-    private VerticalLayout paramsParentComponent;
+    private CssLayout paramsParentComponent;
     private ReportParamPanel paramsPanel = new ReportParamPanel();
     private Form form;
     private Item datasource;
@@ -50,23 +54,33 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
     @Override
     protected void initComponentData() {
-        Panel mainPanel = UiFactory.createPanel(UiIds.LABEL_CONFIGURATION);
+        Panel superPanel = new Panel(new CssLayout());
         
-        setCompositionRoot(mainPanel);
+        setCompositionRoot(superPanel);
+        
+        CssLayout mainPanel  = new CssLayout();
+        UiFactory.createAccordion(superPanel, VaadinUtil.getValue(UiIds.LABEL_CONFIGURATION), mainPanel);
 
         app = (AbstractReportingApplication) getApplication();
 
-        paramsParentComponent = UiFactory.createVLayout(mainPanel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+        //paramsParentComponent = UiFactory.createVLayout(mainPanel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+        paramsParentComponent = new CssLayout();
+        mainPanel.addComponent(paramsParentComponent);
 
         HorizontalLayout reportRow = UiFactory.createHLayout(paramsParentComponent, FAction.SET_FULL_WIDTH);
         form = new EditDashboardForm();
         reportRow.addComponent(form);
 
-        paramsParentComponent.addComponent(paramsPanel);
-        paramsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
+        
+        CssLayout contentB = new CssLayout();
+        contentB.addComponent(paramsPanel);
+        UiFactory.createAccordion(paramsParentComponent, VaadinUtil.getValue(UiIds.LABEL_PARAMETERS), contentB);
+        
 
-        HorizontalLayout hl = UiFactory.createHLayout(paramsParentComponent, FAction.SET_SPACING);
-        UiFactory.createButton(UiIds.LABEL_OK, hl, new ClickListener() {
+        //HorizontalLayout hl = UiFactory.createHLayout(paramsParentComponent, FAction.SET_SPACING);
+        CssLayout hl = new CssLayout() ;
+        paramsParentComponent.addComponent(hl);
+        Button tmpButton1 =UiFactory.createButton(UiIds.LABEL_OK, hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -80,7 +94,8 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                 }
             }
         });
-        UiFactory.createButton(UiIds.LABEL_CANCEL, hl, new ClickListener() {
+        tmpButton1.addStyleName("btn");
+        Button tmpButton2 =UiFactory.createButton(UiIds.LABEL_CANCEL, hl, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -89,6 +104,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
                 }
             }
         });
+        tmpButton2.addStyleName("btn");
     }
 
     /**
@@ -102,10 +118,10 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
     private class EditDashboardForm extends Form {
 
-        private GridLayout layout;
+        private CssLayout layout;
+        private Map<Object,CssLayout> subLayouts;
 
         public EditDashboardForm() {
-
             reportConfig = getCurrentConfig();
 
             ReportTemplate selectedReport = null;
@@ -118,11 +134,13 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             }
             reloadParams(selectedReport);
 
-            layout = new GridLayout(3, 3);
-            layout.setSpacing(true);
-            layout.setWidth("100%");
+            layout = new CssLayout();
+            //layout.setSpacing(true);
+            //layout.setWidth("100%");
             setLayout(layout);
-
+            
+            subLayouts = new HashMap<Object,CssLayout>();
+                    
             setFormFieldFactory(new EditDashboardFieldFactory());
 
             datasource = new PropertysetItem();
@@ -135,16 +153,24 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
 
         @Override
         protected void attachField(Object propertyId, Field field) {
-
+        	CssLayout tmpLayout;
+        	if(!subLayouts.containsKey(propertyId)){
+        		tmpLayout = new CssLayout();
+        		tmpLayout.addStyleName("conf-row");
+        		layout.addComponent(tmpLayout);
+        		subLayouts.put(propertyId, tmpLayout);
+        	}else{
+        		tmpLayout = subLayouts.get(propertyId);
+        	}
+        	
             if (propertyId.equals(REPORT)) {
-                layout.addComponent(field, 0, 0, 1, 0);
+            	tmpLayout.addComponent(field);
             } else if (propertyId.equals(CACHE_TIMEOUT)) {
-                layout.addComponent(field, 2, 0);
-                layout.setComponentAlignment(field, Alignment.MIDDLE_RIGHT);
+            	tmpLayout.addComponent(field);
             } else if (propertyId.equals(EXPORT_BUTTONS)) {
-                layout.addComponent(field, 0, 1, 2, 1);
+            	tmpLayout.addComponent(field);
             } else if (propertyId.equals(REFRESH_BUTTON)) {
-                layout.addComponent(field, 0, 2, 2, 2);
+            	tmpLayout.addComponent(field);
             }
         }
 
@@ -201,7 +227,7 @@ public class EditDashboardComponentNew extends AbstractDashboardComponent {
             newParamsPanel = new ReportParamPanel(template, false, reportConfig.getParameters());
         }
 
-        newParamsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
+        //newParamsPanel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
         paramsParentComponent.replaceComponent(paramsPanel, newParamsPanel);
         paramsPanel = newParamsPanel;
     }
