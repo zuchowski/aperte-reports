@@ -39,6 +39,7 @@
 }
 .aui .v-app legend{
 	border:none;
+	margin:none;
 }
 .conf-row .v-caption, .conf-row .v-filterselect{
 	display:inline-block;
@@ -177,7 +178,7 @@ select {
 /* Notification */
 
 
-.v-Notification{
+.v-Notification, .v-form-errormessage{
 	background-color: #fee5e2;
     border-color: #fcaca5;
     color: #b50303;

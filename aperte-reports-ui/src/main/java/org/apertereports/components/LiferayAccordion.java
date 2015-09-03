@@ -32,10 +32,11 @@ public class LiferayAccordion extends CssLayout {
 			contentWrapperB.addStyleName("toggler-content toggler-content-expanded");
 			contentWrapper.addComponent(contentWrapperB);
 
-			content.addStyleName("accordion-inner");
+			content.addStyleName("accordion-inner");			
 			contentWrapperB.addComponent(content);
 
 			this.addComponent(contentWrapper);
+			content.setSizeUndefined();
 		}
 	}
 

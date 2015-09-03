@@ -29,11 +29,14 @@ public class ReportParamPanel extends Panel {
     }
 
     public ReportParamPanel(ReportTemplate reportTemplate, boolean showFormat, List<ReportConfigParameter> params) {
-        try {
+        super(new CssLayout());
+    	try {
             ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
             
             this.reportParametersComponent = new ReportParametersComponent(rm, showFormat, params);      
-            VerticalLayout vl = UiFactory.createVLayout(this);
+            //VerticalLayout vl = UiFactory.createVLayout(this);
+            CssLayout vl = new CssLayout();
+            this.addComponent(vl);
             vl.addComponent(reportParametersComponent);
             buttons = UiFactory.createHLayout(vl);
         } catch (ARException e) {
