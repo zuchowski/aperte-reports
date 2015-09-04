@@ -338,16 +338,16 @@ public class CyclicReportsComponent extends Panel {
         private boolean newItem;
 
         public EditCyclicReportPanel(CyclicReportConfig config, boolean newItem) {
+        	super(new CssLayout());
             this.newItem = newItem;
             this.config = config;
-
-            setCaption(VaadinUtil.getValue(newItem ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION));
-
+            CssLayout layout = new CssLayout();
+            UiFactory.createAccordion(this, VaadinUtil.getValue(newItem ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION),layout);
             setWidth("100%");
             form = new EditCyclicReportForm(config);
-            addComponent(form);
+            layout.addComponent(form);
             UiFactory.createSpacer(this, null, "5px");
-            HorizontalLayout buttons = UiFactory.createHLayout(this, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+            HorizontalLayout buttons = UiFactory.createHLayout(layout, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
             UiFactory.createSpacer(buttons, FAction.SET_EXPAND_RATIO_1_0);
             Button tmpButton5 = UiFactory.createButton(UiIds.LABEL_SAVE, buttons, new ClickListener() {
                 @Override
@@ -397,12 +397,14 @@ public class CyclicReportsComponent extends Panel {
 
     private class EditCyclicReportForm extends Form {
 
-        private GridLayout layout;
+        private FormLayout layout;
 
         public EditCyclicReportForm(CyclicReportConfig config) {
-            layout = new GridLayout(1, 5);
-            layout.setWidth("100%");
-            layout.setSpacing(true);
+          //  layout = new GridLayout(1, 5);
+            //layout.setWidth("100%");
+            //layout.setSpacing(true);
+            
+            layout = new FormLayout();
             setLayout(layout);
             setFormFieldFactory(new EditCyclicFormFactory());
             setItemDataSource(new BeanItem<CyclicReportConfig>(config));
@@ -415,19 +417,19 @@ public class CyclicReportsComponent extends Panel {
         @Override
         protected void attachField(Object propertyId, Field field) {
             if (propertyId.equals(ORDER_REPORT)) {
-                layout.addComponent(field, 0, 0);
+                layout.addComponent(field);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
             } else if (propertyId.equals(ORDER_OUTPUT_FORMAT)) {
-                layout.addComponent(field, 0, 1);
+                layout.addComponent(field);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
             } else if (propertyId.equals(ORDER_RECIPIENT_EMAIL)) {
-                layout.addComponent(field, 0, 2);
+                layout.addComponent(field);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
             } else if (propertyId.equals(ORDER_CRON_SPEC)) {
-                layout.addComponent(field, 0, 3);
+                layout.addComponent(field);
                 layout.setComponentAlignment(field, Alignment.MIDDLE_LEFT);
             } else if (propertyId.equals(ORDER_DESCRIPTION)) {
-                layout.addComponent(field, 0, 4);
+                layout.addComponent(field);
             }
         }
     }

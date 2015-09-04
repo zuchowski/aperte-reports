@@ -10,6 +10,9 @@
 	margin-right:5px;
 	display:inline-block;
 }
+.aui .v-checkbox{
+	margin-left:5px;
+}
 
 .accordion-toggle .v-label, .accordion-toggle .v-button{
 	display:inline-block;
@@ -39,7 +42,7 @@
 }
 .aui .v-app legend{
 	border:none;
-	margin:none;
+	margin:0;
 }
 .conf-row .v-caption, .conf-row .v-filterselect{
 	display:inline-block;
@@ -79,7 +82,7 @@
 .aui .roles .v-checkbox input, .aui .roles .v-checkbox label{
 	display:table-cell;
 }
-.aui .v-checkbox input{
+.aui .v-checkbox input, .accordion-inner .btn{
 	margin-bottom:7px;
 }
 
