@@ -5,7 +5,7 @@
 		<groupId>org.apertereports</groupId>
 		<version>2.5-SNAPSHOT</version>
 	</parent>
-	<artifactId>aperte-reports-ui</artifactId>
+	<artifactId>aperte-reports-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Portlets for uploading and generating reports</name>
 	
