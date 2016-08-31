@@ -70,8 +70,9 @@ try{
 }
 			try {
 				c.setAutoCommit(false);
-				PreparedStatement ps = c.prepareStatement("select * from ( "
-						+ procedureName + " ) as data");
+//				PreparedStatement ps = c.prepareStatement("select * from ( "
+//						+ procedureName + " ) as data");
+				PreparedStatement ps = c.prepareStatement( procedureName);
 				try {
 					final ResultSet rs = ps.executeQuery();
 					try {

@@ -178,6 +178,101 @@ select {
 	padding-right: 11px;
 }
 
+.v-button-wrap{
+	color: inherit!important;
+}
+
+.v-button-caption{
+	text-decoration: inherit!important;
+}
+
+.v-panel, .v-panel-caption, .v-panel-nocaption{
+	background: none!important;
+	border: none!important;
+}
+
+.v-panel-content{
+	border: none!important;
+}
+
+.v-button, .v-datefield-button{
+    border: 0!important;
+    text-shadow: none!important;
+    border-radius: 8px!important;
+    padding: 4px 12px!important;
+}
+
+.v-datefield-button, .v-datefield-button:hover{
+	background: inherit!important;
+	box-shadow: none!important;
+	outline: 0!important;
+	margin: 0!important;
+	font-size: 16px!important;
+	background-color: transparent!important;
+}
+
+.v-datefield-time{
+	text-align: center;
+}
+
+.v-datefield-calendarpanel .v-select{
+	max-width: 96px;
+}
+
+.v-button-prevyear, .v-button-prevmonth, .v-button-nextmonth, .v-button-nextyear{
+    text-shadow: none!important;
+    border-radius: 8px!important;
+    padding: 4px 12px!important;	
+    width: 30px!important;
+    box-shadow: none!important;
+    font-size: 14px!important;
+}
+
+
+.v-button-prevyear:before, .v-button-prevmonth:before, .v-button-nextmonth:before, .v-button-nextyear:before, .v-datefield-button:before{
+	display: block;
+    font-family: FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-width: 10px;
+    text-align: center;
+    line-height: 0px;
+}
+
+.v-button-prevyear:before{
+	content: "";
+}
+
+.v-button-prevmonth:before{
+	content: "";
+}
+
+.v-button-nextmonth:before{
+	content: "";
+}
+
+.v-button-nextyear:before{
+	content: "";
+}
+
+.v-datefield-button:before{
+	content: "\f073";
+	color: #626262!important;
+}
+
+
+.v-datefield-calendarpanel-prevmonth, .v-datefield-calendarpanel-month, .v-datefield-calendarpanel-nextmonth{
+	background: none!important;	
+}
+
+.v-datefield-calendarpanel-day{
+	background: none!important;
+	border-radius: 2px!important;
+	border-color: #d9d8d8!important;
+}
+
 /* Notification */
 
 .v-Notification, .v-form-errormessage{
