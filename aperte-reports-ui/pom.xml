@@ -69,8 +69,21 @@
 		<dependency>
             <groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
-    <version>6.8.17</version>
-</dependency>
+		    <version>6.8.17</version>
+		</dependency>
+		
+
+
+
+
+
+
+
+		
+		
+				
+				
+
 <!--	<dependency>
     <groupId>com.vaadin</groupId>
     <artifactId>vaadin-server</artifactId>
@@ -84,6 +97,16 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.jaspersoft</groupId>
+		    <artifactId>datasourcewrapper</artifactId>
+		    <version>1.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.lowagie</groupId>
+		    <artifactId>itext</artifactId>
+		    <version>2.1.7.js5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -120,6 +143,10 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jaspersoft</groupId>
+			<artifactId>webservicedataadapter</artifactId>
 		</dependency>
 	</dependencies>
 	

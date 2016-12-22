@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <display>
-    <category name="Aperte Reports">
-        <portlet id="Invoker portlet"/>
-        <portlet id="Dashboard portlet"/>
-        <portlet id="Report Order Browser portlet"/>
-        <portlet id="Cyclic Reports portlet"/>
-    </category>
-    <category name="category.hidden">
-        <portlet id="Report Manager portlet"/>
-    </category>
+	<category name="Aperte Reports">
+		<portlet id="Invoker portlet" />
+		<portlet id="Dashboard portlet" />
+		<portlet id="Report Order Browser portlet" />
+		<portlet id="Cyclic Reports portlet" />
+	</category>
+	<category name="category.hidden">
+		<portlet id="Report Manager portlet" />
+	</category>
 </display>

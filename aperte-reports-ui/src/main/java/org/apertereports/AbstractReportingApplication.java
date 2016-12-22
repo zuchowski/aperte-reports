@@ -16,6 +16,8 @@ import javax.portlet.ResourceResponse;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.util.NotificationUtil;
 
+import com.liferay.portal.security.auth.AuthTokenUtil;
+import com.liferay.portal.security.auth.SessionAuthToken;
 import com.liferay.portal.util.PortalUtil;
 import com.vaadin.Application;
 import com.vaadin.event.ListenerMethod;
@@ -26,7 +28,9 @@ import com.vaadin.ui.Window;
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apertereports.common.users.User;
@@ -184,8 +188,11 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                         roles.add(ur);
                         admin |= adminRole;
                     }
-
-                    user = new User(login, roles, admin, email, userid, portletGroupId, companyid);
+                    
+                    Map<String, Object> userContext = new HashMap<String, Object>();
+                    userContext.put("p_auth", AuthTokenUtil.getToken(PortalUtil.getHttpServletRequest(request)));
+                    userContext.put("serverUri","http://" +  dis.getServerName() + ":" + dis.getServerPort() + "/api/jsonws/");
+                    user = new User(login, roles, admin, email, userid, portletGroupId, companyid, userContext);
                     reinitUserData(user);
                 }
 

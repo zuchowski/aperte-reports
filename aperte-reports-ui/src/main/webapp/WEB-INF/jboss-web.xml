@@ -2,28 +2,28 @@
 <!-- Jboss web descriptor -->
 <jboss-web>
 
-    <!-- Reference to JNDI data source -->
-    <resource-ref>
-        <res-ref-name>jdbc/aperte-reports</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <jndi-name>java:/jdbc/aperte-reports</jndi-name>
-    </resource-ref>
+	<!-- Reference to JNDI data source -->
+	<resource-ref>
+		<res-ref-name>jdbc/aperte-reports</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<jndi-name>java:/jdbc/aperte-reports</jndi-name>
+	</resource-ref>
 
-    <resource-ref>
-        <res-ref-name>jms/ConnectionFactory</res-ref-name>
-        <res-type>javax.jms.ConnectionFactory</res-type>
-        <jndi-name>java:/jms/ConnectionFactory</jndi-name>
-    </resource-ref>
+	<resource-ref>
+		<res-ref-name>jms/ConnectionFactory</res-ref-name>
+		<res-type>javax.jms.ConnectionFactory</res-type>
+		<jndi-name>java:/jms/ConnectionFactory</jndi-name>
+	</resource-ref>
 
-    <resource-ref>
-        <res-ref-name>jms/ProcessReportQueue</res-ref-name>
-        <res-type>javax.jms.Queue</res-type>
-        <jndi-name>java:/jms/ProcessReportQueue</jndi-name>
-    </resource-ref>
+	<resource-ref>
+		<res-ref-name>jms/ProcessReportQueue</res-ref-name>
+		<res-type>javax.jms.Queue</res-type>
+		<jndi-name>java:/jms/ProcessReportQueue</jndi-name>
+	</resource-ref>
 
-    <resource-ref>
-        <res-ref-name>jms/GenerateReportQueue</res-ref-name>
-        <res-type>javax.jms.Queue</res-type>
-        <jndi-name>java:/jms/GenerateReportQueue</jndi-name>
-    </resource-ref>
+	<resource-ref>
+		<res-ref-name>jms/GenerateReportQueue</res-ref-name>
+		<res-type>javax.jms.Queue</res-type>
+		<jndi-name>java:/jms/GenerateReportQueue</jndi-name>
+	</resource-ref>
 </jboss-web>

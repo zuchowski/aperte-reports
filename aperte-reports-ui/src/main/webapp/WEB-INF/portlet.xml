@@ -1,152 +1,152 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
 
-    <portlet>
-        <portlet-name>Invoker portlet</portlet-name>
-        <display-name>Aperte Reports Invoker</display-name>
+	<portlet>
+		<portlet-name>Invoker portlet</portlet-name>
+		<display-name>Aperte Reports Invoker</display-name>
 
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.InvokerApplication</value>
-        </init-param>
+		<portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+		<init-param>
+			<name>application</name>
+			<value>org.apertereports.InvokerApplication</value>
+		</init-param>
 
-        <!-- Supported portlet modes and content types. -->
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-        </supports>
+		<!-- Supported portlet modes and content types. -->
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
 
-        <!-- Not always required but Liferay uses these. -->
-        <portlet-info>
-            <title>Aperte Reports Invoker</title>
-            <short-title>Invoker</short-title>
-            <keywords>invoker,report</keywords>
-        </portlet-info>
-    </portlet>
-    <portlet>
-        <portlet-name>Report Manager portlet</portlet-name>
-        <display-name>Aperte Report Manager</display-name>
+		<!-- Not always required but Liferay uses these. -->
+		<portlet-info>
+			<title>Aperte Reports Invoker</title>
+			<short-title>Invoker</short-title>
+			<keywords>invoker,report</keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>Report Manager portlet</portlet-name>
+		<display-name>Aperte Report Manager</display-name>
 
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.ManagerApplication</value>
-        </init-param>
+		<portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+		<init-param>
+			<name>application</name>
+			<value>org.apertereports.ManagerApplication</value>
+		</init-param>
 
 		<init-param>
-            <name>widgetset</name>
-            <value>com.vaadin.portal.gwt.PortalDefaultWidgetSet</value>
-        </init-param>
+			<name>widgetset</name>
+			<value>com.vaadin.portal.gwt.PortalDefaultWidgetSet</value>
+		</init-param>
 
-        <!-- Supported portlet modes and content types. -->
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-        </supports>
+		<!-- Supported portlet modes and content types. -->
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
 
-        <!-- Not always required but Liferay uses these. -->
-        <portlet-info>
-            <title>Aperte Reports Manager</title>
-            <short-title>Manager</short-title>
-            <keywords>invoker,report</keywords>
-        </portlet-info>
-    </portlet>
-    <portlet>
-        <portlet-name>Report Order Browser portlet</portlet-name>
-        <display-name>Report Order Browser</display-name>
+		<!-- Not always required but Liferay uses these. -->
+		<portlet-info>
+			<title>Aperte Reports Manager</title>
+			<short-title>Manager</short-title>
+			<keywords>invoker,report</keywords>
+		</portlet-info>
+	</portlet>
+	<portlet>
+		<portlet-name>Report Order Browser portlet</portlet-name>
+		<display-name>Report Order Browser</display-name>
 
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.ReportOrderApplication</value>
-        </init-param>
+		<portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+		<init-param>
+			<name>application</name>
+			<value>org.apertereports.ReportOrderApplication</value>
+		</init-param>
 
-        <!-- Supported portlet modes and content types. -->
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-        </supports>
+		<!-- Supported portlet modes and content types. -->
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
 
-        <!-- Not always required but Liferay uses these. -->
-        <portlet-info>
-            <title>Aperte Reports Order Browser</title>
-            <short-title>Report Order Browser</short-title>
-            <keywords>invoker,report</keywords>
-        </portlet-info>
-    </portlet>
+		<!-- Not always required but Liferay uses these. -->
+		<portlet-info>
+			<title>Aperte Reports Order Browser</title>
+			<short-title>Report Order Browser</short-title>
+			<keywords>invoker,report</keywords>
+		</portlet-info>
+	</portlet>
 
-    <portlet>
-        <portlet-name>Dashboard portlet</portlet-name>
-        <display-name>Aperte Reports Dashboard</display-name>
+	<portlet>
+		<portlet-name>Dashboard portlet</portlet-name>
+		<display-name>Aperte Reports Dashboard</display-name>
 
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.DashboardPortletApplication</value>
-        </init-param>
+		<portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+		<init-param>
+			<name>application</name>
+			<value>org.apertereports.DashboardPortletApplication</value>
+		</init-param>
 
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-            <portlet-mode>edit</portlet-mode>
-        </supports>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+			<portlet-mode>edit</portlet-mode>
+		</supports>
 
-        <portlet-info>
-            <title>Aperte Reports Dashboard</title>
-            <short-title>Dashboard</short-title>
-            <keywords>dashboard,chart</keywords>
-        </portlet-info>
-    </portlet>
+		<portlet-info>
+			<title>Aperte Reports Dashboard</title>
+			<short-title>Dashboard</short-title>
+			<keywords>dashboard,chart</keywords>
+		</portlet-info>
+	</portlet>
 
-    <portlet>
-        <portlet-name>Cyclic Reports portlet</portlet-name>
-        <display-name>Cyclic Reports</display-name>
+	<portlet>
+		<portlet-name>Cyclic Reports portlet</portlet-name>
+		<display-name>Cyclic Reports</display-name>
 
-        <portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
-        <init-param>
-            <name>application</name>
-            <value>org.apertereports.CyclicReportsApplication</value>
-        </init-param>
+		<portlet-class>com.vaadin.terminal.gwt.server.ApplicationPortlet2</portlet-class>
+		<init-param>
+			<name>application</name>
+			<value>org.apertereports.CyclicReportsApplication</value>
+		</init-param>
 
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>view</portlet-mode>
-        </supports>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
 
-        <portlet-info>
-            <title>Aperte Cyclic Reports</title>
-            <short-title>Cyclic Reports</short-title>
-            <keywords>report,cyclic</keywords>
-        </portlet-info>
-    </portlet>
+		<portlet-info>
+			<title>Aperte Cyclic Reports</title>
+			<short-title>Cyclic Reports</short-title>
+			<keywords>report,cyclic</keywords>
+		</portlet-info>
+	</portlet>
 
-    <filter>
-        <filter-name>I18nFilter</filter-name>
-        <filter-class>org.apertereports.util.I18nHelperFilter</filter-class>
-        <lifecycle>RENDER_PHASE</lifecycle>
-        <lifecycle>ACTION_PHASE</lifecycle>
-        <lifecycle>RESOURCE_PHASE</lifecycle>
-        <lifecycle>EVENT_PHASE</lifecycle>
-    </filter>
+	<filter>
+		<filter-name>I18nFilter</filter-name>
+		<filter-class>org.apertereports.util.I18nHelperFilter</filter-class>
+		<lifecycle>RENDER_PHASE</lifecycle>
+		<lifecycle>ACTION_PHASE</lifecycle>
+		<lifecycle>RESOURCE_PHASE</lifecycle>
+		<lifecycle>EVENT_PHASE</lifecycle>
+	</filter>
 
 
-    <filter-mapping>
-        <filter-name>I18nFilter</filter-name>
-        <portlet-name>Cyclic Reports portlet</portlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>I18nFilter</filter-name>
-        <portlet-name>Dashboard portlet</portlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>I18nFilter</filter-name>
-        <portlet-name>Report Order Browser portlet</portlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>I18nFilter</filter-name>
-        <portlet-name>Invoker portlet</portlet-name>
-    </filter-mapping>
+	<filter-mapping>
+		<filter-name>I18nFilter</filter-name>
+		<portlet-name>Cyclic Reports portlet</portlet-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>I18nFilter</filter-name>
+		<portlet-name>Dashboard portlet</portlet-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>I18nFilter</filter-name>
+		<portlet-name>Report Order Browser portlet</portlet-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>I18nFilter</filter-name>
+		<portlet-name>Invoker portlet</portlet-name>
+	</filter-mapping>
 </portlet-app>

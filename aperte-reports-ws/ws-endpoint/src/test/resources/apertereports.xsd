@@ -1,53 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified" targetNamespace="http://bluesoft.net.pl/rnd/apertereports/schemas"
-           xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-           xmlns:rg="http://bluesoft.net.pl/rnd/apertereports/schemas">
+	elementFormDefault="qualified" targetNamespace="http://bluesoft.net.pl/rnd/apertereports/schemas"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:rg="http://bluesoft.net.pl/rnd/apertereports/schemas">
 
-    <xs:element name="GenerateReportRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element maxOccurs="1" minOccurs="1" name="reportData" type="rg:ReportData"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+	<xs:element name="GenerateReportRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="1" minOccurs="1" name="reportData"
+					type="rg:ReportData" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-    <xs:complexType name="ReportData">
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="id" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="0" name="name" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="source" type="xs:base64Binary" xmime:expectedContentTypes="*/*"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="format" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="0" name="locale" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="0" name="dataSource" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="0" name="characterEncoding" type="xs:string"/>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="exporterParameters" type="rg:ReportExporterParameter"/>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="reportParameters" type="rg:ReportParameter"/>
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="ReportData">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="1" name="id" type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="0" name="name" type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="1" name="source"
+				type="xs:base64Binary" xmime:expectedContentTypes="*/*" />
+			<xs:element maxOccurs="1" minOccurs="1" name="format"
+				type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="0" name="locale"
+				type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="0" name="dataSource"
+				type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="0" name="characterEncoding"
+				type="xs:string" />
+			<xs:element maxOccurs="unbounded" minOccurs="0"
+				name="exporterParameters" type="rg:ReportExporterParameter" />
+			<xs:element maxOccurs="unbounded" minOccurs="0"
+				name="reportParameters" type="rg:ReportParameter" />
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:complexType name="ReportParameter">
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="name" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="value" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="ReportParameter">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="1" name="name" type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="1" name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:complexType name="ReportExporterParameter">
-        <xs:sequence>
-            <xs:element maxOccurs="1" minOccurs="1" name="className" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="fieldName" type="xs:string"/>
-            <xs:element maxOccurs="1" minOccurs="1" name="value" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
+	<xs:complexType name="ReportExporterParameter">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="1" name="className"
+				type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="1" name="fieldName"
+				type="xs:string" />
+			<xs:element maxOccurs="1" minOccurs="1" name="value" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
 
-    <xs:element name="GenerateReportResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="reportFormat" type="xs:string"/>
-                <xs:element name="mimeType" type="xs:string"/>
-                <xs:element name="content" type="xs:base64Binary" xmime:expectedContentTypes="*/*"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+	<xs:element name="GenerateReportResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="reportFormat" type="xs:string" />
+				<xs:element name="mimeType" type="xs:string" />
+				<xs:element name="content" type="xs:base64Binary"
+					xmime:expectedContentTypes="*/*" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>

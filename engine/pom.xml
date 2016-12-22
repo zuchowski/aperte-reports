@@ -18,9 +18,15 @@
             <version>2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>fluent-hc</artifactId>
+		    <version>4.2.1</version>
+		</dependency>
+
+        <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>4.5.1</version>
+            <version>6.3.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>eclipse</groupId>
@@ -32,10 +38,82 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Liferay Dependencies -->
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-service</artifactId>
+			<version>${global.liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-bridges</artifactId>
+			<version>${global.liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-taglib</artifactId>
+			<version>${global.liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-java</artifactId>
+			<version>${global.liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.faces/javax.faces-api -->
+		<dependency>
+		    <groupId>javax.faces</groupId>
+		    <artifactId>javax.faces-api</artifactId>
+		    <version>2.1</version>
+		</dependency>
+
+		
+        <dependency>
+		    <groupId>com.lowagie</groupId>
+		    <artifactId>itext</artifactId>
+		    <version>2.1.7.js5</version>
+		</dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
+        		<dependency>
+		    <groupId>com.jaspersoft</groupId>
+		    <artifactId>webservicedataadapter</artifactId>
+		    <version>1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jaspersoft</groupId>
+			<artifactId>datasourcewrapper</artifactId>
+			</dependency>
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>

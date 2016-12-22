@@ -11,6 +11,9 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.util.JRTypeSniffer;
+import net.sf.jasperreports.renderers.DataRenderable;
+import net.sf.jasperreports.engine.type.ImageTypeEnum;
+
 
 import org.apertereports.util.DashboardUtil;
 import org.apertereports.util.FileStreamer;
@@ -530,13 +533,14 @@ public class HtmlReportBuilder {
         jasperPrintList.add(jasperPrint);
 
         JRPrintImage image = JRHtmlExporter.getImage(jasperPrintList, imageId);
-        JRRenderable renderer = image.getRenderer();
-        if (renderer.getType() == JRRenderable.TYPE_SVG) {
-            renderer = new JRWrappingSvgRenderer(renderer, new Dimension(image.getWidth(), image.getHeight()),
-                    ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null);
-        }
-        String imageMimeType = JRTypeSniffer.getImageMimeType(renderer.getImageType());
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(renderer.getImageData());
+        DataRenderable renderer = (DataRenderable)image.getRenderer();
+//        if (renderer.getType() == JRRenderable.TYPE_SVG) {
+//            renderer = new WrappingRenderToImageDataRenderer(renderer, new Dimension(image.getWidth(), image.getHeight()),
+//                    ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null);
+//        }
+        byte[] data = renderer.getData(new SimpleJasperReportsContext());
+        ImageTypeEnum imageMimeType = JRTypeSniffer.getImageTypeValue(data);
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
         StreamResource streamResource = new StreamResource(new StreamResource.StreamSource() {
 
@@ -546,7 +550,7 @@ public class HtmlReportBuilder {
             }
         }, imageId, application);
 
-        streamResource.setMIMEType(imageMimeType);
+        streamResource.setMIMEType(imageMimeType.getMimeType());
         return streamResource;
     }
 

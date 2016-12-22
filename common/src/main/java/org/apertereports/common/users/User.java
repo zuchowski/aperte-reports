@@ -2,6 +2,7 @@ package org.apertereports.common.users;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,6 +19,7 @@ public class User {
     private long userid;
     private long groupid;
     private long companyid;
+    private Map<String, Object> context;
 
     public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid) {
     	this.userid= userid;
@@ -27,6 +29,12 @@ public class User {
         this.roles = roles;
         this.administrator = administrator;
         this.email = email;
+        this.context = null;
+    }
+    
+    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid, Map<String, Object> context) {
+    	this(login, roles, administrator, email, userid, groupid, companyid);
+    	this.context = context;
     }
     /**
      * Return id of the user
@@ -86,4 +94,10 @@ public class User {
     public String getEmail() {
         return email;
     }
+	public Map<String, Object> getContext() {
+		return context;
+	}
+	public void setContext(Map<String, Object> context) {
+		this.context = context;
+	}
 }

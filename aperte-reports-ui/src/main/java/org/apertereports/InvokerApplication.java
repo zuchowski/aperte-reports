@@ -1,9 +1,17 @@
 package org.apertereports;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apertereports.components.AperteInvokerComponent;
 import org.apertereports.util.VaadinUtil;
 
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
+import com.vaadin.terminal.gwt.server.PortletRequestListener;
 import com.vaadin.ui.Window;
+
 import org.apertereports.common.users.User;
 
 /**
@@ -29,4 +37,6 @@ public class InvokerApplication extends AbstractReportingApplication<AperteInvok
     protected void reinitUserData(User user) {
         mainPanel.initData(user);
     }
+    
+    
 }

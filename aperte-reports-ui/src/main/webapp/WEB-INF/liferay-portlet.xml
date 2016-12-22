@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <liferay-portlet-app>
- <portlet>
-        <portlet-name>Dashboard portlet</portlet-name>
+	<portlet>
+		<portlet-name>Dashboard portlet</portlet-name>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <ajaxable>false</ajaxable>
-        <header-portlet-css>/css/main.css</header-portlet-css>
-         <css-class-wrapper>Dashboard-portlet</css-class-wrapper>
-    </portlet>
-    <portlet>
-        <portlet-name>Invoker portlet</portlet-name>
+		<ajaxable>false</ajaxable>
+		<header-portlet-css>/css/main.css</header-portlet-css>
+		<css-class-wrapper>Dashboard-portlet</css-class-wrapper>
+	</portlet>
+	<portlet>
+		<portlet-name>Invoker portlet</portlet-name>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <instanceable>true</instanceable>
-        <ajaxable>false</ajaxable>
-        <header-portlet-css>/css/main.css</header-portlet-css>
-    </portlet>
-    <portlet>
-        <portlet-name>Report Manager portlet</portlet-name>
-        <scopeable>true</scopeable>
+		<instanceable>true</instanceable>
+		<ajaxable>false</ajaxable>
+		<header-portlet-css>/css/main.css</header-portlet-css>
+	</portlet>
+	<portlet>
+		<portlet-name>Report Manager portlet</portlet-name>
+		<scopeable>true</scopeable>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <instanceable>false</instanceable>
-        <ajaxable>false</ajaxable>
-        <control-panel-entry-category>portal</control-panel-entry-category>
-        <control-panel-entry-weight>1</control-panel-entry-weight>
-        <header-portlet-css>/css/main.css</header-portlet-css>
-    </portlet>
-    <portlet>
-        <portlet-name>Report Order Browser portlet</portlet-name>
+		<instanceable>false</instanceable>
+		<ajaxable>false</ajaxable>
+		<control-panel-entry-category>portal</control-panel-entry-category>
+		<control-panel-entry-weight>1</control-panel-entry-weight>
+		<header-portlet-css>/css/main.css</header-portlet-css>
+	</portlet>
+	<portlet>
+		<portlet-name>Report Order Browser portlet</portlet-name>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <instanceable>true</instanceable>
-        <ajaxable>false</ajaxable>
-        <header-portlet-css>/css/main.css</header-portlet-css>
-    </portlet>
-    <portlet>
-        <portlet-name>Cyclic Reports portlet</portlet-name>
+		<instanceable>true</instanceable>
+		<ajaxable>false</ajaxable>
+		<header-portlet-css>/css/main.css</header-portlet-css>
+	</portlet>
+	<portlet>
+		<portlet-name>Cyclic Reports portlet</portlet-name>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
-        <instanceable>false</instanceable>
-        <ajaxable>false</ajaxable>
-        <header-portlet-css>/css/main.css</header-portlet-css>
-    </portlet>
-    
-    	<role-mapper>
+		<instanceable>false</instanceable>
+		<ajaxable>false</ajaxable>
+		<header-portlet-css>/css/main.css</header-portlet-css>
+	</portlet>
+
+	<role-mapper>
 		<role-name>administrator</role-name>
 		<role-link>Administrator</role-link>
 	</role-mapper>
