@@ -84,12 +84,16 @@ import com.liferay.portal.kernel.util.InfrastructureUtil;
  */
 public class ReportMaster implements ARConstants, ConfigurationConstants {
 
-	private static final Logger logger = LoggerFactory.getLogger(ReportMaster.class.getName());
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReportMaster.class.getName());
 	private static Pattern subreportPattern = Pattern
 			.compile("<subreportExpression class\\=\"java\\.lang\\.String\"\\>\\<\\!\\[CDATA\\[\\$P\\{[^}]*\\} [^\"]*\"([^\"]*)\\.jasper\"");
-	private static Pattern jasperReportPattern = Pattern.compile("<jasperReport[^>]+>(\\s+<property[^>]+>)*", Pattern.MULTILINE);
-	private static Pattern subreportReportElementPattern = Pattern.compile("<subreport>\\s*<reportElement[^>]+>(\\s*)", Pattern.MULTILINE);
-	private static String subreportMapParameter = "\n\t<parameter name=\"" + SUBREPORT_MAP_PARAMETER_NAME
+	private static Pattern jasperReportPattern = Pattern.compile(
+			"<jasperReport[^>]+>(\\s+<property[^>]+>)*", Pattern.MULTILINE);
+	private static Pattern subreportReportElementPattern = Pattern.compile(
+			"<subreport>\\s*<reportElement[^>]+>(\\s*)", Pattern.MULTILINE);
+	private static String subreportMapParameter = "\n\t<parameter name=\""
+			+ SUBREPORT_MAP_PARAMETER_NAME
 			+ "\" class=\"java.util.Map\" isForPrompting=\"false\"/>";
 	/**
 	 * Currently processed Jasper report.
@@ -119,7 +123,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 * @throws AperteReportsException
 	 *             on error
 	 */
-	public ReportMaster(String reportSource, SubreportProvider subreportProvider) throws ARException {
+	public ReportMaster(String reportSource, SubreportProvider subreportProvider)
+			throws ARException {
 		this(reportSource, null, subreportProvider);
 	}
 
@@ -138,7 +143,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on Jasper error
 	 * @throws SubreportNotFoundException
 	 */
-	public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider) throws ARException {
+	public ReportMaster(String reportSource, String cacheId,
+			SubreportProvider subreportProvider) throws ARException {
 		super();
 		report = compileReport(reportSource, cacheId, subreportProvider);
 	}
@@ -160,7 +166,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on Jasper error
 	 * @throws SubreportNotFoundException
 	 */
-	public ReportMaster(String reportSource, String cacheId, SubreportProvider subreportProvider, User user) throws ARException {
+	public ReportMaster(String reportSource, String cacheId,
+			SubreportProvider subreportProvider, User user) throws ARException {
 		super();
 		if (user != null) {
 			this.user = user;
@@ -182,7 +189,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 * @throws AperteReportsException
 	 *             on error
 	 */
-	public ReportMaster(byte[] reportSource, String cacheId, SubreportProvider subreportProvider) throws ARException {
+	public ReportMaster(byte[] reportSource, String cacheId,
+			SubreportProvider subreportProvider) throws ARException {
 		super();
 		report = compileReport(reportSource, cacheId, subreportProvider);
 	}
@@ -209,7 +217,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 * @throws AperteReportsException
 	 *             on error
 	 */
-	public static byte[] exportReport(JasperPrint jasperPrint, String format, Map<JRExporterParameter, Object> customExporterParams,
+	public static byte[] exportReport(JasperPrint jasperPrint, String format,
+			Map<JRExporterParameter, Object> customExporterParams,
 			Map<String, String> configuration) throws ARException {
 
 		if (configuration == null) {
@@ -220,46 +229,69 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		}
 
 		try {
-			ReportType outputFormat = ReportType.valueOf(StringUtils.upperCase(format));
+			ReportType outputFormat = ReportType.valueOf(StringUtils
+					.upperCase(format));
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			JRExporter exporter;
 
-			String characterEncoding = configuration.get(JASPER_REPORTS_CHARACTER_ENCODING);
+			String characterEncoding = configuration
+					.get(JASPER_REPORTS_CHARACTER_ENCODING);
 			if (!StringUtil.hasText(characterEncoding)) {
 				characterEncoding = "Cp1250";
-				logger.info("Injecting default character encoding: " + characterEncoding);
+				logger.info("Injecting default character encoding: "
+						+ characterEncoding);
 			}
 
 			if (outputFormat == ReportType.PDF) {
 				exporter = new JRPdfExporter();
-				exporter.setParameter(JRPdfExporterParameter.CHARACTER_ENCODING, characterEncoding);
+				exporter.setParameter(
+						JRPdfExporterParameter.CHARACTER_ENCODING,
+						characterEncoding);
 			} else if (outputFormat == ReportType.HTML) {
 				exporter = new JRHtmlExporter();
-				exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN, Boolean.FALSE);
-				exporter.setParameter(JRHtmlExporterParameter.IGNORE_PAGE_MARGINS, Boolean.TRUE);
+				exporter.setParameter(
+						JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN,
+						Boolean.FALSE);
+				exporter.setParameter(
+						JRHtmlExporterParameter.IGNORE_PAGE_MARGINS,
+						Boolean.TRUE);
 			} else if (outputFormat == ReportType.XLS) {
 				exporter = new JRXlsExporter();
-				exporter.setParameter(JRXlsExporterParameter.CHARACTER_ENCODING, characterEncoding);
-				exporter.setParameter(JRXlsExporterParameter.IGNORE_PAGE_MARGINS, Boolean.TRUE);
-				exporter.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-				exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, false);
+				exporter.setParameter(
+						JRXlsExporterParameter.CHARACTER_ENCODING,
+						characterEncoding);
+				exporter.setParameter(
+						JRXlsExporterParameter.IGNORE_PAGE_MARGINS,
+						Boolean.TRUE);
+				exporter.setParameter(
+						JRXlsExporterParameter.IS_DETECT_CELL_TYPE,
+						Boolean.TRUE);
+				exporter.setParameter(
+						JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, false);
 			} else if (outputFormat == ReportType.CSV) {
 				exporter = new JRCsvExporter();
-				exporter.setParameter(JRCsvExporterParameter.CHARACTER_ENCODING, characterEncoding);
-				exporter.setParameter(JRCsvExporterParameter.RECORD_DELIMITER, RECORD_DELIMITER);
-				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER, FIELD_DELIMITER);
+				exporter.setParameter(
+						JRCsvExporterParameter.CHARACTER_ENCODING,
+						characterEncoding);
+				exporter.setParameter(JRCsvExporterParameter.RECORD_DELIMITER,
+						RECORD_DELIMITER);
+				exporter.setParameter(JRCsvExporterParameter.FIELD_DELIMITER,
+						FIELD_DELIMITER);
 			} else {
-				throw new IllegalStateException("Invalid report type. Permitted types are: HTML, PDF, XLS, CSV");
+				throw new IllegalStateException(
+						"Invalid report type. Permitted types are: HTML, PDF, XLS, CSV");
 			}
 
 			if (customExporterParams != null && !customExporterParams.isEmpty()) {
-				for (Iterator<Map.Entry<JRExporterParameter, Object>> it = customExporterParams.entrySet().iterator(); it.hasNext();) {
+				for (Iterator<Map.Entry<JRExporterParameter, Object>> it = customExporterParams
+						.entrySet().iterator(); it.hasNext();) {
 					Map.Entry<JRExporterParameter, Object> entry = it.next();
 					exporter.setParameter(entry.getKey(), entry.getValue());
 				}
 			}
 
-			exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST, Collections.singletonList(jasperPrint));
+			exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST,
+					Collections.singletonList(jasperPrint));
 			exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, bos);
 			exporter.exportReport();
 			return bos.toByteArray();
@@ -283,7 +315,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 * @see #exportReport(net.sf.jasperreports.engine.JasperPrint, String,
 	 *      java.util.Map, java.util.Map)
 	 */
-	public static byte[] exportReport(JasperPrint jasperPrint, String format, Map<String, String> configuration) throws ARException {
+	public static byte[] exportReport(JasperPrint jasperPrint, String format,
+			Map<String, String> configuration) throws ARException {
 		return exportReport(jasperPrint, format, null, configuration);
 	}
 
@@ -302,24 +335,34 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on Jasper error
 	 * @throws SubreportNotFoundException
 	 */
-	public static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider) throws ARException {
+	public static AperteReport compileReport(byte[] reportSource,
+			String cacheId, SubreportProvider subreportProvider)
+			throws ARException {
 		return compileReport(reportSource, cacheId, subreportProvider, false);
 	}
 
-	private static AperteReport compileReport(byte[] reportSource, String cacheId, SubreportProvider subreportProvider, boolean hasParent) throws ARException {
+	private static AperteReport compileReport(byte[] reportSource,
+			String cacheId, SubreportProvider subreportProvider,
+			boolean hasParent) throws ARException {
 		logger.info("Trying to fetch report '" + cacheId + "' from cache");
 		AperteReport compiledReport = ReportCache.getReport(cacheId);
 		Set<String> subreportNames = new HashSet<String>();
 		if (compiledReport == null) {
 			logger.info("Report not found. Compiling...");
 
-			String source = processSubreports(hasParent, new String(reportSource), subreportNames);
-			ByteArrayInputStream bis = new ByteArrayInputStream(source.getBytes());
+			String source = processSubreports(hasParent, new String(
+					reportSource), subreportNames);
+			ByteArrayInputStream bis = new ByteArrayInputStream(
+					source.getBytes());
 			try {
-				JRPropertiesUtil util = JRPropertiesUtil.getInstance(new SimpleJasperReportsContext());
-				util.setProperty(QueryExecuterFactory.QUERY_EXECUTER_FACTORY_PREFIX + "WebServiceQuery",
+				JRPropertiesUtil util = JRPropertiesUtil
+						.getInstance(new SimpleJasperReportsContext());
+				util.setProperty(
+						QueryExecuterFactory.QUERY_EXECUTER_FACTORY_PREFIX
+								+ "WebServiceQuery",
 						"com.jaspersoft.webservice.data.query.WebServiceQueryExecuter");
-				compiledReport = new AperteReport(JasperCompileManager.compileReport(bis));
+				compiledReport = new AperteReport(
+						JasperCompileManager.compileReport(bis));
 				logger.info("Compiled.");
 			} catch (JRException e) {
 				logger.error("report source exception", e);
@@ -338,24 +381,35 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		return compiledReport;
 	}
 
-	private static void compileSubreports(SubreportProvider subreportProvider, AperteReport compiledReport, Set<String> subreportNames) throws ARException {
+	private static void compileSubreports(SubreportProvider subreportProvider,
+			AperteReport compiledReport, Set<String> subreportNames)
+			throws ARException {
 		if (subreportNames.size() > 0) {
 			if (subreportProvider == null) {
 				subreportProvider = new EmptySubreportProvider();
 			}
-			Map<String, Subreport> subreports = subreportProvider.getSubreports((String[]) subreportNames.toArray(new String[subreportNames.size()]));
-			Map<String, AperteReport> compiledSubreports = new HashMap<String, AperteReport>(subreports.size(), 1);
+			Map<String, Subreport> subreports = subreportProvider
+					.getSubreports((String[]) subreportNames
+							.toArray(new String[subreportNames.size()]));
+			Map<String, AperteReport> compiledSubreports = new HashMap<String, AperteReport>(
+					subreports.size(), 1);
 			for (Subreport subreport : subreports.values()) {
-				AperteReport compiledSubreport = compileReport(subreport.getContent(), subreport.getCacheId(), subreportProvider, true);
+				AperteReport compiledSubreport = compileReport(
+						subreport.getContent(), subreport.getCacheId(),
+						subreportProvider, true);
 				compiledSubreports.put(subreport.getName(), compiledSubreport);
 			}
 			compiledReport.setSubreports(compiledSubreports);
 		}
 	}
 
-	public static AperteReport compileReport(String reportSource, String cacheId, SubreportProvider subreportProvider) throws ARException {
+	public static AperteReport compileReport(String reportSource,
+			String cacheId, SubreportProvider subreportProvider)
+			throws ARException {
 		try {
-			return compileReport(ReportGeneratorUtils.decodeContent(reportSource), cacheId, subreportProvider);
+			return compileReport(
+					ReportGeneratorUtils.decodeContent(reportSource), cacheId,
+					subreportProvider);
 		} catch (UnsupportedEncodingException e) {
 			throw new ARRuntimeException(ErrorCode.UNSUPPORTED_ENCODING, e);
 		}
@@ -366,7 +420,9 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 * 
 	 * @return {@link byte[]}
 	 */
-	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters, Map<JRExporterParameter, Object> exporterParameters,
+	public byte[] generateAndExportReport(String format,
+			Map<String, Object> reportParameters,
+			Map<JRExporterParameter, Object> exporterParameters,
 			Map<String, String> configuration) throws ARException {
 		if (user != null) {
 			long userid = user.getUserid();
@@ -378,14 +434,17 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 			reportParameters.put("companyid", companyid);
 			reportParameters.put("p_auth", user.getContext().get("p_auth"));
 
-			reportParameters.put(WebServiceDataAdapterService.URI_KEY, "http://steag.localhost:8080");
+			reportParameters.put(WebServiceDataAdapterService.URI_KEY,
+					"http://steag.localhost:8080");
 			// for (String key : reportParameters.keySet()) {
 			// System.out.print("Key: " + key + " - ");
 			// System.out.print("Value: " + reportParameters.get(key) + "\n");
 			// }
 		}
-		JasperPrint jasperPrint = generateReport(reportParameters, configuration);
-		return exportReport(jasperPrint, format, exporterParameters, configuration);
+		JasperPrint jasperPrint = generateReport(reportParameters,
+				configuration);
+		return exportReport(jasperPrint, format, exporterParameters,
+				configuration);
 	}
 
 	/**
@@ -402,25 +461,36 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *            Exporter configuration
 	 * @return Bytes of a generated report
 	 */
-	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters, Map<String, String> configuration) throws ARException {
+	public byte[] generateAndExportReport(String format,
+			Map<String, Object> reportParameters,
+			Map<String, String> configuration) throws ARException {
 
-		return generateAndExportReport(format, reportParameters, null, configuration);
+		return generateAndExportReport(format, reportParameters, null,
+				configuration);
 	}
 
-	private static String processSubreports(boolean hasParent, String source, Set<String> subreportNames) {
+	private static String processSubreports(boolean hasParent, String source,
+			Set<String> subreportNames) {
 		Matcher m = subreportPattern.matcher(source);
 		while (m.find()) {
 			String subReportName = m.group(1);
 			subreportNames.add(subReportName);
-			source = m.replaceFirst("<subreportExpression class=\"net.sf.jasperreports.engine.JasperReport\"><![CDATA[\\$P{" + SUBREPORT_MAP_PARAMETER_NAME
-					+ "}.get(\"" + subReportName + "\").getJasperReport()");
+			source = m
+					.replaceFirst("<subreportExpression class=\"net.sf.jasperreports.engine.JasperReport\"><![CDATA[\\$P{"
+							+ SUBREPORT_MAP_PARAMETER_NAME
+							+ "}.get(\""
+							+ subReportName + "\").getJasperReport()");
 			m.reset(source);
 		}
 		m = subreportReportElementPattern.matcher(source);
 
 		if (m.find()) {
-			source = m.replaceAll("$0<subreportParameter name=\"" + SUBREPORT_MAP_PARAMETER_NAME + "\">" + "<subreportParameterExpression>" + "<![CDATA[\\$P{"
-					+ SUBREPORT_MAP_PARAMETER_NAME + "}]]></subreportParameterExpression>" + "</subreportParameter>$1");
+			source = m.replaceAll("$0<subreportParameter name=\""
+					+ SUBREPORT_MAP_PARAMETER_NAME + "\">"
+					+ "<subreportParameterExpression>" + "<![CDATA[\\$P{"
+					+ SUBREPORT_MAP_PARAMETER_NAME
+					+ "}]]></subreportParameterExpression>"
+					+ "</subreportParameter>$1");
 		}
 
 		logger.info(subreportNames.size() + " subreports found");
@@ -444,9 +514,11 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *            Configuration, can be null
 	 * @return Output JasperPrint
 	 */
-	private JasperPrint generateReport(Map<String, Object> reportParameters, Map<String, String> configuration) throws ARException {
+	private JasperPrint generateReport(Map<String, Object> reportParameters,
+			Map<String, String> configuration) throws ARException {
 		try {
-			JasperPrint jasperPrint = buildJasperPrint(reportParameters, configuration);
+			JasperPrint jasperPrint = buildJasperPrint(reportParameters,
+					configuration);
 			return jasperPrint;
 		} catch (JRFontNotFoundException e) {
 			throw new ARException(ErrorCode.FONT_NOT_FOUND, e);
@@ -456,7 +528,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		}
 	}
 
-	public JasperPrint generateReport(Map<String, Object> reportParameters) throws ARException {
+	public JasperPrint generateReport(Map<String, Object> reportParameters)
+			throws ARException {
 		return generateReport(reportParameters, null);
 	}
 
@@ -485,14 +558,18 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 			}
 
 			String[] propertyNames = propertiesMap.getPropertyNames();
-			Map<Keys, ReportProperty> outputProperties = new HashMap<Keys, ReportProperty>(propertyNames.length, 1);
+			Map<Keys, ReportProperty> outputProperties = new HashMap<Keys, ReportProperty>(
+					propertyNames.length, 1);
 			for (String propertyName : propertyNames) {
 				try {
-					Keys key = Keys.valueOf(StringUtils.upperCase(propertyName));
-					ReportProperty property = new ReportProperty(key, propertiesMap.getProperty(propertyName));
+					Keys key = Keys
+							.valueOf(StringUtils.upperCase(propertyName));
+					ReportProperty property = new ReportProperty(key,
+							propertiesMap.getProperty(propertyName));
 					outputProperties.put(key, property);
 				} catch (IllegalArgumentException e) {
-					throw new ARRuntimeException(ErrorCode.UNKNOWN_PROPERTY_NAME, e, propertyName);
+					throw new ARRuntimeException(
+							ErrorCode.UNKNOWN_PROPERTY_NAME, e, propertyName);
 				}
 			}
 			outputParameter.setProperties(outputProperties);
@@ -533,8 +610,9 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on errors while accessing a configured datasource
 	 * @throws ClassNotFoundException
 	 */
-	private JasperPrint buildJasperPrint(Map<String, Object> reportParameters, Map<String, String> configuration) throws JRException, NamingException,
-			SQLException, ClassNotFoundException {
+	private JasperPrint buildJasperPrint(Map<String, Object> reportParameters,
+			Map<String, String> configuration) throws JRException,
+			NamingException, SQLException, ClassNotFoundException {
 
 		// previously data source was passed as a method argument, but it was
 		// not used nowhere
@@ -554,41 +632,57 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		injectDefaultValues(reportParameters);
 
 		if (report.getSubreports().size() > 0) {
-			reportParameters.put(SUBREPORT_MAP_PARAMETER_NAME, report.getAllNestedSubreports());
+			reportParameters.put(SUBREPORT_MAP_PARAMETER_NAME,
+					report.getAllNestedSubreports());
 		}
 
 		Connection connection = null;
 		try {
 			String lang = getJasperReport().getQuery().getLanguage();
-			if (lang.equals("sql")) {
+			if (lang.equals("SQL")) {
 				// if (dataSource == null) {
-				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
-				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(getJasperReport());
+				String jndiDataSource = configuration.get(Parameter.DATASOURCE
+						.name());
+				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
+						: getConnectionFromReport(getJasperReport());
 
 				if (connection != null) {
-					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, connection);
+					jasperPrint = JasperFillManager.fillReport(
+							getJasperReport(), reportParameters, connection);
 				} else {
 					Collection<Map<String, ?>> rParameters = new LinkedList<Map<String, ?>>();
 					rParameters.add(reportParameters);
-					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, new JRMapCollectionDataSource(rParameters));
+					jasperPrint = JasperFillManager.fillReport(
+							getJasperReport(), reportParameters,
+							new JRMapCollectionDataSource(rParameters));
 				}
 
 			} else if (lang.equals("WebServiceQuery")) {
 
-				reportParameters.put(WebServiceDataAdapterService.VERB_KEY, "post");
-				reportParameters.put(WebServiceDataAdapterService.LANGUAGE_KEY, LanguageType.JSON);
+				reportParameters.put(WebServiceDataAdapterService.VERB_KEY,
+						"post");
+				reportParameters.put(WebServiceDataAdapterService.LANGUAGE_KEY,
+						LanguageType.JSON);
 
-				reportParameters.put("parameter_properties", parameterProperties(getJasperReport().getParameters()));
+				reportParameters.put("parameter_properties",
+						parameterProperties(getJasperReport().getParameters()));
 
 				Map<String, String> authenticationMap = new HashMap<String, String>();
 
 				// Not Needed for RESTJSONService
-				reportParameters.put(WebServiceDataAdapterService.AUTH_TYPE_KEY, AuthType.BASIC.toString());
-				authenticationMap.put(BasicAuthenticator.USERNAME_KEY, "aperteuser");
-				authenticationMap.put(BasicAuthenticator.PASSWORD_KEY, "aperte");
-				reportParameters.put(WebServiceDataAdapterService.AUTH_PARAMETERS_KEY, authenticationMap);
+				reportParameters.put(
+						WebServiceDataAdapterService.AUTH_TYPE_KEY,
+						AuthType.BASIC.toString());
+				authenticationMap.put(BasicAuthenticator.USERNAME_KEY,
+						"aperteuser");
+				authenticationMap
+						.put(BasicAuthenticator.PASSWORD_KEY, "aperte");
+				reportParameters.put(
+						WebServiceDataAdapterService.AUTH_PARAMETERS_KEY,
+						authenticationMap);
 
-				jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters);
+				jasperPrint = JasperFillManager.fillReport(getJasperReport(),
+						reportParameters);
 			} else {
 				logger.error("Unsupported Query Language!");
 			}
@@ -606,8 +700,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	/**
 	 * 
 	 * Returns parameter properties as escaped JSON-String Example: [{\
-	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_type
-	 * \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
+	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_typ
+	 * e \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
 	 * 
 	 * @param {@link JRParameter[]} jRParameters
 	 * 
@@ -626,8 +720,10 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 				jsonParameter.put(parameterName, parameters);
 
 				JSONObject properties = JSONFactoryUtil.createJSONObject();
-				for (String name : parameter.getPropertiesMap().getPropertyNames()) {
-					String value = parameter.getPropertiesMap().getProperty(name);
+				for (String name : parameter.getPropertiesMap()
+						.getPropertyNames()) {
+					String value = parameter.getPropertiesMap().getProperty(
+							name);
 					properties.put(name, value);
 
 				}
@@ -652,11 +748,13 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on errors while connecting to the datasource
 	 * @throws ClassNotFoundException
 	 */
-	private Connection getConnectionFromReport(JasperReport jasperReport) throws NamingException, SQLException, ClassNotFoundException {
+	private Connection getConnectionFromReport(JasperReport jasperReport)
+			throws NamingException, SQLException, ClassNotFoundException {
 		JRParameter[] parameters = jasperReport.getParameters();
 		Connection con = null;
 		for (JRParameter parameter : parameters) {
-			if (parameter.getName().equalsIgnoreCase(Parameter.DATASOURCE.name())) {
+			if (parameter.getName().equalsIgnoreCase(
+					Parameter.DATASOURCE.name())) {
 				String jndiName = parameter.getDescription();
 				con = getConnectionByJNDI(jndiName);
 
@@ -678,7 +776,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	 *             on errors while connecting to the datasource
 	 * @throws ClassNotFoundException
 	 */
-	private Connection getConnectionByJNDI(String jndiName) throws NamingException, SQLException, ClassNotFoundException {
+	private Connection getConnectionByJNDI(String jndiName)
+			throws NamingException, SQLException, ClassNotFoundException {
 		logger.info("Getting database connection, jndiName: " + jndiName);
 		DataSource ds;
 		try {
@@ -686,9 +785,11 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		} catch (Exception e1) {
 			String prefix = "java:comp/env/"; // possibly tomcat
 			if (jndiName.matches(prefix + ".*")) {
-				ds = (DataSource) new InitialContext().lookup(jndiName.substring(prefix.length()));
+				ds = (DataSource) new InitialContext().lookup(jndiName
+						.substring(prefix.length()));
 			} else {
-				ds = (DataSource) new InitialContext().lookup(prefix + jndiName);
+				ds = (DataSource) new InitialContext()
+						.lookup(prefix + jndiName);
 			}
 		}
 		try {
@@ -727,18 +828,24 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		JRParameter[] originalParameters = getJasperReport().getParameters();
 		for (JRParameter parameter : originalParameters) {
 
-			if (reportParameters.containsKey(parameter.getName()) && StringUtils.isEmpty(reportParameters.get(parameter.getName()).toString())
+			if (reportParameters.containsKey(parameter.getName())
+					&& StringUtils.isEmpty(reportParameters.get(
+							parameter.getName()).toString())
 					&& parameter.getDefaultValueExpression() != null) {
-				String defaultValue = parameter.getDefaultValueExpression().getText();
+				String defaultValue = parameter.getDefaultValueExpression()
+						.getText();
 				if (defaultValue.matches("\".*\"")) {
-					defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+					defaultValue = defaultValue.substring(1,
+							defaultValue.length() - 1);
 				}
 				reportParameters.put(parameter.getName(), defaultValue);
 			}
 		}
 
-		if (!reportParameters.containsKey(JRXPathQueryExecuterFactory.XML_DATE_PATTERN)) {
-			reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, DATETIME_PATTERN);
+		if (!reportParameters
+				.containsKey(JRXPathQueryExecuterFactory.XML_DATE_PATTERN)) {
+			reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN,
+					DATETIME_PATTERN);
 			logger.info("Injecting default date format: " + DATETIME_PATTERN);
 		}
 
@@ -752,7 +859,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		}
 		if (locale == null) {
 			Locale defaultLocale = Locale.getDefault();
-			logger.info("Unable to find locale parameter. Injecting default locale: " + defaultLocale);
+			logger.info("Unable to find locale parameter. Injecting default locale: "
+					+ defaultLocale);
 		}
 		reportParameters.put(JRParameter.REPORT_LOCALE, locale);
 	}
