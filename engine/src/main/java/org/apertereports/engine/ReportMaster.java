@@ -383,7 +383,6 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 			reportParameters.put("groupId", groupid);
 			reportParameters.put("companyid", companyid);
 			reportParameters.put("p_auth", user.getContext().get("p_auth"));
-
 		}
 		JasperPrint jasperPrint = generateReport(reportParameters, configuration);
 		return exportReport(jasperPrint, format, exporterParameters, configuration);
@@ -562,10 +561,9 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		try {
 			String lang = getJasperReport().getQuery().getLanguage();
 			if (lang.equals("SQL")) {
-				String jndiDataSource = configuration.get(Parameter.DATASOURCE
-						.name());
-				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
-						: getConnectionFromReport(getJasperReport());
+
+				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
+				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(getJasperReport());
 
 				if (connection != null) {
 					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, connection);
@@ -583,8 +581,6 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 				reportParameters.put("parameter_properties", parameterProperties(getJasperReport().getParameters()));
 
 				Map<String, String> authenticationMap = new HashMap<String, String>();
-
-				// Not Needed for RESTJSONService
 				reportParameters.put(WebServiceDataAdapterService.AUTH_TYPE_KEY, AuthType.BASIC.toString());
 				try {
 					InitialContext con = new InitialContext();
@@ -596,6 +592,10 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 				} catch (NamingException e) {
 					logger.error("Logindata not found", e);
 				}
+				reportParameters.put(WebServiceDataAdapterService.AUTH_PARAMETERS_KEY, authenticationMap);
+
+				reportParameters.put(WebServiceDataAdapterService.AUTH_TYPE_KEY, AuthType.BASIC.toString());
+
 				reportParameters.put(WebServiceDataAdapterService.AUTH_PARAMETERS_KEY, authenticationMap);
 
 				jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters);
@@ -616,8 +616,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	/**
 	 * 
 	 * Returns parameter properties as escaped JSON-String Example: [{\
-	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_ty
-	 * p e \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
+	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_typ
+	 * e \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
 	 * 
 	 * @param {@link JRParameter[]} jRParameters
 	 * 
