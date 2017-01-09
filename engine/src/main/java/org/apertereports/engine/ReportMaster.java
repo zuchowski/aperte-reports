@@ -362,8 +362,6 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	}
 
 	/**
-	 * TODO: move ids to constants/ properties
-	 * 
 	 * @return {@link byte[]}
 	 */
 	public byte[] generateAndExportReport(String format, Map<String, Object> reportParameters, Map<JRExporterParameter, Object> exporterParameters,
@@ -373,16 +371,19 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 			long groupid = user.getGroupid();
 			long companyid = user.getCompanyid();
 
+			try {
+				InitialContext con = new InitialContext();
+				String url = (String) con.lookup("java:comp/env/url_aperterest");
+				reportParameters.put(WebServiceDataAdapterService.URI_KEY, url);
+			} catch (NamingException e) {
+				logger.error("URL not found", e);
+			}
+
 			reportParameters.put("userId", userid);
 			reportParameters.put("groupId", groupid);
 			reportParameters.put("companyid", companyid);
 			reportParameters.put("p_auth", user.getContext().get("p_auth"));
 
-			reportParameters.put(WebServiceDataAdapterService.URI_KEY, "http://steag.localhost:8080");
-			// for (String key : reportParameters.keySet()) {
-			// System.out.print("Key: " + key + " - ");
-			// System.out.print("Value: " + reportParameters.get(key) + "\n");
-			// }
 		}
 		JasperPrint jasperPrint = generateReport(reportParameters, configuration);
 		return exportReport(jasperPrint, format, exporterParameters, configuration);
@@ -560,10 +561,11 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		Connection connection = null;
 		try {
 			String lang = getJasperReport().getQuery().getLanguage();
-			if (lang.equals("sql")) {
-				// if (dataSource == null) {
-				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
-				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(getJasperReport());
+			if (lang.equals("SQL")) {
+				String jndiDataSource = configuration.get(Parameter.DATASOURCE
+						.name());
+				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource)
+						: getConnectionFromReport(getJasperReport());
 
 				if (connection != null) {
 					jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters, connection);
@@ -584,8 +586,16 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 
 				// Not Needed for RESTJSONService
 				reportParameters.put(WebServiceDataAdapterService.AUTH_TYPE_KEY, AuthType.BASIC.toString());
-				authenticationMap.put(BasicAuthenticator.USERNAME_KEY, "aperteuser");
-				authenticationMap.put(BasicAuthenticator.PASSWORD_KEY, "aperte");
+				try {
+					InitialContext con = new InitialContext();
+					String pass = (String) con.lookup("java:comp/env/pass_aperterest");
+					String user = (String) con.lookup("java:comp/env/user_aperterest");
+
+					authenticationMap.put(BasicAuthenticator.USERNAME_KEY, user);
+					authenticationMap.put(BasicAuthenticator.PASSWORD_KEY, pass);
+				} catch (NamingException e) {
+					logger.error("Logindata not found", e);
+				}
 				reportParameters.put(WebServiceDataAdapterService.AUTH_PARAMETERS_KEY, authenticationMap);
 
 				jasperPrint = JasperFillManager.fillReport(getJasperReport(), reportParameters);
@@ -606,8 +616,8 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 	/**
 	 * 
 	 * Returns parameter properties as escaped JSON-String Example: [{\
-	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_type
-	 * \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
+	 * "bis\":[{\"input_type\":\"date\",\"label\":\"bis\"}],\"von\":[{\"input_ty
+	 * p e \ " : \ " d a t e \ " , \ " l a b e l \ " : \ " v o n \ " } ] } ]
 	 * 
 	 * @param {@link JRParameter[]} jRParameters
 	 * 
