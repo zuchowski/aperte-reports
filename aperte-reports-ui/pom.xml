@@ -71,42 +71,9 @@
 			<artifactId>vaadin</artifactId>
 		    <version>6.8.17</version>
 		</dependency>
-		
-
-
-
-
-
-
-
-		
-		
-				
-				
-
-<!--	<dependency>
-    <groupId>com.vaadin</groupId>
-    <artifactId>vaadin-server</artifactId>
-    <version>7.4.8</version>
-</dependency>
-<dependency>
-    <groupId>com.vaadin</groupId>
-    <artifactId>vaadin-client-compiled</artifactId>
-    <version>7.4.8</version>
-</dependency>-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>com.jaspersoft</groupId>
-		    <artifactId>datasourcewrapper</artifactId>
-		    <version>1.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.lowagie</groupId>
-		    <artifactId>itext</artifactId>
-		    <version>2.1.7.js5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -144,10 +111,7 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.jaspersoft</groupId>
-			<artifactId>webservicedataadapter</artifactId>
-		</dependency>
+
 	</dependencies>
 	
 	<build>
@@ -158,11 +122,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>gwt-maven-plugin</artifactId> 
-				<version>2.1.0</version> <executions> <execution> <configuration> <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets 
-				</webappDirectory> <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs> <soyc>false</soyc> 
-				</configuration> <goals> <goal>resources</goal> <goal>compile</goal> </goals> 
-				</execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -172,7 +131,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<!-- Updates Vaadin 6.2+ widgetset definitions based on project dependencies -->
        </plugins>
 	</build>
 </project>
