@@ -66,7 +66,28 @@
 }
 
 .v-filterselect-button {
-	display: none;
+background: none!important;
+}
+
+.v-filterselect-button::before{
+  content: "\f0dd";
+  padding: 10px 0 0 15px;
+  display: inline-block;
+}
+
+.v-filterselect-suggestmenu span {
+    height: 24px!important;
+    padding-left: 5px!important;
+    cursor: pointer!important;
+}
+
+.v-filterselect-suggestmenu .gwt-MenuItem-selected span {
+    background: #eee!important;
+    border-color: #eee!important;
+}
+
+.v-filterselect-suggestmenu .gwt-MenuItem-selected {
+    background: none!important;
 }
 
 .v-caption {
@@ -234,7 +255,7 @@ select {
 
 .v-button-prevyear:before, .v-button-prevmonth:before,
 	.v-button-nextmonth:before, .v-button-nextyear:before,
-	.v-datefield-button:before {
+	.v-datefield-button:before, .v-filterselect-button {
 	display: block;
 	font-family: FontAwesome;
 	font-size: inherit;
