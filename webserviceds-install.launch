@@ -13,5 +13,5 @@
 <stringAttribute key="M2_USER_SETTINGS" value=""/>
 <booleanAttribute key="M2_WORKSPACE_RESOLUTION" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dfile=WebServiceDataAdapter.jar -DpomFile=webserviceds-install-pom.xml"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/aperte-reports}"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/apertereports}"/>
 </launchConfiguration>
