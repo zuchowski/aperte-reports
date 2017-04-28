@@ -560,7 +560,7 @@ public class ReportMaster implements ARConstants, ConfigurationConstants {
 		Connection connection = null;
 		try {
 			String lang = getJasperReport().getQuery().getLanguage();
-			if (lang.equals("SQL")) {
+			if (lang.toUpperCase().equals("SQL") || lang == null || lang.isEmpty()) {
 
 				String jndiDataSource = configuration.get(Parameter.DATASOURCE.name());
 				connection = jndiDataSource != null ? getConnectionByJNDI(jndiDataSource) : getConnectionFromReport(getJasperReport());
