@@ -43,7 +43,9 @@ public class SQLUtil {
         try {
             Configuration annotationConfiguration = new AnnotationConfiguration();
             Configuration cfg = annotationConfiguration.configure("hibernate.cfg.xml");
-
+			if (System.getProperty("hibernate.dialect.aperte") != null) {
+				cfg.setProperty("hibernate.dialect", System.getProperty("hibernate.dialect.aperte"));
+			}
             sessionFactory = cfg.buildSessionFactory();
             sessionFactory.getStatistics().setStatisticsEnabled(true);
         } catch (Exception e) {
