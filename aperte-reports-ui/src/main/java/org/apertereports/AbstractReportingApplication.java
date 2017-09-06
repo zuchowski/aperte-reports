@@ -1,6 +1,7 @@
 package org.apertereports;
 
 import com.liferay.portal.model.Role;
+import com.liferay.portal.model.UserGroupRole;
 
 import java.util.Locale;
 
@@ -18,6 +19,7 @@ import org.apertereports.util.NotificationUtil;
 
 import com.liferay.portal.security.auth.AuthTokenUtil;
 import com.liferay.portal.security.auth.SessionAuthToken;
+import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.vaadin.Application;
 import com.vaadin.event.ListenerMethod;
@@ -188,6 +190,11 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                         roles.add(ur);
                         admin |= adminRole;
                     }
+                    //Group Roles
+    				for(UserGroupRole gr : UserGroupRoleLocalServiceUtil.getUserGroupRoles(liferayUser.getUserId())){
+                        UserRole ur = new UserRole(gr.getRole().getName(), gr.getRoleId(), false);
+                        roles.add(ur);
+    				}
                     
                     Map<String, Object> userContext = new HashMap<String, Object>();
                     userContext.put("p_auth", AuthTokenUtil.getToken(PortalUtil.getHttpServletRequest(request)));
