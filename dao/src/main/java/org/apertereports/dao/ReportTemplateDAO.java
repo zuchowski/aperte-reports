@@ -305,7 +305,7 @@ public final class ReportTemplateDAO {
         
         //Berücksichtigung des Mandanten
         if (user != null) {
-            where.add("rt.companyId = ? OR rt.companyId IS null");
+            where.add("rt.companyId = ? OR rt.companyId = ''");
             params.add(String.valueOf(user.getCompanyid()));
         }                
 
