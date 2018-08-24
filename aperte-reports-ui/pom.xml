@@ -111,6 +111,16 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+				<groupId>de.itsdconsulting</groupId>
+				<artifactId>FRAMEWORK_BASE</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.itsdconsulting</groupId>
+				<artifactId>PORTAL_BASE</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
 
 	</dependencies>
 	

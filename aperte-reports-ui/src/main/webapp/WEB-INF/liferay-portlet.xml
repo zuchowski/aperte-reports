@@ -12,6 +12,8 @@
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
 		<instanceable>true</instanceable>
 		<ajaxable>false</ajaxable>
+		<portlet-data-handler-class>org.apertereports.util.AperteReportsDataHandler</portlet-data-handler-class>
+        <staged-model-data-handler-class>org.apertereports.util.ReportTemplateStagedModelDataHandler</staged-model-data-handler-class>  		        
 		<header-portlet-css>/css/main.css</header-portlet-css>
 	</portlet>
 	<portlet>
