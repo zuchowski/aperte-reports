@@ -5,8 +5,6 @@ import org.springframework.dao.DataAccessException;
 
 import com.liferay.portal.model.StagedModel;
 
-import biz.myera.era.model.bo.Mandant;
-
 
 public interface StagedReportTemplate extends StagedModel{
 

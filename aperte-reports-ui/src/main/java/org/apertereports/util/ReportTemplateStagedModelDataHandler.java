@@ -18,10 +18,6 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.service.CompanyLocalServiceUtil;
 
-import biz.myera.era.model.bo.Mandant;
-import biz.myera.era.service.MandantService;
-import biz.myera.era.service.PersistentObjectService;
-import biz.myera.frmwrk.service.ServiceLocatorUtil;
 
 public class ReportTemplateStagedModelDataHandler extends BaseStagedModelDataHandler<StagedReportTemplateImpl> {
 

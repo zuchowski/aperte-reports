@@ -12,9 +12,6 @@ import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
 
-import biz.myera.era.model.bo.Mandant;
-import biz.myera.era.service.exceptions.ServiceException;
-
 public class StagedReportTemplateImpl implements StagedReportTemplate {
 
 	public StagedReportTemplateImpl(ReportTemplate pReportTemplate) {
@@ -55,10 +52,6 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 	protected String reportname;			
 	private long companyId;
 
-	public String getContent(Mandant mandant) throws ServiceException {		
-		return this.content;
-	}
-	
 	public Object clone() {
 		return this;
 	}
