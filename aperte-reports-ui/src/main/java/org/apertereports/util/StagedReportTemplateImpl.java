@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apertereports.model.ReportTemplate;
-import org.springframework.dao.DataAccessException;
 
 import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portlet.expando.model.ExpandoBridge;
@@ -33,7 +32,7 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 		this.allowBackgroundOrder = pReportTemplate.getAllowBackgroundOrder();
 		this.id = pReportTemplate.getId();
 		this.reportname = pReportTemplate.getReportname();		
-		if(pReportTemplate.getCompanyId() != null)
+		if(pReportTemplate.getCompanyId() != null && !pReportTemplate.getCompanyId().isEmpty())
 			this.setCompanyId(Long.valueOf(pReportTemplate.getCompanyId()));
 	}
 
@@ -218,7 +217,7 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 		return this.companyId;
 	}
 		
-	public ReportTemplate getAperteReport(String companyId) throws DataAccessException {
+	public ReportTemplate getAperteReport(String companyId){
 		
 		reportTemplate = new ReportTemplate();	
 		reportTemplate.setCompanyId(companyId);
@@ -233,7 +232,5 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 		reportTemplate.setReportname(this.reportname);
 		
 		return reportTemplate;
-	}
-	
-	
+	}		
 }
