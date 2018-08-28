@@ -17,6 +17,9 @@ import java.util.*;
 
 import javax.naming.NamingException;
 
+import com.liferay.portal.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.service.UserLocalServiceUtil;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.ARJmsFacade;
@@ -268,6 +271,16 @@ public class ReportManagerComponent extends Panel {
             }
             itemPanel.requestRepaintAll();
             deepCopy(tmpReportTemplate, itemPanel.reportTemplate);
+            
+            try {
+        	   	//set mandant id
+               	com.liferay.portal.model.User liferayUser = UserLocalServiceUtil.getUser(PrincipalThreadLocal.getUserId());
+       			long companyid = liferayUser.getCompanyId();           
+       			itemPanel.reportTemplate.setCompanyId(String.valueOf(companyid));
+			} catch (Exception e) {
+				logger.error("Liferay User could not be found -> companyId could not be set", e);
+			}                        
+            
             ReportTemplateDAO.saveOrUpdate(itemPanel.reportTemplate);
             list.replaceComponent(this, this.itemPanel);
         }
