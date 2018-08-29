@@ -299,6 +299,10 @@ select {
 	border-color: #d9d8d8 !important;
 }
 
+.v-textfield.v-textfield-prompt{
+	margin-bottom: 15px !important;
+}
+
 /* Notification */
 .v-Notification, .v-form-errormessage {
 	background-color: #fee5e2;
