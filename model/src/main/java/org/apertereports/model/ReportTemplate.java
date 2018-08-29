@@ -55,7 +55,7 @@ public class ReportTemplate implements Serializable {
     @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false, name="companyId")
+    @Column(nullable = true, name="companyId")
     private String companyId;
 
     public String getCompanyId() {
@@ -89,7 +89,7 @@ public class ReportTemplate implements Serializable {
      * <code>name</code> attribute of
      * <code>jasperReport</code> tag).
      */
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String reportname;
 
     public boolean getActive() {
