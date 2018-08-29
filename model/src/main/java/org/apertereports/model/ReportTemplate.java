@@ -89,7 +89,7 @@ public class ReportTemplate implements Serializable {
      * <code>name</code> attribute of
      * <code>jasperReport</code> tag).
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String reportname;
 
     public boolean getActive() {
