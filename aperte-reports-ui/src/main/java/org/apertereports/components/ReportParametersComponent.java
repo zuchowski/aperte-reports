@@ -182,6 +182,8 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 		// xxxs move id to id, move management of user properties to base class
 		// (?)
 		parameters.put("login", getLogin());
+		User user = ((AbstractReportingApplication) getApplication()).getArUser();
+		parameters.put("webid", user.getWebid());
 		// xxx: use property set underneath the form
 		parameters.put(JRParameter.REPORT_LOCALE, localeComboBox.getValue() == null ? null : localeComboBox.getValue().toString());
 		return parameters;
@@ -270,11 +272,12 @@ public class ReportParametersComponent extends AbstractLazyLoaderComponent {
 		try {
 			FieldContainer container = new FieldContainer();
 			List<DictionaryItem> items = null;
-
+			User user = ((AbstractReportingApplication) getApplication()).getArUser();
 			// DICT_QUERY
 			if (StringUtils.isNotEmpty(fieldProperties.getDictQuery())) {
 				String login = getLogin();
 				String dictQuery = fieldProperties.getDictQuery().replaceAll("\\$LOGIN", login);
+				dictQuery = dictQuery.replaceAll(":webid", user.getWebid());
 				items = org.apertereports.dao.DictionaryDAO.fetchDictionary(dictQuery);
 			}
 

@@ -179,6 +179,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                 	long userid= liferayUser.getUserId();
                 	long portletGroupId= dis.getScopeGroupId();
                 	long companyid= company.getCompanyId();
+                	String webid=company.getWebId();
                     String login = liferayUser.getLogin();
                     String email = liferayUser.getEmailAddress();
                     Set<UserRole> roles = new HashSet<UserRole>();
@@ -199,7 +200,7 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                     Map<String, Object> userContext = new HashMap<String, Object>();
                     userContext.put("p_auth", AuthTokenUtil.getToken(PortalUtil.getHttpServletRequest(request)));
                     userContext.put("serverUri","http://" +  dis.getServerName() + ":" + dis.getServerPort() + "/api/jsonws/");
-                    user = new User(login, roles, admin, email, userid, portletGroupId, companyid, userContext);
+                    user = new User(login, roles, admin, email, userid, portletGroupId, companyid, webid, userContext);
                     reinitUserData(user);
                 }
 
