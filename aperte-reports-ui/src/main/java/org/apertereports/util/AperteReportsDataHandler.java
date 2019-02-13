@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 
 public class AperteReportsDataHandler extends BasePortletDataHandler {
@@ -115,10 +116,11 @@ public class AperteReportsDataHandler extends BasePortletDataHandler {
 	public static User getAperteUser() throws PortalException, SystemException{
 		
 		com.liferay.portal.model.User liferayUser = UserLocalServiceUtil.getUser(PrincipalThreadLocal.getUserId());
-		
+		com.liferay.portal.model.Company company = CompanyLocalServiceUtil.getCompany(liferayUser.getCompanyId());
 		long userid= liferayUser.getUserId();
     	long portletGroupId= liferayUser.getGroupId();    	
     	long companyid = liferayUser.getCompanyId();
+    	String webid = company.getWebId();
         String login = liferayUser.getLogin();
         String email = liferayUser.getEmailAddress();
         Set<UserRole> roles = new HashSet<UserRole>();
@@ -130,7 +132,7 @@ public class AperteReportsDataHandler extends BasePortletDataHandler {
             roles.add(ur);
             admin |= adminRole;
         }
-        User user = new User(login, roles, admin, email, userid, portletGroupId, companyid);
+        User user = new User(login, roles, admin, email, userid, portletGroupId, companyid, webid);
         return user;        
 	}
 	

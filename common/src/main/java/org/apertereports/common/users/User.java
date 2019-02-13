@@ -19,12 +19,14 @@ public class User {
     private long userid;
     private long groupid;
     private long companyid;
+    private String webid;
     private Map<String, Object> context;
 
-    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid) {
+    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid, String webid) {
     	this.userid= userid;
     	this.groupid=groupid;
     	this.companyid=companyid;
+    	this.webid=webid;
         this.login = login;
         this.roles = roles;
         this.administrator = administrator;
@@ -32,8 +34,8 @@ public class User {
         this.context = null;
     }
     
-    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid, Map<String, Object> context) {
-    	this(login, roles, administrator, email, userid, groupid, companyid);
+    public User(String login, Set<UserRole> roles, boolean administrator, String email, long userid, long groupid, long companyid, String webid, Map<String, Object> context) {
+    	this(login, roles, administrator, email, userid, groupid, companyid, webid);
     	this.context = context;
     }
     /**
@@ -59,6 +61,14 @@ public class User {
      */
     public long getCompanyid() {
         return companyid;
+    }
+    /**
+     * Return webid of the user
+     *
+     * @return webidid
+     */
+    public String getWebid() {
+        return webid;
     }
     /**
      * Return login of the user
