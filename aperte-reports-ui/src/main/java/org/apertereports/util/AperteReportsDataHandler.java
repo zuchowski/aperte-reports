@@ -75,10 +75,12 @@ public class AperteReportsDataHandler extends BasePortletDataHandler {
 	
 	protected PortletPreferences doDeleteData(PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences) throws Exception {
-		
-		if (portletDataContext.getBooleanParameter(NAMESPACE_REPORTS, "Reports")) {
-			this.deleteAllReports();
-		}
+				
+		if (portletDataContext.addPrimaryKey(
+				AperteReportsDataHandler.class, "deleteData")) {
+			return portletPreferences;
+		}		
+		this.deleteAllReports();
 		
 		return portletPreferences;
 	}
