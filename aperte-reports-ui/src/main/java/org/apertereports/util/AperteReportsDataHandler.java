@@ -101,7 +101,12 @@ public class AperteReportsDataHandler extends BasePortletDataHandler {
 	/*
 	 * Get all reports and delete all reports
 	 */
-	protected void deleteAllReports() throws PortalException, SystemException{		
+	protected void deleteAllReports() throws PortalException, SystemException{
+		
+		//check if user PK is present
+		if(PrincipalThreadLocal.getUserId() == 0)
+			return;
+		
 		Collection<ReportTemplate> reportTemplates = ReportTemplateDAO.fetch(AperteReportsDataHandler.getAperteUser(), null, 0, 1000);  
 		
 		for (ReportTemplate reportTemplate : reportTemplates) {
