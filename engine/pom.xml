@@ -172,6 +172,13 @@
 			<version>${global.liferay.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.itsdconsulting</groupId>
+			<artifactId>jdbc.driver.decrypt</artifactId>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<build>
