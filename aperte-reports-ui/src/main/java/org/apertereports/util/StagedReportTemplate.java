@@ -6,5 +6,5 @@ import com.liferay.portal.model.StagedModel;
 
 public interface StagedReportTemplate extends StagedModel{
 
-	public ReportTemplate getAperteReport(String companyId);	
+	public ReportTemplate getAperteReport(String companyId) throws Exception;	
 }
