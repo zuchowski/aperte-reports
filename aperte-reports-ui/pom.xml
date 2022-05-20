@@ -8,10 +8,10 @@
 	<artifactId>aperte-reports-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Portlets for uploading and generating reports</name>
-	
-	
+
+
 	<repositories>
-	<repository>
+		<repository>
 			<id>liferay-releases</id>
 			<url>https://repository.liferay.com/nexus/content/repositories/liferay-releases-ce/</url>
 		</repository>
@@ -67,9 +67,9 @@
 			<version>2.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-            <groupId>com.vaadin</groupId>
+			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
-		    <version>6.8.17</version>
+			<version>6.8.17</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -100,11 +100,46 @@
 			<version>6.2.1</version>
 			<scope>provided</scope>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>com.liferay.portal</groupId>
 			<artifactId>util-java</artifactId>
 			<version>6.2.1</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>11.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>javax.faces-api</artifactId>
+			<version>2.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.faces</artifactId>
+			<version>2.2.19</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.faces</groupId>
+			<artifactId>com.liferay.faces.bridge.ext</artifactId>
+			<version>3.0.1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.faces</groupId>
+			<artifactId>com.liferay.faces.bridge.impl</artifactId>
+			<version>4.1.1</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.faces.patches</groupId>
+			<artifactId>com.liferay.faces.lsv.485.patch</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -113,9 +148,9 @@
 		</dependency>
 
 	</dependencies>
-	
+
 	<build>
-		
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -131,6 +166,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-       </plugins>
+		</plugins>
 	</build>
 </project>
