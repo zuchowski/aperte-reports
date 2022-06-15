@@ -41,7 +41,7 @@
 		<header-portlet-css>/css/main.css</header-portlet-css>
 	</portlet>
 	<portlet>
-		<portlet-name>Test Reports portlet</portlet-name>
+		<portlet-name>Aperte Reports Invoker JSF</portlet-name>
 		<requires-namespaced-parameters>false</requires-namespaced-parameters>
 		<instanceable>false</instanceable>
 		<ajaxable>false</ajaxable>

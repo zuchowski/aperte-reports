@@ -66,28 +66,28 @@
 }
 
 .v-filterselect-button {
-background: none!important;
+	background: none !important;
 }
 
-.v-filterselect-button::before{
-  content: "\f0dd";
-  padding: 10px 0 0 15px;
-  display: inline-block;
+.v-filterselect-button::before {
+	content: "\f0dd";
+	padding: 10px 0 0 15px;
+	display: inline-block;
 }
 
 .v-filterselect-suggestmenu span {
-    height: 24px!important;
-    padding-left: 5px!important;
-    cursor: pointer!important;
+	height: 24px !important;
+	padding-left: 5px !important;
+	cursor: pointer !important;
 }
 
 .v-filterselect-suggestmenu .gwt-MenuItem-selected span {
-    background: #eee!important;
-    border-color: #eee!important;
+	background: #eee !important;
+	border-color: #eee !important;
 }
 
 .v-filterselect-suggestmenu .gwt-MenuItem-selected {
-    background: none!important;
+	background: none !important;
 }
 
 .v-caption {
@@ -299,7 +299,7 @@ select {
 	border-color: #d9d8d8 !important;
 }
 
-.v-textfield.v-textfield-prompt{
+.v-textfield.v-textfield-prompt {
 	margin-bottom: 15px !important;
 }
 
@@ -317,5 +317,86 @@ select {
 
 /* Aperte disable Bereiche ausblenden */
 .v-disabled {
-    display: none!important;
+	display: none !important;
+}
+
+/* JSF Portlet Styles */
+.report-container {
+	border: 1px solid #e5e5e5;
+}
+
+.report-template {
+	padding: 5px;
+	margin: 2px;
+	height: 45px;
+}
+
+.report-parameters {
+	padding: 0px 10px;
+}
+
+.report-name {
+	float: left;
+	margin-top: 7px;
+}
+
+.report-param-btn {
+	float: right;
+}
+
+.ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only
+	{
+	height: 26px;
+	width: 26px;
+}
+
+.ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only:hover
+	{
+	background: #1c663f;
+}
+
+.ui-button-icon-left.ui-icon.ui-icon-calendar {
+	top: auto !important;
+	left: 7px !important;
+	margin-left: 0px !important;
+	margin-top: 0px !important;
+}
+
+.ui-selectlistbox-item.ui-corner-all {
+	padding: 2px 5px !important;
+}
+
+.param-label-column {
+	width: 10%;
+}
+
+.parameters-table thead {
+	display: none;
+}
+
+.type-selection {
+	width: 100%;
+}
+
+.type-selection td {
+	border: none !important;
+}
+
+.type-selection-label {
+	width: 10%;
+}
+
+.type-selection-value select {
+	width: 206px !important;
+}
+
+.generate-btn {
+	margin-top: 10px !important;
+	margin-bottom: 15px !important;
+}
+
+.message-bar {
+  position: fixed !important;
+  bottom: 50px;
+  width: 98%;
 }

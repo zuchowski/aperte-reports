@@ -124,8 +124,8 @@
 	</portlet>
 	
 	<portlet>
-		<portlet-name>Test Reports Portlet</portlet-name>
-		<display-name>Test Reports Portlet</display-name>
+		<portlet-name>Aperte Reports Invoker JSF</portlet-name>
+		<display-name>Aperte Reports Invoker JSF</display-name>
 		<portlet-class>javax.portlet.faces.GenericFacesPortlet</portlet-class>
 		<init-param>
 			<name>javax.portlet.faces.defaultViewId.view</name>
@@ -136,9 +136,9 @@
 			<mime-type>text/html</mime-type>
 		</supports>
 		<portlet-info>
-			<title>migration-primefaces-target</title>
-			<short-title>migration-primefaces-target</short-title>
-			<keywords>migration-primefaces-target</keywords>
+			<title>Aperte Reports Invoker JSF</title>
+			<short-title>Aperte Reports Invoker JSF</short-title>
+			<keywords>Aperte Reports Invoker JSF</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
