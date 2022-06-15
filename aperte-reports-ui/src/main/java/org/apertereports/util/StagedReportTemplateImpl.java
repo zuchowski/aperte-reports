@@ -7,19 +7,32 @@ import java.util.Set;
 
 import org.apertereports.model.ReportTemplate;
 
+import com.liferay.portal.model.Role;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lar.StagedModelType;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
 
-public class StagedReportTemplateImpl implements StagedReportTemplate {
 
-	public StagedReportTemplateImpl(ReportTemplate pReportTemplate) {
+public class StagedReportTemplateImpl implements StagedReportTemplate {
+	
+	public StagedReportTemplateImpl(ReportTemplate pReportTemplate) throws Exception {
 		super();		
 		
 		this.reportTemplate = pReportTemplate;
 		
-		Set<Long> rolesWithAccess = new HashSet<Long>();
-		rolesWithAccess.addAll(pReportTemplate.getRolesWithAccess());
+		Set<Object> rolesWithAccess = new HashSet<Object>();
+		try{
+			for(long roleId : pReportTemplate.getRolesWithAccess()){
+				Role role = RoleLocalServiceUtil.getRole(roleId);
+				String rolename = role.getName();
+				rolesWithAccess.add(rolename);
+			}
+		}catch(PortalException pe){
+			throw new PortalException("Could not convert RoleID to RoleName.", pe);
+		}
+
 		this.rolesWithAccess = rolesWithAccess;
 		this.active = pReportTemplate.getActive();
 		this.content = pReportTemplate.getContent();
@@ -39,7 +52,7 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 	//reportTemplate Object
 	private transient ReportTemplate reportTemplate = null;
 	
-	protected Set<Long> rolesWithAccess = new HashSet<Long>();
+	protected Set<Object> rolesWithAccess = new HashSet<Object>();
 	protected Boolean active;
 	protected String content;
 	protected Date created;
@@ -63,11 +76,11 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 		this.reportTemplate = reportTemplate;
 	}
 
-	public Set<Long> getRolesWithAccess() {
+	public Set<Object> getRolesWithAccess() {
 		return rolesWithAccess;
 	}
 
-	public void setRolesWithAccess(Set<Long> rolesWithAccess) {
+	public void setRolesWithAccess(Set<Object> rolesWithAccess) {
 		this.rolesWithAccess = rolesWithAccess;
 	}
 
@@ -217,11 +230,26 @@ public class StagedReportTemplateImpl implements StagedReportTemplate {
 		return this.companyId;
 	}
 		
-	public ReportTemplate getAperteReport(String companyId){
+	public ReportTemplate getAperteReport(String companyId) throws Exception {
 		
 		reportTemplate = new ReportTemplate();	
 		reportTemplate.setCompanyId(companyId);
-		reportTemplate.setRolesWithAccess(this.rolesWithAccess);
+		
+		Set<Long> rolesWithAccess = new HashSet<Long>();
+		try{
+			for(Object roleName : this.rolesWithAccess){
+				if(roleName instanceof String){
+					String name = (String) roleName;
+					Role role = RoleLocalServiceUtil.getRole(Long.parseLong(companyId), name);
+					Long roleId = role.getRoleId();
+					rolesWithAccess.add(roleId);
+				}
+			}
+		}catch(PortalException pe){
+			throw new PortalException("Could not convert RoleName to RoleID.", pe);
+		}
+		
+		reportTemplate.setRolesWithAccess(rolesWithAccess);
 		reportTemplate.setActive(this.active);
 		reportTemplate.setContent(this.content);
 		reportTemplate.setCreated(this.created);
