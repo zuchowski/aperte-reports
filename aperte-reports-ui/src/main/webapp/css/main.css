@@ -350,15 +350,20 @@ select {
 	width: 26px;
 }
 
-.ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only:hover
-	{
+body.bem-scheme .ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only:hover
+{
 	background: #1c663f;
+}
+
+body.bwb-scheme .ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-icon-only:hover
+{
+	background: #0072B8;
 }
 
 .ui-button-icon-left.ui-icon.ui-icon-calendar {
 	top: auto !important;
 	left: 7px !important;
-	margin-left: 0px !important;
+	margin-left: -1px !important;
 	margin-top: 0px !important;
 }
 
@@ -390,13 +395,17 @@ select {
 	width: 206px !important;
 }
 
+.dict-selection {
+	width: 206px !important;
+}
+
 .generate-btn {
 	margin-top: 10px !important;
 	margin-bottom: 15px !important;
 }
 
 .message-bar {
-  position: fixed !important;
-  bottom: 50px;
-  width: 98%;
+	position: fixed !important;
+	bottom: 50px;
+	width: 98%;
 }

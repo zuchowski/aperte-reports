@@ -42,6 +42,8 @@ import com.liferay.portal.security.auth.AuthTokenUtil;
 import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
+import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
+
 @ManagedBean(name = "reportInvokerBean")
 @SessionScoped
 public class ReportInvokerBean {
@@ -63,7 +65,6 @@ public class ReportInvokerBean {
 		reportTemplates.addAll(ReportTemplateDAO.fetchActive(user));
 	}
 
-	
 	/*
 	 * Initialisiert den User und setzt seine Rollen und andere benötigte Parameter
 	 */
@@ -104,9 +105,8 @@ public class ReportInvokerBean {
 				user = new User(login, roles, admin, email, userid, portletGroupId, companyid, webid, userContext);
 			}
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler beim Initialiseren des Users",
-							"Fehler beim Initialiseren des Users"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Fehler beim Initialiseren des Users", "Fehler beim Initialiseren des Users"));
 		}
 	}
 
@@ -118,7 +118,8 @@ public class ReportInvokerBean {
 	}
 
 	/*
-	 * Liefert den im Report (.jrxml) definierten Parameter mit dem übergebenen Key zurück
+	 * Liefert den im Report (.jrxml) definierten Parameter mit dem übergebenen Key
+	 * zurück
 	 */
 	private ReportParameter getAperteReportParameter(ReportTemplate template, String key) {
 		for (ReportParameter param : getAperteReportParameters(template)) {
@@ -130,10 +131,10 @@ public class ReportInvokerBean {
 		return null;
 	}
 
-	
 	/*
-	 * Initialisiert den ReportMaster und speichert ihn zwischen, wenn das Toggle geöffnet wird.
-	 * Anschließend werden die Parameter für den Report initialisiert.
+	 * Initialisiert den ReportMaster und speichert ihn zwischen, wenn das Toggle
+	 * geöffnet wird. Anschließend werden die Parameter für den Report
+	 * initialisiert.
 	 */
 	public void initReportMaster(ReportTemplate template) {
 		try {
@@ -150,14 +151,14 @@ public class ReportInvokerBean {
 
 			reportParameters.put(template.getId(), params);
 		} catch (ARException e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler beim Initialisieren der Parameter",
-							"Fehler beim Initialisieren der Parameter"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Fehler beim Initialisieren der Parameter", "Fehler beim Initialisieren der Parameter"));
 		}
 	}
 
 	/*
-	 * Schmeißt den zwischengespeicherten ReportMaster und die Parameter wieder weg, wenn das Toggle geschlossen wird
+	 * Schmeißt den zwischengespeicherten ReportMaster und die Parameter wieder weg,
+	 * wenn das Toggle geschlossen wird
 	 */
 	public void destroyReportMaster(ReportTemplate template) {
 		reportMasters.remove(template.getId());
@@ -165,7 +166,8 @@ public class ReportInvokerBean {
 	}
 
 	/*
-	 * Setzt den SQL für MultiSelect-Parameter ab und gibt das Dictionary als Liste zurück
+	 * Setzt den SQL für MultiSelect-Parameter ab und gibt das Dictionary als Liste
+	 * zurück
 	 */
 	public List<DictionaryItem> getDictionaryItems(ReportTemplate template, String key) {
 		ReportParameter parameter = getAperteReportParameter(template, key);
@@ -194,7 +196,7 @@ public class ReportInvokerBean {
 		List<SelectItem> selectItems = new ArrayList<SelectItem>();
 		for (DictionaryItem item : dictItems) {
 			if (!StringUtils.isEmpty(item.getDescription())) {
-				selectItems.add(new SelectItem(item.getDescription(), item.getDescription()));
+				selectItems.add(new SelectItem(item.getCode(), item.getDescription()));
 			}
 		}
 
@@ -202,24 +204,24 @@ public class ReportInvokerBean {
 	}
 
 	/*
-	 * Generiert den Report und bietet ihn direkt zum Download an (XLS) bzw. öffnet ihn in einem neuen Tab (PDF)
+	 * Generiert den Report und bietet ihn direkt zum Download an (XLS) bzw. öffnet
+	 * ihn in einem neuen Tab (PDF)
 	 */
 	public void generateReport(ReportTemplate template) {
 		byte[] reportBytes;
 		String selectedType = getReportParameters(template).get(REPORT_TYPE_KEY).toString();
 		Map<String, Object> params = collectParamsForExport(template);
-		
-		if(params == null) {
+
+		if (params == null) {
 			return;
 		}
-		
+
 		try {
-			reportBytes = reportMasters.get(template.getId()).generateAndExportReport(selectedType,
-					params, ConfigurationCache.getConfiguration());
+			reportBytes = reportMasters.get(template.getId()).generateAndExportReport(selectedType, params,
+					ConfigurationCache.getConfiguration());
 		} catch (ARException e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler beim Erstellen des Reports",
-							"Fehler beim Erstellen des Reports"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Fehler beim Erstellen des Reports", "Fehler beim Erstellen des Reports"));
 			return;
 		}
 
@@ -249,8 +251,8 @@ public class ReportInvokerBean {
 	}
 
 	/*
-	 * Sammelt die Parameter für den Export des Reports, reformatiert sie teilweise (multiselect) und reichert
-	 * sie an
+	 * Sammelt die Parameter für den Export des Reports, reformatiert sie teilweise
+	 * (multiselect) und reichert sie an
 	 */
 	private Map<String, Object> collectParamsForExport(ReportTemplate template) {
 		Map<String, Object> params = new LinkedHashMap<String, Object>();
@@ -258,24 +260,28 @@ public class ReportInvokerBean {
 
 		if (!checkRequiredParameters(template, params)) {
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Bitte geben Sie alle mit * gekennzeichneten Pflichtfelder ein",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Bitte geben Sie alle mit * gekennzeichneten Pflichtfelder ein",
 							"Bitte geben Sie alle mit * gekennzeichneten Pflichtfelder ein"));
-			
+
 			return null;
 		}
 
 		reformatMultiSelectParameters(template, params);
-
+		reformatSingleSelectParameters(template, params);
+		
 		params.put("login", user.getLogin());
 		params.put("webid", user.getWebid());
+		params.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, "yyyy-MM-dd");
 
 		return params;
 	}
 
 	/*
-	 * Reformatiert die MultiSelect Parameter. Die SelectManyList speichert die selektierten Elemente als String-Array
-	 * Aperte braucht die Parameter allerdings als Komma-separierte Strings
-	 * Wenn an der Oberfläche kein Element ausgewählt ist, werden alle möglichen Elemente mit übergeben
+	 * Reformatiert die MultiSelect Parameter. Die SelectManyList speichert die
+	 * selektierten Elemente als String-Array Aperte braucht die Parameter
+	 * allerdings als Komma-separierte Strings Wenn an der Oberfläche kein Element
+	 * ausgewählt ist, wird ein Leerstring Übergeben
 	 */
 	private void reformatMultiSelectParameters(ReportTemplate template, Map<String, Object> params) {
 		for (Entry<String, Object> entry : params.entrySet()) {
@@ -285,7 +291,7 @@ public class ReportInvokerBean {
 					String[] array = (String[]) value;
 
 					if (array.length == 0) {
-						putAllDictionaryItems(template, entry.getKey(), params);
+						params.put(entry.getKey(), "");
 					} else {
 						String newValue = "";
 						for (String each : array) {
@@ -294,6 +300,17 @@ public class ReportInvokerBean {
 
 						params.put(entry.getKey(), newValue.substring(0, newValue.lastIndexOf(",")));
 					}
+				}
+			}
+		}
+	}
+	
+
+	private void reformatSingleSelectParameters(ReportTemplate template, Map<String, Object> params) {
+		for (Entry<String, Object> entry : params.entrySet()) {
+			if (isSingleSelectInput(template, entry.getKey())) {
+				if(entry.getValue() == null) {
+					params.put(entry.getKey(), "");
 				}
 			}
 		}
@@ -311,19 +328,6 @@ public class ReportInvokerBean {
 		}
 
 		return true;
-	}
-
-	/*
-	 * Hilfmethode, um alle möglichen Parameter für ein MultiSelect zu ermitteln und zu setzen
-	 */
-	private void putAllDictionaryItems(ReportTemplate template, String key, Map<String, Object> params) {
-		List<DictionaryItem> items = getDictionaryItems(template, key);
-		String paramValue = "";
-		for (DictionaryItem item : items) {
-			paramValue += "'" + item.getDescription() + "',";
-		}
-
-		params.put(key, paramValue.substring(0, paramValue.lastIndexOf(",")));
 	}
 
 	public boolean isParameterRequired(ReportTemplate template, String key) {
@@ -353,8 +357,16 @@ public class ReportInvokerBean {
 			return false;
 		}
 		String inputType = parameter.getProperties().get(ARConstants.Keys.INPUT_TYPE).getValue();
-		return inputType.equalsIgnoreCase(ARConstants.InputTypes.MULTISELECT.toString())
-				|| inputType.equalsIgnoreCase(ARConstants.InputTypes.SELECT.toString());
+		return inputType.equalsIgnoreCase(ARConstants.InputTypes.MULTISELECT.toString());
+	}
+	
+	public boolean isSingleSelectInput(ReportTemplate template, String key) {
+		ReportParameter parameter = getAperteReportParameter(template, key);
+		if (parameter == null) {
+			return false;
+		}
+		String inputType = parameter.getProperties().get(ARConstants.Keys.INPUT_TYPE).getValue();
+		return inputType.equalsIgnoreCase(ARConstants.InputTypes.SELECT.toString());
 	}
 
 	public ReportMaster getReportMaster(ReportTemplate template) {
