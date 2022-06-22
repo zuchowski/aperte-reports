@@ -1,7 +1,10 @@
 package org.apertereports.bean;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -269,12 +272,25 @@ public class ReportInvokerBean {
 
 		reformatMultiSelectParameters(template, params);
 		reformatSingleSelectParameters(template, params);
-		
+		reformatDateParameters(template, params);
+
 		params.put("login", user.getLogin());
 		params.put("webid", user.getWebid());
-		params.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, "yyyy-MM-dd");
 
 		return params;
+	}
+
+	private void reformatDateParameters(ReportTemplate template, Map<String, Object> params) {
+		for (Entry<String, Object> entry : params.entrySet()) {
+			if (isDateInput(template, entry.getKey())) {
+				try {
+					Date date = new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().toString());
+					params.put(entry.getKey(), new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/*
@@ -304,16 +320,18 @@ public class ReportInvokerBean {
 			}
 		}
 	}
-	
 
 	private void reformatSingleSelectParameters(ReportTemplate template, Map<String, Object> params) {
+		Map<String, Object> paramsCopy = new HashMap<String, Object>();
+		paramsCopy.putAll(params);
 		for (Entry<String, Object> entry : params.entrySet()) {
-			if (isSingleSelectInput(template, entry.getKey())) {
-				if(entry.getValue() == null) {
-					params.put(entry.getKey(), "");
-				}
+			if (isSingleSelectInput(template, entry.getKey()) && entry.getValue() == null) {
+				paramsCopy.remove(entry.getKey());
 			}
 		}
+		
+		params.clear();
+		params.putAll(paramsCopy);
 	}
 
 	/*
@@ -359,7 +377,7 @@ public class ReportInvokerBean {
 		String inputType = parameter.getProperties().get(ARConstants.Keys.INPUT_TYPE).getValue();
 		return inputType.equalsIgnoreCase(ARConstants.InputTypes.MULTISELECT.toString());
 	}
-	
+
 	public boolean isSingleSelectInput(ReportTemplate template, String key) {
 		ReportParameter parameter = getAperteReportParameter(template, key);
 		if (parameter == null) {
