@@ -239,7 +239,7 @@ public class ReportInvokerBean {
 			response.flushBuffer();
 			portletResponse.setProperty("Content-Type", getContentType(template));
 			portletResponse.setProperty("Content-Disposition",
-					"inline; filename=" + template.getReportname() + "." + selectedType.toLowerCase());
+					"attachment; filename=" + template.getReportname() + "." + selectedType.toLowerCase());
 
 			output = response.getOutputStream();
 			output.write(reportBytes);
