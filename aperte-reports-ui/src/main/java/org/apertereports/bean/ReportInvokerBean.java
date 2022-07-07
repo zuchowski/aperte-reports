@@ -45,8 +45,6 @@ import com.liferay.portal.security.auth.AuthTokenUtil;
 import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
-import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
-
 @ManagedBean(name = "reportInvokerBean")
 @SessionScoped
 public class ReportInvokerBean {
@@ -213,16 +211,16 @@ public class ReportInvokerBean {
 	public void generateReport(ReportTemplate template) {
 		byte[] reportBytes;
 		String selectedType = getReportParameters(template).get(REPORT_TYPE_KEY).toString();
-		Map<String, Object> params = collectParamsForExport(template);
-
-		if (params == null) {
-			return;
-		}
-
+		
 		try {
+			Map<String, Object> params = collectParamsForExport(template);
+			if(params == null) {
+				return;
+			}
+			
 			reportBytes = reportMasters.get(template.getId()).generateAndExportReport(selectedType, params,
 					ConfigurationCache.getConfiguration());
-		} catch (ARException e) {
+		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Fehler beim Erstellen des Reports", "Fehler beim Erstellen des Reports"));
 			return;
@@ -329,7 +327,7 @@ public class ReportInvokerBean {
 				paramsCopy.remove(entry.getKey());
 			}
 		}
-		
+
 		params.clear();
 		params.putAll(paramsCopy);
 	}

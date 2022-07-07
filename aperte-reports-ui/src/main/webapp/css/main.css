@@ -406,3 +406,15 @@ body.bwb-scheme .ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-c
 	bottom: 50px;
 	width: 98%;
 }
+
+.ui-widget-content.ui-selectmanymenu.dict-selection {
+	border: 1px solid #e5e5e5;
+}
+
+.ui-state-default.ui-state-highlight {
+  opacity: 0.6;
+}
+
+.ui-state-default.ui-state-active.ui-state-highlight {
+  opacity: 1;
+}
