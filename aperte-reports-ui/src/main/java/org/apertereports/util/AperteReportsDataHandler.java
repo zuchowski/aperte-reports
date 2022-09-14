@@ -56,7 +56,11 @@ public class AperteReportsDataHandler extends BasePortletDataHandler {
 	protected PortletPreferences doImportData(PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences, String data) throws Exception {
 		
-		if (!portletId.contains("INSTANCE"))
+		//Mit dem neuen Aperte JSF Portlet wird nur noch das "Invokerportlet_WAR_apertereportsportlet" exportiert.
+		//Darum muss ab sofort auf contains "Invokerportlet_WAR_apertereportsportlet" geprüft werden.
+		//Früher wurde auf contains "INSTANCE" geprüft. Die INSTANCE wird aber seit dem neuen Portlet nicht mehr exportiert
+		//Alte LARs funktionieren weiterhin, da deren portletId mit "Invokerportlet_WAR_apertereportsportlet_INSTANCE" beginnt
+		if (!portletId.contains("Invokerportlet_WAR_apertereportsportlet"))
 			return portletPreferences;
 
 		Element productsElement = portletDataContext.getImportDataRootElement();
