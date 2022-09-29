@@ -408,3 +408,7 @@ body.bwb-scheme .ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-c
 .ui-state-default.ui-state-active.ui-state-highlight {
   opacity: 1;
 }
+
+.ui-panelgrid .ui-panelgrid-cell {
+	padding: 1rem !important;
+}
