@@ -69,27 +69,31 @@
 
 					<p:column styleClass="param-label-column"
 						rendered="#{parameter.key != 'report_type'}">
-						<h:outputText
-							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" />
-						<h:outputText value="*"
-							rendered="#{reportInvokerBean.isParameterRequired(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramInputText" rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramDatePicker" rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramSelectManyListbox" rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramSelectOneMenu" rendered="#{reportInvokerBean.isSingleSelectInput(template, parameter.key)}" />
 					</p:column>
 					<p:column styleClass="param-value-column"
-						rendered="#{parameter.key != 'report_type'}">
+						rendered="#{parameter.key != 'report_type'}" >
 						<h:inputText
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
-							rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" />
-						<p:datePicker locale="de" pattern="dd.MM.yyyy"
+							rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" id="paramInputText"/>
+						<p:datePicker locale="de" pattern="dd.MM.yyyy" id="paramDatePicker"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}"
-							showIcon="true" />
-						<h:selectManyListbox styleClass="dict-selection" size="8"
+							showIcon="true" buttonTabindex="0"/>
+						<h:selectManyListbox styleClass="dict-selection" size="8" id="paramSelectManyListbox"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}">
 							<f:selectItems
 								value="#{reportInvokerBean.getDictionarySelectItems(template, parameter.key)}" />
 						</h:selectManyListbox>
-						<h:selectOneMenu styleClass="dict-selection"
+						<h:selectOneMenu styleClass="dict-selection" id="paramSelectOneMenu"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isSingleSelectInput(template, parameter.key)}">
 							<f:selectItem itemLabel="" itemValue="" />

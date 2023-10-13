@@ -394,7 +394,10 @@ public class ReportInvokerBean {
 		if (parameter == null) {
 			return "";
 		}
-		return parameter.getProperties().get(ARConstants.Keys.LABEL).getValue();
+		String label = parameter.getProperties().get(ARConstants.Keys.LABEL).getValue(); 
+		if(this.isParameterRequired(template, key))
+			label = label + "*";
+		return label;
 	}
 
 	public List<ReportTemplate> getReportTemplates() {
