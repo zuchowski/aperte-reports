@@ -48,11 +48,11 @@
 				<h:outputText class="report-name" value="#{template.reportname}" />
 
 
-				<p:commandButton class="report-param-btn" value="Report verwenden"
+				<p:commandButton class="report-param-btn btn btn-primary" value="Report verwenden"
 					update="@form"
 					action="#{reportInvokerBean.initReportMaster(template)}"
 					rendered="#{reportInvokerBean.getReportMaster(template) == null}" />
-				<p:commandButton class="report-param-btn"
+				<p:commandButton class="report-param-btn btn btn-primary"
 					value="Parameter ausblenden" update="@form"
 					action="#{reportInvokerBean.destroyReportMaster(template)}"
 					rendered="#{reportInvokerBean.getReportMaster(template) != null}" />
@@ -72,7 +72,7 @@
 						<h:outputLabel
 							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramInputText" rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" />
 						<h:outputLabel
-							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramDatePicker" rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}" />
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramDatePicker_input" rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}" />
 						<h:outputLabel
 							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramSelectManyListbox" rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}" />
 						<h:outputLabel
@@ -86,7 +86,7 @@
 						<p:datePicker locale="de" pattern="dd.MM.yyyy" id="paramDatePicker"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}"
-							showIcon="true" buttonTabindex="0"/>
+							showIcon="true" buttonTabindex="0" title="#{reportInvokerBean.getParameterLabel(template, parameter.key)}"/>
 						<h:selectManyListbox styleClass="dict-selection" size="8" id="paramSelectManyListbox"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}">
@@ -105,8 +105,8 @@
 				<p:panelGrid columns="2" class="type-selection"
 					columnClasses="type-selection-label, type-selection-value"
 					rendered="#{reportInvokerBean.getReportMaster(template) != null}">
-					<h:outputText value="Format" />
-					<h:selectOneMenu
+					<h:outputLabel value="Format" for="formatSelect"/>
+					<h:selectOneMenu id="formatSelect"
 						value="#{reportInvokerBean.getReportParameters(template)['report_type']}">
 						<f:selectItems
 							value="#{reportInvokerBean.getReportTypeSelectItems()}" />
@@ -115,7 +115,7 @@
 
 
 				<p:commandButton value="Generieren" ajax="false"
-					styleClass="generate-btn"
+					styleClass="generate-btn btn btn-primary"
 					action="#{reportInvokerBean.generateReport(template)}"
 					rendered="#{reportInvokerBean.getReportMaster(template) != null}" />
 			</div>
