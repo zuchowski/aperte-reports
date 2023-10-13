@@ -83,12 +83,13 @@
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}"
 							showIcon="true" />
-						<p:selectManyCheckbox styleClass="dict-selection"
+						<p:selectManyMenu styleClass="dict-selection"
+							showCheckbox="true"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}">
 							<f:selectItems
 								value="#{reportInvokerBean.getDictionarySelectItems(template, parameter.key)}" />
-						</p:selectManyCheckbox>
+						</p:selectManyMenu>
 						<h:selectOneMenu styleClass="dict-selection"
 							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
 							rendered="#{reportInvokerBean.isSingleSelectInput(template, parameter.key)}">
