@@ -58,10 +58,10 @@
 					rendered="#{reportInvokerBean.getReportMaster(template) != null}" />
 
 			</div>
-			<div class="report-parameters">
-				<p:dataTable var="parameter" styleClass="parameters-table"
-					value="#{reportInvokerBean.getReportParameters(template)}"
-					rendered="#{reportInvokerBean.getReportMaster(template) != null}">
+			<div class="report-parameters" >
+				<h:outputText value="#{template.description}" style="padding: 1rem;" rendered="#{reportInvokerBean.getReportMaster(template) != null and not empty template.description}"/>
+				<p:dataTable var="parameter" styleClass="parameters-table" rendered="#{reportInvokerBean.getReportMaster(template) != null}"
+					value="#{reportInvokerBean.getReportParameters(template)}">
 
 					<f:facet name="header">
 						Parameter

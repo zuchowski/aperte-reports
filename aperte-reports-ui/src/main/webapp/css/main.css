@@ -362,6 +362,10 @@ body.bwb-scheme .ui-datepicker-trigger.ui-button.ui-widget.ui-state-default.ui-c
 	width: 10%;
 }
 
+.parameters-table {
+	margin-top: 10px;
+}
+
 .parameters-table thead {
 	display: none;
 }
