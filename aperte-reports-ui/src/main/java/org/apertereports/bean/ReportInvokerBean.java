@@ -39,9 +39,17 @@ import org.apertereports.engine.ReportParameter;
 import org.apertereports.engine.ReportProperty;
 import org.apertereports.model.ReportTemplate;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
+import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.model.UserGroupRole;
 import com.liferay.portal.security.auth.AuthTokenUtil;
+import com.liferay.portal.service.GroupLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
+import com.liferay.portal.service.UserGroupLocalServiceUtil;
 import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 
@@ -99,6 +107,12 @@ public class ReportInvokerBean {
 					roles.add(ur);
 				}
 
+				for(Role role : this.getInheritedRoles(liferayUser)) {
+					UserRole ur = new UserRole(role.getName(), role.getRoleId(), false);
+					roles.add(ur);
+				}
+				
+				
 				Map<String, Object> userContext = new HashMap<String, Object>();
 				userContext.put("p_auth", AuthTokenUtil.getToken(PortalUtil.getHttpServletRequest(request)));
 				userContext.put("serverUri",
@@ -111,6 +125,41 @@ public class ReportInvokerBean {
 		}
 	}
 
+	/**
+	 * Liefert alle vererbten Rollen des übergebenen Users zurück
+	 * 
+	 * @param user
+	 * @return Roles
+	 * @throws SystemException
+	 * @throws PortalException
+	 */
+	private Set<Role> getInheritedRoles(com.liferay.portal.model.User user ) throws SystemException, PortalException {
+
+		
+		Set<Role> roles = new HashSet<Role>();
+		
+		List<Group> allGroups = new ArrayList<Group>();
+		
+		List<UserGroup> userGroups = user.getUserGroups();
+		
+		allGroups.addAll(GroupLocalServiceUtil.getUserGroupsGroups(userGroups));
+		allGroups.addAll(GroupLocalServiceUtil.	getUserGroupsRelatedGroups(userGroups));
+
+		List<Group> groups = user.getGroups();
+		allGroups.addAll(groups);
+
+		List<Organization> organizations = user.getOrganizations();
+		allGroups.addAll(GroupLocalServiceUtil.getOrganizationsGroups(organizations));
+		allGroups.addAll(GroupLocalServiceUtil.getOrganizationsRelatedGroups(organizations));
+		
+		for(Group group : allGroups){
+			for(Role role : RoleLocalServiceUtil.getGroupRoles(group.getGroupId())) {
+					roles.add(role);
+			}
+		}
+		return roles;
+
+	}
 	/*
 	 * Liefert die im Report (.jrxml) definierten Parameter zurück
 	 */
