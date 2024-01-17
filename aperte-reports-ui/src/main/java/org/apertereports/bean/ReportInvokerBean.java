@@ -136,9 +136,9 @@ public class ReportInvokerBean {
 	private Set<Role> getInheritedRoles(com.liferay.portal.model.User user ) throws SystemException, PortalException {
 
 		
-		Set<Role> roles = new HashSet<Role>();
+		Set<Role> roles = new HashSet<>();
 		
-		List<Group> allGroups = new ArrayList<Group>();
+		List<Group> allGroups = new ArrayList<>();
 		
 		List<UserGroup> userGroups = user.getUserGroups();
 		
