@@ -73,14 +73,14 @@ public class ReportOrderBrowserComponent extends Panel {
         UiFactory.createSpacer(header, "10px", null);
         UiFactory.createSpacer(header, FAction.SET_FULL_WIDTH, FAction.SET_EXPAND_RATIO_1_0);
 
-        UiFactory.createButton(UiIds.LABEL_REFRESH, header, new ClickListener() {
+        Button tmpButton1 = UiFactory.createButton(UiIds.LABEL_REFRESH, header, new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
                 list.refresh();
             }
         });
-
+        tmpButton1.addStyleName("btn");
         list = new PaginatedPanelList<ReportOrder, ReportOrderBrowserComponent.ReportOrderPanel>(PAGE_SIZE) {
 
             @Override
@@ -142,6 +142,7 @@ public class ReportOrderBrowserComponent extends Panel {
                     showReport();
                 }
             });
+            previewButton.addStyleName("btn");
             Button parametersButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, grid, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -149,7 +150,7 @@ public class ReportOrderBrowserComponent extends Panel {
                     toggleParams();
                 }
             });
-
+            parametersButton.addStyleName("btn");
             if (order.getReportStatus() != Status.SUCCEEDED) {
                 previewButton.setEnabled(false);
             }

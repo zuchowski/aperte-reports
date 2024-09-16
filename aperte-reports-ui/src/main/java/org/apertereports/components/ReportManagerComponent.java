@@ -14,6 +14,12 @@ import com.vaadin.ui.themes.BaseTheme;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.*;
+
+import javax.naming.NamingException;
+
+import com.liferay.portal.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.service.UserLocalServiceUtil;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apertereports.backbone.jms.ARJmsFacade;
@@ -69,17 +75,20 @@ public class ReportManagerComponent extends Panel {
     private static final String MSG_REMOVING_REPORT = "report.manager.removing.report";
     private static final String MSG_REPORT_IS_USED = "report.manager.report.is.used";
     private static final String MSG_DO_YOU_WANT_TO_CONTINUE = "q.do.you.want.to.continue";
-    private PaginatedPanelList<ReportTemplate, ReportItemPanel> list;
+    private CssPaginatedPanelList<ReportTemplate, ReportItemPanel> list;
     private ReportReceiver newReportReceiver;
     private transient User user;
+    
 
     public ReportManagerComponent() {
-
+    	super(new CssLayout());
         init();
     }
 
     private void init() {
-        VerticalLayout mainLayout = UiFactory.createVLayout(this);
+        CssLayout mainLayout = new CssLayout();
+        mainLayout.addStyleName("a-config");
+        this.addComponent(mainLayout);
         newReportReceiver = new ReportReceiver(new ReportTemplate());
         newReportReceiver.addListener(new ReportReceivedListener() {
 
@@ -89,12 +98,14 @@ public class ReportManagerComponent extends Panel {
             }
         });
         Upload newReportUpload = new Upload(null, newReportReceiver);
+        newReportUpload.addStyleName("btn");
         newReportUpload.addListener((SucceededListener) newReportReceiver);
         newReportUpload.addListener((FailedListener) newReportReceiver);
         newReportUpload.setButtonCaption(VaadinUtil.getValue(UiIds.LABEL_ADD));
         newReportUpload.setImmediate(true);
+
         HorizontalLayout hl = UiFactory.createHLayout(mainLayout, FAction.SET_FULL_WIDTH);
-        list = new PaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
+        list = new CssPaginatedPanelList<ReportTemplate, ReportManagerComponent.ReportItemPanel>(PAGE_SIZE) {
 
             @Override
             protected ReportItemPanel transform(ReportTemplate object) {
@@ -124,7 +135,7 @@ public class ReportManagerComponent extends Panel {
         hl.addComponent(newReportUpload);
         hl.setComponentAlignment(newReportUpload, Alignment.MIDDLE_RIGHT);
         mainLayout.addComponent(list);
-        setWidth("100%");
+        setWidth("95%");
         setStyleName(PANEL_STYLE);
     }
 
@@ -156,16 +167,26 @@ public class ReportManagerComponent extends Panel {
         private final boolean adding;
 
         public AddOrEditReportItemPanel(ReportItemPanel itemPanel, boolean adding) {
+        	super(new CssLayout());
             this.itemPanel = itemPanel;
             this.adding = adding;
-            setStyleName(EDIT_PANEL_STYLE);
-            setCaption(VaadinUtil.getValue(adding ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION) + " - " + itemPanel.reportTemplate.getReportname());
+            addStyleName(EDIT_PANEL_STYLE);
+            
+            CssLayout header = new CssLayout();
+            UiFactory.createLabel(VaadinUtil.getValue(adding ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION) + " - " + itemPanel.reportTemplate.getReportname(), header);
+            //setCaption(VaadinUtil.getValue(adding ? UiIds.LABEL_ADDING : UiIds.LABEL_EDITION) + " - " + itemPanel.reportTemplate.getReportname());
             tmpReportTemplate = new ReportTemplate();
             deepCopy(itemPanel.reportTemplate, tmpReportTemplate);
             beanItem = new BeanItem<ReportTemplate>(tmpReportTemplate);
-
-            HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-
+            
+            
+            
+            CssLayout subSubContent = new CssLayout();
+            
+            UiFactory.createAccordion(this, header, subSubContent);
+                    
+            HorizontalLayout headerRow = UiFactory.createHLayout(subSubContent,FAction.SET_FULL_WIDTH);
+            
             nameField = UiFactory.createTextField(beanItem, REPORTNAME_PROPERTY, headerRow,
                     REPORT_MANAGER_ITEM_EDIT_NAME_PROMPT, FAction.ALIGN_LEFT);
 
@@ -185,6 +206,7 @@ public class ReportManagerComponent extends Panel {
             });
 
             Upload changeReportupload = new Upload(null, uploadReceiver);
+            changeReportupload.addStyleName("btn");
             changeReportupload.setWidth(null);
             changeReportupload.addListener((Upload.SucceededListener) uploadReceiver);
             changeReportupload.addListener((Upload.FailedListener) uploadReceiver);
@@ -192,38 +214,47 @@ public class ReportManagerComponent extends Panel {
             changeReportupload.setButtonCaption(VaadinUtil.getValue(REPORT_MANAGER_ITEM_UPLOAD_CHANGE));
             uploadCell.addComponent(changeReportupload);
 
-            UiFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, this, UiIds.AR_MANAGER_REPORT_DESCRIPTION, FAction.SET_FULL_WIDTH);
+            UiFactory.createTextField(beanItem, DESCRIPTION_PROPERTY, subSubContent, UiIds.AR_MANAGER_REPORT_DESCRIPTION, FAction.SET_FULL_WIDTH);
 
-            UiFactory.createSpacer(this, null, "5px");
-            Label errorLabel = UiFactory.createLabel("", this);
-            UiFactory.createSpacer(this, null, "5px");
+            //UiFactory.createSpacer(this, null, "5px");
+            Label errorLabel = UiFactory.createLabel("", subSubContent);
+            //UiFactory.createSpacer(this, null, "5px");
 
             errorHandler = new ErrorLabelHandler(errorLabel);
 
-            HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
-
-            HorizontalLayout checkboxCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
+            //HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
+            CssLayout footerRow = new CssLayout() ;
+            subSubContent.addComponent(footerRow);
+            
+            //HorizontalLayout checkboxCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING);
+            CssLayout checkboxCell = new CssLayout() ;
+            footerRow.addComponent(checkboxCell);
             UiFactory.createCheckBox(UiIds.LABEL_ACTIVE, beanItem, ACTIVE_PROPERTY, checkboxCell);
             UiFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_ONLINE, beanItem, ALLOW_ONLINE_DISPLAY_PROPERTY,
                     checkboxCell);
             UiFactory.createCheckBox(REPORT_MANAGER_ITEM_EDIT_BACKGROUND, beanItem,
                     ALLOW_BACKGROUND_PROCESSING_PROPERTY, checkboxCell);
 
-            HorizontalLayout buttonsCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING, FAction.ALIGN_RIGTH);
-            UiFactory.createButton(UiIds.LABEL_OK, buttonsCell, new ClickListener() {
+            //HorizontalLayout buttonsCell = UiFactory.createHLayout(footerRow, FAction.SET_SPACING, FAction.ALIGN_RIGTH);
+            CssLayout buttonsCell = new CssLayout() ;
+            footerRow.addComponent(buttonsCell);
+            Button tmpButton1 = UiFactory.createButton(UiIds.LABEL_OK, buttonsCell, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     saveChanges();
                 }
             });
-            UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsCell, new ClickListener() {
+            tmpButton1.addStyleName("btn");
+            Button tmpButton2 = UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsCell, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     discardChanges();
                 }
             });
+            tmpButton2.addStyleName("btn");
+            this.setSizeUndefined();
         }
 
         protected void discardChanges() {
@@ -240,6 +271,16 @@ public class ReportManagerComponent extends Panel {
             }
             itemPanel.requestRepaintAll();
             deepCopy(tmpReportTemplate, itemPanel.reportTemplate);
+            
+            try {
+        	   	//set mandant id
+               	com.liferay.portal.model.User liferayUser = UserLocalServiceUtil.getUser(PrincipalThreadLocal.getUserId());
+       			long companyid = liferayUser.getCompanyId();           
+       			itemPanel.reportTemplate.setCompanyId(String.valueOf(companyid));
+			} catch (Exception e) {
+				logger.error("Liferay User could not be found -> companyId could not be set", e);
+			}                        
+            
             ReportTemplateDAO.saveOrUpdate(itemPanel.reportTemplate);
             list.replaceComponent(this, this.itemPanel);
         }
@@ -276,28 +317,38 @@ public class ReportManagerComponent extends Panel {
 
         private ReportTemplate reportTemplate;
         private BeanItem<ReportTemplate> beanItem;
-        private ReportParamPanel paramsPanel = null;
+        private Panel paramsPanel = null;
         private RolePermissionsPanel permsPanel = null;
         private Button toggleParamsButton;
         private Button togglePermsButton;
+        private CssLayout content;
 
         public ReportItemPanel(ReportTemplate reportTemplate) {
+        	super(new CssLayout());
             this.reportTemplate = reportTemplate;
             beanItem = new BeanItem<ReportTemplate>(this.reportTemplate);
-            setStyleName(PANEL_STYLE);
-            HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
+            addStyleName(PANEL_STYLE);
+            
+            CssLayout header = new CssLayout();
+            
+            //HorizontalLayout headerRow = UiFactory.createHLayout(this, FAction.SET_FULL_WIDTH);
 
-            UiFactory.createLabel(beanItem, REPORTNAME_PROPERTY, headerRow,
-                    REPORT_NAME_STYLE, FAction.ALIGN_LEFT);
-
-            UiFactory.createSpacer(headerRow);
-
-            UiFactoryExt.createDateLabel(beanItem, CREATED_PROPERTY, CHANGED_DATE_STYLE,
-                    headerRow, FAction.ALIGN_RIGTH);
-
-            UiFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, this, DESC_STYLE, FAction.SET_FULL_WIDTH);
-
-            HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_SPACING);
+            UiFactory.createLabel(beanItem, REPORTNAME_PROPERTY, header);
+            UiFactoryExt.createDateLabel(beanItem, CREATED_PROPERTY, "float-right",
+            		header);
+            //UiFactory.createSpacer(headerRow);
+                      
+            content = new CssLayout();
+            
+            UiFactory.createAccordion(this, header, content);
+            
+            UiFactory.createLabel(beanItem, DESCRIPTION_PROPERTY, content, DESC_STYLE, FAction.SET_FULL_WIDTH);
+            
+            CssLayout footerRow = new CssLayout() ;
+            footerRow.addStyleName("button-row");
+            content.addComponent(footerRow);
+            
+            //HorizontalLayout footerRow = UiFactory.createHLayout(this, FAction.SET_SPACING);
             toggleParamsButton = UiFactory.createButton(UiIds.LABEL_PARAMETERS, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -305,6 +356,7 @@ public class ReportManagerComponent extends Panel {
                     toggleParamsPanel();
                 }
             });
+            toggleParamsButton.addStyleName("btn");
             togglePermsButton = UiFactory.createButton(UiIds.LABEL_PERMISSIONS, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
@@ -312,29 +364,32 @@ public class ReportManagerComponent extends Panel {
                     togglePermsPanel();
                 }
             });
-            UiFactory.createButton(UiIds.LABEL_EDIT, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
+            togglePermsButton.addStyleName("btn");
+            Button tmpButton1 = UiFactory.createButton(UiIds.LABEL_EDIT, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     addOrEditReport(ReportItemPanel.this, false);
                 }
             });
-
-            UiFactory.createButton(UiIds.LABEL_DOWNLOAD, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
+            tmpButton1.addStyleName("btn");
+            Button tmpButton2 = UiFactory.createButton(UiIds.LABEL_DOWNLOAD, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     download();
                 }
             });
-
-            UiFactory.createButton(UiIds.LABEL_REMOVE, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
+            tmpButton2.addStyleName("btn");
+            Button tmpButton3 =UiFactory.createButton(UiIds.LABEL_REMOVE, footerRow, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     removeMe();
                 }
             });
+            tmpButton3.addStyleName("btn");
+            this.setSizeUndefined();
         }
 
         protected void removeMe() {
@@ -344,10 +399,10 @@ public class ReportManagerComponent extends Panel {
         private void toggleParamsPanel() {
             if (paramsPanel == null) {
                 paramsPanel = createParamsPanel();
-                addComponent(paramsPanel);
+                content.addComponent(paramsPanel);
                 toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PARAMETERS));
             } else {
-                removeComponent(paramsPanel);
+            	content.removeComponent(paramsPanel);
                 paramsPanel = null;
                 toggleParamsButton.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
             }
@@ -356,7 +411,7 @@ public class ReportManagerComponent extends Panel {
         private void togglePermsPanel() {
             if (permsPanel == null) {
                 permsPanel = new RolePermissionsPanel(reportTemplate);
-                addComponent(permsPanel);
+                content.addComponent(permsPanel);
                 togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.AR_MSG_HIDE_PERMISSIONS));
 
                 permsPanel.setCloseListener(new CloseListener() {
@@ -367,18 +422,25 @@ public class ReportManagerComponent extends Panel {
                     }
                 });
             } else {
-                removeComponent(permsPanel);
+            	content.removeComponent(permsPanel);
                 permsPanel = null;
                 togglePermsButton.setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
             }
         }
 
         // xxx: could be better
-        private ReportParamPanel createParamsPanel() {
+        private Panel createParamsPanel() {
+        	 CssLayout mainLayout = new CssLayout();
+        	 CssLayout paramContent = new CssLayout();
+        	 UiFactory.createAccordion(mainLayout, VaadinUtil.getValue(UiIds.LABEL_PARAMETERS), paramContent);
+             
+           
             final ReportParamPanel panel = new ReportParamPanel(reportTemplate, true);
-            panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
-            HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
-            UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+            //panel.setCaption(VaadinUtil.getValue(UiIds.LABEL_PARAMETERS));
+            CssLayout hl = new CssLayout();            
+            panel.addComponent(hl);
+            //HorizontalLayout hl = UiFactory.createHLayout(panel, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+            Button tmpButton =UiFactory.createButton(UiIds.LABEL_GENERATE, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -386,7 +448,7 @@ public class ReportManagerComponent extends Panel {
                         return;
                     }
                     try {
-                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider());
+                        ReportMaster rm = new ReportMaster(reportTemplate.getContent(), reportTemplate.getId().toString(), new ReportTemplateProvider(),user);
                         byte[] reportData = rm.generateAndExportReport(panel.getOuptutFormat(),
                                 new HashMap<String, Object>(panel.collectParametersValues()),
                                 ConfigurationCache.getConfiguration());
@@ -398,8 +460,9 @@ public class ReportManagerComponent extends Panel {
 
                 }
             });
-
+            tmpButton.addStyleName("tmp");
             Button backgroundGenerate = UiFactory.createButton(UiIds.AR_MSG_GENERATE_IN_BACKGROUND, hl, BaseTheme.BUTTON_LINK);
+            backgroundGenerate.addStyleName("btn");
             final CheckBox sendEmailCheckbox = UiFactory.createCheckBox(UiIds.AR_MSG_SEND_EMAIL, hl);
             backgroundGenerate.addListener(new ClickListener() {
 
@@ -424,21 +487,24 @@ public class ReportManagerComponent extends Panel {
                 backgroundGenerate.setEnabled(false);
                 sendEmailCheckbox.setEnabled(false);
             }
-            UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
-            UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
+            //UiFactory.createSpacer(hl, FAction.SET_EXPAND_RATIO_1_0);
+            /*Button tmpButton2 = UiFactory.createButton(UiIds.LABEL_CLOSE, hl, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     toggleParamsPanel();
                 }
             }, FAction.ALIGN_RIGTH);
-
-            return panel;
+            tmpButton2.addStyleName("btn");*/
+            paramContent.addComponent(panel);
+            Panel p = new Panel();
+            p.setContent(mainLayout);
+            return p;
         }
 
         private boolean backgorundGenerationAvail() {
-            return ARJmsFacade.isJmsAvailable() && Boolean.TRUE.equals(reportTemplate.getAllowBackgroundOrder())
-                    && reportTemplate.getActive();
+        		return ARJmsFacade.isJmsAvailable() && Boolean.TRUE.equals(reportTemplate.getAllowBackgroundOrder())
+                        && reportTemplate.getActive();
         }
 
         private void download() {

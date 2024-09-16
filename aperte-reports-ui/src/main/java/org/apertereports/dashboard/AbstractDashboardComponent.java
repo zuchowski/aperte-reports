@@ -1,15 +1,17 @@
 package org.apertereports.dashboard;
 
+
 import com.vaadin.ui.CustomComponent;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apertereports.util.cache.MapCache;
-
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.common.xml.config.ReportConfig;
 import org.apertereports.common.xml.config.XmlReportConfigLoader;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletSession;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,11 +27,16 @@ import static org.apertereports.util.DashboardPreferences.PREFERENCE_TEMPLATE_KE
  * or show an edit form.
  */
 public abstract class AbstractDashboardComponent extends CustomComponent {
-    protected List<ReportConfig> reportConfigs;
+
+
+
+	protected List<ReportConfig> reportConfigs;
     protected String template;
     protected PortletPreferences preferences;
     protected PortletSession session;
     protected String portletId;
+  
+    
 
     /**
      * An instance of a {@link MapCache} for general caching purposes.
@@ -98,6 +105,8 @@ public abstract class AbstractDashboardComponent extends CustomComponent {
      * Loads preferences and initializes the view.
      */
     public void initData() {
+    	
+    	
         prepareData();
         initComponentData();
     }

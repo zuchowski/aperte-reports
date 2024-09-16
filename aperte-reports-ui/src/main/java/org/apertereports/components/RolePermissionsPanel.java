@@ -28,12 +28,15 @@ public class RolePermissionsPanel extends Panel {
     private CloseListener closeListener = null;
 
     public RolePermissionsPanel(final ReportTemplate rt) {
-
+    	
         rt.isAccessibleForAllRoles();
-
-        setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
-        VerticalLayout mainLayout = UiFactory.createVLayout(null);
-        ((AbstractLayout) mainLayout).setMargin(true, true, true, true);
+        //setCaption(VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS));
+        CssLayout mainLayout = new CssLayout();
+        CssLayout content = new CssLayout();
+        
+        UiFactory.createAccordion(mainLayout, VaadinUtil.getValue(UiIds.LABEL_PERMISSIONS), content);
+        
+        //((AbstractLayout) mainLayout).setMargin(true, true, true, true);
 
         setContent(mainLayout);
         boolean all = rt.isAccessibleForAllRoles();
@@ -58,33 +61,38 @@ public class RolePermissionsPanel extends Panel {
         }
 
         //initializing roles panel (layout)
-        final VerticalLayout rolesLayout = UiFactory.createVLayout(mainLayout, FAction.SET_SPACING);
-
+        //final VerticalLayout rolesLayout = UiFactory.createVLayout(mainLayout, FAction.SET_SPACING);
+        final CssLayout rolesLayout = new CssLayout();
+        rolesLayout.addStyleName("roles");
+        content.addComponent(rolesLayout);
         HorizontalLayout allNoneButtons = UiFactory.createHLayout(rolesLayout, FAction.SET_SPACING);
-        UiFactory.createButton(UiIds.LABEL_ALL, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
+        Button tmpButton1 = UiFactory.createButton(UiIds.LABEL_ALL, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 setWrappersSelected(true);
             }
         });
-        UiFactory.createButton(UiIds.LABEL_NONE, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
+        tmpButton1.addStyleName("btn");
+        Button tmpButton2 = UiFactory.createButton(UiIds.LABEL_NONE, allNoneButtons, BaseTheme.BUTTON_LINK, new ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 setWrappersSelected(false);
             }
         });
-
+        tmpButton2.addStyleName("btn");
         for (UserRoleWrapper w : wrappers) {
             rolesLayout.addComponent(w.checkBox);
         }
 
-        UiFactory.createSpacer(mainLayout, null, "5px");
+        //UiFactory.createSpacer(mainLayout, null, "5px");
 
-        HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
-        UiFactory.createSpacer(buttonsLayout, FAction.SET_EXPAND_RATIO_1_0);
-        UiFactory.createButton(UiIds.LABEL_OK, buttonsLayout, new Button.ClickListener() {
+        //HorizontalLayout buttonsLayout = UiFactory.createHLayout(mainLayout, FAction.SET_SPACING, FAction.SET_FULL_WIDTH);
+        CssLayout buttonsLayout = new CssLayout() ;
+        content.addComponent(buttonsLayout);
+        //UiFactory.createSpacer(buttonsLayout, FAction.SET_EXPAND_RATIO_1_0);
+        Button tmpButton3 = UiFactory.createButton(UiIds.LABEL_OK, buttonsLayout, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -106,13 +114,15 @@ public class RolePermissionsPanel extends Panel {
                 fireCloseListener();
             }
         }, FAction.ALIGN_RIGTH);
-        UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsLayout, new Button.ClickListener() {
+        tmpButton3.addStyleName("btn");
+        Button tmpButton4 = UiFactory.createButton(UiIds.LABEL_CANCEL, buttonsLayout, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 fireCloseListener();
             }
         }, FAction.ALIGN_RIGTH);
+        tmpButton4.addStyleName("btn");
     }
 
     /**

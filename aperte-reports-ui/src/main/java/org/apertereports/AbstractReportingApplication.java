@@ -1,6 +1,8 @@
 package org.apertereports;
 
 import com.liferay.portal.model.Role;
+import com.liferay.portal.model.UserGroupRole;
+
 import java.util.Locale;
 
 import javax.portlet.ActionRequest;
@@ -15,7 +17,11 @@ import javax.portlet.ResourceResponse;
 import org.apertereports.common.exception.ARRuntimeException;
 import org.apertereports.util.NotificationUtil;
 
+import com.liferay.portal.security.auth.AuthTokenUtil;
+import com.liferay.portal.security.auth.SessionAuthToken;
+import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
+import com.vaadin.Application;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.terminal.gwt.server.PortletApplicationContext2;
 import com.vaadin.ui.Panel;
@@ -23,8 +29,12 @@ import com.vaadin.ui.Window;
 
 import eu.livotov.tpt.TPTApplication;
 import eu.livotov.tpt.i18n.TM;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
 import org.apertereports.common.users.User;
 import org.apertereports.common.users.UserRole;
 import org.slf4j.Logger;
@@ -36,9 +46,9 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> Type of main panel
  */
+
 public abstract class AbstractReportingApplication<T extends Panel> extends TPTApplication implements
         PortletApplicationContext2.PortletListener {
-
     private static final Logger logger = LoggerFactory.getLogger(AbstractReportingApplication.class);
     /**
      * Main window object
@@ -60,8 +70,10 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
     /**
      * Initializes the application context.
      */
+   
     @Override
     public void applicationInit() {
+    	setTheme("mytheme");
         if (getContext() instanceof PortletApplicationContext2) {
             ((PortletApplicationContext2) getContext()).removePortletListener(this, this);
             ((PortletApplicationContext2) getContext()).addPortletListener(this, this);
@@ -70,7 +82,6 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
         TM.getDictionary().setDefaultLanguage(getLocale().getLanguage());
         reloadDictionary();
         portletInit();
-
         setMainWindow(mainWindow);
     }
 
@@ -158,9 +169,17 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
         if (getContext() instanceof PortletApplicationContext2) {
             try {
                 com.liferay.portal.model.User liferayUser = PortalUtil.getUser(request);
-
+                com.liferay.portal.model.Company company = PortalUtil.getCompany(request);
+                com.liferay.portal.theme.ThemeDisplay dis = (com.liferay.portal.theme.ThemeDisplay) request.getAttribute(com.liferay.portal.kernel.util.WebKeys.THEME_DISPLAY);
+               
+                		
                 //liferay user can be null because he can be not logged in 
                 if (liferayUser != null && (user == null || user.getLogin().equals(liferayUser.getLogin()))) {
+                	
+                	long userid= liferayUser.getUserId();
+                	long portletGroupId= dis.getScopeGroupId();
+                	long companyid= company.getCompanyId();
+                	String webid=company.getWebId();
                     String login = liferayUser.getLogin();
                     String email = liferayUser.getEmailAddress();
                     Set<UserRole> roles = new HashSet<UserRole>();
@@ -172,8 +191,16 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
                         roles.add(ur);
                         admin |= adminRole;
                     }
-
-                    user = new User(login, roles, admin, email);
+                    //Group Roles
+    				for(UserGroupRole gr : UserGroupRoleLocalServiceUtil.getUserGroupRoles(liferayUser.getUserId())){
+                        UserRole ur = new UserRole(gr.getRole().getName(), gr.getRoleId(), false);
+                        roles.add(ur);
+    				}
+                    
+                    Map<String, Object> userContext = new HashMap<String, Object>();
+                    userContext.put("p_auth", AuthTokenUtil.getToken(PortalUtil.getHttpServletRequest(request)));
+                    userContext.put("serverUri","http://" +  dis.getServerName() + ":" + dis.getServerPort() + "/api/jsonws/");
+                    user = new User(login, roles, admin, email, userid, portletGroupId, companyid, webid, userContext);
                     reinitUserData(user);
                 }
 
@@ -244,3 +271,4 @@ public abstract class AbstractReportingApplication<T extends Panel> extends TPTA
         return locale;
     }
 }
+

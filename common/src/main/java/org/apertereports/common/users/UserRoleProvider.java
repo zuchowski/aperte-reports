@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.liferay.portal.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.service.UserLocalServiceUtil;
+
+
 /**
  * Class provides functionality of listing roles accessible in the application
  *
@@ -28,8 +32,10 @@ public final class UserRoleProvider {
 
         List<Role> list;
         try {
-            list = RoleLocalServiceUtil.getRoles(0, RoleLocalServiceUtil.getRolesCount());
-        } catch (SystemException ex) {
+            com.liferay.portal.model.User liferayUser = UserLocalServiceUtil.getUser(PrincipalThreadLocal.getUserId());
+   			long companyid = liferayUser.getCompanyId();
+   			list = RoleLocalServiceUtil.getRoles(companyid);        	        	
+        } catch (Exception ex) {
             Logger.getLogger(UserRoleProvider.class.getName()).log(Level.SEVERE, null, ex);
             return roles;
         }

@@ -24,5 +24,17 @@
             <artifactId>common</artifactId>
             <version>2.5-SNAPSHOT</version>
         </dependency>
+        
+        	<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-impl</artifactId>
+			<version>${global.liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+				<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-service</artifactId>
+			<scope>provided</scope>
+		</dependency>
     </dependencies>
 </project>

@@ -1,19 +1,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="webServiceClient" class="org.apertereports.ws.client.ReportGeneratorWebServiceClient">
-        <constructor-arg ref="messageFactory"/>
-        <constructor-arg ref="marshaller"/>
-        <property name="enableLogging" value="false"/>
-        <property name="defaultUri" value="http://localhost:18666/aperte-reports-ws-endpoint/AperteReportsService/"/>
-    </bean>
+	<bean id="webServiceClient"
+		class="org.apertereports.ws.client.ReportGeneratorWebServiceClient">
+		<constructor-arg ref="messageFactory" />
+		<constructor-arg ref="marshaller" />
+		<property name="enableLogging" value="false" />
+		<property name="defaultUri"
+			value="http://localhost:18666/aperte-reports-ws-endpoint/AperteReportsService/" />
+	</bean>
 
-    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+	<bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
 
-    <bean id="marshaller" class="org.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
-        <property name="basePackage" value="org.apertereports.common.xml.ws"/>
-        <property name="mtomEnabled" value="true"/>
-    </bean>
+	<bean id="marshaller"
+		class="org.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
+		<property name="basePackage" value="org.apertereports.common.xml.ws" />
+		<property name="mtomEnabled" value="true" />
+	</bean>
 
 </beans>

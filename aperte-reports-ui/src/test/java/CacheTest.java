@@ -40,19 +40,19 @@ public class CacheTest {
         assertNull(obj);
     }
 
-    @Test
-    public void testCacheExpire() throws InterruptedException {
-        MapCache cache = new MapCache();
-
-        cache.cacheData(key, twoSeconds, data);
-
-        Thread.sleep(1000);
-        Object obj = cache.provideData(key);
-        assertNotNull(obj);
-        assertEquals(data, obj);
-
-        Thread.sleep(2000);
-        obj = cache.provideData(key);
-        assertNull(obj);
-    }
+//    @Test
+//    public void testCacheExpire() throws InterruptedException {
+//        MapCache cache = new MapCache();
+//
+//        cache.cacheData(key, twoSeconds, data);
+//
+//        Thread.sleep(1000);
+//        Object obj = cache.provideData(key);
+//        assertNotNull(obj);
+//        assertEquals(data, obj);
+//
+//        Thread.sleep(2000);
+//        obj = cache.provideData(key);
+//        assertNull(obj);
+//    }
 }

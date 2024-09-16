@@ -2,9 +2,11 @@ package org.apertereports.engine;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
+
 import org.apertereports.common.ARConstants;
 import org.apertereports.common.ARConstants.ErrorCode;
 import org.apertereports.common.ARConstants.Parameter;
@@ -23,11 +25,10 @@ public class ReportWebServiceHelper {
 		Map<String, Object> reportParameters = getReportParameters(reportData);
 
 		byte[] content;
-        content = ReportGeneratorUtils.unwrapDataHandler(reportData.getSource());
+		content = ReportGeneratorUtils.unwrapDataHandler(reportData.getSource());
 
-        content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider())
-                .generateAndExportReport(reportData.getFormat(), reportParameters, exporterParameters,
-                        configuration);
+		content = new ReportMaster(content, reportData.getId(), new EmptySubreportProvider()).generateAndExportReport(reportData.getFormat(), reportParameters,
+				exporterParameters, configuration);
 
 		return content;
 	}
@@ -43,7 +44,7 @@ public class ReportWebServiceHelper {
 				reportParameters.put(param.getName(), object);
 			}
 		} catch (Exception e) {
-			throw new ARException(ErrorCode.SERIALIZATION_EXCEPTION,  e);
+			throw new ARException(ErrorCode.SERIALIZATION_EXCEPTION, e);
 		}
 		if (!reportParameters.containsKey(JRXPathQueryExecuterFactory.XML_DATE_PATTERN)) {
 			reportParameters.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, ARConstants.DATETIME_PATTERN);
@@ -57,8 +58,7 @@ public class ReportWebServiceHelper {
 	private Map<String, String> getJasperConfiguration(ReportData reportData) {
 		Map<String, String> configuration = new HashMap<String, String>();
 		if (StringUtils.hasText(reportData.getCharacterEncoding())) {
-			configuration.put(ConfigurationConstants.JASPER_REPORTS_CHARACTER_ENCODING, reportData
-					.getCharacterEncoding().trim());
+			configuration.put(ConfigurationConstants.JASPER_REPORTS_CHARACTER_ENCODING, reportData.getCharacterEncoding().trim());
 		}
 		if (StringUtils.hasText(reportData.getDataSource())) {
 			configuration.put(Parameter.DATASOURCE.name(), reportData.getDataSource());
@@ -70,8 +70,7 @@ public class ReportWebServiceHelper {
 		Map<JRExporterParameter, Object> exporterParameters = new HashMap<JRExporterParameter, Object>();
 		for (ReportExporterParameter param : reportData.getExporterParameters()) {
 			try {
-				Object obj = ReportGeneratorUtils.resolveFieldValue(getClass().getClassLoader(), param.getClassName(),
-						param.getFieldName());
+				Object obj = ReportGeneratorUtils.resolveFieldValue(getClass().getClassLoader(), param.getClassName(), param.getFieldName());
 				exporterParameters.put((JRExporterParameter) obj, param.getValue());
 			} catch (Exception e) {
 				throw new ARException(e);

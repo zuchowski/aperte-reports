@@ -1,0 +1,128 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<script name="jquery/jquery.js" library="primefaces"></script>
+</h:head>
+
+<h:form>
+	<script type="text/javascript">
+		PrimeFaces.locales['de'] = {
+			closeText : 'Schließen',
+			prevText : '&lt;',
+			nextText : '&gt;',
+			monthNames : [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+					'Juli', 'August', 'September', 'Oktober', 'November',
+					'Dezember' ],
+			monthNamesShort : [ 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+					'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez' ],
+			dayNames : [ 'Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
+					'Donnerstag', 'Freitag', 'Samstag' ],
+			dayNamesShort : [ 'Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam' ],
+			dayNamesMin : [ 'So', 'Mo', 'Di', 'Mi ', 'Do', 'Fr ', 'Sa' ],
+			weekHeader : 'Woche',
+			firstDay : 1,
+			isRTL : false,
+			showMonthAfterYear : false,
+			yearSuffix : '',
+			timeOnlyTitle : 'Nur Zeit',
+			timeText : 'Zeit',
+			hourText : 'Stunde',
+			minuteText : 'Minute',
+			secondText : 'Sekunde',
+			currentText : 'Aktuelles Datum',
+			ampm : false,
+			month : 'Monat',
+			week : 'Woche',
+			day : 'Tag',
+			allDayText : 'Ganzer Tag'
+		};
+	</script>
+
+	<ui:repeat var="template" value="#{reportInvokerBean.reportTemplates}">
+		<div class="report-container">
+			<div class="report-template">
+				<h:outputText class="report-name" value="#{template.reportname}" />
+
+
+				<p:commandButton class="report-param-btn btn btn-primary" value="Report verwenden"
+					update="@form"
+					action="#{reportInvokerBean.initReportMaster(template)}"
+					rendered="#{reportInvokerBean.getReportMaster(template) == null}" />
+				<p:commandButton class="report-param-btn btn btn-primary"
+					value="Parameter ausblenden" update="@form"
+					action="#{reportInvokerBean.destroyReportMaster(template)}"
+					rendered="#{reportInvokerBean.getReportMaster(template) != null}" />
+
+			</div>
+			<div class="report-parameters" >
+				<h:outputText value="#{template.description}" style="padding: 1rem;" rendered="#{reportInvokerBean.getReportMaster(template) != null and not empty template.description}"/>
+				<p:dataTable var="parameter" styleClass="parameters-table" rendered="#{reportInvokerBean.getReportMaster(template) != null}"
+					value="#{reportInvokerBean.getReportParameters(template)}">
+
+					<f:facet name="header">
+						Parameter
+					</f:facet>
+
+					<p:column styleClass="param-label-column"
+						rendered="#{parameter.key != 'report_type'}">
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramInputText" rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramDatePicker_input" rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramSelectManyListbox" rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}" />
+						<h:outputLabel
+							value="#{reportInvokerBean.getParameterLabel(template, parameter.key)}" for="paramSelectOneMenu" rendered="#{reportInvokerBean.isSingleSelectInput(template, parameter.key)}" />
+					</p:column>
+					<p:column styleClass="param-value-column"
+						rendered="#{parameter.key != 'report_type'}" >
+						<h:inputText
+							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
+							rendered="#{reportInvokerBean.isTextInput(template, parameter.key)}" id="paramInputText"/>
+						<p:datePicker locale="de" pattern="dd.MM.yyyy" id="paramDatePicker"
+							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
+							rendered="#{reportInvokerBean.isDateInput(template, parameter.key)}"
+							showIcon="true" buttonTabindex="0" title="#{reportInvokerBean.getParameterLabel(template, parameter.key)}"/>
+						<h:selectManyListbox styleClass="dict-selection" size="8" id="paramSelectManyListbox"
+							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
+							rendered="#{reportInvokerBean.isMultiSelectInput(template, parameter.key)}">
+							<f:selectItems
+								value="#{reportInvokerBean.getDictionarySelectItems(template, parameter.key)}" />
+						</h:selectManyListbox>
+						<h:selectOneMenu styleClass="dict-selection" id="paramSelectOneMenu"
+							value="#{reportInvokerBean.getReportParameters(template)[parameter.key]}"
+							rendered="#{reportInvokerBean.isSingleSelectInput(template, parameter.key)}">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItems
+								value="#{reportInvokerBean.getDictionarySelectItems(template, parameter.key)}" />
+						</h:selectOneMenu>
+					</p:column>
+				</p:dataTable>
+				<p:panelGrid columns="2" class="type-selection"
+					columnClasses="type-selection-label, type-selection-value"
+					rendered="#{reportInvokerBean.getReportMaster(template) != null}">
+					<h:outputLabel value="Format" for="formatSelect"/>
+					<h:selectOneMenu id="formatSelect"
+						value="#{reportInvokerBean.getReportParameters(template)['report_type']}">
+						<f:selectItems
+							value="#{reportInvokerBean.getReportTypeSelectItems()}" />
+					</h:selectOneMenu>
+				</p:panelGrid>
+
+
+				<p:commandButton value="Generieren" ajax="false"
+					styleClass="generate-btn btn btn-primary"
+					action="#{reportInvokerBean.generateReport(template)}"
+					rendered="#{reportInvokerBean.getReportMaster(template) != null}" />
+			</div>
+		</div>
+	</ui:repeat>
+
+	<p:messages closable="true" showDetail="false" styleClass="message-bar" />
+</h:form>
+
+</html>

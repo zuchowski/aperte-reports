@@ -20,8 +20,8 @@ public class HelpButton extends Button {
         setDescription(VaadinUtil.getValue(UiIds.LABEL_HELP));
         addStyleName(BaseTheme.BUTTON_LINK);
         setWidth(DEFAULT_WIDTH_IN_UNITS, UNITS_PIXELS);
+        addStyleName("btn");
         addListener(new Button.ClickListener() {
-
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 HelpWindow subwindow = new HelpWindow(module, tab);

@@ -1,63 +1,70 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:sws="http://www.springframework.org/schema/web-services"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sws="http://www.springframework.org/schema/web-services"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-    <context:property-placeholder location="classpath*:*.properties"/>
+	<context:property-placeholder location="classpath*:*.properties" />
 
-    <context:component-scan base-package="org.apertereports.ws.endpoint"/>
+	<context:component-scan base-package="org.apertereports.ws.endpoint" />
 
-    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+	<bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
 
-    <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher">
-        <property name="endpointExceptionResolvers">
-            <array>
-                <bean class="org.springframework.ws.soap.server.endpoint.SoapFaultAnnotationExceptionResolver"/>
-            </array>
-        </property>
-    </bean>
+	<bean id="messageReceiver"
+		class="org.springframework.ws.soap.server.SoapMessageDispatcher">
+		<property name="endpointExceptionResolvers">
+			<array>
+				<bean
+					class="org.springframework.ws.soap.server.endpoint.SoapFaultAnnotationExceptionResolver" />
+			</array>
+		</property>
+	</bean>
 
-    <bean id="marshaller" class="org.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
-        <property name="basePackage" value="org.apertereports.common.xml.ws"/>
-        <property name="mtomEnabled" value="true"/>
-    </bean>
+	<bean id="marshaller"
+		class="org.apertereports.ws.utils.ClasspathScanningJAXB2Marshaller">
+		<property name="basePackage" value="org.apertereports.common.xml.ws" />
+		<property name="mtomEnabled" value="true" />
+	</bean>
 
-    <bean id="marshallingMethodProcessor" class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor">
-        <constructor-arg ref="marshaller"/>
-    </bean>
+	<bean id="marshallingMethodProcessor"
+		class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor">
+		<constructor-arg ref="marshaller" />
+	</bean>
 
-    <bean class="org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter" primary="true">
-        <property name="methodArgumentResolvers">
-            <list>
-                <ref bean="marshallingMethodProcessor"/>
-            </list>
-        </property>
-        <property name="methodReturnValueHandlers">
-            <list>
-                <ref bean="marshallingMethodProcessor"/>
-            </list>
-        </property>
-    </bean>
+	<bean
+		class="org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter"
+		primary="true">
+		<property name="methodArgumentResolvers">
+			<list>
+				<ref bean="marshallingMethodProcessor" />
+			</list>
+		</property>
+		<property name="methodReturnValueHandlers">
+			<list>
+				<ref bean="marshallingMethodProcessor" />
+			</list>
+		</property>
+	</bean>
 
-    <sws:annotation-driven/>
+	<sws:annotation-driven />
 
-    <sws:interceptors>
-        <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
-        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
-            <property name="schema" value="apertereports.xsd"/>
-            <property name="validateRequest" value="true"/>
-            <property name="validateResponse" value="true"/>
-        </bean>
-    </sws:interceptors>
+	<sws:interceptors>
+		<bean
+			class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor" />
+		<bean
+			class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+			<property name="schema" value="apertereports.xsd" />
+			<property name="validateRequest" value="true" />
+			<property name="validateResponse" value="true" />
+		</bean>
+	</sws:interceptors>
 
-    <sws:dynamic-wsdl id="reportGenerator" portTypeName="AperteReportsService" locationUri="/AperteReportsService/"
-                      targetNamespace="http://bluesoft.net.pl/rnd/apertereports/schemas">
-        <sws:xsd location="apertereports.xsd"/>
-    </sws:dynamic-wsdl>
+	<sws:dynamic-wsdl id="reportGenerator" portTypeName="AperteReportsService"
+		locationUri="/AperteReportsService/" targetNamespace="http://bluesoft.net.pl/rnd/apertereports/schemas">
+		<sws:xsd location="apertereports.xsd" />
+	</sws:dynamic-wsdl>
 
 </beans>

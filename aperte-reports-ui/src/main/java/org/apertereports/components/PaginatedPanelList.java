@@ -2,7 +2,7 @@ package org.apertereports.components;
 
 import java.util.Collection;
 
-
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -88,13 +88,14 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
         HorizontalLayout hl = UiFactory.createHLayout(this, FAction.SET_SPACING);
         hl.setMargin(true, false, false, false);
         if (hasPrevious()) {
-            UiFactory.createButton(UiIds.LABEL_PREVIOUS, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+        	Button tmpButton = UiFactory.createButton(UiIds.LABEL_PREVIOUS, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     previousPage();
                 }
             });
+        	tmpButton.addStyleName("btn");
         } else {
             UiFactory.createLabel(UiIds.LABEL_PREVIOUS, hl);
         }
@@ -104,23 +105,25 @@ public abstract class PaginatedPanelList<O, W extends Panel> extends VerticalLay
             if (pageIndex == pageNumber) {
                 UiFactory.createLabel(caption, hl);
             } else {
-                UiFactory.createButton(caption, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+            	Button tmpButton2 = UiFactory.createButton(caption, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                     @Override
                     public void buttonClick(ClickEvent event) {
                         showPage(pageIndex);
                     }
                 });
+            	tmpButton2.addStyleName("btn");
             }
         }
         if (hasNext()) {
-            UiFactory.createButton(UiIds.LABEL_NEXT, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
+        	Button tmpButton3 = UiFactory.createButton(UiIds.LABEL_NEXT, hl, BaseTheme.BUTTON_LINK, new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
                     nextPage();
                 }
             });
+        	tmpButton3.addStyleName("btn");
         } else {
             UiFactory.createLabel(UiIds.LABEL_NEXT, hl);
         }

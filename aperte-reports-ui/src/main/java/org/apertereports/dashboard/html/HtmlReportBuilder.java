@@ -11,6 +11,9 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.util.JRTypeSniffer;
+import net.sf.jasperreports.renderers.DataRenderable;
+import net.sf.jasperreports.engine.type.ImageTypeEnum;
+
 
 import org.apertereports.util.DashboardUtil;
 import org.apertereports.util.FileStreamer;
@@ -77,7 +80,7 @@ public class HtmlReportBuilder {
      */
     private CustomLayout layout;
     private Application application;
-
+   
     public HtmlReportBuilder(Application application, ReportDataProvider provider) {
         this.application = application;
         this.provider = provider;
@@ -104,6 +107,7 @@ public class HtmlReportBuilder {
                 }
             }
         }
+    
         return layout;
     }
 
@@ -158,17 +162,18 @@ public class HtmlReportBuilder {
         buttons.setSpacing(true);
 
         if (parentConfig != null && componentId != null) {
-            UiFactory.createButton("dashboard.view.drill.up", buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton("dashboard.view.drill.up", buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     returnFromDrill(config, parentConfig, componentId);
                 }
             });
+            tmpButton.addStyleName("btn");
         }
         List<String> allowedFormats = config.getAllowedFormatsAsList();
         for (final String format : allowedFormats) {
-            UiFactory.createButton(format, buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton(format, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
@@ -179,15 +184,17 @@ public class HtmlReportBuilder {
                     }
                 }
             });
+            tmpButton.addStyleName("btn");
         }
         if (Boolean.TRUE.equals(config.getAllowRefresh())) {
-            UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
+            Button tmpButton = UiFactory.createButton(UiIds.LABEL_REFRESH, buttons, new Button.ClickListener() {
 
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     refreshReport(config);
                 }
             });
+            tmpButton.addStyleName("btn");
         }
 
         boolean first = true;
@@ -319,6 +326,7 @@ public class HtmlReportBuilder {
             reportLayout = new CustomLayout(new ByteArrayInputStream(reportHtml.getBytes()));
             reportLayout.setSizeUndefined();
             reportLayout.setWidth(100, UNITS_PERCENTAGE);
+            
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -525,13 +533,14 @@ public class HtmlReportBuilder {
         jasperPrintList.add(jasperPrint);
 
         JRPrintImage image = JRHtmlExporter.getImage(jasperPrintList, imageId);
-        JRRenderable renderer = image.getRenderer();
-        if (renderer.getType() == JRRenderable.TYPE_SVG) {
-            renderer = new JRWrappingSvgRenderer(renderer, new Dimension(image.getWidth(), image.getHeight()),
-                    ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null);
-        }
-        String imageMimeType = JRTypeSniffer.getImageMimeType(renderer.getImageType());
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(renderer.getImageData());
+        DataRenderable renderer = (DataRenderable)image.getRenderer();
+//        if (renderer.getType() == JRRenderable.TYPE_SVG) {
+//            renderer = new WrappingRenderToImageDataRenderer(renderer, new Dimension(image.getWidth(), image.getHeight()),
+//                    ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null);
+//        }
+        byte[] data = renderer.getData(new SimpleJasperReportsContext());
+        ImageTypeEnum imageMimeType = JRTypeSniffer.getImageTypeValue(data);
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 
         StreamResource streamResource = new StreamResource(new StreamResource.StreamSource() {
 
@@ -541,7 +550,7 @@ public class HtmlReportBuilder {
             }
         }, imageId, application);
 
-        streamResource.setMIMEType(imageMimeType);
+        streamResource.setMIMEType(imageMimeType.getMimeType());
         return streamResource;
     }
 
